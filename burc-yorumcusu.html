@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#7b2ff7">
 <title>Burç Yorumcusu</title>
 <style>
+@property --p{syntax:'<percentage>';inherits:false;initial-value:0%}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%}
 body{
@@ -24,33 +25,40 @@ button{font:inherit;border:0;cursor:pointer;color:inherit}
 .crystal.shake{animation:shake .5s linear infinite}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
 @keyframes shake{0%,100%{transform:rotate(0) scale(1.1)}25%{transform:rotate(-14deg) scale(1.2)}75%{transform:rotate(14deg) scale(1.2)}}
-h1{margin:4px 0 2px;font-size:2.1rem;letter-spacing:.3px}
-.hero p{margin:0 auto;max-width:320px;font-size:1rem;opacity:.95}
-.card{background:rgba(255,255,255,.92);border-radius:28px;padding:18px;box-shadow:0 10px 30px rgba(60,10,90,.25);margin-top:18px}
-label{display:block;font-weight:700;margin:0 4px 8px}
-input[type=date]{width:100%;font:inherit;font-size:1.15rem;padding:14px 16px;border-radius:18px;border:3px solid #e9d5ff;background:#fff;color:#2b1b3d;outline:none}
-input[type=date]:focus{border-color:#a855f7}
-.go{width:100%;margin-top:14px;padding:16px;border-radius:20px;font-size:1.15rem;font-weight:800;color:#fff;
+h1{margin:4px 0 2px;font-size:2.2rem;letter-spacing:.3px}
+.hero p{margin:0 auto;max-width:330px;font-size:1rem;opacity:.95}
+.card{background:rgba(255,255,255,.93);border-radius:28px;padding:16px;box-shadow:0 10px 30px rgba(60,10,90,.25);margin-top:18px}
+.tabs{display:flex;gap:6px;background:#f3e8ff;border-radius:20px;padding:5px;margin-bottom:14px}
+.tab{flex:1;padding:12px 6px;border-radius:16px;font-weight:800;font-size:.98rem;background:transparent;color:#6b21a8;transition:.2s}
+.tab.on{background:linear-gradient(135deg,#ff3cac,#784ba0);color:#fff;box-shadow:0 4px 12px rgba(120,75,160,.4)}
+.who{display:grid;gap:8px;margin-bottom:12px}
+.who+.who{padding-top:12px;border-top:3px dotted #e9d5ff}
+label{display:block;font-weight:700;margin:0 4px 2px}
+label small{font-weight:500;color:#8b6aa8}
+input[type=date],input[type=text]{width:100%;font:inherit;font-size:1.1rem;padding:13px 16px;border-radius:18px;border:3px solid #e9d5ff;background:#fff;color:#2b1b3d;outline:none}
+input[type=date]:focus,input[type=text]:focus{border-color:#a855f7}
+.go{width:100%;margin-top:4px;padding:16px;border-radius:20px;font-size:1.15rem;font-weight:800;color:#fff;
   background:linear-gradient(90deg,#ff3cac,#784ba0,#2b86c5);background-size:200% 100%;animation:slide 4s linear infinite;box-shadow:0 8px 18px rgba(120,75,160,.45)}
 .go:active{transform:scale(.97)}
+.go:disabled{opacity:.7}
 @keyframes slide{0%{background-position:0 0}100%{background-position:200% 0}}
 .msg{margin:10px 4px 0;font-weight:600;color:#c026d3;min-height:1.2em}
 #result{margin-top:18px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{0%{transform:scale(.85) translateY(20px);opacity:0}100%{transform:none;opacity:1}}
 .top{border-radius:30px;padding:22px 18px;color:#fff;text-align:center;text-shadow:0 2px 6px rgba(0,0,0,.28);box-shadow:0 12px 30px rgba(60,10,90,.3)}
 .sym{font-size:5rem;line-height:1;display:block;animation:bob 3s ease-in-out infinite}
-.top h2{margin:6px 0 0;font-size:2.2rem}
+.top h2{margin:6px 0 0;font-size:2.1rem}
 .top .range{font-weight:600;opacity:.95}
 .top .quote{margin:14px 4px 0;font-style:italic;background:rgba(255,255,255,.22);border-radius:18px;padding:10px 12px;font-size:.98rem;line-height:1.4}
 .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
 .chip{background:rgba(255,255,255,.28);padding:6px 12px;border-radius:999px;font-size:.85rem;font-weight:700}
 .facts{display:grid;gap:8px;margin-top:14px}
-.fact{background:rgba(255,255,255,.92);border-radius:18px;padding:11px 14px;font-size:.95rem;line-height:1.4;box-shadow:0 4px 12px rgba(60,10,90,.15)}
-.sec{background:rgba(255,255,255,.94);border-radius:24px;padding:16px;margin-top:14px;box-shadow:0 6px 18px rgba(60,10,90,.18);border-left:8px solid var(--c)}
+.fact{background:rgba(255,255,255,.93);border-radius:18px;padding:11px 14px;font-size:.95rem;line-height:1.4;box-shadow:0 4px 12px rgba(60,10,90,.15)}
+.sec{background:rgba(255,255,255,.95);border-radius:24px;padding:16px;margin-top:14px;box-shadow:0 6px 18px rgba(60,10,90,.18);border-left:8px solid var(--c)}
 .sec h3{margin:0 0 6px;font-size:1.05rem}
 .sec p{margin:0;line-height:1.5;font-size:1rem}
-.meters{background:rgba(255,255,255,.94);border-radius:24px;padding:14px 16px;margin-top:14px;box-shadow:0 6px 18px rgba(60,10,90,.18)}
-.m{display:grid;grid-template-columns:86px 1fr 42px;align-items:center;gap:8px;margin:8px 0;font-weight:700;font-size:.92rem}
+.meters{background:rgba(255,255,255,.95);border-radius:24px;padding:14px 16px;margin-top:14px;box-shadow:0 6px 18px rgba(60,10,90,.18)}
+.m{display:grid;grid-template-columns:122px 1fr 42px;align-items:center;gap:8px;margin:8px 0;font-weight:700;font-size:.9rem}
 .bar{height:14px;border-radius:99px;background:#efe4fb;overflow:hidden}
 .bar i{display:block;height:100%;width:0;border-radius:99px;transition:width 1s cubic-bezier(.2,.9,.3,1)}
 .m span:last-child{text-align:right}
@@ -59,12 +67,29 @@ input[type=date]:focus{border-color:#a855f7}
 .btn:active{transform:scale(.96)}
 .b1{background:linear-gradient(135deg,#f59e0b,#ef4444)}
 .b2{background:linear-gradient(135deg,#06b6d4,#3b82f6)}
+.sharebox{width:100%;margin-top:10px;min-height:130px;border-radius:16px;border:3px solid #e9d5ff;padding:10px;font:inherit;background:#fff;color:#2b1b3d}
+/* uyum */
+.uy{border-radius:30px;padding:20px 14px 22px;color:#fff;text-align:center;text-shadow:0 2px 6px rgba(0,0,0,.28);box-shadow:0 12px 30px rgba(60,10,90,.3)}
+.pair{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+.pc{background:rgba(255,255,255,.2);border-radius:22px;padding:12px 6px;min-width:0}
+.pc .s2{font-size:2.8rem;line-height:1;display:block}
+.pc b{display:block;font-size:1.05rem;word-break:break-word;margin-top:4px}
+.pc small{font-size:.8rem;opacity:.95}
+.heart{font-size:2.2rem;animation:beat 1.1s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.ring{--p:0%;width:158px;height:158px;border-radius:50%;margin:18px auto 8px;display:grid;place-items:center;
+  background:conic-gradient(#fff var(--p),rgba(255,255,255,.28) 0);transition:--p 1.3s cubic-bezier(.2,.9,.3,1);box-shadow:0 8px 22px rgba(0,0,0,.25)}
+.ring div{width:126px;height:126px;border-radius:50%;background:rgba(60,10,90,.55);display:grid;place-items:center;align-content:center}
+.ring b{font-size:2.5rem;line-height:1}
+.ring small{font-size:.8rem;opacity:.95}
+.uy h2{margin:6px 0 4px;font-size:1.7rem}
 .foot{margin-top:22px;text-align:center;color:#fff;font-size:.8rem;text-shadow:0 1px 4px rgba(60,10,90,.5);line-height:1.5}
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:#2b1b3d;color:#fff;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:50;font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:#2b1b3d;color:#fff;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:50;font-size:.9rem;max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .conf{position:fixed;top:-30px;font-size:1.6rem;z-index:40;pointer-events:none;animation:fall 2.2s ease-in forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
 [hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){.stars{display:none}body,.go,.heart,.crystal,.sym{animation:none}}
 </style>
 </head>
 <body>
@@ -73,13 +98,27 @@ input[type=date]:focus{border-color:#a855f7}
   <header class="hero">
     <div class="crystal" id="crystal">🔮</div>
     <h1>Burç Yorumcusu</h1>
-    <p>Doğum tarihini gir, yıldızlar konuşsun. Biraz da kahkaha atalım!</p>
+    <p>Burcunu yorumlat ya da biriyle uyumunu ölç. Yıldızlar konuşsun, biz de gülelim!</p>
   </header>
 
   <section class="card">
-    <label for="dob">🎂 Doğum tarihin</label>
-    <input type="date" id="dob" min="1900-01-01">
-    <button class="go" id="go">✨ Burcumu Yorumla</button>
+    <div class="tabs">
+      <button class="tab on" id="tabYorum" type="button">🔮 Burç Yorumu</button>
+      <button class="tab" id="tabUyum" type="button">💘 Burç Uyumu</button>
+    </div>
+    <div class="who">
+      <label for="nameA">🙋 Adın <small>(isteğe bağlı)</small></label>
+      <input type="text" id="nameA" maxlength="20" autocomplete="off" placeholder="Adın">
+      <label for="dobA" id="lblA">🎂 Doğum tarihin</label>
+      <input type="date" id="dobA" min="1900-01-01">
+    </div>
+    <div class="who" id="partner" hidden>
+      <label for="nameB">💞 Onun adı <small>(isteğe bağlı)</small></label>
+      <input type="text" id="nameB" maxlength="20" autocomplete="off" placeholder="Onun adı">
+      <label for="dobB">🎂 Onun doğum tarihi</label>
+      <input type="date" id="dobB" min="1900-01-01">
+    </div>
+    <button class="go" id="go" type="button">✨ Burcumu Yorumla</button>
     <div class="msg" id="msg"></div>
   </section>
 
@@ -94,7 +133,6 @@ input[type=date]:focus{border-color:#a855f7}
 "use strict";
 var $=function(id){return document.getElementById(id)};
 
-/* ---------- VERİ ---------- */
 var Z=[
 {n:"Koç",e:"♈",d:"21 Mart – 19 Nisan",el:"Ateş",gz:"Mars",renk:"Kırmızı",sayi:9,gun:"Salı",g:["#ff512f","#dd2476"],uyum:["Aslan","Yay","İkizler"],
  kar:"Sabrı ‘yarın başlarım’ diye bir şeye çevirmiş, her şeyi dün isteyen insan.",
@@ -265,6 +303,339 @@ var Z=[
  tav:["Deniz kenarında yürü ya da banyoda uzun bir müzik dinle.","Bugün bir hayalini yaz.","Kendine şefkat göster; başkalarına sonra."]}
 ];
 
+
+/* ---------- EK YORUMLAR (Z ile aynı sırada: Koç … Balık) ---------- */
+var EX=[
+{ /* Koç */
+ gen:["Bugün kimse sana ‘sakin ol’ demesin; demezse kendini tutabilirsin, derse tutamayabilirsin.",
+      "Sabah erken kalkıp günün yarısını bitirmiş gibi hissedeceksin. Öğleden sonra yine uyuyakalacaksın, normal.",
+      "Bir şeyi yapmak istiyorsun ve bekleme listesinden nefret ediyorsun. Yine de sıraya gir, sıra herkese eşit.",
+      "Küçük bir yarış ortamına girersen hemen kazanmak isteyeceksin, kasada bile."],
+ ask:["‘Beni anlamıyorsun’ cümlesi yerine ‘açım’ de, çoğu kavga yemekle çözülür.",
+      "Biriyle göz göze geldiğinde ilk gülümseyen sen ol. Cesaret sende, bunu biliyoruz.",
+      "Aşk mesajını yazdın, sildin, yeniden yazdın. Gönder gitsin, Mars arkanda."],
+ is:["Yeni bir işe atılmak için güzel bir gün, yeter ki önce kullanma kılavuzuna bir göz at.",
+     "Mail kuyruğun gereğinden uzun. Üç tanesine cevap yaz, kalanını yarına bırak. Kimse ölmez.",
+     "Rakip biri seni sinirlendirebilir. En güzel intikam: işini kusursuz yapmak, hem de erkenden."],
+ tav:["Bir şeyi bitirmeden başka şeye başlama. Zor ama süper güç.",
+      "Sosyal medyada tartışmaya girme; kazanırsan bir şey kazanmıyorsun.",
+      "Bir bardak su iç, ayağa kalk, omuzlarını aç. Koç ayakta daha güzel."],
+ uy:["Kırmızı ışıkta beklemek bugün sana kişisel hakaret gibi gelecek. Fren sağlam, sen sakin.",
+     "Telefon ekranına çok sert bastığın için tuşlar küsebilir. Parmaklar yumuşak olsun.",
+     "Alışverişte ‘hemen alayım’ dürtüsüne dikkat. Sepet bekletilir, ateş soğutulur.",
+     "Bugün birinin sözünü kesme ihtimalin yüzde yüz. Hiç değilse ‘pardon’ de.",
+     "‘Bir dakika’ dediğin şey kırk dakika sürebilir. Kendi sözünü tut.",
+     "Mutfakta acele edersen yemek de acele eder: ya yanık ya çiğ."],
+ ye:["Acılı bir şeyler: acılı ezme ya da ateş gibi bir Adana.",
+     "Hızlı pişen bir şey: omlet. Beklemek senin işin değil.",
+     "Bir tabak mantı. Tek tek katlamaya sabrın yoksa hazır al, kimseye söyleme.",
+     "Közde köfte. Ateş senin elementin.",
+     "Kuru fasulye ve pilav. Güç lazım, çünkü bugün hızlısın."],
+ il:["ilişkide ilk adımı atar, ilk kavgayı da o başlatır.","tutkusu çok yüksek, sabrı çok düşüktür.","her şeyi hemen çözmek ister, çözülmezse yeniden başlatır."]},
+
+{ /* Boğa */
+ gen:["Bugünün planı ‘hiçbir şey yapmamak’. Evren de aynı fikirde, yeter ki yastığı bırakma.",
+      "Bir şeyi sabırla bekleyeceksin ve sonunda daha da güzel olacak. Mesela yemek.",
+      "Etrafındaki herkes aceleci, sen ise bir ağaç gibi sakinsin. Rüzgâr seni sarsamaz.",
+      "Rahatlık alanını genişlet: yeni bir koltuk? Evet, mantıklı bir yatırım."],
+ ask:["Sevgiline sürpriz yemek yap, yanmasın. Yanarsa sipariş ver, aşk bunu da kaldırır.",
+      "Sadakatin altın değerinde. Bunu bugün birine hissettir, bir sarılma yeter.",
+      "Bir flört seni yavaş yavaş sarabilir. Acele etme, zaten aceleyi sevmezsin."],
+ is:["Maaşın yanında bir de bonus kokusu var. Yine de hesabı kontrol etmeden sevinme.",
+     "Masan ofisin en rahat köşesi olacak. Biri ‘burada oturabilir miyim?’ derse yok de.",
+     "Uzun vadeli bir plan yap. Para seninle sakin sakin büyüyecek."],
+ tav:["Bir şeyi ‘sonra’ yapmak yerine ‘yarın’ yap. Küçük ama yeni bir ufuk.",
+      "Dışarı çık, bir ağaca dokun. Toprak elementi seni özlemiş.",
+      "Kendine güzel bir kahve hazırla; fincan da güzel olsun."],
+ uy:["Yataktan çıkmak bugün bir kahramanlık olacak. Madalyayı kendi kendine ver.",
+     "Buzdolabı kapısını açıp ‘ne var ne yok’ diye bakmak bir egzersiz sayılmaz.",
+     "Biri sana ‘hadi acele et’ derse kulağın duymayacak. Bu bir yetenek.",
+     "Bugün her tatlıyı ‘denemek zorundasın’. Kimse seni yargılamıyor.",
+     "İnatçılık yerine iletişim dene. Evet, bu cümleyi okurken inat ettin.",
+     "Kıyafet seçerken konfor birinci, fotoğraf ikinci. Bu sırayı bozma."],
+ ye:["Fırında makarna; bol peynirli, üstü çıtır.",
+     "Güzel bir tatlı: sütlaç mı revani mi? İkisi de olabilir.",
+     "Sıcak bir mercimek çorbası, yanında taze ekmek.",
+     "Peynir tabağı ve bal. Venüs bunu çok sever.",
+     "Kalın bir kahvaltı, saat kaç olursa olsun."],
+ il:["ilişkide sadık ve sakindir, ama inadı tutunca dağ gibidir.","aşkını yemekle, hediyeyle ve sarılmayla gösterir.","bir kere bağlandı mı kolay kolay vazgeçmez, kıskançlığı da dahil."]},
+
+{ /* İkizler */
+ gen:["Aynı sohbette üç konu açıp hepsini kapatmayı başaracaksın. Bu bir yetenek, ödül bekle.",
+      "Merkür sana hızlı zekâ veriyor. Espri yap ama kimseyi kırma; zekân ucuz değil.",
+      "Bir sır duyarsan tutmaya çalış. Çok zor olacak, biliyoruz.",
+      "Telefon elinde, mesajlar yağıyor. Birine cevap vermeyi unuttun, hangisi olduğunu kendin bul."],
+ ask:["Mesajda ‘haha’ yazarken gerçekten gülüyorsan o kişi önemlidir.",
+      "Birini etkilemek için bilgi yağmuru yapma; bir soru sor, gerisini dinle.",
+      "Bir flört ‘sen çok eğlencelisin’ diyebilir. Teşekkür et, ardından ‘ben ciddiyim’ deme."],
+ is:["Çoklu görev yeteneğin parlıyor ama sekmelerin yarısını kapat, bilgisayar da insandır.",
+     "Son dakika hazırlığı yapacağın bir sunum var. Yine de her şey harika olacak.",
+     "İletişim işlerinde yıldız sensin. Tek eksik: mailin sonuna ‘saygılarımla’ yazmayı unutma."],
+ tav:["Bir şeye ‘tamam’ de ve üzerine bir şey ekleme.",
+      "Gün içinde on dakika sessizlik yap. Merkür bile dinlenir.",
+      "Eski bir arkadaşa ‘aklıma geldin’ diye yaz. Hepsi bu."],
+ uy:["Birine yanlış mesaj gönderme ihtimalin yüksek. Göndermeden önce adı bir daha oku.",
+     "Konuşurken konuyu üç kez değiştireceksin. Karşındaki kaybolursa harita çiz.",
+     "Bir kitap açıp ilk sayfada bırakacaksın. Merak etme, hepimizde var.",
+     "Yirmi sekme açacaksın. En az onunu kapat, kafan rahatlar.",
+     "Telefonu elinden bırakınca ne yapacağını bilemeyebilirsin. İlk deneyim zor olacak.",
+     "Biri sana ‘kısa kes’ derse bunu iltifat say; bugün hikâyeni uzatıyorsun."],
+ ye:["Küçük porsiyonlu meze tabağı; her şeyden bir tutam.",
+     "Sokak lezzeti: simit, çay, peynir. Hepsi aynı anda.",
+     "Üç farklı tatlıdan birer kaşık. Karar vermek zorunda değilsin.",
+     "Hafif bir salata ve yanına çıtır bir şey; sen yine ikisini birden yersin.",
+     "Tost ya da dürüm; yürürken yenebilir olsun."],
+ il:["ilişkide konuşmaktan vazgeçmez, hem merak uyandırır hem eğlendirir.","sıkılmayı sevmez, bu yüzden hep yeni bir şey bulur.","iki farklı kişi gibi görünür ama ikisi de seni sever."]},
+
+{ /* Yengeç */
+ gen:["Bugün her şeyi saklayacaksın: anıları, bardakları, tatlı sırları. Güzel koleksiyon.",
+      "Biri ‘iyi misin?’ derse ‘evet’ diyeceksin, ama iyi değilsin. Yine de çay ikram edeceksin.",
+      "Ay bugün dolu: duygusal bir gün, bol sarılma ve sıcak bir içecek.",
+      "Eski bir şarkı seni anılara götürecek. Gözyaşı dökmeden dinlemek için bir plan yap."],
+ ask:["Sevgilin ‘ne yapıyorsun?’ yazarsa gerçekten merak ediyor, kontrol etmiyor. Rahat ol.",
+      "Birine sarılmak istiyorsun; sarıl. Söz veriyoruz, kimse itiraz etmeyecek.",
+      "Eski bir aşk anısı kapıyı çaldı. Aç, bak, ‘hayır, teşekkürler’ de."],
+ is:["İşte herkesin sırdaşısın. Biri sana dert yakacak, sen de bir bardak su ikram edeceksin.",
+     "Evden çalışıyorsan terlikle toplantı yapma ihtimalin yüksek. Kamerayı yukarıdan sakla.",
+     "Biriktirdiğin parayla küçük bir hediye al; ama kendine."],
+ tav:["Sevdiklerine bir mesaj at: ‘günaydın’ yeter.",
+      "Sıcak bir şey iç, yumuşak bir şey giy.",
+      "Kendine bir sınır koy: ‘bugün sadece bir kişinin derdini dinlerim’."],
+ uy:["Bir şeye ağlayabilirsin: film, reklam, hatta gün batımı. Mendil yanında olsun.",
+     "Dolabı açıp ‘giyecek yok’ diyeceksin. Evet, yine.",
+     "Eski mesajları okumak yasak. Okuyorsan bir saat içinde dön.",
+     "Birinin sözünü yanlış anlayıp üç gün düşünebilirsin. Sormak bedava.",
+     "Yemek yaparken herkesi doyurmak isteyeceksin. Kendi tabağını unutma.",
+     "Annenden gelen bir mesaj bütün gününü etkileyebilir. İyi anlamda, umarız."],
+ ye:["Annenin yaptığı gibi bir ev yemeği: sebze yemeği ve pilav.",
+     "Sıcak çorba; mercimek ya da domates, fark etmez.",
+     "Sütlü bir tatlı, üstünde tarçın.",
+     "Bir tabak dolma; sarması zor, yenmesi kolay.",
+     "Fırında sütlü makarna; çocukluk tadı."],
+ il:["ilişkide koruyucu ve şefkatlidir, kırılınca kabuğuna çekilir.","sevdiklerini yemekle ve ilgiyle sarar.","hiçbir şeyi unutmaz, özellikle ‘ben demiştim’leri."]},
+
+{ /* Aslan */
+ gen:["Birinin senin hakkında konuştuğunu duyacaksın. Merak etme, hepsi güzel şeyler.",
+      "Gösterişli bir şey yapmak için bahane arıyorsun. Mutfakta bile alkışlı yemek yapabilirsin.",
+      "Toplantıda sessiz kalmak sana zor gelecek. Üç kelime söyle, sahne senin olsun.",
+      "Selfie çekerken bir açı bulacaksın, bütün gün onu kullanacaksın."],
+ ask:["Sevgiline ‘sana hayranım’ demek ister misin? Evet, ama bir de ‘sen de çok güzelsin’ eklemeyi unutma.",
+      "Bir buluşmada herkes sana bakıyorsa suç sende değil, ışıkta.",
+      "Romantik bir sürpriz hazırlıyorsun, yalnız fotoğrafını çekmeyi unutma."],
+ is:["Bir ödül ya da takdir yolda. Teşekkür konuşmasını hazırla, kısa tut.",
+     "Ekip kurma işi sana yakışıyor. Herkesi bir araya getir ama sahneyi paylaş.",
+     "Bir şey için para harcarken ‘benim için en iyisi’ dersen cüzdan ağlar."],
+ tav:["Birine içten bir iltifat et; sana çok güzel dönecek.",
+      "Aynaya bakıp kendinle gurur duy, sonra işine bak.",
+      "Bir şeyi yarım yamalak yapma: ya parlat ya bırak."],
+ uy:["Saç tarağı bugün seni kurtarabilir. Gerekirse yanında taşı.",
+     "Biri senin yerine laf ederse bir saniye bekle; gülümse, sonra cevap ver.",
+     "Mağazada ‘vitrindekini alalım’ düşüncesine dikkat. Vitrin güzeldir, kasa acıdır.",
+     "Selam vermeden geçersen kimse seni affetmez, sen de kendini.",
+     "Alkış sesi yoksa güzel bir sessizlik de yeter. Dinlemeyi dene.",
+     "Güneş gözlüğü bugün kaçınılmaz bir aksesuar. Hava kapalı olsa bile."],
+ ye:["Güzel bir biftek ya da kebap; sofranın yıldızı.",
+     "Altın sarısı çıtır patates, yanında gösterişli bir sos.",
+     "Gösterişli bir pasta dilimi. Önce fotoğrafı, sonra kaşığı.",
+     "Izgara tavuk ve renkli salata. Tabak güzel görünmeli.",
+     "Buzlu, taze sıkılmış bir portakal suyu."],
+ il:["ilişkide cömert, sadık ve biraz gösterişlidir.","sevildiğini her gün hissetmek ister.","gurur yapar ama kalbi aslan yüreğidir."]},
+
+{ /* Başak */
+ gen:["Bugün kimse bir şeyi senin kadar iyi organize edemez. Kimse de bunu itiraf etmez.",
+      "Masandaki kalemleri hizalarken huzur bulacaksın. Bu hobiyi seviyoruz.",
+      "Mail yazarken noktaları virgülleri üç kez kontrol edeceksin. Hata bulunacak ama senin değil.",
+      "Bir şeyin eksik olduğunu hissedeceksin. Haklısın: bir bardak su eksik."],
+ ask:["Sevgilinin dağınıklığını bugün görmezden gel. Aşk bazen çorapları toplamaktır.",
+      "Duygularını tablo gibi anlatma, bir cümle yeter: ‘seni seviyorum’.",
+      "Biri sana ‘çok titizsin’ derse iltifat say. Biz öyle diyoruz."],
+ is:["Bütçeyi yap, çizelgeyi çıkar, tüm işi yoluna koy. Gün sonunda bir kutlama hak ettin.",
+     "Ekip arkadaşın hata yaparsa nazikçe düzelt. Kırmızı kalemi yarına sakla.",
+     "Verimlilik rekoru kırabilirsin. Kutlama için yarım saat mola ver."],
+ tav:["Bir şeyi mükemmel olmadan bırak. İlk adım zor ama özgürleştirici.",
+      "Sağlıklı bir şey ye ve kendini yargılama.",
+      "Çantanı düzenle ama sadece bir bölmeyi."],
+ uy:["Her şeyi etiketlemek isteyeceksin. Evet, kendini bile.",
+     "Bir şeyin yanlış yerde olduğunu fark edince rahatsız olacaksın. Yerine koy, rahatla.",
+     "Dağınık bir masa görünce ‘ben hallederim’ deme. Kimse sormadı.",
+     "Kendine mükemmel olmak zorunda olmadığını hatırlat. Üç kez.",
+     "Gereksiz detayları kaçırmazsın ama büyük resmi unutabilirsin. Geri çekilip bak.",
+     "Ofiste biri zımbayı yanlış yere koyarsa gün boyu aklında kalacak."],
+ ye:["Dengeli bir tabak: salata, sebze, biraz da protein. Güzel görünür, güzel hissettirir.",
+     "Yulaf lapası; düzenli ve sakin.",
+     "Zeytinyağlı sebze yemeği; hafif ve şık.",
+     "Izgara balık ve rokalı salata.",
+     "Meyve tabağı; dilimler eşit, tabak hizalı."],
+ il:["ilişkide düzenli ve ilgilidir, sevgisini küçük detaylarla gösterir.","eleştirel gibi görünür ama aslında yardım etmeye çalışır.","kusuru görür ama seni kusurunla sever."]},
+
+{ /* Terazi */
+ gen:["Estetik bir şey görünce kalbin yumuşayacak: çiçek, tablo, hatta güzel bir bardak.",
+      "İki seçenek arasında kalırsan ikisini de reddet, üçüncüyü bul. Radikal bir yöntem.",
+      "Dengeyi kurmak istiyorsun ama bugün tartı bozuk. Neyse, hisset.",
+      "Birine ‘evet’ dedin, sonra ‘hayır’ olacağını fark ettin. Sorun yok, bugün çözersin."],
+ ask:["Romantik bir akşam yemeği planı var gibi. Menüyü sen seçme, yoksa gece biter.",
+      "Bir flört seni ikilemde bırakabilir. Karar vermeden önce bir dilim pasta ye.",
+      "Sevgiline hediye alırken iki ürün arasında kalacaksın. İkisini de al, birini sen kullan."],
+ is:["Bir müzakere seni bekliyor. Zarafetin ve nazik bir gülümsemen bütün kapıları açar.",
+     "İş yerinde herkesle iyisin. Ama ‘hayır’ demeyi bugün bir kez dene.",
+     "Bütçe konusunda kararsız kalabilirsin. Bir liste yap, iki sütun, bir karar."],
+ tav:["Bir şeyi seçmeden önce on saniye düşün, sonra seç. Fazlası eziyet.",
+      "Güzel bir yerde otur, çay iç.",
+      "Güzel bir müzik aç, kalp ritmi ayarlansın."],
+ uy:["Ayna önünde saç şekline karar vermek yarım saat sürebilir. Planla.",
+     "Menüde ‘ikisi de güzel görünüyor’ diyeceksin. Garson da bunu biliyor.",
+     "Biri sana ‘hangisi?’ derse ‘ikisi de’ diye cevap verme. Sadece bugün.",
+     "Bir tartışmada her iki tarafa da hak vereceksin, ikisi de sana kızacak. Klasik.",
+     "Kasada ‘acaba almasam mı’ diyeceksin, sonra yine alacaksın.",
+     "Çok nazik olacağın için biri sana kahve ısmarlamak isteyebilir. Reddetme."],
+ ye:["Şık bir tabak: beyaz peynirli salata ve güzel bir tatlı.",
+     "Pastane usulü bir dilim pasta; çay da yanında olsun.",
+     "Hafif bir makarna, üstüne taze fesleğen.",
+     "Meyveli bir tatlı; güzel görünmesi şart.",
+     "Ortak bir tabak: paylaşmak güzel."],
+ il:["ilişkide adil ve romantiktir, tek sorunu karar vermektir.","çatışmadan kaçar, barışı sever.","sevgilisine güzel şeyler söyler ve bunu samimiyetle yapar."]},
+
+{ /* Akrep */
+ gen:["Biri sana bir şey saklayacak, sen de hemen anlayacaksın. Poker yüzünü koru.",
+      "İçindeki ses bugün yüksek. Dinle ama herkese söyleme.",
+      "Gizemini korumak için telefonu ekranı aşağı bakacak şekilde koy. Zaten öyle yapıyorsun.",
+      "Her şeyi derinlemesine analiz edeceksin; bir fincan kahvede bile bir hikâye bulacaksın."],
+ ask:["Tutku seni yönlendiriyor. Duygularını ifade etmek için güzel bir gün.",
+      "Bir bakışla ‘seni seviyorum’ demeye çalışıyorsun; yazarak da denemeyi unutma.",
+      "Sevgilin ‘neden sessizsin?’ derse ‘düşünüyorum’ de. Genelde doğru."],
+ is:["Bir projede arka planda çalışıp en önemli hamleyi yapacaksın. İş yeri kameraları seni görmeyebilir.",
+     "Para konusunda sezgilerin güçlü. Büyük kararlarda önce bir gece uyu.",
+     "Rekabetçi bir ortamda zekânla öne çıkacaksın. Kimseye ipucu verme."],
+ tav:["Bir şeyi affet; seni hafifletecek.",
+      "Kendine bir sır ayır: sadece sen bil.",
+      "Gece yarısı değil, akşam yat. Gizem sabahları da çalışır."],
+ uy:["Biri sana ‘ne düşünüyorsun?’ derse ‘hiçbir şey’ de. Ya da deme, bu bir sanat.",
+     "Birine ‘bakışımla anlarsın’ diyeceksin. Anlamayacak.",
+     "Kıskançlık nöbeti gelirse bir bardak su iç, ardından bir bardak daha.",
+     "Biri senden bir şey saklarsa ilk sen öğreneceksin. Soru sorma, bekle.",
+     "Karanlık tema her şeyin daha iyi olduğu anlamına gelmez. Bugün gözlerini dinlendir.",
+     "Dedektiflik oyununa fazla kapılma. Bu sefer cevap yanındaki bardaktaydı."],
+ ye:["Acı biber soslu bir şeyler; gizemli ve ateşli.",
+     "Bitter çikolata, yüzde yetmiş. Daha az değil, daha çok değil.",
+     "Etli bir yemek; yavaş yavaş pişmiş.",
+     "Mürver çayı ya da bitki çayı; sıcak ve gizemli.",
+     "Baharatlı bir mercimek köftesi."],
+ il:["ilişkide tutkulu, sadık ve biraz sorgulayıcıdır.","sevdiğine tüm kalbiyle bağlanır, ihaneti affetmez.","sessizliğiyle her şeyi anlatır, anlayana."]},
+
+{ /* Yay */
+ gen:["Bir yere gitmek isteyeceksin. Mutfak, balkon ya da başka bir şehir, fark etmez.",
+      "Fikir ve plan bol ama bütçe ve zaman sıkışık. Yine de en iyisini seç.",
+      "Şansın bugün hareketli. Bir adım at, güzel bir şey karşına çıkar.",
+      "Bütün dünya senin oyun alanın. Ama önce çorapları giy."],
+ ask:["Aşkta özgürlük ve macera çağırıyor. Bir yürüyüş teklif et, fikir güzel.",
+      "Flört ederken espri yap ama kimseyi kırma. İki dakika sonra anlat.",
+      "Biri sana ‘ne yapıyorsun?’ yazarsa ‘bir şey planlıyorum’ de. Doğru."],
+ is:["Bir seyahat ya da eğitim fırsatı doğuyor. Önce takvimine bak, sonra heyecanlan.",
+     "Toplantıda en heyecanlı kişi sensin. Coşku tamam, saate de dikkat.",
+     "Maddi konuda iyimsersin, harika. Yine de hesabı bir kez kontrol et."],
+ tav:["Bir hedefini yaz ve bir adım at.",
+      "Yeni bir şey öğren: bir kelime, bir yemek, bir yol.",
+      "Yürüyüş yap, ayakkabın hazır olsun."],
+ uy:["‘Bir saniyede’ olacak bir şey var; o bir saniye bir saat sürecek.",
+     "Haritada yanlış sokağa gireceksin ama güzel bir yer bulacaksın. Plan bozuldu, şans geldi.",
+     "Dürüstlüğün bugün seni zor durumda bırakabilir. İçindeki espriyi biraz yumuşat.",
+     "Telefon şarjı, powerbank, kulaklık: bugünün üç kutsal varlığı.",
+     "Bir kitabın ilk sayfasını okuyup bütün konuyu bildiğini zannedeceksin.",
+     "Valizi yarı yolda bırakma; bugün yarım bırakılmış bir şey olabilir."],
+ ye:["Dünya mutfağından bir şey dene: sushi, burrito, ne olursa.",
+     "Sokak yemeği; yürürken yenebilir olsun.",
+     "Baharatlı bir tavuk, yanında pilav; enerji lazım.",
+     "Egzotik bir meyve; belki mango.",
+     "Pizza dilimi, sıcak ve peynirli."],
+ il:["ilişkide özgürlüğüne düşkündür ama dürüst ve eğlencelidir.","sevgilisiyle macera yaşamayı sever.","sevgi doludur ama ‘bağlanmak’ kelimesinden biraz ürker."]},
+
+{ /* Oğlak */
+ gen:["Her şey zamanında bitecek, çünkü sen takvimini ezberledin. Kimse bunu bilmiyor ama sen biliyorsun.",
+      "Bir hedefe adım adım yaklaşıyorsun. Zirve görünüyor ama mola vermeyi unutma.",
+      "Başkaları aceleci, sen sabırlısın. Sonuç: senin zaferin.",
+      "Bugün küçük bir keyif hak ettin. Evet, kahve bile sayılır."],
+ ask:["Sevgin sessiz ama güçlü. Bugün bir kere sesli söylemeyi dene.",
+      "İş çıkışı sevgiline mesaj at. ‘Bugün nasıldı?’ iyi bir başlangıç.",
+      "Romantizm için ajandana bir saat ayır. Hatta bir not olarak yaz."],
+ is:["Bir terfi ya da takdir yolda. Şimdilik sessiz kal, işlerin bitmesini bekle.",
+     "Bütçeyi inceledin: her şey hazır. Yatırım fikri ciddi olabilir.",
+     "Meslektaşlarına ders vermemeye dikkat et. ‘Örnek ol’ yeterli."],
+ tav:["Bir saat dijital detoks yap. Kimse ölmez.",
+      "Kendine ödül belirle: bir iş bitti, bir çikolata.",
+      "Yeni bir şey öğren, sadece zevk için."],
+ uy:["Tatildesin ama zihninde hâlâ Excel açık. Çıkış yap.",
+     "‘Rahatla’ diyenlere gülümse ama rahatlama.",
+     "Takvimde bir boşluk görünce hemen doldurmak isteyeceksin. Bırak biraz boş kalsın.",
+     "Biri ‘az çalış’ derse ‘çalışmıyorum, planlıyorum’ de.",
+     "Kahve üç, çay iki, su bir: oranı dengele.",
+     "Çok ciddi görünüyorsun. Yirmi saniye gülümse, deney yap."],
+ ye:["Güçlü bir kahvaltı: peynir, yumurta, zeytin.",
+     "Haşlanmış sebze ve et; sade, güçlü.",
+     "Siyah kahve ve bir parça bitter çikolata.",
+     "Fırında tavuk ve patates; klasik ve güvenilir.",
+     "Mercimek çorbası, limon ve ekmek."],
+ il:["ilişkide sorumlu, güvenilir ve ciddidir, duygularını geç gösterir.","sevgisini planlarla ve emekle gösterir.","ilk bakışta soğuk görünür ama içi sıcak çikolata gibidir."]},
+
+{ /* Kova */
+ gen:["Farklı düşünmeyi seçtin. Herkes ‘ilginç’ diyecek, sen ‘teşekkürler’ de.",
+      "Bir arkadaşın sana yeni bir fikir önerecek; sen de ona üç yeni fikir önereceksin.",
+      "Teknoloji bugün seni sevecek: telefon, bilgisayar, hatta kahve makinesi.",
+      "Herkes bir şeyi bir şekilde yapıyor; sen onu tamamen başka bir şekilde yapacaksın."],
+ ask:["Aşkta zekâ çekicidir. Bir espri, bir fikir, bir tartışma ve işte ilgi.",
+      "Kalbini bugün sakla ama merakını saklama. Biri seni merak ediyor.",
+      "Sevgilinle bir yenilik dene: yeni bir mekân, yeni bir yemek, yeni bir şarkı."],
+ is:["Takım içinde fikir lideri sensin. Ama toplantı saatini unutma, fikir bekleyebilir.",
+     "Yeni bir araç, uygulama ya da sistem seni heyecanlandıracak. Önce deneme sürümüne bak.",
+     "Para konusunda yaratıcı çözümler var. Ama kimseye söyleme, ‘çok garip’ diyecekler."],
+ tav:["Bir farklılık yarat: farklı bir yoldan git.",
+      "Bir arkadaşını ara, yeni bir şey konuş.",
+      "Aklındaki bir fikri yaz; kaybolmasın."],
+ uy:["‘Herkes aynı’ diyeceksin. Evet, hepimiz biraz.",
+     "Bir fikir ürettin, sonra kimse anlamadı. Sorun fikirde değil, sunumda.",
+     "Wi-Fi gidince dünyan sarsılabilir. Bir kitap bulundur.",
+     "Kaçış planı yap: toplantıdan, kalabalıktan, mesajdan. Bu bir yetenek.",
+     "Biri ‘neden böyle düşünüyorsun?’ derse ‘çünkü ben’ de. Bu da bir cevap.",
+     "Her şeyi sorgulama isteği geliyor. Ders kitabına bile."],
+ ye:["Deneysel bir tarif: tatlı ile tuzlu birleşimi.",
+     "Smoothie ya da renkli bir kase; renkler sana yakışır.",
+     "Garip ama lezzetli bir sandviç. Kimse tarifini anlamayacak.",
+     "Sushi; çubuklarla savaşmak da bir macera.",
+     "Bir bardak buzlu limonata ve ilginç bir atıştırmalık."],
+ il:["ilişkide özgür ruhlu, arkadaş gibi ve biraz gizemlidir.","sevgisini sözlerle değil fikirlerle gösterir.","yakınlık ister ama sınırlarını korur."]},
+
+{ /* Balık */
+ gen:["Birinin kalbi kırıksa sen onu hissedeceksin. Ama kendi kalbini de unutma.",
+      "Rüya gibi bir gün: gerçekle hayal birbirine karışacak. Kahve iç, uyan.",
+      "Sanatsal ilham geliyor. Bir şey çiz, yaz ya da en azından hayal et.",
+      "Her şey biraz bulanık ama güzel bulanık."],
+ ask:["Romantizm duygu dolu; sevgiline ‘senin için şarkı buldum’ diyebilirsin.",
+      "Bir flört seni hayal dünyasına çekebilir. Biraz gerçekle dengele.",
+      "Aşk bir film gibi, ama bugün yönetmen de sen ol."],
+ is:["Yaratıcı bir proje bekliyor. İlk fikri yaz, gerisi gelir.",
+     "Para konusunda dalgın olabilirsin. Hesaplar yazılsın, dalgalar dursun.",
+     "İşte kendini biraz fazla sorumlu hissediyorsun. Herkesin yükünü taşıma."],
+ tav:["Bir müzik aç ve gözlerini kapat; beş dakika yeter.",
+      "Bir şey çiz: kötü olsa da olur.",
+      "Kendine gülümse; bugün özellikle."],
+ uy:["Birinin sorununu kendi sorunun gibi çözmeye başlayacaksın. Önce kendi kahveni al.",
+     "Bir şarkı dinlerken üç saat geçebilir. Zaman Neptün’den sorulur.",
+     "Gözün bir yere dalacak, sonra ‘ne konuşuyorduk?’ diyeceksin. Bu normal.",
+     "Biri sana ‘hayır’ derse içine dert etme. Dünya zaten dönmeye devam ediyor.",
+     "Kulaklıkla yürürken bir ağaca çarpabilirsin. Yukarı bak, bir de sağa.",
+     "Rüyanda gördüğün şeyi gerçek sanıp bir yere mesaj atabilirsin. Dikkat."],
+ ye:["Deniz ürünü: karides ya da balık, tuzlu ve hafif.",
+     "Çiçek çayı ve minik kurabiyeler.",
+     "Nar ekşili bir salata.",
+     "Sıcak süt ve bal; güzel rüyalar için.",
+     "Pasta dilimi; üstünde küçük bir çilek."],
+ il:["ilişkide şefkatli ve hayalperesttir, sevgiyi her yerde görür.","duygusal derinliğiyle seni sarar.","fedakârdır ama bazen kendini unutur."]}
+];
+Z.forEach(function(z,i){
+  var e=EX[i];
+  ["gen","ask","is","tav"].forEach(function(k){ z[k]=z[k].concat(e[k]); });
+  z.uy=e.uy; z.ye=e.ye; z.il=e.il;
+});
+
 var FISILTI=[
  "Bugünün gizli ipucu: Su iç. Yıldızlar da susuz kalınca huysuz olur.",
  "Merkür retrosu suçlusu aranıyor. Bugün başına gelen her şeyi ona yükleyebilirsin.",
@@ -273,9 +644,33 @@ var FISILTI=[
  "Yıldızlar sana göz kırpıyor ama bu kadar uzaktan kime kırptığı belli değil.",
  "Telefon şarjını yüzde yirmiye düşürme; kader bunu sevmez.",
  "Bugün bir şeye gülüp geçeceksin. Bu çok iyi bir iştir.",
- "Evren sana bir mesaj gönderdi. Okunmadı olarak görünüyor, kontrol et."
+ "Evren sana bir mesaj gönderdi. Okunmadı olarak görünüyor, kontrol et.",
+ "Bugün yürürken tam on iki adım at, sonra neden attığını düşün. Hiçbir şey olmaz ama eğlenirsin.",
+ "Bir kediyle göz göze gelirsen bugün şanslısın. Kedi bunu zaten biliyor.",
+ "Gökyüzüne bak. Bulut yoksa güneşe, varsa buluta teşekkür et.",
+ "Bugün söyleyeceğin ilk ‘tamam’ bir söz sayılacak. Dikkatli seç.",
+ "Ceplerini kontrol et. Bir şey bulursan bugünün ödülü o.",
+ "Bugün birine gülümsersen yıldızlar puan yazıyor. Sınır yok.",
+ "Kahvenin köpüğü güzel olursa günün güzel geçer. Bilimsel değil ama güzel.",
+ "Yastığın bugün seni özledi. Akşam ona geri dön.",
+ "Biri bugün sana ‘nasılsın?’ diyecek. Dürüst cevap ver, bir kere.",
+ "Ayakkabı bağcığın çözülürse evren dikkat istiyor. Bağla, ilerle.",
+ "Bugün bir şarkı aklına takılacak. Sorumlu biz değiliz.",
+ "Yıldızlar bugün tatil yapmak istiyor. Sen yine de çalış, onlar bakar."
 ];
-
+var GEZEGEN=[
+ "Merkür bugün iletişim kanallarında trafik çıkardı. Mesajlar geç gelebilir.",
+ "Venüs güzel görünmek için hazırlanıyor. Sen de bir ayna bul.",
+ "Mars bugün enerji dağıtıyor. Kimse almazsa sen al.",
+ "Jüpiter şans kutusunu açtı. Gözünü açık tut.",
+ "Satürn bugün ödev kontrol ediyor. Yapılmayanlar nota işlenir.",
+ "Uranüs sürprizler hazırlıyor. Hazırlıksız yakalanma.",
+ "Neptün bulanık bir gün istedi. Bugün netlik yok, güzel.",
+ "Plüton bir şeyi dönüştürüyor. Sen de bir şeyi değiştirmek isteyebilirsin.",
+ "Ay bugün yumuşak. Duygusal mesajlar için uygun.",
+ "Güneş bugün ışık dağıtıyor, bir kısmı da sana."
+];
+var MOOD=["😎 Dünya benim","🥱 Pijama modu","🤩 Parlıyorum","😅 İdare eder","🧘 Zen","🔥 Ateş gibi","🌈 Pozitif","🤔 Düşünceli","🥳 Parti modu","😴 Kahve bekliyor","🦸 Süper kahraman","🍀 Şanslı"];
 var CIN=[
  ["🐀","Fare","Zeki, hızlı ve bedava yemeğin kokusunu uzaktan alan."],
  ["🐂","Öküz","Çalışkan, inatçı; yavaş ama kararlı."],
@@ -291,9 +686,146 @@ var CIN=[
  ["🐖","Domuz","Cömert ve şen; sofranın neşesi."]
 ];
 
+/* ---------- UYUM VERİSİ (burçlar arası açıya göre) ---------- */
+var REL=[
+{lbl:"🪞 Aynı burç",base:72,
+ titles:["İkiz Ruhlar","Ayna Ayna Söyle","Çifte Kumpanya"],
+ intro:["{A} ve {B} aynı burçtan: birbirinizin kusurunu da güzelliğini de ezbere biliyorsunuz. Ayna karşısında konuşmak gibi.",
+        "İkiniz de aynı sinyali yayınlıyorsunuz. Bu ya mükemmel bir uyum ya da koca bir yarış.",
+        "Aynı burç demek aynı espriye aynı anda gülmek demek. Aynı hataya aynı anda düşmek de.",
+        "{A} ile {B} birbirini fazla iyi anlıyor. Bu yüzden saklanacak yer bulamıyorsunuz."],
+ friend:["Arkadaşlıkta birbirinizin gölgesisiniz; sırlar da esprilerle birlikte yürür.",
+         "Aynı kafaya sahip iki kişi: planlar hızlı, kavgalar daha da hızlı.",
+         "İkiniz bir araya gelince herkes ‘yine mi siz’ diyor."],
+ work:["İş birliğinde aynı hızda çalışırsınız ama aynı hatayı da birlikte yaparsınız.",
+       "Görev bölüşümünde şaşıracaksınız: ikiniz de aynı işi istiyorsunuz.",
+       "Aynı bakış açısı güzel ama bir tane ‘şeytanın avukatı’ lazım."],
+ fight:["Kavga sebebi: ‘sen benim gibisin’.",
+        "Kavga sebebi: ikiniz de haklısınız ve ikiniz de bunu biliyorsunuz.",
+        "Kavga sebebi: ‘neden bana benzemiyorsun?’ (aslında çok benziyorsun)."]},
+{lbl:"🏘️ Komşu burçlar",base:55,
+ titles:["Komşu Kapısı","Yan Yana Yıldızlar","Meraklı İkili"],
+ intro:["{A} ve {B} yan yana duran burçlar ama farklı dünyaların insanları. Birbirini merak etmek bile bir macera.",
+        "Komşu burçlar birbirini anlamaya çalışır, çoğunlukla da yanlış anlar. Yine de eğlenceli.",
+        "{A} bir yöne gider, {B} öbür yöne. Bir yerde kesişirsiniz, orası harika bir kafe.",
+        "Biriniz diğerinin açığını bulur. Bu hem sevgi hem şaka olabilir."],
+ friend:["Arkadaşlıkta birbirinizi şaşırtırsınız; bu da sıkılmamak demek.",
+         "Farklı ilgi alanları, ortak bir çay. Güzel bir denge.",
+         "Birbirinizi tamamlamazsınız ama eğlenceli bir kontrast oluşturursunuz."],
+ work:["İş birliği ilginç: biri fikir yağdırır, diğeri ‘bunu nasıl yaparız?’ diye sorar.",
+       "Yöntemleriniz farklı, hedefiniz aynı. Orta yolu bulursanız harika.",
+       "Bir proje için güzel zıtlık; ama toplantı saatlerine dikkat."],
+ fight:["Kavga sebebi: ‘sen beni anlamıyorsun’ ve ‘ben seni anlıyorum ama katılmıyorum’.",
+        "Kavga sebebi: farklı tempolar. Biriniz acelede, diğeriniz çay demliyor.",
+        "Kavga sebebi: sessizlik. Kim önce konuşacak?"]},
+{lbl:"🤝 Dost burçlar",base:80,
+ titles:["Yıldız Dostlar","Kafa Dengi","Uyumlu Çift"],
+ intro:["{A} ve {B} birbirine iyi gelen burçlar. Sanki aynı çalma listesini dinliyorsunuz.",
+        "Kolay anlaşan, birbirini destekleyen bir ikili: bu uyum yıldızlarda yazılı.",
+        "{A} hevesini getirir, {B} neşesini. Ortaya sıcak bir karışım çıkar.",
+        "Arada küçük sürtüşmeler olur ama sonunda hep ‘ya neyse’ deyip gülersiniz."],
+ friend:["En iyi arkadaş adayı: sohbet akar, kahve biter, vakit geçer.",
+         "Birbirinizin bahanesi, destekçisi, hatta alibisi olabilirsiniz.",
+         "Arkadaşlıkta ‘tamam’ demek yetiyor, çünkü zaten anlaşıyorsunuz."],
+ work:["İş birliğinde uyumlu ve hızlı. Toplantılar kısa, sonuçlar uzun sürer.",
+       "Birbirinizin gücünü tamamlarsınız: biri başlar, diğeri bitirir.",
+       "Takım olarak ödül kazanma ihtimaliniz yüksek. Pasta ısmarlayın."],
+ fight:["Kavga sebebi: ‘hangi film?’ Çözümü: ikisini de izlemek.",
+        "Kavga sebebi: yemek siparişi. Çözüm: yarı yarıya.",
+        "Kavga sebebi: bulaşığı kim yıkıyor?"]},
+{lbl:"⚡ Kıvılcım burçlar",base:52,
+ titles:["Kıvılcım Çifti","Tatlı Rekabet","Ateş ve Barut"],
+ intro:["{A} ve {B} arasında yıldızlar kıvılcım çıkarıyor. Bu ya ateşli bir aşk ya da yaygara.",
+        "Biriniz ‘evet’ derken diğeriniz ‘ama’ diyor. Bu gerilim doğru yönetilirse harika bir hikâye olur.",
+        "Zıtlaşmak sizin için bir spor. Kazanan yok ama izleyen çok.",
+        "İkiniz de bir şeyi öğreniyorsunuz: sabır. Bedeli yüksek ama kazancı büyük."],
+ friend:["Arkadaşlıkta birbirinizi zorlarsınız ama bu sayede gelişirsiniz.",
+         "Bir tartışma sonrası daha da yakın olursunuz. Garip ama doğru.",
+         "Birbirinizin açığını bilirsiniz ve nazikçe kullanırsınız."],
+ work:["İş birliğinde sürtüşme olacak ama sonuç güçlü. Biri fikri, diğeri kontrolü yapsın.",
+       "Yöntem tartışması bitmez; ama ortaya çıkan iş kusursuzdur.",
+       "Toplantılar hareketli, sonuçlar çarpıcı."],
+ fight:["Kavga sebebi: ‘ben önce söyledim’.",
+        "Kavga sebebi: sorumluluk paylaşımı.",
+        "Kavga sebebi: ton! Kelimeler doğru, ses yanlış."]},
+{lbl:"🔺 Üçgen uyum",base:90,
+ titles:["Kader Ortakları","Aynı Dalga Boyu","Yıldızların Seçtiği Çift"],
+ intro:["{A} ve {B} aynı dalga boyunda: bir bakışla anlaşırsınız, bir çayla barışırsınız.",
+        "Yıldızlar bu ikiliyi birbirine yazmış. Kimse itiraz etmesin.",
+        "Aynı elementten gelen iki ruh: enerji akıyor, kahkahalar yankılanıyor.",
+        "{A} ile {B}: kolay ve doğal. Bu kadar uyumlu olmak neredeyse haksızlık."],
+ friend:["Dünyanın en kolay arkadaşlığı: bahane yok, ‘ya hadi’ var.",
+         "Birbirinizin cümlesini bitirirsiniz. Ortasında bile.",
+         "Birlikte yapılan her şey eğlenceli: yürüyüş, alışveriş, hatta sıra beklemek."],
+ work:["İş ortaklığı için yıldızlar yeşil ışık yaktı. Şirket kurmayı düşünün.",
+       "Aynı hızda, aynı enerjiyle: proje erken biter, kutlama geç başlar.",
+       "Birbirinizi tamamlar, birlikte parlarsınız."],
+ fight:["Kavga sebebi: kavga çıkmıyor, canınız sıkılıyor.",
+        "Kavga sebebi: ‘ben çay yapayım’ diye yarışmak.",
+        "Kavga sebebi: nadir ama çözümü bir sarılma."]},
+{lbl:"🧩 Gizemli ikili",base:48,
+ titles:["Gizemli Düet","Sürpriz Paketi","Bilinmeyen Yol"],
+ intro:["{A} ve {B} birbirini hem çekiyor hem ‘bu ne?’ diye düşündürüyor. Gizem yüksek, merak daha yüksek.",
+        "Birbirinizin dilini öğrenmeniz zaman alır ama bu yolculuk eğlenceli.",
+        "Yıldızlar sizi karıştırdı: bir yerde çok yakınsınız, bir yerde çok uzak.",
+        "İlişkinizde sürprizler bol: ne olacağı belli değil, o yüzden hiç sıkılmazsınız."],
+ friend:["Arkadaşlıkta sürekli bir ‘vay be’ anı yaşarsınız.",
+         "Birbirinizin hayatından bir şey öğrenirsiniz. Genelde yemek tarifi.",
+         "Garip ama sevimli bir ikilisiniz."],
+ work:["İş birliğinde ayarlanması gereken çok şey var ama sonuç özgün olur.",
+       "İletişimi netleştirin, gerisi gelir.",
+       "Farklı bakış açıları işleri renklendirir."],
+ fight:["Kavga sebebi: ‘bunu neden böyle yaptın?’ ‘Bilmiyorum, öyle geldi.’",
+        "Kavga sebebi: iletişim kopukluğu. Çözümü: bir mesaj.",
+        "Kavga sebebi: yanlış anlama, ardından kahkaha."]},
+{lbl:"🧲 Zıt kutuplar",base:70,
+ titles:["Zıt Kutuplar","Mıknatıs Çifti","Tamamlayıcı Çatışma"],
+ intro:["{A} ve {B} zıt kutuplar: mıknatıs gibi çekiyor, çekiyor, sonra bir anda itiyor.",
+        "Birbirinizin eksik parçasısınız ama bazen o parça yanlış kutuya giriyor.",
+        "Zıt burçlar aşkta ya muhteşem ya felaket. Çoğunlukla ikisi birden.",
+        "{A} bir şeyi sever, {B} tam tersini. Tartışırsınız, tamamlarsınız, tekrar tartışırsınız."],
+ friend:["Arkadaşlıkta birbirinizi dengelersiniz: biri gaz, diğeri fren.",
+         "Zıtlığınız sohbeti zenginleştirir; sıkılmak yok.",
+         "Birbirinizi çok iyi tanırsınız, çünkü sürekli zıt fikirleri savunursunuz."],
+ work:["İş birliğinde biri vizyon, diğeri dikkat. Mükemmel ekip, yeter ki dinleyin.",
+       "Çatışma yaratıcı sonuç doğurur.",
+       "Toplantıda bile tartışırsınız ama müşteri bunu fark etmez."],
+ fight:["Kavga sebebi: ‘ben haklıyım, sen de haklısın ama ben daha haklıyım’.",
+        "Kavga sebebi: tempo. Biri yavaş, öbürü çok yavaş değil.",
+        "Kavga sebebi: ‘sen hiç bana benzemiyorsun’. Evet, tam da bu."]}
+];
+var ADV=[
+ ["Bu uyum nadir. Yıldızlara teşekkür edin, birbirinize de.",
+  "Birlikte olmak için bahane aramanıza gerek yok. Yıldızlar bahaneyi yazdı.",
+  "Bir kahve içip planlar yapın. Evet, hemen."],
+ ["Güzel bir uyum var. Biraz sabır, biraz espri: tamam.",
+  "Birbirinizin zamanına saygı gösterin; gerisi kendiliğinden gelir.",
+  "İletişimi açık tutun, ara sıra sürpriz yapın."],
+ ["Biraz emek gerekiyor ama sonuç tatlı. Çay demleyin, konuşun.",
+  "Farklılıklarınıza dert değil, tat gözüyle bakın.",
+  "Birbirinizin gününü sorun; fark yaratır."],
+ ["Yıldızlar ‘zor’ demiş ama ‘imkânsız’ dememiş. Sabır ve mizah işe yarar.",
+  "Bu bir test: geçerseniz sağlam olur. Birlikte güleceksiniz, söz.",
+  "Birbirinizi değiştirmeye çalışmayın. Sadece sevin, ya da en azından çay için."]
+];
+var ACT=[
+ "Birlikte uzun bir yürüyüşe çıkın ve rastgele bir kafede durun.",
+ "Bir film seçip tartışmadan izleyin (zor ama deneyin).",
+ "Aynı yemeği birlikte yapın ve kimin tarifi daha iyi yarışın.",
+ "Ortak bir çalma listesi hazırlayın; her biriniz beş şarkı eklesin.",
+ "Eski fotoğraflara bakıp en komik olanı seçin.",
+ "Bir kutu oyunu oynayın; kaybeden bulaşığı yıkar.",
+ "Bir gün hiç telefon kullanmadan geçirmeyi deneyin.",
+ "Birlikte bir sokak lezzeti turu yapın.",
+ "Bir akşam gökyüzüne bakıp yıldız sayın (ya da uçak).",
+ "Birbirinize küçük bir hediye alın, bütçe küçük olsun.",
+ "Mini bir piknik yapın, battaniyeyi unutmayın.",
+ "Bir fotoğraf çekip ‘bu bizdik’ diye saklayın."
+];
+
 /* ---------- MANTIK ---------- */
 var STARTS=[120,219,321,420,521,621,723,823,923,1023,1122,1222];
-var IDX=[10,11,0,1,2,3,4,5,6,7,8,9];   // başlangıç tarihine karşılık Z içindeki sıra
+var IDX=[10,11,0,1,2,3,4,5,6,7,8,9];
 function signIndex(m,d){
   var v=m*100+d, k=-1;
   for(var i=0;i<STARTS.length;i++){ if(v>=STARTS[i]) k=i; }
@@ -301,27 +833,29 @@ function signIndex(m,d){
 }
 function chineseIndex(y){ return (((y-4)%12)+12)%12; }
 function hash(str){var x=2166136261;for(var i=0;i<str.length;i++){x^=str.charCodeAt(i);x=Math.imul(x,16777619);}return x>>>0;}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
 var GUNLER=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 function two(n){return (n<10?'0':'')+n}
 function todayKey(){var t=new Date();return t.getFullYear()+'-'+two(t.getMonth()+1)+'-'+two(t.getDate());}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
-var cur=null;
-function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2000)}
+var mode='yorum', cur=null;
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2200)}
 
-function confetti(){
-  var em=['🎉','✨','⭐','💫','🌟','🎊','🔮'];
+function confetti(list){
   for(var i=0;i<26;i++){
     var s=document.createElement('span'); s.className='conf';
-    s.textContent=em[i%em.length]; s.style.left=(Math.random()*100)+'vw';
+    s.textContent=list[i%list.length]; s.style.left=(Math.random()*100)+'vw';
     s.style.animationDelay=(Math.random()*.6)+'s'; s.style.fontSize=(1.1+Math.random()*1.2)+'rem';
     document.body.appendChild(s); (function(x){setTimeout(function(){x.remove()},3200)})(s);
   }
 }
-
-function pick(arr,k){ return arr[(hash(cur.s.n+cur.today+k)+cur.off)%arr.length]; }
-function pct(k){ return 40+(hash(cur.s.n+cur.today+k)%60); }
-
+function sec(t,p,col){return '<div class="sec" style="--c:'+col+'"><h3>'+t+'</h3><p>'+esc(p)+'</p></div>';}
+function meters(title,list){
+  return '<div class="meters"><b>'+title+'</b>'+list.map(function(m){
+    return '<div class="m"><span>'+m[0]+'</span><div class="bar"><i data-w="'+m[1]+'" style="background:'+m[2]+'"></i></div><span>%'+m[1]+'</span></div>';
+  }).join('')+'</div>';
+}
 function bdayInfo(y,m,d){
   var now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   var next=new Date(now.getFullYear(),m-1,d);
@@ -330,65 +864,163 @@ function bdayInfo(y,m,d){
   var age=t0.getFullYear()-y-((t0.getMonth()+1<m||(t0.getMonth()+1===m&&t0.getDate()<d))?1:0);
   return {days:days,age:age};
 }
+function animateBars(){
+  setTimeout(function(){
+    var bars=$('result').querySelectorAll('.bar i');
+    for(var i=0;i<bars.length;i++) bars[i].style.width=bars[i].dataset.w+'%';
+    var ring=$('result').querySelector('.ring');
+    if(ring) ring.style.setProperty('--p',ring.dataset.p+'%');
+  },80);
+}
 
-function render(){
+/* ---------- YORUM MODU ---------- */
+function pickY(arr,k){ return arr[(hash(cur.s.n+cur.today+k)+cur.off)%arr.length]; }
+function pctY(k){ return 40+(hash(cur.s.n+cur.today+k)%60); }
+function renderYorum(){
   var s=cur.s, c1=s.g[0], c2=s.g[1];
   var b=bdayInfo(cur.y,cur.m,cur.d);
   var dow=GUNLER[new Date(cur.y,cur.m-1,cur.d).getDay()];
   var ch=CIN[chineseIndex(cur.y)];
   var bd=b.days===0?'Bugün doğum günün! Nice yaşlara! 🎉':'Doğum gününe <b>'+b.days+' gün</b> kaldı 🎂';
   var todayTxt=new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long'});
-  var meters=[['💘 Aşk',pct('ask'),'#ff3cac'],['💰 Para',pct('para'),'#f59e0b'],['⚡ Enerji',pct('enerji'),'#22c55e'],['🍀 Şans',pct('sans'),'#3b82f6']];
+  var hh=7+(hash(s.n+cur.today+'saat')%16), mm=["00","10","15","20","30","40","45","50"][hash(s.n+cur.today+'dk')%8];
+  var mood=MOOD[hash(s.n+cur.today+'mood')%MOOD.length];
+  var hello=cur.nA?'<div class="fact">👋 Merhaba <b>'+esc(cur.nA)+'</b>! İşte bugünün yıldız raporu.</div>':'';
+  var mt=[['💘 Aşk',pctY('ask'),'#ff3cac'],['💰 Para',pctY('para'),'#f59e0b'],['⚡ Enerji',pctY('enerji'),'#22c55e'],['🍀 Şans',pctY('sans'),'#3b82f6']];
 
   $('result').innerHTML=
    '<div class="top" style="background:linear-gradient(135deg,'+c1+','+c2+')">'
    +'<span class="sym">'+s.e+'️</span><h2>'+s.n+' Burcu</h2><div class="range">'+s.d+'</div>'
    +'<div class="chips"><span class="chip">🔥 '+s.el+'</span><span class="chip">🪐 '+s.gz+'</span><span class="chip">🎨 '+s.renk+'</span><span class="chip">🔢 '+s.sayi+'</span><span class="chip">📅 '+s.gun+'</span></div>'
    +'<div class="quote">“'+s.kar+'”</div></div>'
-   +'<div class="facts">'
+   +'<div class="facts">'+hello
    +'<div class="fact">🎈 <b>'+b.age+'</b> yaşındasın. '+bd+'</div>'
    +'<div class="fact">🗓️ <b>'+dow+'</b> günü doğmuşsun.</div>'
    +'<div class="fact">'+ch[0]+' Çin burcun: <b>'+ch[1]+'</b>. '+ch[2]+(cur.m<=2?' <small>(Ocak–Şubat doğumlular için yaklaşık)</small>':'')+'</div>'
-   +'<div class="fact">💞 Uyumlu burçlar: <b>'+s.uyum.join(', ')+'</b></div></div>'
-   +'<div class="meters"><b>📊 Bugünün yıldız karnesi</b> <small>('+todayTxt+')</small>'
-   +meters.map(function(m,i){return '<div class="m"><span>'+m[0]+'</span><div class="bar"><i data-w="'+m[1]+'" style="background:'+m[2]+'"></i></div><span>%'+m[1]+'</span></div>'}).join('')+'</div>'
-   +sec('🌟 Genel Yorum',pick(s.gen,'gen'),c1)
-   +sec('💘 Aşk Hayatı',pick(s.ask,'ask'),'#ff3cac')
-   +sec('💼 İş ve Para',pick(s.is,'is'),'#f59e0b')
-   +sec('🍀 Günün Tavsiyesi',pick(s.tav,'tav'),'#22c55e')
-   +sec('🔮 Evrenin Fısıltısı',pick(FISILTI,'fis'),'#8b5cf6')
-   +'<div class="btns"><button class="btn b1" id="again">🔄 Başka yorum</button><button class="btn b2" id="share">📤 Paylaş</button></div>';
-  $('result').hidden=false;
-  setTimeout(function(){var bars=$('result').querySelectorAll('.bar i');for(var i=0;i<bars.length;i++)bars[i].style.width=bars[i].dataset.w+'%';},80);
-  $('again').onclick=function(){cur.off++;render();toast('Yeni yorum geldi ✨');};
-  $('share').onclick=share;
+   +'<div class="fact">💞 Uyumlu burçlar: <b>'+s.uyum.join(', ')+'</b></div>'
+   +'<div class="fact">🎭 Bugünkü ruh halin: <b>'+mood+'</b><br>⏰ Şanslı saatin: <b>'+hh+':'+mm+'</b></div></div>'
+   +meters('📊 Bugünün yıldız karnesi <small>('+todayTxt+')</small>',mt)
+   +sec('🌟 Genel Yorum',pickY(s.gen,'gen'),c1)
+   +sec('💘 Aşk Hayatı',pickY(s.ask,'ask'),'#ff3cac')
+   +sec('💼 İş ve Para',pickY(s.is,'is'),'#f59e0b')
+   +sec('🍀 Günün Tavsiyesi',pickY(s.tav,'tav'),'#22c55e')
+   +sec('⚠️ Günün Komik Uyarısı',pickY(s.uy,'uy'),'#ef4444')
+   +sec('🍽️ Bugün Ne Yesem?',pickY(s.ye,'ye'),'#f97316')
+   +sec('🪐 Gezegen Haberleri',pickY(GEZEGEN,'gez'),'#6366f1')
+   +sec('🔮 Evrenin Fısıltısı',pickY(FISILTI,'fis'),'#8b5cf6')
+   +btns();
+  finishRender(['🎉','✨','⭐','💫','🌟','🎊','🔮']);
 }
-function sec(t,p,col){return '<div class="sec" style="--c:'+col+'"><h3>'+t+'</h3><p>'+esc(p)+'</p></div>';}
 
-function share(){
-  var s=cur.s;
-  var text=s.e+' '+s.n+' Burcu – Bugünün yorumu\n\n🌟 '+pick(s.gen,'gen')+'\n💘 '+pick(s.ask,'ask')+'\n💼 '+pick(s.is,'is')+'\n🍀 '+pick(s.tav,'tav');
-  if(navigator.share){ navigator.share({title:'Burç Yorumcusu',text:text}).catch(function(){}); }
-  else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('Panoya kopyalandı 📋')},function(){toast('Kopyalanamadı')}); }
-  else toast('Paylaşım desteklenmiyor');
+/* ---------- UYUM MODU ---------- */
+function relOf(i,j){var d=((j-i)%12+12)%12; return Math.min(d,12-d);}
+function pairKey(i,j){return Math.min(i,j)+'-'+Math.max(i,j);}
+function compat(i,j){
+  var dd=relOf(i,j), R=REL[dd], pk=pairKey(i,j);
+  var overall=clamp(R.base+(hash('o'+pk)%17)-8,35,99);
+  function sub(k,adj){return clamp(overall+(hash(k+pk)%21)-10+(adj||0),15,99);}
+  return {dd:dd,R:R,overall:overall,m:{
+    ask:sub('ask',dd===6?3:0),
+    arkadas:sub('ark',dd===2?6:dd===0?4:0),
+    is:sub('is',dd===3?4:0),
+    tutku:sub('tut',dd===6?8:dd===3?6:dd===4?3:0),
+    iletisim:sub('ilt',dd===4?6:dd===5?-6:dd===6?-4:0),
+    kavga:clamp(100-overall+(hash('kv'+pk)%21)-10,8,95)
+  }};
 }
+function bandOf(o){return o>=85?0:o>=70?1:o>=55?2:3;}
+function renderUyum(){
+  var ia=cur.ia, ib=cur.ib, ZA=Z[ia], ZB=Z[ib], c=compat(ia,ib), R=c.R;
+  var nA=cur.nA||ZA.n, nB=cur.nB||ZB.n, pk=pairKey(ia,ib);
+  function P(arr,k){return arr[(hash(pk+k)+cur.off)%arr.length];}
+  function T(s){return s.replace(/\{A\}/g,nA).replace(/\{B\}/g,nB);}
+  var askTxt=T(P(R.intro,'in'))+' '+nA+' '+P(ZA.il,'ilA')+' '+nB+' '+P(ZB.il,'ilB');
+  var title=P(R.titles,'ti');
+  var mt=[['💘 Aşk',c.m.ask,'#ff3cac'],['👯 Arkadaşlık',c.m.arkadas,'#8b5cf6'],['💼 İş birliği',c.m.is,'#f59e0b'],['🔥 Tutku',c.m.tutku,'#ef4444'],['💬 İletişim',c.m.iletisim,'#06b6d4'],['🥊 Kavga seviyesi',c.m.kavga,'#64748b']];
+  cur.shareTxt='💘 '+nA+' + '+nB+' burç uyumu: %'+c.overall+' ('+title+')\n'+ZA.e+' '+ZA.n+' & '+ZB.e+' '+ZB.n+'\n\n'+askTxt+'\n\n'+P(ADV[bandOf(c.overall)],'adv');
+  $('result').innerHTML=
+   '<div class="uy" style="background:linear-gradient(135deg,'+ZA.g[0]+','+ZB.g[1]+')">'
+   +'<div class="pair"><div class="pc"><span class="s2">'+ZA.e+'️</span><b>'+esc(nA)+'</b><small>'+ZA.n+' · '+ZA.el+'</small></div>'
+   +'<div class="heart">💞</div>'
+   +'<div class="pc"><span class="s2">'+ZB.e+'️</span><b>'+esc(nB)+'</b><small>'+ZB.n+' · '+ZB.el+'</small></div></div>'
+   +'<div class="ring" data-p="'+c.overall+'"><div><b>%'+c.overall+'</b><small>uyum</small></div></div>'
+   +'<h2>'+title+'</h2><div class="chips"><span class="chip">'+R.lbl+'</span></div></div>'
+   +meters('📊 Uyum karnesi',mt)
+   +sec('💞 Aşk Yorumu',askTxt,'#ff3cac')
+   +sec('👯 Arkadaş Olursanız',T(P(R.friend,'fr')),'#8b5cf6')
+   +sec('💼 Birlikte Çalışırsanız',T(P(R.work,'wk')),'#f59e0b')
+   +sec('🥊 Kavga Sebebi',T(P(R.fight,'fg')),'#64748b')
+   +sec('🎯 Birlikte Yapın',P(ACT,'act'),'#22c55e')
+   +sec('🔮 Yıldızların Son Sözü',P(ADV[bandOf(c.overall)],'adv'),'#ef4444')
+   +btns();
+  finishRender(['💘','💖','💞','💝','✨','💕','🌹']);
+}
+
+function btns(){
+  return '<div class="btns"><button class="btn b1" id="again" type="button">🔄 Başka yorum</button><button class="btn b2" id="share" type="button">📤 Paylaş</button></div><textarea id="shareBox" class="sharebox" readonly hidden></textarea>';
+}
+function finishRender(conf){
+  $('result').hidden=false;
+  animateBars();
+  $('again').onclick=function(){cur.off++;draw();toast('Yeni yorum geldi ✨');};
+  $('share').onclick=share;
+  confetti(conf);
+}
+function draw(){ if(cur.mode==='uyum') renderUyum(); else renderYorum(); }
+
+function shareText(){
+  if(cur.mode==='uyum') return cur.shareTxt;
+  var s=cur.s;
+  return s.e+' '+s.n+' Burcu – Bugünün yorumu\n\n🌟 '+pickY(s.gen,'gen')+'\n💘 '+pickY(s.ask,'ask')+'\n💼 '+pickY(s.is,'is')+'\n🍀 '+pickY(s.tav,'tav')+'\n⚠️ '+pickY(s.uy,'uy');
+}
+function share(){
+  var text=shareText(), url=location.href.split('#')[0];
+  function showBox(){var ta=$('shareBox');ta.hidden=false;ta.value=text+'\n'+url;ta.focus();ta.select();toast('Metni seçip kopyalayabilirsin');}
+  if(navigator.share){ navigator.share({title:'Burç Yorumcusu',text:text,url:url}).catch(function(){}); }
+  else if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text+'\n'+url).then(function(){toast('Panoya kopyalandı 📋')},showBox); }
+  else showBox();
+}
+
+function parse(v,empty){
+  if(!v) return {err:empty};
+  var p=v.split('-'), y=+p[0], m=+p[1], d=+p[2], dt=new Date(y,m-1,d);
+  if(!y||dt.getMonth()!==m-1||dt.getDate()!==d) return {err:'Bu tarih geçerli görünmüyor 🤔'};
+  if(y<1900) return {err:'1900 öncesi mi? Sen bir efsanesin! Lütfen daha yakın bir tarih seç 😄'};
+  if(dt>new Date()) return {err:'Gelecekten mi geldin? 😄 Geçmiş bir tarih seç.'};
+  return {y:y,m:m,d:d,idx:signIndex(m,d)};
+}
+function save(k,v){ try{localStorage.setItem(k,v)}catch(e){} }
 
 function run(){
-  var v=$('dob').value, msg=$('msg'); msg.textContent='';
-  if(!v){ msg.textContent='Önce doğum tarihini seç 🙂'; return; }
-  var p=v.split('-'), y=+p[0], m=+p[1], d=+p[2];
-  var dt=new Date(y,m-1,d);
-  if(!y||dt.getMonth()!==m-1||dt.getDate()!==d){ msg.textContent='Bu tarih geçerli görünmüyor 🤔'; return; }
-  if(y<1900){ msg.textContent='1900 öncesi mi? Sen bir efsanesin! Lütfen daha yakın bir tarih seç 😄'; return; }
-  if(dt>new Date()){ msg.textContent='Gelecekten mi geldin? 😄 Geçmiş bir tarih seç.'; return; }
-  try{ localStorage.setItem('burc-dob',v); }catch(e){}
-  var cr=$('crystal'); cr.classList.add('shake'); $('go').disabled=true; msg.textContent='Yıldızlara danışılıyor… 🔭';
+  var msg=$('msg'); msg.textContent='';
+  var a=parse($('dobA').value, mode==='uyum'?'Önce kendi doğum tarihini seç 🙂':'Önce doğum tarihini seç 🙂');
+  if(a.err){ msg.textContent=a.err; return; }
+  var b=null;
+  if(mode==='uyum'){
+    b=parse($('dobB').value,'Şimdi onun doğum tarihini seç 💘');
+    if(b.err){ msg.textContent=b.err; return; }
+  }
+  var nA=$('nameA').value.trim(), nB=$('nameB').value.trim();
+  save('burc-dob',$('dobA').value); save('burc-name',nA);
+  if(b){ save('burc-dob2',$('dobB').value); save('burc-name2',nB); }
+  var cr=$('crystal'); cr.classList.add('shake'); $('go').disabled=true;
+  msg.textContent=mode==='uyum'?'Yıldızlar uyumunuzu hesaplıyor… 💫':'Yıldızlara danışılıyor… 🔭';
   setTimeout(function(){
     cr.classList.remove('shake'); $('go').disabled=false; msg.textContent='';
-    cur={s:Z[signIndex(m,d)],y:y,m:m,d:d,today:todayKey(),off:0};
-    render(); confetti();
+    cur={mode:mode,off:0,today:todayKey(),nA:nA,nB:nB,s:Z[a.idx],y:a.y,m:a.m,d:a.d,ia:a.idx,ib:b?b.idx:0};
+    draw();
     $('result').scrollIntoView({behavior:'smooth',block:'start'});
   },1000);
+}
+
+function setMode(m){
+  mode=m; save('burc-mode',m);
+  $('tabYorum').classList.toggle('on',m==='yorum');
+  $('tabUyum').classList.toggle('on',m==='uyum');
+  $('partner').hidden=(m!=='uyum');
+  $('lblA').textContent=m==='uyum'?'🎂 Senin doğum tarihin':'🎂 Doğum tarihin';
+  $('go').textContent=m==='uyum'?'💘 Uyumu Hesapla':'✨ Burcumu Yorumla';
+  $('result').hidden=true; $('msg').textContent='';
 }
 
 /* ---------- BAŞLAT ---------- */
@@ -401,10 +1033,17 @@ function run(){
     box.appendChild(s);
   }
 })();
-$('dob').max=todayKey();
-try{ var last=localStorage.getItem('burc-dob'); if(last) $('dob').value=last; }catch(e){}
+$('dobA').max=todayKey(); $('dobB').max=todayKey();
+try{
+  var v1=localStorage.getItem('burc-dob'); if(v1) $('dobA').value=v1;
+  var v2=localStorage.getItem('burc-dob2'); if(v2) $('dobB').value=v2;
+  var n1=localStorage.getItem('burc-name'); if(n1) $('nameA').value=n1;
+  var n2=localStorage.getItem('burc-name2'); if(n2) $('nameB').value=n2;
+}catch(e){}
+$('tabYorum').onclick=function(){setMode('yorum')};
+$('tabUyum').onclick=function(){setMode('uyum')};
 $('go').onclick=run;
-$('dob').addEventListener('keydown',function(e){if(e.key==='Enter')run();});
+setMode('yorum');
 })();
 </script>
 </body>
