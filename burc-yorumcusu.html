@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7b2ff7">
+<title>Burç Yorumcusu</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,"Roboto",sans-serif;color:#2b1b3d;
+  background:linear-gradient(135deg,#ff6ec4,#7873f5,#4ade80,#fbbf24,#ff6ec4);background-size:400% 400%;
+  animation:bg 18s ease infinite;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow-x:hidden;
+}
+@keyframes bg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+button{font:inherit;border:0;cursor:pointer;color:inherit}
+.stars{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.stars span{position:absolute;opacity:.55;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(105vh) rotate(0)}100%{transform:translateY(-12vh) rotate(360deg)}}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:22px 16px 40px}
+.hero{text-align:center;color:#fff;text-shadow:0 2px 8px rgba(60,10,90,.35)}
+.crystal{font-size:4.2rem;display:inline-block;animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(60,10,90,.4))}
+.crystal.shake{animation:shake .5s linear infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+@keyframes shake{0%,100%{transform:rotate(0) scale(1.1)}25%{transform:rotate(-14deg) scale(1.2)}75%{transform:rotate(14deg) scale(1.2)}}
+h1{margin:4px 0 2px;font-size:2.1rem;letter-spacing:.3px}
+.hero p{margin:0 auto;max-width:320px;font-size:1rem;opacity:.95}
+.card{background:rgba(255,255,255,.92);border-radius:28px;padding:18px;box-shadow:0 10px 30px rgba(60,10,90,.25);margin-top:18px}
+label{display:block;font-weight:700;margin:0 4px 8px}
+input[type=date]{width:100%;font:inherit;font-size:1.15rem;padding:14px 16px;border-radius:18px;border:3px solid #e9d5ff;background:#fff;color:#2b1b3d;outline:none}
+input[type=date]:focus{border-color:#a855f7}
+.go{width:100%;margin-top:14px;padding:16px;border-radius:20px;font-size:1.15rem;font-weight:800;color:#fff;
+  background:linear-gradient(90deg,#ff3cac,#784ba0,#2b86c5);background-size:200% 100%;animation:slide 4s linear infinite;box-shadow:0 8px 18px rgba(120,75,160,.45)}
+.go:active{transform:scale(.97)}
+@keyframes slide{0%{background-position:0 0}100%{background-position:200% 0}}
+.msg{margin:10px 4px 0;font-weight:600;color:#c026d3;min-height:1.2em}
+#result{margin-top:18px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(.85) translateY(20px);opacity:0}100%{transform:none;opacity:1}}
+.top{border-radius:30px;padding:22px 18px;color:#fff;text-align:center;text-shadow:0 2px 6px rgba(0,0,0,.28);box-shadow:0 12px 30px rgba(60,10,90,.3)}
+.sym{font-size:5rem;line-height:1;display:block;animation:bob 3s ease-in-out infinite}
+.top h2{margin:6px 0 0;font-size:2.2rem}
+.top .range{font-weight:600;opacity:.95}
+.top .quote{margin:14px 4px 0;font-style:italic;background:rgba(255,255,255,.22);border-radius:18px;padding:10px 12px;font-size:.98rem;line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chip{background:rgba(255,255,255,.28);padding:6px 12px;border-radius:999px;font-size:.85rem;font-weight:700}
+.facts{display:grid;gap:8px;margin-top:14px}
+.fact{background:rgba(255,255,255,.92);border-radius:18px;padding:11px 14px;font-size:.95rem;line-height:1.4;box-shadow:0 4px 12px rgba(60,10,90,.15)}
+.sec{background:rgba(255,255,255,.94);border-radius:24px;padding:16px;margin-top:14px;box-shadow:0 6px 18px rgba(60,10,90,.18);border-left:8px solid var(--c)}
+.sec h3{margin:0 0 6px;font-size:1.05rem}
+.sec p{margin:0;line-height:1.5;font-size:1rem}
+.meters{background:rgba(255,255,255,.94);border-radius:24px;padding:14px 16px;margin-top:14px;box-shadow:0 6px 18px rgba(60,10,90,.18)}
+.m{display:grid;grid-template-columns:86px 1fr 42px;align-items:center;gap:8px;margin:8px 0;font-weight:700;font-size:.92rem}
+.bar{height:14px;border-radius:99px;background:#efe4fb;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;transition:width 1s cubic-bezier(.2,.9,.3,1)}
+.m span:last-child{text-align:right}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.btn{padding:14px;border-radius:18px;font-weight:800;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.2)}
+.btn:active{transform:scale(.96)}
+.b1{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.b2{background:linear-gradient(135deg,#06b6d4,#3b82f6)}
+.foot{margin-top:22px;text-align:center;color:#fff;font-size:.8rem;text-shadow:0 1px 4px rgba(60,10,90,.5);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:#2b1b3d;color:#fff;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:50;font-size:.9rem}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.conf{position:fixed;top:-30px;font-size:1.6rem;z-index:40;pointer-events:none;animation:fall 2.2s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<main class="wrap">
+  <header class="hero">
+    <div class="crystal" id="crystal">🔮</div>
+    <h1>Burç Yorumcusu</h1>
+    <p>Doğum tarihini gir, yıldızlar konuşsun. Biraz da kahkaha atalım!</p>
+  </header>
+
+  <section class="card">
+    <label for="dob">🎂 Doğum tarihin</label>
+    <input type="date" id="dob" min="1900-01-01">
+    <button class="go" id="go">✨ Burcumu Yorumla</button>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <section id="result" hidden></section>
+
+  <div class="foot">Bu yorumlar tamamen eğlence içindir. 🌙<br>Yıldızlar kira ödemez, kararlarınızı siz verin!</div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+
+/* ---------- VERİ ---------- */
+var Z=[
+{n:"Koç",e:"♈",d:"21 Mart – 19 Nisan",el:"Ateş",gz:"Mars",renk:"Kırmızı",sayi:9,gun:"Salı",g:["#ff512f","#dd2476"],uyum:["Aslan","Yay","İkizler"],
+ kar:"Sabrı ‘yarın başlarım’ diye bir şeye çevirmiş, her şeyi dün isteyen insan.",
+ gen:["Enerjin o kadar yüksek ki asansörü beklemek bile sana spor gibi gelecek. Merdiveni seç, dünyayı kurtar.",
+      "Mars bugün sana gaz veriyor ama fren vermeyi unutmuş. Hızlı git, yalnız kırmızı ışıkta durmayı bir dene.",
+      "Bugün her şeyde ilk olmak isteyeceksin: ilk gelen, ilk bitiren, ilk yemek yiyen. Pastada ilk dilimi kapma yarışına girme.",
+      "Aklına bir fikir geldi ve hemen harekete geçmek istiyorsun. Evren diyor ki: önce kahve, sonra karar."],
+ ask:["‘Ben aradım, o aramadı’ diye üzülme. Telefon çalmazsa sen çal, ama gece ikide değil.",
+      "Flört enerjin tavanda. Dikkat: iltifat ile fırça arasındaki çizgi bugün kıl kadar ince.",
+      "Sevgiline sürpriz yapmak için can atıyorsun. Fikir harika, tek sorun sürprizi beş dakika sonra kendin söylemen."],
+ is:["Toplantıda ‘tek sözüm var’ diyeceksin ve kırk dakika konuşacaksın. Yine de haklı çıkma ihtimalin yüksek.",
+     "Maaş sana göz kırpıyor, sen ona alışveriş sepetiyle karşılık veriyorsun. Sepeti bir gün beklet.",
+     "Patronla konuşmak için güzel bir gün, yeter ki ‘zam’ kelimesini bağırarak söylemeyesin."],
+ tav:["Derin bir nefes al, ona kadar say, sonra yine hemen yap.","Bugün bir şeye ‘hayır’ de, kendini bile şaşırt.","Bir tatlı ye, hak ettin. Neyi hak ettiğini sonra düşünürsün."]},
+
+{n:"Boğa",e:"♉",d:"20 Nisan – 20 Mayıs",el:"Toprak",gz:"Venüs",renk:"Yeşil",sayi:6,gun:"Cuma",g:["#0f9b8e","#56ab2f"],uyum:["Başak","Oğlak","Yengeç"],
+ kar:"Yemek, konfor ve battaniye üçgeninde yaşar; yerinden kıpırdatmak için en az bir kek gerekir.",
+ gen:["Bugün dünyayı kurtarmak yerine kanepeyi kurtarmak istiyorsun. Evren bu planı onaylıyor.",
+      "İnatçılık bugün süper gücün. Biri fikrini değiştirmeye çalışırsa kibarca gülümse ve hiç değiştirme.",
+      "Venüs sana lezzetli bir sürpriz hazırlıyor. Karnını doyuracak bir şey olduğuna neredeyse eminim.",
+      "Bugün acele eden herkes seni sinirlendirecek. Sen yine de en sakin kişi gibi görün, içinden istediğini söyle."],
+ ask:["Aşkta acele yok, her şey güzel bir yemek gibi yavaş yavaş pişecek. Ocağı kısık tut.",
+      "Sevdiğine küçük bir hediye al. Çikolata evrensel bir dil, hata payı çok düşük.",
+      "Kıskançlık sinyali veriyorsun. Sevgilin telefona bakınca ‘kim o?’ demeden önce üç dakika bekle."],
+ is:["İşte sakin ama kararlı ol. Kimse seni acele ettiremez, öğle yemeği dahil.",
+     "Sepetteki o ‘çok lazım’ ürün yarın da lazım olmayacak. Cüzdanın sana teşekkür ediyor.",
+     "Bir iş teklifi gelebilir. Önce yemek ye, sonra imza at; aç karnına kararlar tatlı olmuyor."],
+ tav:["Güzel bir sofra kur, telefonu bir kenara bırak.","Uzun bir duş al. Venüs onaylıyor.","Bugün bir şeyden vazgeçmeyeceksen sorun değil, zaten vazgeçmeyi sevmezsin."]},
+
+{n:"İkizler",e:"♊",d:"21 Mayıs – 20 Haziran",el:"Hava",gz:"Merkür",renk:"Sarı",sayi:5,gun:"Çarşamba",g:["#f7b733","#fc4a1a"],uyum:["Terazi","Kova","Koç"],
+ kar:"Aynı anda on sekme açık, üç sohbet açık, bir de kafasında dört ihtimal açık.",
+ gen:["Kafanda aynı anda yirmi fikir dönüyor. İyi haber: hepsi parlak. Kötü haber: hiçbirini bitirmeyeceksin.",
+      "Merkür sana geveze bir gün hediye ediyor. Konuşurken çaylar soğuyacak, sır tutmayı da unutma.",
+      "Bugün iki kişi gibi hissedebilirsin: biri zıplıyor, diğeri yatmak istiyor. İkisini de dinle, sonra çay iç.",
+      "Bir konuyu açıp üç kez değiştireceksin ve herkes seni yine de dinleyecek. Bu bir yetenek."],
+ ask:["Mesajlaşmada yıldız sen olacaksın. Dikkat: yanlış kişiye göndermek de yıldızlı bir hata.",
+      "Sohbetin o kadar güzel gidecek ki karşındaki ‘bu kadar güzel nasıl konuşuyor?’ diye düşünecek. Cevap: Merkür.",
+      "Biri sana ‘konuşmamız lazım’ derse kalp krizi geçirme, muhtemelen sadece konuşacak."],
+ is:["Toplantıda herkes seni dinleyecek çünkü konuşmayı bırakmıyorsun. Ama bu sefer fikirler gerçekten iyi.",
+     "Maddi konularda hesap makinesine bir şans ver, parmak hesabı bugün seni yanıltabilir.",
+     "Aynı anda beş iş yapmaya çalışma. Dördü bile yeterli, gerçekten."],
+ tav:["Yarım kalan işlerden birini bitir, çok iyi hissedeceksin.","Bugün biriyle yüz yüze konuş, mesajla değil. Mucize olabilir.","Telefonun şarjı bitmeden bir plan yap."]},
+
+{n:"Yengeç",e:"♋",d:"21 Haziran – 22 Temmuz",el:"Su",gz:"Ay",renk:"Gümüş",sayi:2,gun:"Pazartesi",g:["#4e54c8","#8f94fb"],uyum:["Akrep","Balık","Boğa"],
+ kar:"Dışı kabuk, içi pamuk helva. Hem anne hem çocuk, hem sığınak hem melodram.",
+ gen:["Duygusal dalgalar yüksek. Reklamdaki bir kedi bile seni ağlatabilir; şaşırma.",
+      "Ay sana nostalji yolluyor. Eski fotoğraflara bakarsan akşamı kaybedersin, ama güzel kaybedersin.",
+      "Kabuğuna çekilmek isteyebilirsin. Sorun yok, sadece içeri bir çay ve battaniye götür.",
+      "Bugün herkesin derdini dinleyeceksin. Dikkat: terapistlik ücreti almıyorsun."],
+ ask:["Sevgiline ‘hiçbir sorun yok’ dediğinde aslında sorun olduğunu bütün evren biliyor. Konuş artık!",
+      "Romantizm modun açık. Mum ışığı, yemek, şarkı… komşu duyarsa sorun değil, aşk bu.",
+      "Eski sevgili aklına gelebilir. Mesaj atma, hatta telefonu başka odaya koy."],
+ is:["Biriktirme dürtün parlıyor. Tek sorun: yemek siparişi o kumbarayı sallıyor.",
+     "Bir meslektaşın seni takdir edecek. Kabuğundan çık ve teşekkür et.",
+     "İş yerinde herkes sana dert yanacak. Yarım saat dinle, kalanını yarına bırak."],
+ tav:["Kendine şefkat göster, bir de sıcak bir çorba iç.","Bugün ‘hayır’ demek zor olabilir. Ama denemek bedava.","Aileni ara. Anneler genelde ‘aç mısın?’ ile açılır."]},
+
+{n:"Aslan",e:"♌",d:"23 Temmuz – 22 Ağustos",el:"Ateş",gz:"Güneş",renk:"Altın",sayi:1,gun:"Pazar",g:["#f12711","#f5af19"],uyum:["Koç","Yay","Terazi"],
+ kar:"Her odaya girişi kırmızı halı gibi yaşar; alkış yoksa kendisi başlatır.",
+ gen:["Bugün sahne senin. Kimse sormadı ama yine de en iyi görünen sen olacaksın.",
+      "Güneş seni parlatıyor, çevrendekiler gözlük takmak zorunda kalabilir. Biraz da onlara ışık bırak.",
+      "Bugün herkes seni fark edecek, sen de herkesin fark ettiğini fark edeceksin. Kusursuz bir döngü.",
+      "Saçın bugün ayrı bir karakter gibi davranacak. Ona saygı göster."],
+ ask:["Aşkta ilgi bekliyorsun. Sevgiline ‘beni beğenmedin’ demeden önce saçının yeni halini hatırlat.",
+      "Biri seni çok beğenebilir. Evet, yine. Evet, hak ettin.",
+      "Sevgi yemek yerken bile hissedilir; telefonu bırak, yüzüne bak."],
+ is:["Ekip seni dinliyor ama kahve molasını yine sen ısmarlayacaksın. Liderlik pahalı iş.",
+     "Cömertlik modu açık. Kartın bir ‘Aslan dostu’ olmadığını hatırla.",
+     "Bir proje sana alkış getirecek. Alkışı paylaşmak da bir sanat; deneyebilirsin."],
+ tav:["Aynada kendine gülümse, sonra başkalarına da.","Bir iltifat al ve ‘biliyorum’ deme. Sadece ‘teşekkürler’.","Gösterişli bir şey giy, gerekçe gerekmiyor."]},
+
+{n:"Başak",e:"♍",d:"23 Ağustos – 22 Eylül",el:"Toprak",gz:"Merkür",renk:"Zeytin yeşili",sayi:7,gun:"Perşembe",g:["#3a7d44","#7ac74f"],uyum:["Boğa","Oğlak","Akrep"],
+ kar:"Kalemlerini renk sırasına dizmiş, çay kaşığını hizalamış, yine de ‘eksik bir şey var’ diyen insan.",
+ gen:["Bugün her şey planlı gidecek, tabii sen planı değiştirene kadar. Mükemmeliyetçilik modu açık.",
+      "Etrafındaki dağınıklık gözünü rahatsız edecek. Dünyayı düzenlemeye başlamadan önce kendi masanı topla.",
+      "Detayları yakalamakta bugün ustasın. Biri ‘ne eksik?’ derse listeyi çıkarırsın.",
+      "Yerinden oynamış bir resim çerçevesi bütün gününü etkileyebilir. Düzelt, rahatla."],
+ ask:["Küçük kusurlara takılma. Sevgilinin çorabı ters olabilir, dünya yıkılmaz.",
+      "Birine ilgi duyuyorsan ‘artılar eksiler’ tablosu yapma, kalbini dinle. Excel bu sefer yardımcı olmaz.",
+      "Çiçek almak yerine saksı al; en azından uzun yaşar. Romantik ama pratik."],
+ is:["Tablo, liste, sunum… hepsi kusursuz olacak. Takdir seni bulacak.",
+     "Hesaplı davran ama bir kere kendine hediye al; buna ‘gider kalemi’ de diyebilirsin.",
+     "Bir hatayı ilk sen bulacaksın. Düzeltmeden önce nazik ol, herkes senin kadar titiz değil."],
+ tav:["Bir şeyi mükemmel olmadan teslim et. Evet, mümkün.","Planlamadan yürüyüşe çık.","Bir mola ver; o liste yarın da orada olacak."]},
+
+{n:"Terazi",e:"♎",d:"23 Eylül – 22 Ekim",el:"Hava",gz:"Venüs",renk:"Pembe",sayi:6,gun:"Cuma",g:["#f857a6","#ff5858"],uyum:["İkizler","Kova","Aslan"],
+ kar:"Menüye yirmi dakika bakar, ‘sen ne alıyorsun?’ der, siparişi verince de yarım saat pişman olur.",
+ gen:["Bir karar vermen gerekiyor ve hâlâ ‘ikisi de güzel’ diyorsun. Yazı tura at, sonra tersini yap.",
+      "Venüs sana zarafet hediye ediyor. Sadece bir şeyi seçmek zor olabilir; neyse ki çay iki bardak.",
+      "Barış elçisi modundasın. İki kişi tartışırsa araya gireceksin, sonunda ikisi de sana kızacak.",
+      "Bugün ayakkabıyı seçmek bile bir felsefe dersi gibi olacak. Sakin ol, ikisi de yakışıyor."],
+ ask:["Romantizm tavanda. Karşındaki ‘ne yemek istersin?’ diye sorarsa ‘sen karar ver’ deme, rica ederim.",
+      "Birine ‘evet’ demek istiyorsun ama bir de ‘belki’ var. Bugün ‘belki’ yarışı kaybediyor.",
+      "Bir flört seni çok güzel hissettirecek. Güzelsin zaten, ama bugün daha da."],
+ is:["Toplantıda herkese hak veriyorsun. Sonunda kimse karar vermiyor ama herkes mutlu.",
+     "İki ürün arasında kaldın: ikisini de al, birini iade et. Klasik Terazi taktiği.",
+     "Bir tartışmayı sadece bir gülümsemeyle çözeceksin. Diplomasi diploması verilmeli."],
+ tav:["Bir kararı bugün ver, ertelemeden. Küçük olsun, önemli değil.","Yarım saat sessizlik al, dengeni bul.","Güzel bir müzik aç, dünya biraz düzelsin."]},
+
+{n:"Akrep",e:"♏",d:"23 Ekim – 21 Kasım",el:"Su",gz:"Plüton",renk:"Bordo",sayi:8,gun:"Salı",g:["#8e0e00","#3a1c71"],uyum:["Yengeç","Balık","Başak"],
+ kar:"Bakışıyla seni röntgene çeker, sırrı bildiği halde ‘ne sırrı?’ der.",
+ gen:["Bugün gizemli havandasın. Biri ‘ne düşünüyorsun?’ derse ‘hiçbir şey’ diyeceksin, aslında yirmi şey.",
+      "Plüton sana sezgi gücü veriyor. Biri yalan söylerse anlarsın, bu sefer yüzüne vurma.",
+      "Yoğun bir gün. Her şeyi ya yüzde yüz yaşayacaksın ya hiç. Orta yol bugün tatilde.",
+      "Biri sana ‘neden bana öyle bakıyorsun?’ diyecek. Cevap: Bakmıyordum, analiz ediyordum."],
+ ask:["Tutku yüksek. Mesaja bir saat sonra dönmek bir strateji olabilir, yeter ki dönmeyi unutma.",
+      "Bir sır öğrenebilirsin. Merak seni yiyecek ama sakin kal; bazen bilmemek de lüks.",
+      "Kıskançlık sinyalleri çalıyor. Telefon karıştırmak yerine bir derin nefes al, hatta iki."],
+ is:["Stratejik hamlelerin tutacak. Planlarını kimseye söyleme, çay içerken bile.",
+     "Sezgilerin güçlü. Yine de bir yatırım yapacaksan kendi araştırmanı yap.",
+     "Ofis dedikodusu sana ulaşacak, sen de ‘bilmiyordum’ der gibi yapacaksın."],
+ tav:["Bir sırrı paylaş, hafifleyeceksin. Küçük bir tanesini.","Bugün biraz gülümse, kimse seni kötü karakter sanmasın.","Su iç, derin düşün ama çok derine dalma."]},
+
+{n:"Yay",e:"♐",d:"22 Kasım – 21 Aralık",el:"Ateş",gz:"Jüpiter",renk:"Mor",sayi:3,gun:"Perşembe",g:["#8e2de2","#4a00e0"],uyum:["Koç","Aslan","Kova"],
+ kar:"Valizi hep yarı hazırdır; yeni bir şehir ya da fikir duyunca ‘gidelim’ der.",
+ gen:["Macera çağırıyor. Hesap makinesi ‘bütçe yok’ diyor, sen ‘bilet var’ diyorsun.",
+      "Jüpiter şans yolluyor. Büyük risk alma; çay içerken bile şans yanında.",
+      "Dürüstlüğün bugün biraz keskin olabilir. ‘Ben samimiyim’ diyerek herkesin kalbini kırma.",
+      "Bir yere gitme isteği tutacak. Mutfağa gitmek de sayılır, ilk adım."],
+ ask:["Özgürlük istiyorsun, sevgilin de seni istiyor. ‘Bağlanmak’ kelimesini yavaş söyle.",
+      "Ortak bir seyahat planı flörtü başlatabilir. Tek kişilik biletle iki kişilik hayal.",
+      "Esprili modundasın, karşındaki gülmekten karnını tutacak. Bu aşk için iyi bir işaret."],
+ is:["Yeni fikirlerin alkış alacak. Ama detay toplantısına katılmayı unutma.",
+     "Önce ‘bu gerçekten gerekli mi?’ diye sor, sonra yine al. Bir sıra var.",
+     "Bir eğitim ya da seyahat teklifi gelebilir. Evet de, sonra hazırlan."],
+ tav:["Bir yere git; yakın olsun ama git.","Bir harita aç, bir şarkı söyle, bir hayal kur.","Konuşmadan önce bir saniye dur. Hepsi bu."]},
+
+{n:"Oğlak",e:"♑",d:"22 Aralık – 19 Ocak",el:"Toprak",gz:"Satürn",renk:"Kahverengi",sayi:4,gun:"Cumartesi",g:["#0f2027","#2c5364"],uyum:["Boğa","Başak","Akrep"],
+ kar:"Pazar günü bile ‘haftaya hazırlık’ yapar; tatilde bile Excel açıktır.",
+ gen:["Çalışma modun tavan. Evren diyor ki: kahve molası da bir iştir.",
+      "Satürn sana disiplin veriyor. Herkes seni örnek alacak, sen de en az bir kere dinlen.",
+      "Hedefin net, yolun uzun. Birkaç adım at, sonra mola ver; maraton böyle kazanılır.",
+      "Bugün ‘rahatlamak’ kelimesini bir kez duyup ‘ne demek?’ diyebilirsin. Öğren."],
+ ask:["İlk buluşmada ‘beş yıllık planın ne?’ diye sorma, ama içinden sor.",
+      "Sevgiline sevgini göstermek için çalışma saatini kısalt. Evet, on dakika da sayılır.",
+      "Romantizm sende planlı ve programlı. Bu sefer plansız bir sürpriz yap."],
+ is:["Rapor, sunum, toplantı… hepsi mükemmel olacak. Takdir geliyor.",
+     "Yatırım için güzel bir gün. Ama önce bir kahve, sonra bir sayfa Excel.",
+     "Terfi kokusu var. Üstüne bir şey söyleme, çay ikram et."],
+ tav:["İşten çık, bir şeyi sadece zevk için yap.","Bir şeyi ertele, dünya dönmeye devam eder.","Gülümse; çalışkanlar da gülebilir."]},
+
+{n:"Kova",e:"♒",d:"20 Ocak – 18 Şubat",el:"Hava",gz:"Uranüs",renk:"Turkuaz",sayi:7,gun:"Çarşamba",g:["#00c6ff","#0072ff"],uyum:["İkizler","Terazi","Yay"],
+ kar:"Dünyayı değiştirecek fikirleri var; yeter ki önce yarım kalan on projesini bitirsin.",
+ gen:["Fikirlerin uçuyor. Sorun: çevrendekiler seni anlamak için çeviri uygulaması arıyor.",
+      "Uranüs sana tuhaflık getiriyor. Garip bir şey olursa ‘normal’ de, çünkü sen zaten normal değilsin.",
+      "Biri seni çok sevecek, biri de ‘ne diyor bu?’ diyecek. İkisi de haklı.",
+      "Bugün bir şeyi tamamen yeniden icat etmek isteyeceksin, hatta çay demlemeyi bile."],
+ ask:["Bağımsızlık önemli. Ama sevgiline ‘aramaz mısın?’ diye sorma; o zaten düşünüyor.",
+      "Bir arkadaşlık aşka dönüşebilir. Evet, klasik senaryo ama bu sefer başka bir film.",
+      "Flörtte orijinallik puan kazandırır. Garip bir espri patlat, işe yarayabilir."],
+ is:["Yenilikçi fikir sunacaksın. Patron ‘ilginç’ diyecek, bunun iltifat mı olduğunu bilemeyeceksin.",
+     "Teknolojik bir şey alma isteği var. Cüzdanın ‘lütfen’ diyor.",
+     "Takım çalışmasında herkes sana güveniyor. Kimseye söylemeden bir yere gitme."],
+ tav:["Bir fikrini yaz; bir gün ‘mucit’ olabilirsin.","Yeni biriyle konuş, belki yeni bir hikâye başlar.","Sıra dışı bir şey dene ama kimseyi korkutma."]},
+
+{n:"Balık",e:"♓",d:"19 Şubat – 20 Mart",el:"Su",gz:"Neptün",renk:"Deniz mavisi",sayi:12,gun:"Perşembe",g:["#43cea2","#185a9d"],uyum:["Yengeç","Akrep","Oğlak"],
+ kar:"Gerçekle hayal arasında yüzer; bazen kaybolur ama hep güzel bir şarkıyla geri döner.",
+ gen:["Hayal gücün uçuyor. Toplantıda başın bulutlarda olacak ama fikirler harika.",
+      "Neptün sana sanat ve sezgi gönderiyor. Çizebilir, yazabilir, ağlayabilirsin; üçü de sağlıklı.",
+      "Çevrendekilerin enerjisini hissediyorsun. Bir yere girip ‘burası neden gergin?’ diyeceksin, sonra sen de gerileceksin.",
+      "Bugün bir şarkı seni üç gün öncesine götürebilir. Kemerini bağla."],
+ ask:["Romantizm dorukta. Sevgilinin ‘ne düşünüyorsun?’ sorusuna ‘seni’ diyebilirsin, çünkü doğru.",
+      "Eski bir şarkı eski bir aşkı hatırlatabilir. Şarkıyı kapat, kalbine battaniye ört.",
+      "Biri sana ilgi duyuyor ama sen farkında değilsin. Hayal dünyasından bir gün çık."],
+ is:["Yaratıcı fikirler parlıyor. Ama toplantı saatini hatırla, hayal gücü saat tutmaz.",
+     "Para konusunda kafan karışık. Bir tablo yap, hatta bir kumbara kur.",
+     "Bir arkadaşın borç isteyebilir. Kalbin ‘evet’ diyor, cüzdanın ‘dur’ diyor."],
+ tav:["Deniz kenarında yürü ya da banyoda uzun bir müzik dinle.","Bugün bir hayalini yaz.","Kendine şefkat göster; başkalarına sonra."]}
+];
+
+var FISILTI=[
+ "Bugünün gizli ipucu: Su iç. Yıldızlar da susuz kalınca huysuz olur.",
+ "Merkür retrosu suçlusu aranıyor. Bugün başına gelen her şeyi ona yükleyebilirsin.",
+ "Bir şey kaybolursa bir yerdedir. Genelde cebinde ya da elinde.",
+ "Bugün kimseye ‘ben demiştim’ deme. Zaten biliyorlar.",
+ "Yıldızlar sana göz kırpıyor ama bu kadar uzaktan kime kırptığı belli değil.",
+ "Telefon şarjını yüzde yirmiye düşürme; kader bunu sevmez.",
+ "Bugün bir şeye gülüp geçeceksin. Bu çok iyi bir iştir.",
+ "Evren sana bir mesaj gönderdi. Okunmadı olarak görünüyor, kontrol et."
+];
+
+var CIN=[
+ ["🐀","Fare","Zeki, hızlı ve bedava yemeğin kokusunu uzaktan alan."],
+ ["🐂","Öküz","Çalışkan, inatçı; yavaş ama kararlı."],
+ ["🐅","Kaplan","Cesur, hırslı ve ormanın patronu."],
+ ["🐇","Tavşan","Nazik, sakin; kaçış rotası hep hazır."],
+ ["🐉","Ejderha","Gösterişli, şanslı ve ateşli bir konuşmacı."],
+ ["🐍","Yılan","Gizemli, sezgisel; sessiz ama etkili."],
+ ["🐎","At","Özgür ve enerjik; yerinde duramaz."],
+ ["🐑","Koyun","Yumuşak kalpli, sanatçı ruhlu."],
+ ["🐒","Maymun","Hınzır, zeki ve esprili; kandırması zor."],
+ ["🐓","Horoz","Dakik, titiz; sabahın ilk ışığında hazır."],
+ ["🐕","Köpek","Sadık, dürüst ve parkta en neşeli."],
+ ["🐖","Domuz","Cömert ve şen; sofranın neşesi."]
+];
+
+/* ---------- MANTIK ---------- */
+var STARTS=[120,219,321,420,521,621,723,823,923,1023,1122,1222];
+var IDX=[10,11,0,1,2,3,4,5,6,7,8,9];   // başlangıç tarihine karşılık Z içindeki sıra
+function signIndex(m,d){
+  var v=m*100+d, k=-1;
+  for(var i=0;i<STARTS.length;i++){ if(v>=STARTS[i]) k=i; }
+  return k<0?9:IDX[k];
+}
+function chineseIndex(y){ return (((y-4)%12)+12)%12; }
+function hash(str){var x=2166136261;for(var i=0;i<str.length;i++){x^=str.charCodeAt(i);x=Math.imul(x,16777619);}return x>>>0;}
+var GUNLER=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+function two(n){return (n<10?'0':'')+n}
+function todayKey(){var t=new Date();return t.getFullYear()+'-'+two(t.getMonth()+1)+'-'+two(t.getDate());}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+var cur=null;
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2000)}
+
+function confetti(){
+  var em=['🎉','✨','⭐','💫','🌟','🎊','🔮'];
+  for(var i=0;i<26;i++){
+    var s=document.createElement('span'); s.className='conf';
+    s.textContent=em[i%em.length]; s.style.left=(Math.random()*100)+'vw';
+    s.style.animationDelay=(Math.random()*.6)+'s'; s.style.fontSize=(1.1+Math.random()*1.2)+'rem';
+    document.body.appendChild(s); (function(x){setTimeout(function(){x.remove()},3200)})(s);
+  }
+}
+
+function pick(arr,k){ return arr[(hash(cur.s.n+cur.today+k)+cur.off)%arr.length]; }
+function pct(k){ return 40+(hash(cur.s.n+cur.today+k)%60); }
+
+function bdayInfo(y,m,d){
+  var now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var next=new Date(now.getFullYear(),m-1,d);
+  if(next<t0) next=new Date(now.getFullYear()+1,m-1,d);
+  var days=Math.round((next-t0)/86400000);
+  var age=t0.getFullYear()-y-((t0.getMonth()+1<m||(t0.getMonth()+1===m&&t0.getDate()<d))?1:0);
+  return {days:days,age:age};
+}
+
+function render(){
+  var s=cur.s, c1=s.g[0], c2=s.g[1];
+  var b=bdayInfo(cur.y,cur.m,cur.d);
+  var dow=GUNLER[new Date(cur.y,cur.m-1,cur.d).getDay()];
+  var ch=CIN[chineseIndex(cur.y)];
+  var bd=b.days===0?'Bugün doğum günün! Nice yaşlara! 🎉':'Doğum gününe <b>'+b.days+' gün</b> kaldı 🎂';
+  var todayTxt=new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long'});
+  var meters=[['💘 Aşk',pct('ask'),'#ff3cac'],['💰 Para',pct('para'),'#f59e0b'],['⚡ Enerji',pct('enerji'),'#22c55e'],['🍀 Şans',pct('sans'),'#3b82f6']];
+
+  $('result').innerHTML=
+   '<div class="top" style="background:linear-gradient(135deg,'+c1+','+c2+')">'
+   +'<span class="sym">'+s.e+'️</span><h2>'+s.n+' Burcu</h2><div class="range">'+s.d+'</div>'
+   +'<div class="chips"><span class="chip">🔥 '+s.el+'</span><span class="chip">🪐 '+s.gz+'</span><span class="chip">🎨 '+s.renk+'</span><span class="chip">🔢 '+s.sayi+'</span><span class="chip">📅 '+s.gun+'</span></div>'
+   +'<div class="quote">“'+s.kar+'”</div></div>'
+   +'<div class="facts">'
+   +'<div class="fact">🎈 <b>'+b.age+'</b> yaşındasın. '+bd+'</div>'
+   +'<div class="fact">🗓️ <b>'+dow+'</b> günü doğmuşsun.</div>'
+   +'<div class="fact">'+ch[0]+' Çin burcun: <b>'+ch[1]+'</b>. '+ch[2]+(cur.m<=2?' <small>(Ocak–Şubat doğumlular için yaklaşık)</small>':'')+'</div>'
+   +'<div class="fact">💞 Uyumlu burçlar: <b>'+s.uyum.join(', ')+'</b></div></div>'
+   +'<div class="meters"><b>📊 Bugünün yıldız karnesi</b> <small>('+todayTxt+')</small>'
+   +meters.map(function(m,i){return '<div class="m"><span>'+m[0]+'</span><div class="bar"><i data-w="'+m[1]+'" style="background:'+m[2]+'"></i></div><span>%'+m[1]+'</span></div>'}).join('')+'</div>'
+   +sec('🌟 Genel Yorum',pick(s.gen,'gen'),c1)
+   +sec('💘 Aşk Hayatı',pick(s.ask,'ask'),'#ff3cac')
+   +sec('💼 İş ve Para',pick(s.is,'is'),'#f59e0b')
+   +sec('🍀 Günün Tavsiyesi',pick(s.tav,'tav'),'#22c55e')
+   +sec('🔮 Evrenin Fısıltısı',pick(FISILTI,'fis'),'#8b5cf6')
+   +'<div class="btns"><button class="btn b1" id="again">🔄 Başka yorum</button><button class="btn b2" id="share">📤 Paylaş</button></div>';
+  $('result').hidden=false;
+  setTimeout(function(){var bars=$('result').querySelectorAll('.bar i');for(var i=0;i<bars.length;i++)bars[i].style.width=bars[i].dataset.w+'%';},80);
+  $('again').onclick=function(){cur.off++;render();toast('Yeni yorum geldi ✨');};
+  $('share').onclick=share;
+}
+function sec(t,p,col){return '<div class="sec" style="--c:'+col+'"><h3>'+t+'</h3><p>'+esc(p)+'</p></div>';}
+
+function share(){
+  var s=cur.s;
+  var text=s.e+' '+s.n+' Burcu – Bugünün yorumu\n\n🌟 '+pick(s.gen,'gen')+'\n💘 '+pick(s.ask,'ask')+'\n💼 '+pick(s.is,'is')+'\n🍀 '+pick(s.tav,'tav');
+  if(navigator.share){ navigator.share({title:'Burç Yorumcusu',text:text}).catch(function(){}); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){toast('Panoya kopyalandı 📋')},function(){toast('Kopyalanamadı')}); }
+  else toast('Paylaşım desteklenmiyor');
+}
+
+function run(){
+  var v=$('dob').value, msg=$('msg'); msg.textContent='';
+  if(!v){ msg.textContent='Önce doğum tarihini seç 🙂'; return; }
+  var p=v.split('-'), y=+p[0], m=+p[1], d=+p[2];
+  var dt=new Date(y,m-1,d);
+  if(!y||dt.getMonth()!==m-1||dt.getDate()!==d){ msg.textContent='Bu tarih geçerli görünmüyor 🤔'; return; }
+  if(y<1900){ msg.textContent='1900 öncesi mi? Sen bir efsanesin! Lütfen daha yakın bir tarih seç 😄'; return; }
+  if(dt>new Date()){ msg.textContent='Gelecekten mi geldin? 😄 Geçmiş bir tarih seç.'; return; }
+  try{ localStorage.setItem('burc-dob',v); }catch(e){}
+  var cr=$('crystal'); cr.classList.add('shake'); $('go').disabled=true; msg.textContent='Yıldızlara danışılıyor… 🔭';
+  setTimeout(function(){
+    cr.classList.remove('shake'); $('go').disabled=false; msg.textContent='';
+    cur={s:Z[signIndex(m,d)],y:y,m:m,d:d,today:todayKey(),off:0};
+    render(); confetti();
+    $('result').scrollIntoView({behavior:'smooth',block:'start'});
+  },1000);
+}
+
+/* ---------- BAŞLAT ---------- */
+(function stars(){
+  var em=['✨','⭐','🌙','💫','🪐','🌟'], box=$('stars');
+  for(var i=0;i<22;i++){
+    var s=document.createElement('span'); s.textContent=em[i%em.length];
+    s.style.left=(Math.random()*100)+'vw'; s.style.fontSize=(.9+Math.random()*1.4)+'rem';
+    s.style.animationDuration=(14+Math.random()*18)+'s'; s.style.animationDelay=(-Math.random()*30)+'s';
+    box.appendChild(s);
+  }
+})();
+$('dob').max=todayKey();
+try{ var last=localStorage.getItem('burc-dob'); if(last) $('dob').value=last; }catch(e){}
+$('go').onclick=run;
+$('dob').addEventListener('keydown',function(e){if(e.key==='Enter')run();});
+})();
+</script>
+</body>
+</html>
