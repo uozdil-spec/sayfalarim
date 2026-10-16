@@ -4,26 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Kelime Avı ve Hafıza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f4ee;--card:#fff;--ink:#1f2a24;--mute:#6b766f;--acc:#2f7d5b;--acc-ink:#fff;--acc2:#e6f2ec;--line:#dcd8cc;--lg:80%;--warn:#d9822b}
-@media (prefers-color-scheme:dark){:root{--bg:#141a17;--card:#1e2723;--ink:#eef2ee;--mute:#9aa8a0;--acc:#4fb98b;--acc-ink:#0d1712;--acc2:#24362e;--line:#33413a;--lg:36%}}
+:root{--bg:#eef2f9;--card:#fff;--ink:#0f1a3d;--mute:#5a6585;--acc:#2346b5;--acc-ink:#fff;--acc2:#e3eafb;--line:#d3dbee;--lg:80%;--warn:#d9822b;--saf:#ffc531;--turq:#3cd0c2;--coral:#ff7a66;--navy:#14307f;--navy2:#0d1f5c;--disp:"Baloo 2",ui-rounded,"Arial Rounded MT Bold",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0c1230;--card:#161f4a;--ink:#eef1fb;--mute:#9aa6cf;--acc:#7d98ff;--acc-ink:#0a1030;--acc2:#202c66;--line:#2b3770;--lg:36%}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 body{min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 #app{max-width:480px;margin:0 auto;padding:16px 14px 32px}
 button{font:inherit;color:inherit;cursor:pointer}
-h1{font-size:1.7rem;margin:8px 0 4px;line-height:1.15}
-h1 span{color:var(--acc)}
-h2{font-size:.8rem;text-transform:none;letter-spacing:.04em;color:var(--mute);margin:20px 0 8px;font-weight:600}
-.hero p{margin:0;color:var(--mute);font-size:.95rem}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+.hero{background:radial-gradient(120% 90% at 50% 0%,#1f46b0 0%,var(--navy) 45%,var(--navy2) 100%);border-radius:28px;padding:22px 18px;text-align:center;color:#fff;box-shadow:0 8px 0 -3px rgba(15,26,61,.22)}
+.tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:min(100%,340px);margin:0 auto 18px}
+.tile{aspect-ratio:1;display:grid;place-items:center;background:#f4f7fb;color:#16276b;border-radius:10px;box-shadow:0 3px 0 rgba(0,0,0,.28);font:800 clamp(1.05rem,5.6vw,1.5rem)/1 var(--disp);cursor:pointer;user-select:none;-webkit-user-select:none}
+.tile span{display:block;padding-top:.12em}
+.tile.lit{animation:lit .6s cubic-bezier(.3,1.5,.5,1) var(--d) both}
+.tile.lit.done{animation:none;background:var(--lc);color:var(--lt)}
+.tile span.b{animation:bump .32s}
+@keyframes lit{45%{transform:scale(1.2) rotate(-4deg)}100%{transform:scale(1);background:var(--lc);color:var(--lt)}}
+@keyframes bump{40%{transform:translateY(-6px) scale(1.25)}}
+@media (prefers-reduced-motion:reduce){.tile.lit{animation:none;background:var(--lc);color:var(--lt)}.tile span.b{animation:none}}
+.hero h1{margin:0;font:800 clamp(1.9rem,8.5vw,2.5rem)/1.02 var(--disp)}
+.hero p{margin:8px 0 0;color:#c4d1ff;font-size:1rem}
+.menu h2{font:700 1.1rem var(--disp);margin:24px 0 10px;color:var(--ink)}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:4px}
+.mode{position:relative;text-align:left;border:0;border-radius:22px;padding:14px 14px 16px;color:#0f1a3d;display:flex;flex-direction:column;gap:6px;opacity:.82;filter:saturate(.75);transition:opacity .15s,transform .15s,box-shadow .15s;box-shadow:0 4px 0 rgba(15,26,61,.22)}
+.mode b{font:800 1.3rem/1.05 var(--disp)}
+.mode small{font-size:.82rem;line-height:1.3;opacity:.85}
+.mode.ws{background:var(--turq)}
+.mode.mem{background:var(--coral)}
+.mode.on{opacity:1;filter:none;transform:translateY(-3px);box-shadow:0 7px 0 rgba(15,26,61,.3),0 0 0 3px var(--bg),0 0 0 6px var(--acc)}
+.mode.on::after{content:"✓";position:absolute;top:10px;right:12px;width:24px;height:24px;border-radius:50%;background:#0f1a3d;color:#fff;font-size:.85rem;display:grid;place-items:center}
 .seg{display:flex;gap:8px}
-.seg button{flex:1;padding:12px 8px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-weight:600}
-.seg button.on,.chips button.on{border-color:var(--acc);background:var(--acc2);color:var(--ink);box-shadow:0 0 0 1px var(--acc) inset}
+.seg button{flex:1;padding:10px 6px;border:1.5px solid var(--line);background:var(--card);border-radius:14px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px}
+.seg button.on,.chips button.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.st{letter-spacing:.1em;font-size:.9rem;color:#d98f00}
+.seg button.on .st{color:var(--acc-ink)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips button{padding:9px 12px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;font-size:.92rem}
-.hint-text{margin:8px 2px 0;font-size:.85rem;color:var(--mute)}
-.start{width:100%;margin-top:26px;padding:15px;border:0;border-radius:14px;background:var(--acc);color:var(--acc-ink);font-size:1.1rem;font-weight:700}
-.start:active{transform:scale(.98)}
+.chips button{padding:9px 13px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;font-size:.92rem}
+.hint-text{margin:10px 2px 0;font-size:.88rem;color:var(--mute)}
+.record{margin:18px 0 0;text-align:center;font-weight:600;color:var(--mute);font-size:.92rem}
+.start{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:12px;padding:14px;border:0;border-radius:20px;background:var(--saf);color:#0f1a3d;font:800 1.6rem/1 var(--disp);box-shadow:0 6px 0 #c48f00;transition:transform .08s,box-shadow .08s}
+.start:active{transform:translateY(5px);box-shadow:0 1px 0 #c48f00}
+.start svg{width:22px;height:22px}
 .bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .bar .stat{flex:1;text-align:center;font-weight:600;font-variant-numeric:tabular-nums;font-size:.95rem}
 .ibtn{padding:8px 12px;border:1.5px solid var(--line);background:var(--card);border-radius:10px;font-size:.9rem}
@@ -49,9 +74,9 @@ h2{font-size:.8rem;text-transform:none;letter-spacing:.04em;color:var(--mute);ma
 @keyframes pop{from{transform:scale(.92)}to{transform:scale(1)}}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
 .modal{background:var(--card);border-radius:18px;padding:22px;max-width:360px;width:100%;text-align:center}
-.modal h3{margin:0 0 8px;font-size:1.35rem}
+.modal h3{margin:0 0 8px;font:800 1.5rem var(--disp)}
 .modal p{margin:4px 0;color:var(--mute)}
-.modal .big{font-size:2.2rem;font-weight:800;color:var(--acc);margin:10px 0}
+.modal .big{font:800 2.4rem var(--disp);color:var(--acc);margin:10px 0}
 .modal .row{display:flex;gap:8px;margin-top:16px}
 .modal .row button{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-weight:600}
 .modal .row button.p{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
@@ -110,25 +135,71 @@ function best(key,score){
 }
 
 /* ---------- MENÜ ---------- */
-function renderMenu(){
-  stopTimer();
+var TILE_ROWS=['KELİMET','DAGÜŞHZ','BRVCYFP','LSNIRUD','ĞOYNAÇM'];
+var TILE_LIT={};
+(function(){
+  function add(cells,lc,d0){cells.forEach(function(c,i){TILE_LIT[c[0]+','+c[1]]={lc:lc,d:(d0+i*0.11).toFixed(2)};});}
+  add([[0,0],[0,1],[0,2],[0,3],[0,4],[0,5]],'#ffc531',0.5);
+  add([[1,1],[2,2],[3,3]],'#ff7a66',1.6);
+  add([[4,1],[4,2],[4,3],[4,4]],'#3cd0c2',2.3);
+})();
+var heroPlayed = false;
+function tilesHtml(played){
+  var out='';
+  TILE_ROWS.forEach(function(row,r){Array.from(row).forEach(function(ch,c){
+    var l=TILE_LIT[r+','+c];
+    out+='<div class="tile'+(l?' lit'+(played?' done':''):'')+'"'+(l?' style="--lc:'+l.lc+';--lt:#0f1a3d;--d:'+l.d+'s"':'')+'><span>'+ch+'</span></div>';
+  });});
+  return out;
+}
+function wsIcon(){
+  var s='<svg viewBox="0 0 48 48" width="46" height="46" aria-hidden="true">';
+  for(var r=0;r<3;r++)for(var c=0;c<3;c++){
+    s+='<rect x="'+(2+c*16)+'" y="'+(2+r*16)+'" width="14" height="14" rx="3.5" fill="'+(r===c?'#0f1a3d':'#ffffff')+'" fill-opacity="'+(r===c?1:0.8)+'"/>';
+  }
+  return s+'</svg>';
+}
+function memIcon(){
+  return '<svg viewBox="0 0 48 48" width="46" height="46" aria-hidden="true"><g transform="rotate(-9 17 26)"><rect x="4" y="8" width="26" height="32" rx="5" fill="#fff" fill-opacity=".85"/></g><g transform="rotate(9 31 24)"><rect x="18" y="6" width="26" height="32" rx="5" fill="#0f1a3d"/><path d="M31 15l2.6 5.2 5.7.8-4.1 4 1 5.7-5.2-2.7-5.2 2.7 1-5.7-4.1-4 5.7-.8z" fill="#ffc531"/></g></svg>';
+}
+function recordText(){
+  var key='kh:'+cfg.mode+':'+cfg.theme[cfg.mode]+':'+cfg.diff, v=0;
+  try{v=+localStorage.getItem(key)||0;}catch(e){}
+  return v ? '🏆 Rekorun: '+v+' puan' : 'Bu ayarda henüz rekor yok. İlk skoru sen koy.';
+}
+function menuHtml(){
   var themes = cfg.mode==='ws'?WS:MEM;
   var cur = cfg.theme[cfg.mode];
   var d = DIFF[cfg.diff];
+  var stars = {kolay:'★☆☆',orta:'★★☆',zor:'★★★'};
+  return '<h2>Ne oynayalım?</h2><div class="modes" data-k="mode">'+
+      '<button data-v="ws" aria-pressed="'+(cfg.mode==='ws')+'" class="mode ws'+(cfg.mode==='ws'?' on':'')+'">'+wsIcon()+'<b>Kelime Avı</b><small>Tabloda gizli kelimeleri bul</small></button>'+
+      '<button data-v="mem" aria-pressed="'+(cfg.mode==='mem')+'" class="mode mem'+(cfg.mode==='mem'?' on':'')+'">'+memIcon()+'<b>Hafıza</b><small>Eşleşen kartları bul</small></button></div>'+
+    '<h2>Tema</h2><div class="chips" data-k="theme">'+
+      themes.map(function(t){return '<button data-v="'+t.id+'" class="'+(t.id===cur?'on':'')+'">'+t.emoji+' '+t.name+'</button>';}).join('')+'</div>'+
+    '<h2>Seviye</h2><div class="seg" data-k="diff">'+
+      Object.keys(DIFF).map(function(k){return '<button data-v="'+k+'" aria-pressed="'+(k===cfg.diff)+'" class="'+(k===cfg.diff?'on':'')+'">'+DIFF[k].label+'<span class="st">'+stars[k]+'</span></button>';}).join('')+'</div>'+
+    '<p class="hint-text">'+(cfg.mode==='ws'?d.wsText:d.memText)+'</p>'+
+    '<p class="record">'+recordText()+'</p>'+
+    '<button class="start" id="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z" fill="currentColor"/></svg>Oyna</button>';
+}
+function renderMenu(partial){
+  stopTimer();
+  var m = partial===true && app.querySelector ? app.querySelector('.menu') : null;
+  if(m){m.innerHTML=menuHtml();return;}
+  var played = heroPlayed; heroPlayed = true;
   app.innerHTML =
-   '<header class="hero"><h1>Kelime Avı <span>&amp;</span> Hafıza</h1><p>Türkçe harflere uygun, telefonda rahat oynanan iki oyun.</p></header>'+
-   '<h2>Oyun</h2><div class="seg" data-k="mode">'+
-     '<button data-v="ws" class="'+(cfg.mode==='ws'?'on':'')+'">🔎 Kelime Avı</button>'+
-     '<button data-v="mem" class="'+(cfg.mode==='mem'?'on':'')+'">🃏 Hafıza Kartları</button></div>'+
-   '<h2>Tema</h2><div class="chips" data-k="theme">'+
-     themes.map(function(t){return '<button data-v="'+t.id+'" class="'+(t.id===cur?'on':'')+'">'+t.emoji+' '+t.name+'</button>';}).join('')+'</div>'+
-   '<h2>Zorluk</h2><div class="seg" data-k="diff">'+
-     Object.keys(DIFF).map(function(k){return '<button data-v="'+k+'" class="'+(k===cfg.diff?'on':'')+'">'+DIFF[k].label+'</button>';}).join('')+'</div>'+
-   '<p class="hint-text">'+(cfg.mode==='ws'?d.wsText:d.memText)+'</p>'+
-   '<button class="start" id="start">Başla</button>';
+    '<div class="hero"><div class="tiles" aria-hidden="true">'+tilesHtml(played)+'</div><h1>Kelime Avı &amp; Hafıza</h1><p>Harfleri bul, kartları eşleştir.</p></div>'+
+    '<div class="menu">'+menuHtml()+'</div>';
 }
 
 app.addEventListener('click',function(e){
+  var tl = e.target.closest && e.target.closest('.tile');
+  if(tl){
+    var sp = tl.firstChild;
+    sp.classList.remove('b'); void sp.offsetWidth; sp.classList.add('b');
+    return;
+  }
   var b = e.target.closest('button');
   if(!b) return;
   var grp = b.parentElement && b.parentElement.getAttribute('data-k');
@@ -137,7 +208,7 @@ app.addEventListener('click',function(e){
     if(grp==='mode') cfg.mode=v;
     else if(grp==='theme') cfg.theme[cfg.mode]=v;
     else if(grp==='diff') cfg.diff=v;
-    renderMenu();
+    renderMenu(true);
     return;
   }
   if(b.id==='start') startGame();
@@ -163,7 +234,7 @@ function barHtml(){
   return '<div class="bar"><button class="ibtn" id="back">← Menü</button><div class="stat" id="stat"></div><button class="ibtn" id="again">↻ Yeni</button></div>';
 }
 function wireBar(){
-  $('#back').onclick=renderMenu;
+  $('#back').onclick=function(){renderMenu();};
   $('#again').onclick=startGame;
 }
 
