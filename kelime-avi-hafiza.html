@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kelime Avı ve Hafıza</title>
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--ink:#1f2a24;--mute:#6b766f;--acc:#2f7d5b;--acc-ink:#fff;--acc2:#e6f2ec;--line:#dcd8cc;--lg:80%;--warn:#d9822b}
+@media (prefers-color-scheme:dark){:root{--bg:#141a17;--card:#1e2723;--ink:#eef2ee;--mute:#9aa8a0;--acc:#4fb98b;--acc-ink:#0d1712;--acc2:#24362e;--line:#33413a;--lg:36%}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#app{max-width:480px;margin:0 auto;padding:16px 14px 32px}
+button{font:inherit;color:inherit;cursor:pointer}
+h1{font-size:1.7rem;margin:8px 0 4px;line-height:1.15}
+h1 span{color:var(--acc)}
+h2{font-size:.8rem;text-transform:none;letter-spacing:.04em;color:var(--mute);margin:20px 0 8px;font-weight:600}
+.hero p{margin:0;color:var(--mute);font-size:.95rem}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;padding:12px 8px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-weight:600}
+.seg button.on,.chips button.on{border-color:var(--acc);background:var(--acc2);color:var(--ink);box-shadow:0 0 0 1px var(--acc) inset}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{padding:9px 12px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;font-size:.92rem}
+.hint-text{margin:8px 2px 0;font-size:.85rem;color:var(--mute)}
+.start{width:100%;margin-top:26px;padding:15px;border:0;border-radius:14px;background:var(--acc);color:var(--acc-ink);font-size:1.1rem;font-weight:700}
+.start:active{transform:scale(.98)}
+.bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bar .stat{flex:1;text-align:center;font-weight:600;font-variant-numeric:tabular-nums;font-size:.95rem}
+.ibtn{padding:8px 12px;border:1.5px solid var(--line);background:var(--card);border-radius:10px;font-size:.9rem}
+.sub{text-align:center;color:var(--mute);font-size:.85rem;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:2px;background:var(--line);border:2px solid var(--line);border-radius:12px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;margin:0 auto;width:min(100%,460px)}
+.cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--card);font-weight:700;font-size:var(--fs);cursor:pointer}
+.cell.sel{background:var(--acc);color:var(--acc-ink)}
+.cell.found{background:hsl(var(--h) 65% var(--lg))}
+.cell.sel.found{background:var(--acc)}
+.cell.hint{outline:3px solid var(--warn);outline-offset:-3px}
+.words{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.words li{padding:5px 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-size:.85rem;font-weight:600}
+.words li.ok{text-decoration:line-through;color:var(--mute);background:hsl(var(--h) 65% var(--lg));border-color:transparent}
+.mgrid{display:grid;grid-template-columns:repeat(var(--c),1fr);gap:8px}
+.card{border:1.5px solid var(--line);background:var(--acc);color:var(--acc-ink);border-radius:12px;min-height:76px;padding:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;line-height:1.2}
+.card .q{font-size:1.6rem;opacity:.85}
+.card .t{display:none}
+.card.open,.card.done{background:var(--card);color:var(--ink);animation:pop .18s ease}
+.card.open .q,.card.done .q{display:none}
+.card.open .t,.card.done .t{display:block}
+.card.done{background:var(--acc2);border-color:var(--acc)}
+.mgrid.sq .card{aspect-ratio:1}
+@keyframes pop{from{transform:scale(.92)}to{transform:scale(1)}}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal{background:var(--card);border-radius:18px;padding:22px;max-width:360px;width:100%;text-align:center}
+.modal h3{margin:0 0 8px;font-size:1.35rem}
+.modal p{margin:4px 0;color:var(--mute)}
+.modal .big{font-size:2.2rem;font-weight:800;color:var(--acc);margin:10px 0}
+.modal .row{display:flex;gap:8px;margin-top:16px}
+.modal .row button{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-weight:600}
+.modal .row button.p{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+var $ = function(s){return document.querySelector(s);};
+var app = $('#app');
+var rnd = function(n){return Math.floor(Math.random()*n);};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(i+1);var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+
+var ALPHABET = Array.from("ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ");
+
+/* ---------- İÇERİK ---------- */
+var WS = [
+ {id:'semt',emoji:'🏙️',name:'İstanbul semtleri',words:['KADIKÖY','ÜSKÜDAR','BEŞİKTAŞ','FATİH','SARIYER','BEYOĞLU','BAKIRKÖY','ŞİŞLİ','ZEYTİNBURNU','EYÜPSULTAN','BEYKOZ','AVCILAR','MALTEPE','KARTAL','PENDİK','BAŞAKŞEHİR','ORTAKÖY','BALAT','ARNAVUTKÖY']},
+ {id:'mutfak',emoji:'🥘',name:'Türk mutfağı',words:['BAKLAVA','MANTI','LAHMACUN','KÖFTE','PİDE','MENEMEN','DOLMA','SARMA','KÜNEFE','SİMİT','BÖREK','KEBAP','İSKENDER','PİLAV','ÇORBA','GÖZLEME','LOKUM','AŞURE','KUMPİR','MERCİMEK']},
+ {id:'bitki',emoji:'🌳',name:'Ağaç ve bitkiler',words:['ÇINAR','IHLAMUR','DEFNE','MEŞE','KAVAK','SÖĞÜT','ARDIÇ','KESTANE','ZEYTİN','SERVİ','FINDIK','PALAMUT','LALE','MENEKŞE','KAYIN','KARAAĞAÇ','AKASYA','ADAÇAYI','PAPATYA','ORKİDE','NERGİS']},
+ {id:'sehir',emoji:'🗺️',name:'Türkiye şehirleri',words:['ANKARA','İZMİR','BURSA','ADANA','KONYA','MARDİN','RİZE','SİVAS','EDİRNE','TRABZON','ANTALYA','SAMSUN','KAYSERİ','ERZURUM','HATAY','MUĞLA','BOLU','ORDU','AMASYA','ÇANAKKALE']},
+ {id:'hayvan',emoji:'🦒',name:'Hayvanlar',words:['KAPLAN','ASLAN','ZÜRAFA','KARTAL','YUNUS','KAPLUMBAĞA','PENGUEN','ZEBRA','GORİL','LEYLEK','KUNDUZ','TAVUS','ŞAHİN','GEYİK','KOALA','PANDA','TİLKİ','KANGURU','FLAMİNGO']},
+ {id:'bisiklet',emoji:'🚴',name:'Bisiklet ve spor',words:['PEDAL','ZİNCİR','GİDON','KASK','VİTES','LASTİK','ROTA','PARKUR','ANTRENMAN','YOKUŞ','TEMPO','KADANS','ŞAMPİYON','SPRİNT','MARATON','FREN','JANT','SELE']},
+ {id:'bizans',emoji:'🏛️',name:'Bizans ve İstanbul tarihi',words:['AYASOFYA','TOPKAPI','GALATA','SURLAR','HİPODROM','KONSTANTİN','BASİLİKA','KIZKULESİ','ALTINBOYNUZ','BİZANS','SARAY','SARNIÇ','MOZAİK','FRESK','KİLİSE','SULTANAHMET','İMPARATOR']}
+];
+
+var MEM = [
+ {id:'plaka',emoji:'🚗',name:'Şehir ve plaka',pairs:[['Ankara','06'],['İstanbul','34'],['İzmir','35'],['Bursa','16'],['Adana','01'],['Antalya','07'],['Konya','42'],['Trabzon','61'],['Edirne','22'],['Van','65'],['Mardin','47'],['Rize','53'],['Samsun','55'],['Kayseri','38'],['Erzurum','25'],['Muğla','48']]},
+ {id:'baskent',emoji:'🌍',name:'Ülke ve başkent',pairs:[['Türkiye','Ankara'],['Fransa','Paris'],['Almanya','Berlin'],['İtalya','Roma'],['İspanya','Madrid'],['Japonya','Tokyo'],['Mısır','Kahire'],['Yunanistan','Atina'],['Rusya','Moskova'],['Kanada','Ottawa'],['Brezilya','Brasilia'],['Avustralya','Kanberra'],['Portekiz','Lizbon'],['Polonya','Varşova'],['Azerbaycan','Bakü'],['Norveç','Oslo']]},
+ {id:'emoji',emoji:'🐾',name:'Hayvan ve emoji',pairs:[['Kedi','🐱'],['Köpek','🐶'],['Aslan','🦁'],['Fil','🐘'],['Penguen','🐧'],['Kaplumbağa','🐢'],['Yunus','🐬'],['Baykuş','🦉'],['Tavşan','🐰'],['Kelebek','🦋'],['Arı','🐝'],['Zürafa','🦒']]},
+ {id:'atasozu',emoji:'📜',name:'Atasözü eşleştirme',wide:true,pairs:[['Damlaya damlaya','göl olur'],['Sakla samanı','gelir zamanı'],['Ağaç yaprağıyla','gürler'],['Bir elin nesi var,','iki elin sesi var'],['Komşu komşunun','külüne muhtaçtır'],['Her yiğidin','bir yoğurt yiyişi vardır'],['Acele işe','şeytan karışır'],['Sabreden derviş','muradına ermiş'],['Görünen köy','kılavuz istemez'],['Ak akçe','kara gün içindir'],['Bugünün işini','yarına bırakma'],['Taşıma su ile','değirmen dönmez']]}
+];
+
+var DIR4 = [[0,1],[1,0]];
+var DIR6 = [[0,1],[1,0],[0,-1],[-1,0]];
+var DIR8 = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+var DIFF = {
+ kolay:{label:'Kolay',n:8,words:5,dirs:DIR4,pairs:6,wsText:'8×8 tablo, 5 kelime, yatay ve dikey',memText:'6 çift (12 kart)'},
+ orta:{label:'Orta',n:10,words:7,dirs:DIR6,pairs:8,wsText:'10×10 tablo, 7 kelime, kelimeler tersten de olabilir',memText:'8 çift (16 kart)'},
+ zor:{label:'Zor',n:12,words:9,dirs:DIR8,pairs:12,wsText:'12×12 tablo, 9 kelime, çapraz ve tersten de',memText:'12 çift (24 kart)'}
+};
+
+/* ---------- DURUM ---------- */
+var cfg = {mode:'ws',theme:{ws:'semt',mem:'plaka'},diff:'orta'};
+var timer = null, secs = 0;
+function stopTimer(){if(timer){clearInterval(timer);timer=null;}}
+function startTimer(cb){stopTimer();secs=0;cb();timer=setInterval(function(){secs++;cb();},1000);}
+
+function best(key,score){
+  var b=0;
+  try{b=+localStorage.getItem(key)||0;}catch(e){}
+  var nb=score>b;
+  if(nb){try{localStorage.setItem(key,String(score));}catch(e){}}
+  return {best:Math.max(b,score),isNew:nb};
+}
+
+/* ---------- MENÜ ---------- */
+function renderMenu(){
+  stopTimer();
+  var themes = cfg.mode==='ws'?WS:MEM;
+  var cur = cfg.theme[cfg.mode];
+  var d = DIFF[cfg.diff];
+  app.innerHTML =
+   '<header class="hero"><h1>Kelime Avı <span>&amp;</span> Hafıza</h1><p>Türkçe harflere uygun, telefonda rahat oynanan iki oyun.</p></header>'+
+   '<h2>Oyun</h2><div class="seg" data-k="mode">'+
+     '<button data-v="ws" class="'+(cfg.mode==='ws'?'on':'')+'">🔎 Kelime Avı</button>'+
+     '<button data-v="mem" class="'+(cfg.mode==='mem'?'on':'')+'">🃏 Hafıza Kartları</button></div>'+
+   '<h2>Tema</h2><div class="chips" data-k="theme">'+
+     themes.map(function(t){return '<button data-v="'+t.id+'" class="'+(t.id===cur?'on':'')+'">'+t.emoji+' '+t.name+'</button>';}).join('')+'</div>'+
+   '<h2>Zorluk</h2><div class="seg" data-k="diff">'+
+     Object.keys(DIFF).map(function(k){return '<button data-v="'+k+'" class="'+(k===cfg.diff?'on':'')+'">'+DIFF[k].label+'</button>';}).join('')+'</div>'+
+   '<p class="hint-text">'+(cfg.mode==='ws'?d.wsText:d.memText)+'</p>'+
+   '<button class="start" id="start">Başla</button>';
+}
+
+app.addEventListener('click',function(e){
+  var b = e.target.closest('button');
+  if(!b) return;
+  var grp = b.parentElement && b.parentElement.getAttribute('data-k');
+  if(grp){
+    var v=b.getAttribute('data-v');
+    if(grp==='mode') cfg.mode=v;
+    else if(grp==='theme') cfg.theme[cfg.mode]=v;
+    else if(grp==='diff') cfg.diff=v;
+    renderMenu();
+    return;
+  }
+  if(b.id==='start') startGame();
+});
+
+function startGame(){ if(cfg.mode==='ws') startWS(); else startMem(); }
+
+/* ---------- ORTAK: SONUÇ PENCERESİ ---------- */
+function showResult(title,lines,score,key){
+  var r = best(key,score);
+  var ov = document.createElement('div');
+  ov.className='overlay';
+  ov.innerHTML = '<div class="modal"><h3>'+title+'</h3>'+lines.map(function(l){return '<p>'+l+'</p>';}).join('')+
+    '<div class="big">'+score+' puan</div>'+
+    '<p>'+(r.isNew?'🎉 Yeni rekor!':'En iyi: '+r.best+' puan')+'</p>'+
+    '<div class="row"><button id="mmenu">Menü</button><button id="magain" class="p">Tekrar oyna</button></div></div>';
+  document.body.appendChild(ov);
+  ov.querySelector('#mmenu').onclick=function(){ov.remove();renderMenu();};
+  ov.querySelector('#magain').onclick=function(){ov.remove();startGame();};
+}
+
+function barHtml(){
+  return '<div class="bar"><button class="ibtn" id="back">← Menü</button><div class="stat" id="stat"></div><button class="ibtn" id="again">↻ Yeni</button></div>';
+}
+function wireBar(){
+  $('#back').onclick=renderMenu;
+  $('#again').onclick=startGame;
+}
+
+/* ---------- KELİME AVI ---------- */
+function genGrid(words,n,dirs){
+  var sorted = words.slice().sort(function(a,b){return b.length-a.length;});
+  for(var attempt=0;attempt<100;attempt++){
+    var grid = new Array(n*n).fill('');
+    var placed = [];
+    var ok = true;
+    for(var wi=0;wi<sorted.length;wi++){
+      var w = sorted[wi], chars = Array.from(w), len = chars.length, done = false;
+      for(var t=0;t<300 && !done;t++){
+        var d = dirs[rnd(dirs.length)];
+        var r0 = d[0]===1 ? rnd(n-len+1) : d[0]===-1 ? len-1+rnd(n-len+1) : rnd(n);
+        var c0 = d[1]===1 ? rnd(n-len+1) : d[1]===-1 ? len-1+rnd(n-len+1) : rnd(n);
+        var cells = [], fits = true;
+        for(var k=0;k<len;k++){
+          var r=r0+d[0]*k, c=c0+d[1]*k, idx=r*n+c;
+          if(grid[idx]!=='' && grid[idx]!==chars[k]){fits=false;break;}
+          cells.push(idx);
+        }
+        if(fits){
+          cells.forEach(function(idx,k){grid[idx]=chars[k];});
+          placed.push({word:w,cells:cells});
+          done = true;
+        }
+      }
+      if(!done){ok=false;break;}
+    }
+    if(ok){
+      for(var i=0;i<grid.length;i++) if(grid[i]==='') grid[i]=ALPHABET[rnd(ALPHABET.length)];
+      return {grid:grid,placed:placed};
+    }
+  }
+  return null;
+}
+
+function startWS(){
+  var th = WS.find(function(t){return t.id===cfg.theme.ws;});
+  var d = DIFF[cfg.diff], n = d.n;
+  var pool = th.words.filter(function(w){return Array.from(w).length<=n;});
+  var count = Math.min(d.words,pool.length);
+  var g = null;
+  while(!g){
+    g = genGrid(shuffle(pool).slice(0,count),n,d.dirs);
+    if(!g && count>3) count--;
+  }
+  var total = g.placed.length;
+  var foundSet = {}, foundCount = 0, hints = 0;
+  var fs = Math.round(Math.min(window.innerWidth-28,460)/n*0.52);
+
+  app.innerHTML = barHtml()+
+    '<p class="sub">'+th.emoji+' '+th.name+' · '+d.label+'</p>'+
+    '<div class="grid" id="grid" style="--n:'+n+';--fs:'+fs+'px">'+
+      g.grid.map(function(ch,i){return '<div class="cell" data-i="'+i+'">'+ch+'</div>';}).join('')+'</div>'+
+    '<ul class="words" id="words">'+
+      g.placed.slice().sort(function(a,b){return a.word.localeCompare(b.word,'tr');}).map(function(p){return '<li data-w="'+p.word+'">'+p.word+'</li>';}).join('')+'</ul>'+
+    '<div style="text-align:center;margin-top:14px"><button class="ibtn" id="hint">💡 İpucu (−20 puan)</button></div>';
+  wireBar();
+
+  var statEl = $('#stat');
+  function upd(){statEl.textContent='⏱ '+fmt(secs)+' · '+foundCount+'/'+total;}
+  startTimer(upd);
+
+  var gridEl = $('#grid');
+  var cellEls = Array.prototype.slice.call(gridEl.children);
+
+  function snap(a,b){
+    var ar=Math.floor(a/n), ac=a%n, br=Math.floor(b/n), bc=b%n;
+    var dr=br-ar, dc=bc-ac, adr=Math.abs(dr), adc=Math.abs(dc);
+    if(adr===0 && adc===0) return [a];
+    var sr=Math.sign(dr), sc=Math.sign(dc), steps;
+    if(adr>=2*adc){sc=0;steps=adr;}
+    else if(adc>=2*adr){sr=0;steps=adc;}
+    else steps=Math.min(adr,adc);
+    var out=[];
+    for(var k=0;k<=steps;k++) out.push((ar+sr*k)*n+(ac+sc*k));
+    return out;
+  }
+
+  var anchor=null, endIdx=null, dragging=false, moved=false;
+  function idxFrom(e){
+    var el = document.elementFromPoint(e.clientX,e.clientY);
+    var c = el && el.closest ? el.closest('.cell') : null;
+    return c && gridEl.contains(c) ? +c.getAttribute('data-i') : null;
+  }
+  function paint(){
+    cellEls.forEach(function(c){c.classList.remove('sel');});
+    if(anchor===null) return;
+    snap(anchor,endIdx).forEach(function(i){cellEls[i].classList.add('sel');});
+  }
+  function clearSel(){anchor=null;endIdx=null;dragging=false;moved=false;paint();}
+
+  function commit(){
+    var line = snap(anchor,endIdx);
+    var str = line.map(function(i){return g.grid[i];}).join('');
+    var rev = Array.from(str).reverse().join('');
+    var hit = g.placed.find(function(p){return !foundSet[p.word] && (p.word===str || p.word===rev);});
+    clearSel();
+    if(hit) markFound(hit);
+  }
+  function markFound(p){
+    foundSet[p.word]=true; foundCount++;
+    var h = (foundCount*47+20)%360;
+    p.cells.forEach(function(i){
+      cellEls[i].classList.add('found');
+      cellEls[i].style.setProperty('--h',h);
+    });
+    var li = $('#words li[data-w="'+p.word+'"]');
+    if(li){li.classList.add('ok');li.style.setProperty('--h',h);}
+    upd();
+    if(foundCount===total) finish();
+  }
+  function finish(){
+    stopTimer();
+    var score = Math.max(0,total*100+Math.max(0,total*40-secs)-hints*20);
+    setTimeout(function(){
+      showResult('Tebrikler! 🎉',['Tüm kelimeleri buldun.','Süre: '+fmt(secs)+(hints?' · İpucu: '+hints:'')],score,'kh:ws:'+cfg.theme.ws+':'+cfg.diff);
+    },350);
+  }
+
+  gridEl.addEventListener('pointerdown',function(e){
+    var i = idxFrom(e);
+    if(i===null) return;
+    e.preventDefault();
+    if(anchor!==null && !dragging){
+      if(i===anchor){clearSel();return;}
+      endIdx=i; commit(); return;
+    }
+    anchor=i; endIdx=i; dragging=true; moved=false; paint();
+  });
+  gridEl.addEventListener('pointermove',function(e){
+    if(!dragging) return;
+    var i = idxFrom(e);
+    if(i===null || i===endIdx) return;
+    endIdx=i; if(i!==anchor) moved=true; paint();
+  });
+  function up(){
+    if(!dragging) return;
+    dragging=false;
+    if(moved && endIdx!==anchor) commit(); else paint();
+  }
+  gridEl.addEventListener('pointerup',up);
+  gridEl.addEventListener('pointercancel',function(){clearSel();});
+
+  $('#hint').onclick=function(){
+    var left = g.placed.filter(function(p){return !foundSet[p.word];});
+    if(!left.length) return;
+    var p = left[rnd(left.length)];
+    hints++;
+    var el = cellEls[p.cells[0]];
+    el.classList.add('hint');
+    setTimeout(function(){el.classList.remove('hint');},1800);
+  };
+}
+
+/* ---------- HAFIZA KARTLARI ---------- */
+function startMem(){
+  var th = MEM.find(function(t){return t.id===cfg.theme.mem;});
+  var d = DIFF[cfg.diff];
+  var pairs = shuffle(th.pairs).slice(0,Math.min(d.pairs,th.pairs.length));
+  var cards = [];
+  pairs.forEach(function(p,i){cards.push({pid:i,t:p[0]});cards.push({pid:i,t:p[1]});});
+  cards = shuffle(cards);
+  var cols = th.wide ? 3 : (pairs.length<=6 ? 3 : 4);
+  var total = pairs.length, matched = 0, moves = 0, first = null, lock = false;
+
+  function fsFor(t){
+    var l = Array.from(t).length;
+    if(th.wide) return '.85rem';
+    if(l<=3) return '1.8rem';
+    if(l<=7) return '1rem';
+    return '.82rem';
+  }
+  app.innerHTML = barHtml()+
+    '<p class="sub">'+th.emoji+' '+th.name+' · '+d.label+'</p>'+
+    '<div class="mgrid'+(th.wide?'':' sq')+'" id="mg" style="--c:'+cols+'">'+
+      cards.map(function(c,i){return '<button class="card" data-i="'+i+'"><span class="q">?</span><span class="t" style="font-size:'+fsFor(c.t)+'">'+c.t+'</span></button>';}).join('')+'</div>';
+  wireBar();
+
+  var statEl = $('#stat');
+  function upd(){statEl.textContent='⏱ '+fmt(secs)+' · Hamle '+moves+' · '+matched+'/'+total;}
+  startTimer(upd);
+
+  var els = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  $('#mg').addEventListener('click',function(e){
+    var b = e.target.closest('.card');
+    if(!b || lock) return;
+    var i = +b.getAttribute('data-i');
+    if(els[i].classList.contains('open') || els[i].classList.contains('done')) return;
+    els[i].classList.add('open');
+    if(first===null){first=i;return;}
+    moves++;
+    var a = first; first = null;
+    if(cards[a].pid===cards[i].pid){
+      els[a].classList.remove('open'); els[a].classList.add('done');
+      els[i].classList.remove('open'); els[i].classList.add('done');
+      matched++; upd();
+      if(matched===total) finish();
+    } else {
+      lock = true; upd();
+      setTimeout(function(){
+        els[a].classList.remove('open'); els[i].classList.remove('open');
+        lock = false;
+      },900);
+    }
+  });
+  function finish(){
+    stopTimer();
+    var score = Math.max(50,total*100-(moves-total)*10+Math.max(0,total*15-secs));
+    setTimeout(function(){
+      showResult('Harika! 🎉',['Tüm çiftleri buldun.','Süre: '+fmt(secs)+' · Hamle: '+moves],score,'kh:mem:'+cfg.theme.mem+':'+cfg.diff);
+    },400);
+  }
+}
+
+renderMenu();
+</script>
+</body>
+</html>
