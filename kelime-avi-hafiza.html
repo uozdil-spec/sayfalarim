@@ -42,8 +42,29 @@ button:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
 .seg button.on,.chips button.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
 .st{letter-spacing:.1em;font-size:.9rem;color:#d98f00}
 .seg button.on .st{color:var(--acc-ink)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chips button{padding:9px 13px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;font-size:.92rem}
+.rail{position:relative;margin:0 -14px}
+.rail::after{content:"";position:absolute;top:0;right:0;bottom:8px;width:34px;background:linear-gradient(90deg,transparent,var(--bg));pointer-events:none}
+.chips{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:max-content;grid-template-rows:repeat(2,auto);gap:8px;overflow-x:auto;padding:2px 36px 8px 14px;scroll-snap-type:x proximity;scroll-padding-left:14px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{white-space:nowrap;scroll-snap-align:start;padding:10px 14px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;font-size:.92rem}
+.menu h2 small{font:600 .8rem system-ui,sans-serif;color:var(--mute);margin-left:8px}
+.hgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:min(100%,340px);margin:0 auto 18px;perspective:700px}
+.hc{aspect-ratio:1/.9;cursor:pointer}
+.hi{position:relative;width:100%;height:100%;border-radius:12px;background:#2c4fc0;box-shadow:0 3px 0 rgba(0,0,0,.28);display:grid;place-items:center;color:#fff;font:800 1rem/1 var(--disp)}
+.hi .q{font-size:1.4rem;opacity:.85}
+.hi .f{position:absolute;opacity:0;color:#0f1a3d;font-size:1rem}
+.hi .f.em{font-size:1.7rem}
+.hi.lit{animation:flip .6s var(--d) both}
+.hi.lit .q{animation:qh .6s var(--d) both}
+.hi.lit .f{animation:fs .6s var(--d) both}
+.hi.lit.done{animation:none;background:var(--lc)}
+.hi.lit.done .q{animation:none;opacity:0}
+.hi.lit.done .f{animation:none;opacity:1}
+.hc.b{animation:bump .32s}
+@keyframes flip{0%{transform:rotateY(0)}49%{background:#2c4fc0}50%{transform:rotateY(90deg);background:var(--lc)}100%{transform:rotateY(0);background:var(--lc)}}
+@keyframes qh{0%,49%{opacity:.85}50%,100%{opacity:0}}
+@keyframes fs{0%,49%{opacity:0}50%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hi.lit{animation:none;background:var(--lc)}.hi.lit .q{animation:none;opacity:0}.hi.lit .f{animation:none;opacity:1}.hc.b{animation:none}}
 .hint-text{margin:10px 2px 0;font-size:.88rem;color:var(--mute)}
 .record{margin:18px 0 0;text-align:center;font-weight:600;color:var(--mute);font-size:.92rem}
 .start{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:12px;padding:14px;border:0;border-radius:20px;background:var(--saf);color:#0f1a3d;font:800 1.6rem/1 var(--disp);box-shadow:0 6px 0 #c48f00;transition:transform .08s,box-shadow .08s}
@@ -102,14 +123,36 @@ var WS = [
  {id:'sehir',emoji:'🗺️',name:'Türkiye şehirleri',words:['ANKARA','İZMİR','BURSA','ADANA','KONYA','MARDİN','RİZE','SİVAS','EDİRNE','TRABZON','ANTALYA','SAMSUN','KAYSERİ','ERZURUM','HATAY','MUĞLA','BOLU','ORDU','AMASYA','ÇANAKKALE','DİYARBAKIR','GAZİANTEP','ESKİŞEHİR','KARS','ÇORUM','YALOVA']},
  {id:'hayvan',emoji:'🦒',name:'Hayvanlar',words:['KAPLAN','ASLAN','ZÜRAFA','KARTAL','YUNUS','KAPLUMBAĞA','PENGUEN','ZEBRA','GORİL','LEYLEK','KUNDUZ','TAVUS','ŞAHİN','GEYİK','KOALA','PANDA','TİLKİ','KANGURU','FLAMİNGO','KURBAĞA','PAPAĞAN','TİMSAH','HİPOPOTAM','ÇİTA']},
  {id:'bisiklet',emoji:'🚴',name:'Bisiklet ve spor',words:['PEDAL','ZİNCİR','GİDON','KASK','VİTES','LASTİK','ROTA','PARKUR','ANTRENMAN','YOKUŞ','TEMPO','KADANS','ŞAMPİYON','SPRİNT','MARATON','FREN','JANT','SELE','KADRO','TEKERLEK','YÜZME','ZİRVE','KONDİSYON']},
- {id:'bizans',emoji:'🏛️',name:'Bizans ve İstanbul tarihi',words:['AYASOFYA','TOPKAPI','GALATA','SURLAR','HİPODROM','KONSTANTİN','BASİLİKA','KIZKULESİ','ALTINBOYNUZ','BİZANS','SARAY','SARNIÇ','MOZAİK','FRESK','KİLİSE','SULTANAHMET','İMPARATOR','HALİÇ','SURİÇİ','MİMARİ','FETİH','KUBBE','MİNARE']}
+ {id:'bizans',emoji:'🏛️',name:'Bizans ve İstanbul tarihi',words:['AYASOFYA','TOPKAPI','GALATA','SURLAR','HİPODROM','KONSTANTİN','BASİLİKA','KIZKULESİ','ALTINBOYNUZ','BİZANS','SARAY','SARNIÇ','MOZAİK','FRESK','KİLİSE','SULTANAHMET','İMPARATOR','HALİÇ','SURİÇİ','MİMARİ','FETİH','KUBBE','MİNARE']},
+ {id:'ulke',emoji:'🌍',name:'Ülkeler',words:['ALMANYA','FRANSA','İTALYA','İSPANYA','JAPONYA','BREZİLYA','ARJANTİN','KANADA','MISIR','YUNANİSTAN','PORTEKİZ','POLONYA','AZERBAYCAN','NORVEÇ','İSVEÇ','HOLLANDA','AVUSTURYA','İSVİÇRE','MACARİSTAN','BULGARİSTAN','FİNLANDİYA','HİNDİSTAN','MEKSİKA','AVUSTRALYA','GÜRCİSTAN','KAZAKİSTAN','ÖZBEKİSTAN','KÜBA']},
+ {id:'baskent',emoji:'🧭',name:'Dünya başkentleri',words:['ANKARA','PARİS','BERLİN','ROMA','MADRİD','TOKYO','KAHİRE','ATİNA','MOSKOVA','OTTAWA','LİZBON','VARŞOVA','BAKÜ','OSLO','LONDRA','VİYANA','BUDAPEŞTE','PRAG','BRÜKSEL','STOKHOLM','HELSİNKİ','DUBLİN','SOFYA','BÜKREŞ','TAŞKENT','BRASİLYA']},
+ {id:'simge',emoji:'🌉',name:'İstanbul simgeleri',words:['GALATA','KIZKULESİ','DOLMABAHÇE','TOPKAPI','AYASOFYA','SÜLEYMANİYE','KAPALIÇARŞI','YEREBATAN','BEYLERBEYİ','EMİRGAN','ÇAMLICA','RUMELİHİSARI','ANADOLUHİSARI','FERİBOT','VAPUR','MARMARAY','BOĞAZ','ADALAR','MARTI','SİMİT','KARAKÖY','EMİNÖNÜ','TAKSİM','ÇEMBERLİTAŞ','BÜYÜKADA','HEYBELİADA']},
+ {id:'meyve',emoji:'🍎',name:'Meyve ve sebze',words:['ELMA','ARMUT','ÇİLEK','KİRAZ','VİŞNE','KAYISI','İNCİR','ÜZÜM','KARPUZ','KAVUN','PORTAKAL','MANDALİNA','LİMON','DOMATES','SALATALIK','BİBER','PATLICAN','KABAK','HAVUÇ','SOĞAN','SARIMSAK','ISPANAK','ENGİNAR','PIRASA','MARUL','ŞEFTALİ']},
+ {id:'meslek',emoji:'👷',name:'Meslekler',words:['DOKTOR','MÜHENDİS','MİMAR','ÖĞRETMEN','AVUKAT','PİLOT','ŞOFÖR','ÇİFTÇİ','AŞÇI','BERBER','TERZİ','MARANGOZ','ELEKTRİKÇİ','POLİS','İTFAİYECİ','HEMŞİRE','GAZETECİ','BAHÇIVAN','SANATÇI','MUHASEBECİ','ECZACI','DİŞÇİ','KAPTAN','FOTOĞRAFÇI','TERCÜMAN','HAKİM']},
+ {id:'renk',emoji:'🎨',name:'Renkler',words:['KIRMIZI','MAVİ','YEŞİL','SARI','TURUNCU','MOR','PEMBE','SİYAH','BEYAZ','KAHVERENGİ','LACİVERT','TURKUAZ','BORDO','ALTIN','GÜMÜŞ','KREM','MERCAN','FİROZE','EFLATUN','ZÜMRÜT','BAKIR']},
+ {id:'muzik',emoji:'🎸',name:'Müzik aletleri',words:['BAĞLAMA','KEMANÇE','KANUN','DAVUL','ZURNA','KEMAN','GİTAR','PİYANO','FLÜT','TROMPET','KLARNET','VİYOLA','ÇELLO','DARBUKA','TAMBUR','CÜMBÜŞ','KLAVYE','MANDOLİN','SAKSAFON','ARMONİKA','KAVAL','BANJO']},
+ {id:'doga',emoji:'🏔️',name:'Doğa ve coğrafya',words:['NEHİR','DENİZ','OKYANUS','ORMAN','YARIMADA','VADİ','ŞELALE','MAĞARA','BOĞAZ','KÖRFEZ','PLAJ','YANARDAĞ','BUZUL','PLATO','IRMAK','ÇAYIR','KIYI','GÖLET','BATAKLIK','KANYON','SAHİL','DERE','TEPE','ZİRVE','AKARSU','ÇAĞLAYAN']},
+ {id:'uzay',emoji:'🪐',name:'Uzay',words:['YILDIZ','GEZEGEN','SATÜRN','JÜPİTER','VENÜS','DÜNYA','GALAKSİ','METEOR','TELESKOP','ASTRONOT','ROKET','UYDU','GÖKTAŞI','YÖRÜNGE','TUTULMA','SAMANYOLU','NEPTÜN','PLÜTON','MERKÜR','KOMET','GÜNEŞ','UZAY','KARADELİK','ÇEKİM']},
+ {id:'spor',emoji:'⚽',name:'Spor dalları',words:['FUTBOL','BASKETBOL','VOLEYBOL','YÜZME','TENİS','GÜREŞ','OKÇULUK','ESKRİM','BOKS','JİMNASTİK','ATLETİZM','HENTBOL','GOLF','BADMİNTON','SURF','KAYAK','PATEN','SATRANÇ','JUDO','KARATE','HALTER','TRİATLON','RAGBİ','KRİKET','DALIŞ','KANO','YELKEN']},
+ {id:'ev',emoji:'🏠',name:'Ev ve eşyalar',words:['MASA','SANDALYE','KOLTUK','YATAK','DOLAP','HALI','PERDE','LAMBA','AYNA','TABAK','BARDAK','KAŞIK','ÇATAL','BIÇAK','TENCERE','TAVA','SÜPÜRGE','BUZDOLABI','FIRIN','ÇAYDANLIK','KİTAPLIK','YASTIK','BATTANİYE','ÇEKMECE','MUTFAK','BANYO','SALON','BALKON']},
+ {id:'tasit',emoji:'🚌',name:'Taşıtlar',words:['OTOBÜS','TRAMVAY','METRO','TREN','VAPUR','FERİBOT','UÇAK','HELİKOPTER','BİSİKLET','MOTOSİKLET','TAKSİ','KAMYON','MİNİBÜS','DOLMUŞ','TELEFERİK','FÜNİKÜLER','ROKET','KAYIK','GEMİ','DENİZALTI','BALON','TRAKTÖR','AMBULANS']},
+ {id:'hava',emoji:'⛈️',name:'Hava ve mevsimler',words:['YAĞMUR','RÜZGAR','FIRTINA','DOLU','ŞİMŞEK','YILDIRIM','GÖKKUŞAĞI','BAHAR','SONBAHAR','BULUT','POYRAZ','LODOS','SICAK','SOĞUK','SİSLİ','KIRAĞI','SAĞANAK','ÇİSENTİ','GÜNEŞLİ','BUZLANMA','KASIRGA','ZEMHERİ']}
 ];
 
 var MEM = [
  {id:'plaka',emoji:'🚗',name:'Şehir ve plaka',pairs:[['Ankara','06'],['İstanbul','34'],['İzmir','35'],['Bursa','16'],['Adana','01'],['Antalya','07'],['Konya','42'],['Trabzon','61'],['Edirne','22'],['Van','65'],['Mardin','47'],['Rize','53'],['Samsun','55'],['Kayseri','38'],['Erzurum','25'],['Muğla','48']]},
  {id:'baskent',emoji:'🌍',name:'Ülke ve başkent',pairs:[['Türkiye','Ankara'],['Fransa','Paris'],['Almanya','Berlin'],['İtalya','Roma'],['İspanya','Madrid'],['Japonya','Tokyo'],['Mısır','Kahire'],['Yunanistan','Atina'],['Rusya','Moskova'],['Kanada','Ottawa'],['Brezilya','Brasilia'],['Avustralya','Kanberra'],['Portekiz','Lizbon'],['Polonya','Varşova'],['Azerbaycan','Bakü'],['Norveç','Oslo']]},
  {id:'emoji',emoji:'🐾',name:'Hayvan ve emoji',pairs:[['Kedi','🐱'],['Köpek','🐶'],['Aslan','🦁'],['Fil','🐘'],['Penguen','🐧'],['Kaplumbağa','🐢'],['Yunus','🐬'],['Baykuş','🦉'],['Tavşan','🐰'],['Kelebek','🦋'],['Arı','🐝'],['Zürafa','🦒']]},
- {id:'atasozu',emoji:'📜',name:'Atasözü eşleştirme',wide:true,pairs:[['Damlaya damlaya','göl olur'],['Sakla samanı','gelir zamanı'],['Ağaç yaprağıyla','gürler'],['Bir elin nesi var,','iki elin sesi var'],['Komşu komşunun','külüne muhtaçtır'],['Her yiğidin','bir yoğurt yiyişi vardır'],['Acele işe','şeytan karışır'],['Sabreden derviş','muradına ermiş'],['Görünen köy','kılavuz istemez'],['Ak akçe','kara gün içindir'],['Bugünün işini','yarına bırakma'],['Taşıma su ile','değirmen dönmez']]}
+ {id:'atasozu',emoji:'📜',name:'Atasözü eşleştirme',wide:true,pairs:[['Damlaya damlaya','göl olur'],['Sakla samanı','gelir zamanı'],['Ağaç yaprağıyla','gürler'],['Bir elin nesi var,','iki elin sesi var'],['Komşu komşunun','külüne muhtaçtır'],['Her yiğidin','bir yoğurt yiyişi vardır'],['Acele işe','şeytan karışır'],['Sabreden derviş','muradına ermiş'],['Görünen köy','kılavuz istemez'],['Ak akçe','kara gün içindir'],['Bugünün işini','yarına bırakma'],['Taşıma su ile','değirmen dönmez']]},
+ {id:'meyve',emoji:'🍎',name:'Meyve ve sebze',pairs:[['Elma','🍎'],['Armut','🍐'],['Portakal','🍊'],['Limon','🍋'],['Muz','🍌'],['Karpuz','🍉'],['Üzüm','🍇'],['Çilek','🍓'],['Kiraz','🍒'],['Şeftali','🍑'],['Ananas','🍍'],['Havuç','🥕'],['Domates','🍅'],['Mısır','🌽'],['Patlıcan','🍆'],['Mantar','🍄']]},
+ {id:'tasit',emoji:'🚌',name:'Taşıt ve emoji',pairs:[['Otobüs','🚌'],['Tren','🚆'],['Uçak','✈️'],['Gemi','🚢'],['Bisiklet','🚲'],['Taksi','🚕'],['Kamyon','🚚'],['Helikopter','🚁'],['Roket','🚀'],['Motosiklet','🏍️'],['Tramvay','🚋'],['Ambulans','🚑'],['İtfaiye','🚒'],['Traktör','🚜']]},
+ {id:'hava',emoji:'⛅',name:'Hava ve doğa',pairs:[['Güneş','☀️'],['Yağmur','🌧️'],['Kar','❄️'],['Bulut','☁️'],['Şimşek','⚡'],['Gökkuşağı','🌈'],['Rüzgar','💨'],['Ay','🌙'],['Yıldız','⭐'],['Ateş','🔥'],['Damla','💧'],['Dalga','🌊'],['Volkan','🌋']]},
+ {id:'spor',emoji:'🏅',name:'Spor ve emoji',pairs:[['Futbol','⚽'],['Basketbol','🏀'],['Tenis','🎾'],['Voleybol','🏐'],['Beyzbol','⚾'],['Yüzme','🏊'],['Bisiklet','🚴'],['Boks','🥊'],['Okçuluk','🏹'],['Golf','⛳'],['Kayak','⛷️'],['Satranç','♟️'],['Masa tenisi','🏓'],['Ragbi','🏉'],['Dart','🎯']]},
+ {id:'para',emoji:'💱',name:'Ülke ve para birimi',pairs:[['Türkiye','Lira'],['ABD','Dolar'],['Japonya','Yen'],['İngiltere','Sterlin'],['Hindistan','Rupi'],['Rusya','Ruble'],['Çin','Yuan'],['Polonya','Zloti'],['İsviçre','Frank'],['Meksika','Peso'],['Brezilya','Real'],['Güney Kore','Won'],['Macaristan','Forint'],['Çekya','Kron']]},
+ {id:'ingilizce',emoji:'🔤',name:'Türkçe ve İngilizce',pairs:[['Elma','Apple'],['Kitap','Book'],['Su','Water'],['Ev','House'],['Kedi','Cat'],['Köpek','Dog'],['Güneş','Sun'],['Ay','Moon'],['Ağaç','Tree'],['Deniz','Sea'],['Yıldız','Star'],['Çiçek','Flower'],['Kalem','Pencil'],['Masa','Table'],['Pencere','Window'],['Kapı','Door']]},
+ {id:'zit',emoji:'↔️',name:'Zıt anlamlılar',pairs:[['Büyük','Küçük'],['Sıcak','Soğuk'],['Yukarı','Aşağı'],['Gece','Gündüz'],['Hızlı','Yavaş'],['Uzun','Kısa'],['Zengin','Fakir'],['Kolay','Zor'],['Açık','Kapalı'],['Ağır','Hafif'],['Tatlı','Acı'],['Eski','Yeni'],['Dolu','Boş'],['Işık','Karanlık']]},
+ {id:'simgesi',emoji:'🏞️',name:'Şehir ve simgesi',wide:true,pairs:[['Ankara','Anıtkabir'],['İstanbul','Kız Kulesi'],['İzmir','Saat Kulesi'],['Denizli','Pamukkale'],['Çanakkale','Truva'],['Şanlıurfa','Balıklıgöl'],['Van','Akdamar Adası'],['Edirne','Selimiye Camii'],['Konya','Mevlana Müzesi'],['Trabzon','Sümela Manastırı'],['Bursa','Ulu Cami'],['Gaziantep','Zeugma Müzesi'],['Sivas','Divriği Ulu Camii'],['Mardin','Deyrulzafaran']]},
+ {id:'deyim',emoji:'💬',name:'Deyim ve anlamı',wide:true,pairs:[['Kulak kabartmak','gizlice dinlemek'],['Gözden düşmek','değerini kaybetmek'],['Dil dökmek','ikna etmeye çalışmak'],['Kafayı yemek','çılgına dönmek'],['Burnu havada','kibirli'],['El ele vermek','birlikte çalışmak'],['Gözü pek','cesur'],['Ağzı açık kalmak','çok şaşırmak'],['Baş göstermek','ortaya çıkmak'],['Ateş pahası','çok pahalı'],['Dört gözle beklemek','sabırsızlıkla beklemek'],['İçi içini yemek','çok üzülmek'],['Ağzı sıkı','sır saklayan']]}
 ];
 
 var DIR_EASY = [[0,1],[1,0],[1,1]];
@@ -167,6 +210,23 @@ function recordText(){
   try{v=+localStorage.getItem(key)||0;}catch(e){}
   return v ? '🏆 Rekorun: '+v+' puan' : 'Bu ayarda henüz rekor yok. İlk skoru sen koy.';
 }
+var DEMO_CARDS=[
+  {t:'Kedi',lc:'#ffc531',d:0.5},{},{t:'🦁',lc:'#ff7a66',d:2.0},{},
+  {},{t:'🐱',lc:'#ffc531',d:0.9},{},{t:'Fil',lc:'#3cd0c2',d:2.7},
+  {},{t:'Aslan',lc:'#ff7a66',d:1.6},{t:'🐘',lc:'#3cd0c2',d:3.1},{}
+];
+function cardsHtml(played){
+  return '<div class="hgrid" aria-hidden="true">'+DEMO_CARDS.map(function(c){
+    if(!c.t) return '<div class="hc"><div class="hi"><span class="q">?</span></div></div>';
+    var em = Array.from(c.t).length<=2;
+    return '<div class="hc"><div class="hi lit'+(played?' done':'')+'" style="--lc:'+c.lc+';--d:'+c.d+'s"><span class="q">?</span><span class="f'+(em?' em':'')+'">'+c.t+'</span></div></div>';
+  }).join('')+'</div>';
+}
+function heroInner(played){
+  var mem = cfg.mode==='mem';
+  return (mem ? cardsHtml(played) : '<div class="tiles" aria-hidden="true">'+tilesHtml(played)+'</div>')+
+    '<h1>Kelime Avı &amp; Hafıza</h1><p>'+(mem?'Kartları aç, eşleşen çiftleri bul.':'Harfleri sürükle, gizli kelimeleri bul.')+'</p>';
+}
 function menuHtml(){
   var themes = cfg.mode==='ws'?WS:MEM;
   var cur = cfg.theme[cfg.mode];
@@ -175,29 +235,40 @@ function menuHtml(){
   return '<h2>Ne oynayalım?</h2><div class="modes" data-k="mode">'+
       '<button data-v="ws" aria-pressed="'+(cfg.mode==='ws')+'" class="mode ws'+(cfg.mode==='ws'?' on':'')+'">'+wsIcon()+'<b>Kelime Avı</b><small>Tabloda gizli kelimeleri bul</small></button>'+
       '<button data-v="mem" aria-pressed="'+(cfg.mode==='mem')+'" class="mode mem'+(cfg.mode==='mem'?' on':'')+'">'+memIcon()+'<b>Hafıza</b><small>Eşleşen kartları bul</small></button></div>'+
-    '<h2>Tema</h2><div class="chips" data-k="theme">'+
-      themes.map(function(t){return '<button data-v="'+t.id+'" class="'+(t.id===cur?'on':'')+'">'+t.emoji+' '+t.name+'</button>';}).join('')+'</div>'+
+    '<h2>Tema<small>'+themes.length+' tema, yana kaydır</small></h2><div class="rail"><div class="chips" data-k="theme">'+
+      themes.map(function(t){return '<button data-v="'+t.id+'" aria-pressed="'+(t.id===cur)+'" class="'+(t.id===cur?'on':'')+'">'+t.emoji+' '+t.name+'</button>';}).join('')+'</div></div>'+
     '<h2>Seviye</h2><div class="seg" data-k="diff">'+
       Object.keys(DIFF).map(function(k){return '<button data-v="'+k+'" aria-pressed="'+(k===cfg.diff)+'" class="'+(k===cfg.diff?'on':'')+'">'+DIFF[k].label+'<span class="st">'+stars[k]+'</span></button>';}).join('')+'</div>'+
     '<p class="hint-text">'+(cfg.mode==='ws'?d.wsText:d.memText)+'</p>'+
     '<p class="record">'+recordText()+'</p>'+
     '<button class="start" id="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z" fill="currentColor"/></svg>Oyna</button>';
 }
-function renderMenu(partial){
+function renderMenu(partial,opts){
   stopTimer();
+  opts = opts||{};
   var m = partial===true && app.querySelector ? app.querySelector('.menu') : null;
-  if(m){m.innerHTML=menuHtml();return;}
+  if(m){
+    var oldChips = m.querySelector('.chips'), sl = oldChips ? oldChips.scrollLeft : 0;
+    m.innerHTML = menuHtml();
+    var ch = m.querySelector('.chips');
+    if(ch){
+      if(opts.keepScroll) ch.scrollLeft = sl;
+      else { var on = ch.querySelector('.on'); if(on) ch.scrollLeft = Math.max(0,on.offsetLeft-14); }
+    }
+    if(opts.hero){ var h = app.querySelector('.hero'); if(h) h.innerHTML = heroInner(false); }
+    return;
+  }
   var played = heroPlayed; heroPlayed = true;
-  app.innerHTML =
-    '<div class="hero"><div class="tiles" aria-hidden="true">'+tilesHtml(played)+'</div><h1>Kelime Avı &amp; Hafıza</h1><p>Harfleri bul, kartları eşleştir.</p></div>'+
-    '<div class="menu">'+menuHtml()+'</div>';
+  app.innerHTML = '<div class="hero">'+heroInner(played)+'</div><div class="menu">'+menuHtml()+'</div>';
+  var ch2 = app.querySelector ? app.querySelector('.chips') : null;
+  if(ch2){ var on2 = ch2.querySelector('.on'); if(on2) ch2.scrollLeft = Math.max(0,on2.offsetLeft-14); }
 }
 
 app.addEventListener('click',function(e){
-  var tl = e.target.closest && e.target.closest('.tile');
+  var tl = e.target.closest && e.target.closest('.tile,.hc');
   if(tl){
-    var sp = tl.firstChild;
-    sp.classList.remove('b'); void sp.offsetWidth; sp.classList.add('b');
+    var el = tl.classList.contains('tile') ? tl.firstChild : tl;
+    el.classList.remove('b'); void el.offsetWidth; el.classList.add('b');
     return;
   }
   var b = e.target.closest('button');
@@ -205,10 +276,9 @@ app.addEventListener('click',function(e){
   var grp = b.parentElement && b.parentElement.getAttribute('data-k');
   if(grp){
     var v=b.getAttribute('data-v');
-    if(grp==='mode') cfg.mode=v;
-    else if(grp==='theme') cfg.theme[cfg.mode]=v;
-    else if(grp==='diff') cfg.diff=v;
-    renderMenu(true);
+    if(grp==='mode'){ cfg.mode=v; renderMenu(true,{hero:true}); }
+    else if(grp==='theme'){ cfg.theme[cfg.mode]=v; renderMenu(true,{keepScroll:true}); }
+    else if(grp==='diff'){ cfg.diff=v; renderMenu(true,{keepScroll:true}); }
     return;
   }
   if(b.id==='start') startGame();
