@@ -200,6 +200,8 @@ svg{display:block}
 #gcv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 #mmBtn{position:absolute;right:10px;bottom:10px;width:40px;height:40px;display:none;background:rgba(10,12,22,.7);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #mmBtn.off{opacity:.55}
+#board.over #gcv{opacity:.4;filter:saturate(.3);transition:.4s}
+#board.over::after{content:'OYUN BİTTİ';position:absolute;left:0;right:0;top:42%;text-align:center;font-weight:900;font-size:30px;letter-spacing:.14em;color:#ff8da0;text-shadow:0 0 24px rgba(255,93,115,.7);pointer-events:none}
 #mm{position:absolute;left:10px;bottom:10px;display:none;touch-action:none;border-radius:12px;
   background:rgba(10,12,22,.7);border:1px solid rgba(170,180,245,.3);box-shadow:0 8px 22px -8px #000}
 .dock{display:flex;justify-content:center;gap:10px;padding:8px 8px 14px}
@@ -682,7 +684,7 @@ class Board{
     this.arrows=lv.arrows.map(a=>{
       let x0=1e9,x1=-1,y0=1e9,y1=-1;
       const pc=a.cells.map(i=>{const x=i%cols,y=(i/cols)|0;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;return[x+.5,y+.5]});
-      return{id:a.id,cells:a.cells,dx:a.dx,dy:a.dy,ray:a.ray,pc,bx0:x0,bx1:x1+1,by0:y0,by1:y1+1,removed:false,anim:null,shake:-1e9,flash:-1e9,pop:-1e9};
+      return{id:a.id,cells:a.cells,dx:a.dx,dy:a.dy,ray:a.ray,pc,bx0:x0,bx1:x1+1,by0:y0,by1:y1+1,removed:false,hit:false,anim:null,shake:-1e9,flash:-1e9,pop:-1e9};
     });
     for(const a of this.arrows)for(const i of a.cells)this.occ[i]=a.id;
     this.left=this.arrows.length;this.history=[];this.hint=null;this.rayFx=null;this.kick();
@@ -806,6 +808,7 @@ class Board{
         pts=a.pc.map(p=>[p[0]*c,p[1]*c]);
         const sa=now-a.shake;
         if(sa<420){active=true;const k=1-sa/420,s=Math.sin(sa*.05)*c*.16*k;ox=-a.dy*s+a.dx*Math.abs(s)*.5;oy=a.dx*s+a.dy*Math.abs(s)*.5}
+        if(a.hit&&col===this.col){col='#e7a9b6';gcol='#ff5d73';ga=.16}
         const fa=now-a.flash;
         if(fa<700){active=true;const k=1-fa/700;col='#ff5d73';gcol='#ff5d73';ga=.12+.4*k;w=lw*(1+.35*k)}
         const pa=now-a.pop;
@@ -1055,7 +1058,7 @@ function nextSrc(src){
   return null;
 }
 function startGame(src,o={}){
-  closeSheet();{const c=$('#confetti');c.getContext('2d').clearRect(0,0,c.width,c.height)}
+  $('#board').classList.remove('over');closeSheet();{const c=$('#confetti');c.getContext('2d').clearRect(0,0,c.width,c.height)}
   const R=resolve(src);
   G={src,R,hearts:R.hearts,max:R.hearts,mistakes:0,hintUsed:false,over:false};
   board=new Board($('#gcv'),R.lv,{col:R.line,acc:R.acc,view:true,mm:$('#mm')});
@@ -1068,12 +1071,12 @@ function startGame(src,o={}){
   const sn=save.snap;
   if(sn&&sn.k===R.key&&!o.fresh){
     for(const id of sn.h){const a=board.arrows[id];if(a&&!a.removed)board.removeInstant(a)}
-    G.hearts=sn.hearts;G.mistakes=sn.m;G.hintUsed=sn.hu;board.kick();
+    G.hearts=sn.hearts;G.mistakes=sn.m;G.hintUsed=sn.hu;for(const id of sn.x||[]){if(board.arrows[id])board.arrows[id].hit=true}board.kick();
     if(sn.h.length)toast('Kaldığın yerden devam ediyorsun');
   }
   hud();
 }
-function saveSnap(){save.snap={k:G.R.key,h:board.history.slice(),hearts:G.hearts,m:G.mistakes,hu:G.hintUsed};persist()}
+function saveSnap(){save.snap={k:G.R.key,h:board.history.slice(),hearts:G.hearts,m:G.mistakes,hu:G.hintUsed,x:board.arrows.filter(a=>a.hit).map(a=>a.id)};persist()}
 function fit(first){
   if(!board)return;const el=$('#board');if(!el.clientWidth)return;
   board.setView(el.clientWidth,el.clientHeight);
@@ -1109,8 +1112,9 @@ function tap(cx,cy){
     a.shake=now;const B=board.arrows[b];B.flash=now;
     const hc=B.pc.find((p,i)=>board.occ[B.cells[i]]===b)||B.pc[0];
     board.rayFx={t0:now,a,b:[hc[0],hc[1]]};board.kick();
-    G.hearts--;G.mistakes++;sfx.bad();vib([40,40,40]);hud('hit');
-    if(G.hearts<=0){G.over=true;save.snap=null;persist();setTimeout(lose,750)}else saveSnap();
+    if(a.hit){sfx.hint();vib(15);toast('Bu ok için can zaten gitti');return} // aynı okta ikinci kez can gitmez
+    a.hit=true;G.hearts--;G.mistakes++;sfx.bad();vib([40,40,40]);hud('hit');
+    if(G.hearts<=0){G.over=true;save.snap=null;persist();$('#board').classList.add('over');setTimeout(lose,700)}else saveSnap();
   }
 }
 /* dokunma: tek parmak sürükle = gez, iki parmak = yakınlaştır, kısa dokunuş = ok seç */
@@ -1186,9 +1190,10 @@ function win(){
 }
 function lose(){
   sfx.lose();
-  sheet(`<h3>Kalpler bitti</h3><div class="meta">Önü kapalı oklara dikkat et.<br>Tıkanan oku bulmak için ipucunu kullanabilirsin.</div>
-    <button class="btn p" data-act="again">Tekrar dene</button>
-    <div class="two"><button class="btn" data-act="levels">${G.R.back}</button><button class="btn" data-act="home">Ana sayfa</button></div>`,true);
+  const left=board?board.left:0,tot=board?board.arrows.length:0;
+  sheet(`<h3 style="color:#ff8da0">Oyun bitti</h3><div class="meta">Tüm canların gitti.<br>${tot-left} / ${tot} ok çıkarıldı. Önü kapalı oklara dikkat et; ipucu tıkanan oku gösterir.</div>
+    <button class="btn p" data-act="again">Yeniden başlat</button>
+    <div class="two"><button class="btn" data-act="levels">${G.R.back==='Geri'?'Geri dön':G.R.back+' menüsü'}</button><button class="btn" data-act="home">Ana sayfa</button></div>`,true);
 }
 
 /* ---------- paneller ---------- */
