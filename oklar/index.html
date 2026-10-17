@@ -233,6 +233,23 @@ svg{display:block}
 .stars svg.on{fill:#ffd166;filter:drop-shadow(0 0 12px rgba(255,209,102,.7));animation:starin .6s both}
 @keyframes starin{0%{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.3) rotate(8deg)}100%{transform:scale(1)}}
 .meta{text-align:center;color:var(--mut);font-size:14px;margin-bottom:6px;line-height:1.5}
+.inp{width:100%;margin:6px 0 4px;padding:15px 16px;border-radius:16px;font:inherit;font-size:18px;font-weight:700;text-align:center;color:var(--ink);
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(170,180,245,.3);outline:0;-webkit-user-select:text;user-select:text}
+.inp:focus{border-color:#aab4f5;box-shadow:0 0 0 4px rgba(170,180,245,.18)}
+textarea.inp{font-size:12px;font-weight:500;text-align:left;height:96px;resize:none;word-break:break-all}
+.err{min-height:18px;color:#ff8da0;font-size:13px;text-align:center}
+.av{flex:none;display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;font-weight:900;font-size:17px;color:#0a0c16;
+  background:linear-gradient(140deg,var(--ac),#fff 190%);box-shadow:0 0 14px -2px var(--ac)}
+.who{display:flex;align-items:center;gap:12px;margin:2px 16px 12px;padding:9px 14px 9px 10px;width:calc(100% - 32px);border-radius:20px;text-align:left;
+  background:var(--glass);border:1px solid rgba(170,180,245,.16);transition:transform .12s}
+.who:active{transform:scale(.985)}
+.who b{display:block;font-size:16px}.who small{color:var(--mut);font-size:12px}
+.who .sw2{margin-left:auto;font-size:12px;font-weight:800;color:#aab4f5;padding:7px 12px;border-radius:12px;background:rgba(170,180,245,.12)}
+.prow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 4px;border-bottom:1px solid rgba(170,180,245,.1);text-align:left}
+.prow b{display:block;font-size:16px}.prow small{color:var(--mut);font-size:12px}
+.prow.on{background:rgba(170,180,245,.08);border-radius:14px;padding-left:10px;border-color:transparent}
+.prow .ck{margin-left:auto;color:#7cf7c2}
+.note{color:var(--mut);font-size:13px;line-height:1.45;text-align:center;margin:0 0 8px}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
 </style>
 </head>
@@ -256,6 +273,7 @@ svg{display:block}
           <p class="sub">Hepsini dışarı çıkar.</p>
         </div>
       </div>
+      <button class="who" id="who"></button>
       <div class="stats" id="stats"></div>
       <button class="play" id="bCont"></button>
       <div id="daily"></div>
@@ -519,7 +537,7 @@ const dayNum=k=>{const p=parseKey(k);return Math.floor(Date.UTC(p.y,p.m,p.d)/864
 function dayDiff(k){const p=parseKey(k),dow=new Date(p.y,p.m,p.d).getDay(),t=((dow+6)%7)/6;return{t,idx:t<.2?0:t<.5?1:t<.85?2:3}}
 
 /* ---------- kayıt ---------- */
-const KEY='oklar.v1';
+let KEY='oklar.p.none';const LEGACY='oklar.v1';
 const defSave=()=>({stars:DIFFS.map(()=>Array(100).fill(0)),set:{sound:true,vib:true,all:false,map:true},seen:false,last:[0,0],
   daily:{last:'',streak:0},tipHide:false,packs:{},days:{},snap:null});
 function load(){
@@ -528,8 +546,32 @@ function load(){
       if(r.daily&&r.daily.last&&!r.days[r.daily.last])r.days[r.daily.last]=1;return r}}catch(e){}
   return defSave();
 }
+
+const persist=()=>{if(!curP())return;try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}};
+/* ---------- oyuncular (her takma ad ayrı kayıt) ---------- */
+const PK='oklar.profiles',PCOL=['#8fe9d9','#f6d37f','#bfb1ff','#fb7185','#7dd3fc','#f9a8d4','#86efac','#fdba74'];
+let prof=(()=>{try{const p=JSON.parse(localStorage.getItem(PK));if(p&&Array.isArray(p.list))return p}catch(e){}return{list:[],cur:null}})();
+const saveProf=()=>{try{localStorage.setItem(PK,JSON.stringify(prof))}catch(e){}};
+function curP(){return prof.list.find(p=>p.id===prof.cur)||null}
+const pKey=id=>'oklar.p.'+id;
+function cleanName(n){return String(n||'').replace(/[<>&"']/g,'').replace(/\s+/g,' ').trim().slice(0,16)}
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function avatar(p,sz){return`<span class="av" style="--ac:${p.color};${sz?`width:${sz}px;height:${sz}px;font-size:${sz*.45}px`:''}">${esc([...p.name][0].toUpperCase())}</span>`}
+function selectProfile(id){
+  if(curP())persist();
+  prof.cur=id;saveProf();KEY=pKey(id);save=load();G=null;board=null;
+}
+function createProfile(name){
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+  const p={id,name,color:PCOL[prof.list.length%PCOL.length],created:Date.now()};
+  if(!prof.list.length){try{const old=localStorage.getItem(LEGACY);if(old){localStorage.setItem(pKey(id),old);localStorage.removeItem(LEGACY)}}catch(e){}}
+  prof.list.push(p);selectProfile(id);return p;
+}
+function nameTaken(n,except){return prof.list.some(p=>p.id!==except&&p.name.toLowerCase()===n.toLowerCase())}
+function profStars(id){try{const s=JSON.parse(localStorage.getItem(pKey(id)));let n=0;s.stars.forEach(a=>a.forEach(x=>{if(x>0)n++}));return n}catch(e){return 0}}
+let G=null,board=null;
+if(prof.cur&&prof.list.some(p=>p.id===prof.cur))KEY=pKey(prof.cur);
 let save=load();
-const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(save))}catch(e){}};
 const unlocked=(di,li)=>save.set.all||li===0||save.stars[di][li-1]>0||save.stars[di][li]>0;
 const nextOf=di=>{const s=save.stars[di];for(let i=0;i<100;i++)if(s[i]===0)return i;return 99};
 const packArr=k=>save.packs[k]||(save.packs[k]=Array(100).fill(0));
@@ -744,7 +786,7 @@ class Board{
 }
 
 /* ---------- gezinme (telefonun geri tuşu dahil) ---------- */
-let curScreen='home',hero=null,heroTimer=0,board=null,G=null,depth=0,toHome=false,calY=null,mState={y:0,m:0,tab:'days'};
+let curScreen='home',hero=null,heroTimer=0,depth=0,toHome=false,calY=null,mState={y:0,m:0,tab:'days'};
 function show(id){
   curScreen=id;document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
   const top=id==='home'||id==='cal';$('#app').classList.toggle('tabs-on',top);
@@ -801,6 +843,7 @@ function startHero(){
 }
 function renderHome(){
   sndIcon();
+  {const p=curP();$('#who').innerHTML=p?`${avatar(p)}<span><b>${esc(p.name)}</b><small>Senin kaydın · sadece sana ait</small></span><span class="sw2">Oyuncular</span>`:''}
   let done=0,sum=0;save.stars.forEach(st=>st.forEach(x=>{if(x>0)done++;sum+=x}));
   const streak=streakNow(),tk=keyOf(0),tdone=!!save.days[tk],dd=DIFFS[dayDiff(tk).idx];
   $('#stats').innerHTML=`<div class="stat"><b>${done}<small style="font-size:13px;color:var(--mut);font-weight:600">/400</small></b><small>BÖLÜM</small></div>
@@ -1100,16 +1143,74 @@ function settingsSheet(){
     ${row('all','Tüm bölümleri aç','Sırayla açılma kuralını kaldırır')}
     <button class="btn d" data-act="reset">İlerlemeyi sıfırla</button><button class="btn p" data-act="close">Tamam</button>`);
 }
+function welcomeSheet(first){
+  sheet(`<h3>${first?'Hoş geldin!':'Yeni oyuncu'}</h3><p class="note">Bir takma ad yaz. İlerlemen, yıldızların ve serin bu isme özel kaydedilir; başkası kendi adıyla sıfırdan başlar.</p>
+    <input class="inp" id="nick" maxlength="16" placeholder="Takma adın" autocomplete="off" autocapitalize="words" spellcheck="false">
+    <div class="err" id="nerr"></div><button class="btn p" data-act="pstart">Başla</button>${first?'':'<button class="btn" data-act="plist">Vazgeç</button>'}`,true);
+  setTimeout(()=>{const i=$('#nick');if(i)i.focus()},120);
+}
+function profileSheet(){
+  const me=curP();
+  const rows=prof.list.map(p=>`<button class="prow ${p.id===prof.cur?'on':''}" data-act="pswitch" data-id="${p.id}">${avatar(p)}<span><b>${esc(p.name)}</b><small>${profStars(p.id)} / 400 bölüm</small></span>${p.id===prof.cur?`<span class="ck">${IC.check}</span>`:''}</button>`).join('');
+  sheet(`<h3>Oyuncular</h3><div>${rows}</div>
+    <button class="btn p" data-act="pnew">+ Yeni oyuncu ekle</button>
+    <div class="two"><button class="btn" data-act="pren">Adı değiştir</button><button class="btn" data-act="pexp">Kodla taşı</button></div>
+    <button class="btn d" data-act="pdel">${esc(me.name)} oyuncusunu sil</button><button class="btn" data-act="close">Kapat</button>`);
+}
+function submitNick(rename){
+  const n=cleanName($('#nick').value),err=$('#nerr');
+  if(n.length<2){err.textContent='En az 2 harf yaz.';return}
+  if(nameTaken(n,rename?prof.cur:null)){err.textContent='Bu ad bu cihazda kullanılıyor, başka bir ad dene.';return}
+  if(rename){curP().name=n;saveProf();closeSheet();renderHome();toast('Adın değişti');return}
+  const first=!prof.list.length;createProfile(n);closeSheet();show('home');
+  if(first||!save.seen)setTimeout(helpSheet,350);else toast('Merhaba '+n+'!');
+}
+function exportSheet(){
+  let code='';try{code='OKLAR1.'+btoa(unescape(encodeURIComponent(JSON.stringify(save))))}catch(e){}
+  sheet(`<h3>İlerlemeyi taşı</h3><p class="note">Bu kodu başka telefonda "Kodu yükle" ile yapıştırırsan kaldığın yerden devam edersin. Kodu sadece kendine ver.</p>
+    <textarea class="inp" id="code" readonly>${code}</textarea>
+    <button class="btn p" data-act="pcopy">Kodu kopyala</button>
+    <button class="btn" data-act="pimp">Kodu yükle</button><button class="btn" data-act="plist">Geri</button>`);
+}
+function importSheet(){
+  sheet(`<h3>Kodu yükle</h3><p class="note">Başka cihazdan aldığın kodu yapıştır. <b>${esc(curP().name)}</b> oyuncusunun şu anki ilerlemesi bu kodla değişir.</p>
+    <textarea class="inp" id="code" placeholder="OKLAR1...." spellcheck="false"></textarea><div class="err" id="nerr"></div>
+    <button class="btn p" data-act="pdoimp">Yükle</button><button class="btn" data-act="pexp">Geri</button>`,true);
+}
 const acts={
+  pstart(){submitNick(false)},
+  plist:profileSheet,
+  pnew(){welcomeSheet(false)},
+  pswitch(b){const id=b.dataset.id;if(id!==prof.cur){selectProfile(id);closeSheet();renderHome();show('home');toast('Merhaba '+curP().name+'!')}else closeSheet()},
+  pren(){sheet(`<h3>Adı değiştir</h3><input class="inp" id="nick" maxlength="16" value="${esc(curP().name)}" autocomplete="off" spellcheck="false"><div class="err" id="nerr"></div>
+    <button class="btn p" data-act="prensave">Kaydet</button><button class="btn" data-act="plist">Vazgeç</button>`,true)},
+  prensave(){submitNick(true)},
+  pdel(){const me=curP();if(!confirm(me.name+' oyuncusu ve tüm ilerlemesi silinsin mi?'))return;
+    try{localStorage.removeItem(pKey(me.id))}catch(e){}
+    prof.list=prof.list.filter(p=>p.id!==me.id);prof.cur=null;saveProf();
+    if(prof.list.length){selectProfile(prof.list[0].id);closeSheet();renderHome()}else{save=defSave();KEY=pKey('none');closeSheet();renderHome();welcomeSheet(true)}},
+  pexp:exportSheet,pimp:importSheet,
+  async pcopy(){const t=$('#code').value;try{await navigator.clipboard.writeText(t);toast('Kod kopyalandı')}catch(e){$('#code').select();toast('Kodu seçili, elle kopyala')}},
+  pdoimp(){
+    const t=$('#code').value.trim(),err=$('#nerr');
+    try{
+      if(!t.startsWith('OKLAR1.'))throw 0;
+      const o=JSON.parse(decodeURIComponent(escape(atob(t.slice(7)))));
+      if(!o||!o.stars||o.stars.length!==4)throw 0;
+      const d=defSave();save={...d,...o,set:{...d.set,...o.set},packs:o.packs||{},days:o.days||{},snap:null};persist();closeSheet();renderHome();toast('İlerleme yüklendi');
+    }catch(e){err.textContent='Kod geçersiz. Tamamını yapıştırdığından emin ol.'}
+  },
   close:closeSheet,
   tog(b){const k=b.dataset.k;save.set[k]=!save.set[k];persist();settingsSheet();sndIcon();if(k==='sound'&&save.set.sound)sfx.ok(.3)},
-  reset(){if(confirm('Tüm yıldızlar ve ilerleme silinsin mi?')){save=defSave();save.seen=true;persist();closeSheet();if(curScreen==='home')renderHome();else if(curScreen==='cal')renderCal()}},
+  reset(){if(confirm(curP().name+' oyuncusunun tüm ilerlemesi silinsin mi?')){save=defSave();save.seen=true;persist();closeSheet();if(curScreen==='home')renderHome();else if(curScreen==='cal')renderCal()}},
   next(){if(G.next)startGame(G.next)},
   again(){startGame(G.src,{fresh:true})},
   home(){goHome()},
   levels(){closeSheet();goBack()}
 };
 $('#panel').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b)acts[b.dataset.act](b)});
+$('#panel').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='nick'){e.preventDefault();const b=$('#panel [data-act=pstart],#panel [data-act=prensave]');if(b)b.click()}});
+$('#who').onclick=()=>{if(curP())profileSheet()};
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet'&&!lockSheet)closeSheet()});
 
 /* ---------- konfeti ---------- */
@@ -1144,7 +1245,8 @@ addEventListener('resize',()=>{if(curScreen==='game')fit(false);else if(curScree
 document.addEventListener('contextmenu',e=>e.preventDefault());
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 show('home');
-if(!save.seen)setTimeout(helpSheet,500);
+if(!curP())setTimeout(()=>welcomeSheet(true),250);
+else if(!save.seen)setTimeout(helpSheet,500);
 </script>
 </body>
 </html>
