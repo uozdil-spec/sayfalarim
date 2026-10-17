@@ -378,6 +378,9 @@ function genOnce(cols,rows,minL,maxL,seed,turn,hard,mega,megaL){
     if(u<.92)return minL+Math.round(span*(.65+rnd()*.35));
     return Math.round(maxL*(1.4+rnd()*2.2));
   };
+  const fr=n=>{let f=0,nx=n%cols,ny=(n/cols)|0;for(const[ex,ey]of DIRS){const x2=nx+ex,y2=ny+ey;if(x2>=0&&y2>=0&&x2<cols&&y2<rows&&!placed[y2*cols+x2])f++}return f};
+  // q yerleşince tek başına kalacak komşu sayısı
+  const dn=(q,behind)=>{let c=0,x=q%cols,y=(q/cols)|0;for(const[ex,ey]of DIRS){const nx=x+ex,ny=y+ey;if(nx<0||ny<0||nx>=cols||ny>=rows)continue;const n=ny*cols+nx;if(n===behind||placed[n])continue;if(fr(n)===1)c++}return c};
   let remaining=N,guard=0;
   while(remaining>0&&guard++<N*3){
     const rec=[];let tries=0;
@@ -387,8 +390,15 @@ function genOnce(cols,rows,minL,maxL,seed,turn,hard,mega,megaL){
       const q=k>>2,d=k&3;
       if(placed[q]){del.push(i);continue}
       const bx=q%cols-DIRS[d][0],by=((q/cols)|0)-DIRS[d][1],bf=bx>=0&&by>=0&&bx<cols&&by<rows&&!placed[by*cols+bx];
-      const rl=rayLen(q,d),sc=(bf?1000:0)+(rnd()<hard?rl:-rl)*.12+rnd()*3;
+      const rl=rayLen(q,d),sc=(bf?1000:0)-300*dn(q,bf?by*cols+bx:-1)+(rnd()<hard?rl:-rl)*.12+rnd()*3;
       if(sc>bs){bs=sc;best={i,q,d,bf}}
+    }
+    if(best&&!best.bf){ // sadece kısa/tek kareli kalacaksa, geride boş karesi olan başka bir aday ara
+      let alt=null,as=-1e9;
+      for(let i=0;i<cand.length;i++){const k=cand[i],q2=k>>2,d2=k&3;if(placed[q2])continue;
+        const bx=q2%cols-DIRS[d2][0],by=((q2/cols)|0)-DIRS[d2][1];
+        if(bx>=0&&by>=0&&bx<cols&&by<rows&&!placed[by*cols+bx]){const sc2=rnd()-.3*dn(q2,by*cols+bx);if(sc2>as){as=sc2;alt={i,q:q2,d:d2,bf:true}}}}
+      if(alt)best=alt;
     }
     if(best)del.push(best.i);
     const uniq=[...new Set(del)].sort((a,b)=>b-a);
@@ -413,6 +423,8 @@ function genOnce(cols,rows,minL,maxL,seed,turn,hard,mega,megaL){
       for(let e=0;e<4;e++){const x=cx+DIRS[e][0],y=cy+DIRS[e][1];if(x>=0&&y>=0&&x<cols&&y<rows&&!placed[y*cols+x])opts.push(e)}
       if(!opts.length)break;
       let e;
+      const dead1=opts.filter(o=>fr((cy+DIRS[o][1])*cols+cx+DIRS[o][0])===0);
+      if(dead1.length){e=dead1[(rnd()*dead1.length)|0];dir=e;cur=(cy+DIRS[e][1])*cols+cx+DIRS[e][0];continue}
       if(rnd()<(megaHit?.25:.7)){ // dar yerleri önce doldur: boşta kalan kare bırakma
         let bd=9,bo=[];
         for(const o of opts){const nx=cx+DIRS[o][0],ny=cy+DIRS[o][1];let f=0;
@@ -422,6 +434,8 @@ function genOnce(cols,rows,minL,maxL,seed,turn,hard,mega,megaL){
       }else e=(opts.includes(dir)&&rnd()>tn)?dir:opts[(rnd()*opts.length)|0];
       dir=e;cur=(cy+DIRS[e][1])*cols+cx+DIRS[e][0];
     }
+    {const tl=path[path.length-1];if(path.length>=2||best.bf){for(const[ex,ey]of DIRS){const nx=tl%cols+ex,ny=((tl/cols)|0)+ey;
+      if(nx>=0&&ny>=0&&nx<cols&&ny<rows){const n=ny*cols+nx;if(!placed[n]&&fr(n)===0){placed[n]=1;remaining--;path.push(n);break}}}}}
     // path baştan kuyruğa; kuyruk→baş
     const cells=path.slice().reverse(),ray=[];
     let x=q%cols+DIRS[d][0],y=((q/cols)|0)+DIRS[d][1];
@@ -464,9 +478,62 @@ function genOnce(cols,rows,minL,maxL,seed,turn,hard,mega,megaL){
       const cs=new Set();for(const n of nb(X.cells[0])){const Y=owner[n];if(Y>i&&!dead[Y])cs.add(Y)}
       for(const Y of[...cs].sort(()=>rnd()-.5))if(tryMerge(i,Y)){moved++;break}
     }
+    for(let i=arrows.length-1;i>=0;i--){ // kısa ok, kuyruğuna bitişik SONRAKİ bir okun kuyruğuna da katılabilir (kimsenin yolunu tıkamıyorsa)
+      const S=arrows[i];if(dead[i]||S.cells.length>lim)continue;
+      const cs=new Set();for(const c of[S.cells[0],S.cells[S.cells.length-1]])for(const n of nb(c)){const C=owner[n];if(C>i&&!dead[C]&&arrows[C].cells[0]===n)cs.add(C)}
+      for(const C of[...cs].sort(()=>rnd()-.5)){
+        const CC=arrows[C];if(CC.cells.length+S.cells.length>capL)continue;
+        const t=CC.cells[0],opts=[];
+        for(const c of[S.cells[0],S.cells[S.cells.length-1]]){
+          if(Math.abs((c%cols)-(t%cols))+Math.abs(((c/cols)|0)-((t/cols)|0))!==1)continue;
+          if(CC.cells.length===1&&!(c%cols===(t%cols)-CC.dx&&((c/cols)|0)===((t/cols)|0)-CC.dy))continue;
+          opts.push(c);
+        }
+        if(!opts.length)continue;
+        let ok=true;
+        for(let b=i+1;b<=C&&ok;b++){if(dead[b])continue;const B=arrows[b];if(!B.rs)B.rs=new Set(B.ray);for(const k of S.cells)if(B.rs.has(k)){ok=false;break}}
+        if(!ok)continue;
+        const c=opts[(rnd()*opts.length)|0],ord=S.cells[S.cells.length-1]===c?S.cells:S.cells.slice().reverse();
+        CC.cells=ord.concat(CC.cells);for(const k of S.cells)owner[k]=C;dead[i]=1;moved++;break;
+      }
+    }
     if(!moved)break;
   }
-  const out=[];arrows.forEach((a,i)=>{if(!dead[i]){a.id=out.length;delete a.o;out.push(a)}});
+  /* hâlâ tek kareli ok kaldıysa: bir yönü seçip, arkasındaki okun başlangıç kısmını ona katarak uzat */
+  arrows.forEach((a,i)=>a.k=i);
+  const rayFrom=(c,d)=>{const r=[];let x=c%cols+DIRS[d][0],y=((c/cols)|0)+DIRS[d][1];while(x>=0&&y>=0&&x<cols&&y<rows){r.push(y*cols+x);x+=DIRS[d][0];y+=DIRS[d][1]}return r};
+  for(let i=0;i<arrows.length;i++){
+    const S=arrows[i];if(dead[i]||S.cells.length!==1)continue;
+    const sc=S.cells[0],cx=sc%cols,cy=(sc/cols)|0;
+    const d0=DIRS.findIndex(d=>d[0]===S.dx&&d[1]===S.dy),order=[d0,0,1,2,3].filter((v,j,ar)=>ar.indexOf(v)===j);
+    for(const d of order){
+      const bx=cx-DIRS[d][0],by=cy-DIRS[d][1];if(bx<0||by<0||bx>=cols||by>=rows)continue;
+      const b=by*cols+bx,A=owner[b];if(A<0||A===i||dead[A])continue;
+      const AA=arrows[A],idx=AA.cells.indexOf(b);
+      if(idx===AA.cells.length-1){ // arkadaki ok tamamen bu okun gövdesi olur
+        const ray=d===d0?S.ray:rayFrom(sc,d);if(!ray.every(k=>owner[k]>=0&&owner[k]<i))continue;
+        let ok=true;
+        if(i>A)for(let b2=A+1;b2<i&&ok;b2++){if(dead[b2])continue;const B=arrows[b2];if(!B.rs)B.rs=new Set(B.ray);for(const c of AA.cells)if(B.rs.has(c)){ok=false;break}}
+        if(!ok)continue;
+        S.cells=AA.cells.concat([sc]);S.dx=DIRS[d][0];S.dy=DIRS[d][1];S.ray=ray;for(const c of AA.cells)owner[c]=i;dead[A]=1;
+        break;
+      }
+      if(idx<0||idx>AA.cells.length-3)continue;
+      const A1=AA.cells.slice(0,idx+1),A2=AA.cells.slice(idx+1),ray=d===d0?S.ray:rayFrom(sc,d);
+      let key=-1;
+      if(ray.every(k=>owner[k]>=0&&owner[k]<i)){
+        let ok=true;
+        if(i>A)for(let b2=A+1;b2<i&&ok;b2++){if(dead[b2])continue;const B=arrows[b2];if(!B.rs)B.rs=new Set(B.ray);for(const c of A1)if(B.rs.has(c)){ok=false;break}}
+        if(ok)key=S.k;
+      }
+      if(key<0&&i>A&&ray.every(k=>owner[k]>=0&&owner[k]<A))key=AA.k-.5;
+      if(key<0)continue;
+      S.cells=A1.concat([sc]);S.k=key;S.dx=DIRS[d][0];S.dy=DIRS[d][1];S.ray=ray;AA.cells=A2;for(const c of A1)owner[c]=i;
+      break;
+    }
+  }
+  const out=arrows.filter((a,i)=>!dead[i]).sort((a,b)=>a.k-b.k);
+  out.forEach((a,i)=>{a.id=i;delete a.o;delete a.rs;delete a.k});
   let filled=0;for(const a of out)filled+=a.cells.length;
   return{cols,rows,arrows:out,filled};
 }
@@ -488,11 +555,13 @@ function makeFrom(D,li,seedBase){
   const cols=Math.round(lerp(D.c[0],D.c[1],t)),rows=Math.round(lerp(D.r[0],D.r[1],t));
   const minL=Math.round(lerp(D.len[0][0],D.len[1][0],t)),maxL=Math.round(lerp(D.len[0][1],D.len[1][1],t));
   const hard=lerp(D.hard[0],D.hard[1],t),mg=D.mega?Math.round(lerp(D.mega[0],D.mega[1],t)):0;let best=null;
-  for(let k=0;k<D.tries;k++){
+  for(let k=0;k<D.tries+14;k++){
+    if(k>=D.tries&&best&&best.singles===0)break;
     const seed=seedBase+li*977+k*7919+12345;
     const lv=genOnce(cols,rows,minL,maxL,seed,D.turn,hard,mg,D.megaL),r=analyze(lv);
     if(r<0)continue;
-    lv.rounds=r;lv.score=r+lv.filled/(cols*rows)*12;
+    lv.singles=lv.arrows.filter(a=>a.cells.length<2).length;
+    lv.rounds=r;lv.score=r+lv.filled/(cols*rows)*12-lv.singles*1000;
     if(!best||lv.score>best.score)best=lv;
   }
   return best;
@@ -500,7 +569,7 @@ function makeFrom(D,li,seedBase){
 const makeLevel=(di,li)=>makeFrom(DIFFS[di],li,(di+1)*100003);
 //#GEN_END
 
-const GEN_VER='g6';
+const GEN_VER='g7';
 const $=s=>document.querySelector(s);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const I={
