@@ -335,7 +335,7 @@ const DIFFS=[
  {id:'kolay',name:'Kolay',tag:'Isınma turu · küçük labirent',accent:'#5eead4',rgb:'94,234,212',line:'#8fe9d9',hearts:5,c:[7,12],r:[10,18],len:[[2,5],[3,10]],turn:.25,hard:[0,.5],tries:3},
  {id:'orta',name:'Orta',tag:'Keyifli beyin egzersizi',accent:'#fbbf24',rgb:'251,191,36',line:'#f6d37f',hearts:5,c:[12,20],r:[18,32],len:[[2,6],[4,16]],turn:.35,hard:[.4,.8],tries:3},
  {id:'zor',name:'Zor',tag:'Geniş haritalar, uzun yollar',accent:'#a78bfa',rgb:'167,139,250',line:'#bfb1ff',hearts:4,c:[22,36],r:[34,60],len:[[3,8],[5,26]],turn:.45,hard:[.7,.95],tries:2},
- {id:'kabus',name:'Kabus',tag:'Dev labirent · yüzlerce ok',accent:'#fb7185',rgb:'251,113,133',line:'#aab4f5',hearts:4,c:[30,50],r:[50,88],len:[[5,16],[12,70]],turn:.5,hard:[.8,.95],tries:1}
+ {id:'kabus',name:'Kabus',tag:'Dev labirent · yüzlerce ok',accent:'#fb7185',rgb:'251,113,133',line:'#aab4f5',hearts:4,c:[40,70],r:[68,120],len:[[4,12],[8,50]],turn:.5,hard:[.8,.95],tries:1}
 ];
 const PACK={c:[10,40],r:[16,76],len:[[2,8],[5,30]],turn:.4,hard:[.4,1],tries:2,hearts:4};
 const DAILY={c:[10,56],r:[16,104],len:[[2,8],[5,36]],turn:.4,hard:[.3,1],tries:2,hearts:4};
@@ -343,93 +343,113 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
 
-/* 1) ızgarayı rastgele yılanlarla döşe */
-function tile(cols,rows,minL,maxL,seed,turn){
-  const rnd=mulberry32(seed),N=cols*rows,occ=new Int32Array(N).fill(-1),snakes=[],order=[...Array(N).keys()];
-  for(let i=N-1;i>0;i--){const j=(rnd()*(i+1))|0;[order[i],order[j]]=[order[j],order[i]]}
-  for(const s of order){
-    if(occ[s]>=0)continue;
-    const L=rnd()<.07?Math.round(maxL*(1.4+rnd()*1.2)):minL+((Math.pow(rnd(),1.4)*(maxL-minL+1))|0),path=[s];occ[s]=-2;let dir=-1;
-    while(path.length<L){
-      const cur=path[path.length-1],cx=cur%cols,cy=(cur/cols)|0,cand=[];
-      for(let d=0;d<4;d++){const x=cx+DIRS[d][0],y=cy+DIRS[d][1];if(x>=0&&y>=0&&x<cols&&y<rows&&occ[y*cols+x]===-1)cand.push(d)}
-      if(!cand.length)break;
-      const d=(dir>=0&&cand.includes(dir)&&rnd()>turn)?dir:cand[(rnd()*cand.length)|0];dir=d;
-      const ni=(cy+DIRS[d][1])*cols+cx+DIRS[d][0];path.push(ni);occ[ni]=-2;
+/* Dıştan içe doğru kurulur: her ok, çıkış yolu daha önce konmuş oklarla dolu olacak şekilde eklenir.
+   Böylece harita her zaman çözülebilir ve hiç boşluk kalmaz. */
+function genOnce(cols,rows,minL,maxL,seed,turn,hard){
+  const rnd=mulberry32(seed),N=cols*rows,placed=new Uint8Array(N),inC=new Uint8Array(N*4),cand=[],arrows=[];
+  const clear=(q,d)=>{let x=q%cols+DIRS[d][0],y=((q/cols)|0)+DIRS[d][1];
+    while(x>=0&&y>=0&&x<cols&&y<rows){if(!placed[y*cols+x])return false;x+=DIRS[d][0];y+=DIRS[d][1]}return true};
+  const addC=(q,d)=>{const k=q*4+d;if(!inC[k]){inC[k]=1;cand.push(k)}};
+  for(let x=0;x<cols;x++){addC(x,3);addC((rows-1)*cols+x,2)}
+  for(let y=0;y<rows;y++){addC(y*cols,1);addC(y*cols+cols-1,0)}
+  const rayLen=(q,d)=>{const x=q%cols,y=(q/cols)|0;return d===0?cols-1-x:d===1?x:d===2?rows-1-y:y};
+  const pickL=()=>{
+    const u=rnd(),span=Math.max(1,maxL-minL);
+    if(u<.28)return minL+((rnd()*span*.3)|0);
+    if(u<.66)return minL+Math.round(span*(.3+rnd()*.35));
+    if(u<.92)return minL+Math.round(span*(.65+rnd()*.35));
+    return Math.round(maxL*(1.4+rnd()*2.2));
+  };
+  let remaining=N,guard=0;
+  while(remaining>0&&guard++<N*3){
+    const rec=[];let tries=0;
+    while(rec.length<28&&tries<80&&cand.length){tries++;const i=(rnd()*cand.length)|0,k=cand[i];rec.push([i,k])}
+    let best=null,bs=-1e9;const del=[];
+    for(const[i,k]of rec){
+      const q=k>>2,d=k&3;
+      if(placed[q]){del.push(i);continue}
+      const bx=q%cols-DIRS[d][0],by=((q/cols)|0)-DIRS[d][1],bf=bx>=0&&by>=0&&bx<cols&&by<rows&&!placed[by*cols+bx];
+      const rl=rayLen(q,d),sc=(bf?1000:0)+(rnd()<hard?rl:-rl)*.12+rnd()*3;
+      if(sc>bs){bs=sc;best={i,q,d,bf}}
     }
-    if(path.length>=2){const id=snakes.length;snakes.push({cells:path});for(const c of path)occ[c]=id}
-    else{
-      let done=false;const x=s%cols,y=(s/cols)|0;
-      for(const[dx,dy]of DIRS){
-        const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=cols||ny>=rows)continue;
-        const n=ny*cols+nx,id=occ[n];if(id<0)continue;const sn=snakes[id];
-        if(sn.cells[0]===n){sn.cells.unshift(s);occ[s]=id;done=true;break}
-        if(sn.cells[sn.cells.length-1]===n){sn.cells.push(s);occ[s]=id;done=true;break}
+    if(best)del.push(best.i);
+    const uniq=[...new Set(del)].sort((a,b)=>b-a);
+    for(const i of uniq){const last=cand.pop();if(i<cand.length)cand[i]=last}
+    if(!best){
+      if(!cand.length){ // yedek tarama
+        for(let q=0;q<N;q++)if(!placed[q])for(let d=0;d<4;d++)if(clear(q,d))addC(q,d);
+        if(!cand.length)break;
       }
-      if(!done){const id=snakes.length;snakes.push({cells:[s]});occ[s]=id}
-    }
-  }
-  return{snakes,occ0:occ};
-}
-function rayDir(cols,rows,h,dx,dy){
-  const ray=[];let x=h%cols+dx,y=((h/cols)|0)+dy;
-  while(x>=0&&x<cols&&y>=0&&y<rows){ray.push(y*cols+x);x+=dx;y+=dy}
-  return{dx,dy,ray,ib:-1};
-}
-function mkRays(cols,rows,cells){
-  const n=cells.length;
-  if(n===1)return DIRS.map(d=>{const r=rayDir(cols,rows,cells[0],d[0],d[1]);r.rev=false;return r});
-  return[0,1].map(e=>{
-    const h=e?cells[0]:cells[n-1],p=e?cells[1]:cells[n-2];
-    const r=rayDir(cols,rows,h,(h%cols)-(p%cols),((h/cols)|0)-((p/cols)|0));r.rev=!!e;return r;
-  });
-}
-/* 2) çözülebilir bir sırayla okların yönlerini seç (hard: 0 kolay … 1 çok zor) */
-function orient(cols,rows,T,rnd,hard){
-  const occ=new Int32Array(cols*rows).fill(-1),byId=new Map(),out=[];let nextId=0;
-  const add=cells=>{const s={id:nextId++,cells,rays:mkRays(cols,rows,cells)};byId.set(s.id,s);for(const c of cells)occ[c]=s.id};
-  T.snakes.forEach(s=>add(s.cells.slice()));
-  const score=new Map();
-  for(const s of byId.values())for(const r of s.rays){
-    const seen=new Set();
-    for(const c of r.ray){const o=occ[c];if(o>=0&&o!==s.id&&!seen.has(o)){seen.add(o);score.set(o,(score.get(o)||0)+1)}}
-  }
-  while(byId.size){
-    const cand=[];
-    for(const s of byId.values())for(let e=0;e<s.rays.length;e++){
-      const r=s.rays[e];let ok=true;
-      for(const c of r.ray)if(occ[c]>=0){ok=false;break}
-      if(ok){
-        if(r.ib<0){let n=0;for(const x of r.ray)if(T.occ0[x]>=0)n++;r.ib=n}
-        cand.push({s,e,r,ib:r.ib})
-      }
-    }
-    if(!cand.length){
-      let arr=[...byId.values()].filter(q=>q.cells.length>=4);if(!arr.length)arr=[...byId.values()].filter(q=>q.cells.length>=2);if(!arr.length)arr=[...byId.values()];
-      const s=arr[(rnd()*arr.length)|0];
-      byId.delete(s.id);for(const c of s.cells)occ[c]=-1;
-      if(s.cells.length>=4){const m=2+((rnd()*(s.cells.length-3))|0);add(s.cells.slice(0,m));add(s.cells.slice(m))}
-      else if(s.cells.length>=2)for(const c of s.cells)add([c]);
-      else add(s.cells);
       continue;
     }
-    let pc;
-    const blocked=cand.filter(c=>c.ib>0);
-    if(rnd()<hard&&blocked.length){blocked.sort((a,b)=>b.ib-a.ib);pc=blocked[Math.min(blocked.length-1,(rnd()*rnd()*blocked.length)|0)]}
-    else if(rnd()<hard){let b=null,bs=-1e9;for(const c of cand){const v=(score.get(c.s.id)||0)+rnd()*.5;if(v>bs){bs=v;b=c}}pc=b}
-    else{const fr=cand.filter(c=>c.ib===0),pool=fr.length?fr:cand;pc=pool[(rnd()*pool.length)|0]}
-    const s=pc.s;
-    out.push({cells:pc.r.rev?s.cells.slice().reverse():s.cells.slice(),dx:pc.r.dx,dy:pc.r.dy,ray:pc.r.ray});
-    byId.delete(s.id);for(const c of s.cells)occ[c]=-1;
+    const{q,d}=best;placed[q]=1;remaining--;
+    const path=[q],L=pickL(),tn=Math.min(.9,turn*(.3+1.5*rnd()));
+    let cur=-1;
+    if(best.bf&&L>1){cur=(((q/cols)|0)-DIRS[d][1])*cols+q%cols-DIRS[d][0]}
+    let dir=d^1;
+    while(cur>=0&&path.length<L){
+      placed[cur]=1;remaining--;path.push(cur);
+      if(path.length>=L)break;
+      const cx=cur%cols,cy=(cur/cols)|0,opts=[];
+      for(let e=0;e<4;e++){const x=cx+DIRS[e][0],y=cy+DIRS[e][1];if(x>=0&&y>=0&&x<cols&&y<rows&&!placed[y*cols+x])opts.push(e)}
+      if(!opts.length)break;
+      let e;
+      if(rnd()<.7){ // dar yerleri önce doldur: boşta kalan kare bırakma
+        let bd=9,bo=[];
+        for(const o of opts){const nx=cx+DIRS[o][0],ny=cy+DIRS[o][1];let f=0;
+          for(const[ex,ey]of DIRS){const x2=nx+ex,y2=ny+ey;if(x2>=0&&y2>=0&&x2<cols&&y2<rows&&!placed[y2*cols+x2])f++}
+          if(f<bd){bd=f;bo=[o]}else if(f===bd)bo.push(o)}
+        e=bo[(rnd()*bo.length)|0];
+      }else e=(opts.includes(dir)&&rnd()>tn)?dir:opts[(rnd()*opts.length)|0];
+      dir=e;cur=(cy+DIRS[e][1])*cols+cx+DIRS[e][0];
+    }
+    // path baştan kuyruğa; kuyruk→baş
+    const cells=path.slice().reverse(),ray=[];
+    let x=q%cols+DIRS[d][0],y=((q/cols)|0)+DIRS[d][1];
+    while(x>=0&&y>=0&&x<cols&&y<rows){ray.push(y*cols+x);x+=DIRS[d][0];y+=DIRS[d][1]}
+    arrows.push({id:arrows.length,cells,dx:DIRS[d][0],dy:DIRS[d][1],ray});
+    for(const p of path){
+      for(let e=0;e<4;e++){
+        let x=p%cols+DIRS[e][0],y=((p/cols)|0)+DIRS[e][1];
+        while(x>=0&&y>=0&&x<cols&&y<rows&&placed[y*cols+x]){x+=DIRS[e][0];y+=DIRS[e][1]}
+        if(x>=0&&y>=0&&x<cols&&y<rows){const q2=y*cols+x,od=e^1;if(!inC[q2*4+od]&&clear(q2,od))addC(q2,od)}
+      }
+    }
   }
-  out.forEach((a,i)=>a.id=i);
-  return out;
-}
-function genOnce(cols,rows,minL,maxL,seed,turn,hard){
-  const rnd=mulberry32(seed^0x9e3779b9),T=tile(cols,rows,minL,maxL,seed,turn);
-  const arrows=orient(cols,rows,T,rnd,hard);let filled=0;
-  for(const a of arrows)filled+=a.cells.length;
-  return{cols,rows,arrows,filled};
+  /* kısa okları komşu oklara ekle: bir ok, kuyruğuna bitişik ve kendinden sonra gelen (ya da önce gelen kısa) oku yutabilir.
+     Çıkış sırası korunduğu için çözülebilirlik bozulmaz. */
+  const owner=new Int32Array(N).fill(-1);arrows.forEach((a,i)=>{a.o=i;for(const c of a.cells)owner[c]=i});
+  const dead=new Uint8Array(arrows.length),capL=Math.max(maxL*3,12);
+  const tryMerge=(xi,yi)=>{ // Y, X'in kuyruğuna eklenir (X daha önce gelmeli)
+    const X=arrows[xi],Y=arrows[yi];if(dead[xi]||dead[yi]||xi>=yi||X.cells.length+Y.cells.length>capL)return false;
+    const t=X.cells[0],tx=t%cols,ty=(t/cols)|0,opts=[];
+    for(const c of[Y.cells[0],Y.cells[Y.cells.length-1]]){
+      if(Math.abs((c%cols)-tx)+Math.abs(((c/cols)|0)-ty)!==1)continue;
+      if(X.cells.length===1&&!(c%cols===tx-X.dx&&((c/cols)|0)===ty-X.dy))continue;
+      opts.push(c);
+    }
+    if(!opts.length)return false;
+    const c=opts[(rnd()*opts.length)|0],ord=Y.cells[Y.cells.length-1]===c?Y.cells:Y.cells.slice().reverse();
+    X.cells=ord.concat(X.cells);for(const k of Y.cells)owner[k]=xi;dead[yi]=1;return true;
+  };
+  const nb=c=>{const x=c%cols,y=(c/cols)|0,r=[];for(const[ex,ey]of DIRS){const nx=x+ex,ny=y+ey;if(nx>=0&&ny>=0&&nx<cols&&ny<rows)r.push(ny*cols+nx)}return r};
+  for(let pass=0;pass<5;pass++){
+    let moved=0;const lim=3+pass;
+    for(let i=arrows.length-1;i>=0;i--){ // kısa ok, daha önceki bir okun kuyruğuna katılır
+      const S=arrows[i];if(dead[i]||S.cells.length>lim)continue;
+      const cs=new Set();for(const c of[S.cells[0],S.cells[S.cells.length-1]])for(const n of nb(c)){const A=owner[n];if(A>=0&&A<i&&!dead[A]&&arrows[A].cells[0]===n)cs.add(A)}
+      for(const A of[...cs].sort(()=>rnd()-.5))if(tryMerge(A,i)){moved++;break}
+    }
+    for(let i=0;i<arrows.length;i++){ // kısa ok, kuyruğuna bitişik sonraki bir oku yutar
+      const X=arrows[i];if(dead[i]||X.cells.length>lim)continue;
+      const cs=new Set();for(const n of nb(X.cells[0])){const Y=owner[n];if(Y>i&&!dead[Y])cs.add(Y)}
+      for(const Y of[...cs].sort(()=>rnd()-.5))if(tryMerge(i,Y)){moved++;break}
+    }
+    if(!moved)break;
+  }
+  const out=[];arrows.forEach((a,i)=>{if(!dead[i]){a.id=out.length;delete a.o;out.push(a)}});
+  let filled=0;for(const a of out)filled+=a.cells.length;
+  return{cols,rows,arrows:out,filled};
 }
 function analyze(lv){
   const{cols,rows,arrows}=lv,occ=new Int16Array(cols*rows).fill(-1),gone=new Uint8Array(arrows.length);
@@ -461,7 +481,7 @@ function makeFrom(D,li,seedBase){
 const makeLevel=(di,li)=>makeFrom(DIFFS[di],li,(di+1)*100003);
 //#GEN_END
 
-const GEN_VER='g4';
+const GEN_VER='g5';
 const $=s=>document.querySelector(s);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const I={
