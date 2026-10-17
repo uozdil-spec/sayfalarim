@@ -34,33 +34,83 @@ svg{display:block}
 
 /* HOME */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:28px}
-.toprow{display:flex;justify-content:space-between;padding:12px 16px 0}
-.hero{position:relative;height:168px;margin:-6px 0 0;display:flex;justify-content:center;align-items:center;
-  -webkit-mask-image:linear-gradient(180deg,transparent,#000 22%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 22%,#000 70%,transparent)}
-.logo{margin:-14px 0 0;text-align:center;font-size:46px;font-weight:800;letter-spacing:.3em;padding-left:.3em;
-  background:linear-gradient(90deg,#aab4f5 0%,#fff 45%,#fb7185 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 18px rgba(150,140,255,.35))}
-.sub{margin:6px 0 18px;text-align:center;color:var(--mut);font-size:15px;letter-spacing:.04em}
-.primary{display:block;margin:0 16px 18px;width:calc(100% - 32px);padding:16px;border-radius:18px;font-weight:700;font-size:17px;
-  color:#0a0c16;background:linear-gradient(90deg,#aab4f5,#d6d9ff);box-shadow:0 10px 28px -10px rgba(170,180,245,.7);transition:transform .12s}
-.primary:active{transform:scale(.97)}
+.home-in{position:relative;min-height:100%}
+.home-in>*:not(.aurora){position:relative;z-index:1}
+.aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.aurora i{position:absolute;border-radius:50%;filter:blur(72px);opacity:.5;animation:float 14s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:320px;height:320px;left:-100px;top:40px;background:#5b50ff}
+.aurora i:nth-child(2){width:300px;height:300px;right:-110px;top:420px;background:#fb4f73;animation-duration:18s;opacity:.34}
+.aurora i:nth-child(3){width:280px;height:280px;left:20%;top:900px;background:#22d3b0;opacity:.2;animation-duration:22s}
+@keyframes float{to{transform:translate(40px,-50px) scale(1.18)}}
+.hero{height:318px}
+.hero canvas{position:absolute;left:50%;top:52px;transform:translateX(-50%);
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 16%,#000 52%,transparent 94%);mask-image:linear-gradient(180deg,transparent,#000 16%,#000 52%,transparent 94%)}
+.toprow{position:absolute;left:0;right:0;top:0;z-index:3;display:flex;justify-content:space-between;padding:12px 16px 0}
+.tr{display:flex;gap:10px}
+.brand{position:absolute;left:0;right:0;bottom:6px;text-align:center}
+.brand::before{content:"";position:absolute;left:8%;right:8%;top:-34px;bottom:-14px;z-index:-1;
+  background:radial-gradient(closest-side,rgba(10,12,22,.82),rgba(10,12,22,.5) 60%,transparent)}
+.logo{margin:0;display:flex;justify-content:center;font-size:58px;line-height:1;font-weight:900;letter-spacing:.2em;padding-left:.2em}
+.logo span{display:inline-block;background:linear-gradient(180deg,#fff 10%,#aab4f5 75%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 16px rgba(140,130,255,.6));animation:rise .8s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.09s*var(--i))}
+.logo span.hot{background-image:linear-gradient(180deg,#fff 5%,#fb7185 80%);filter:drop-shadow(0 0 18px rgba(251,113,133,.7))}
+@keyframes rise{from{transform:translateY(24px) scale(.6);opacity:0}}
+.sub{margin:10px 0 0;color:#a3abe0;font-size:15px;letter-spacing:.1em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 16px 14px}
+.stat{padding:12px 6px 10px;border-radius:18px;text-align:center;background:var(--glass);border:1px solid rgba(170,180,245,.14);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.stat b{display:flex;justify-content:center;align-items:center;gap:5px;font-size:21px;font-weight:800}
+.stat b .i{width:18px;height:18px}
+.stat small{color:var(--mut);font-size:11px;letter-spacing:.05em}
+.play{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:14px;margin:0 16px 14px;width:calc(100% - 32px);
+  padding:16px;border-radius:24px;color:#0a0c16;text-align:left;
+  background:linear-gradient(100deg,#aab4f5,#e6e8ff 52%,#ffa6b4);box-shadow:0 16px 38px -12px rgba(170,180,245,.8);
+  animation:glow 2.6s ease-in-out infinite;transition:transform .12s}
+.play:active{transform:scale(.97)}
+@keyframes glow{50%{box-shadow:0 18px 46px -8px rgba(251,113,133,.7)}}
+.play::after{content:"";position:absolute;top:0;bottom:0;width:70px;left:-100px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);
+  transform:skewX(-20deg);animation:shine 3.4s infinite}
+@keyframes shine{0%{left:-100px}55%,100%{left:120%}}
+.play .pi{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#0a0c16;color:#fff}
+.play .pi svg{width:22px;height:22px;fill:currentColor;margin-left:3px}
+.play b{display:block;font-size:21px;font-weight:900;letter-spacing:.08em}
+.play small{display:block;font-size:13px;font-weight:600;opacity:.62;margin-top:1px}
+.daily{display:flex;align-items:center;gap:14px;margin:0 16px 20px;padding:14px 16px;border-radius:22px;cursor:pointer;border:1.5px solid transparent;
+  background:linear-gradient(#141831,#141831) padding-box,linear-gradient(120deg,#fbbf24,#fb7185,#a78bfa) border-box;transition:transform .12s}
+.daily:active{transform:scale(.985)}
+.daily .ic{flex:none;width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#fbbf24,#fb7185);color:#1b1020}
+.daily .ic .i{width:26px;height:26px;stroke-width:2.2}
+.daily.done .ic{background:linear-gradient(135deg,#34d399,#5eead4)}
+.daily .tx b{display:block;font-size:17px}
+.daily .tx small{color:var(--mut);font-size:12px}
+.daily .go{margin-left:auto;flex:none;padding:9px 15px;border-radius:14px;font-weight:800;font-size:13px;background:rgba(255,255,255,.09)}
+.sec{margin:4px 24px 10px;font-size:11px;letter-spacing:.22em;color:var(--mut);text-transform:uppercase;font-weight:700}
 .card{position:relative;overflow:hidden;border-radius:22px;padding:18px;margin:0 16px 12px;min-height:104px;
   background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
-  border:1px solid rgba(var(--cr),.32);box-shadow:0 14px 34px -18px rgb(var(--cr));cursor:pointer;transition:transform .12s}
+  border:1px solid rgba(var(--cr),.32);box-shadow:0 14px 34px -18px rgb(var(--cr));cursor:pointer;transition:transform .12s;
+  animation:cardin .55s cubic-bezier(.2,1.1,.3,1) both;animation-delay:calc(.08s*var(--n))}
 .card:active{transform:scale(.985)}
+@keyframes cardin{from{opacity:0;transform:translateY(18px)}}
 .pv{position:absolute;right:0;top:0;opacity:.4;pointer-events:none;
-  -webkit-mask-image:linear-gradient(90deg,transparent 35%,#000 95%);mask-image:linear-gradient(90deg,transparent 35%,#000 95%)}
-.ct{position:relative;max-width:62%}
-.cn{font-size:24px;font-weight:800;color:var(--c);letter-spacing:.02em}
-.cg{color:var(--mut);font-size:13px;margin:2px 0 10px}
-.cp{height:5px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}
-.cp i{display:block;height:100%;background:var(--c);border-radius:5px;box-shadow:0 0 10px var(--c)}
-.cs{display:flex;gap:14px;margin-top:7px;font-size:12px;color:var(--mut)}
-.chev{position:absolute;right:16px;bottom:14px;color:var(--c)}
+  -webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 58%,transparent 80%);mask-image:linear-gradient(90deg,transparent 30%,#000 58%,transparent 80%)}
+.ct{position:relative;max-width:60%}
+.cn{font-size:25px;font-weight:800;color:var(--c);letter-spacing:.02em}
+.cg{color:var(--mut);font-size:13px;margin:2px 0 8px}
+.cs{font-size:12px;color:#9aa3d8}
+.ring{position:absolute;right:16px;top:50%;margin-top:-30px;width:60px;height:60px;filter:drop-shadow(0 0 8px rgba(var(--cr),.5))}
+.tipcard{display:flex;align-items:center;gap:10px;margin:6px 16px 0;padding:12px 14px;border-radius:16px;font-size:13px;line-height:1.35;
+  color:#ffd98a;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2)}
+.tipcard button{margin-left:auto;flex:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);font-size:16px;line-height:1}
 .foot{text-align:center;color:#4f5784;font-size:12px;margin:18px 0 0}
+.lnk{padding:10px 18px;border-radius:14px;color:#aab4f5;font-weight:700;font-size:14px;background:var(--glass);border:1px solid rgba(170,180,245,.16);margin-bottom:10px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 34px);transform:translate(-50%,20px);padding:12px 18px;border-radius:14px;
+  background:#222849;border:1px solid rgba(170,180,245,.25);font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:40}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.two{display:flex;gap:10px}.two .btn{flex:1}
 
 /* LEVELS */
 .head{display:flex;align-items:center;gap:12px;padding:12px 16px}
+.head .home{margin-left:auto}
 .head h2{margin:0;font-size:22px;font-weight:800;color:var(--c)}
 .head small{display:block;color:var(--mut);font-size:12px;font-weight:500;margin-top:1px}
 .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:6px 16px 30px}
@@ -76,7 +126,7 @@ svg{display:block}
 .tile.lock .i{width:18px;height:18px}
 
 /* GAME */
-.gtop{display:grid;grid-template-columns:96px 1fr 96px;align-items:center;padding:10px 12px 6px}
+.gtop{display:grid;grid-template-columns:100px 1fr 100px;align-items:center;padding:10px 12px 6px}
 .gl{display:flex;gap:8px}
 .gc{text-align:center}
 .gt{font-size:13px;color:var(--mut);letter-spacing:.06em}
@@ -92,9 +142,9 @@ svg{display:block}
 .bar i{display:block;height:100%;width:0;background:var(--c);box-shadow:0 0 10px var(--c);transition:width .35s}
 #board{flex:1;min-height:0;overflow:auto;display:flex;padding:8px;-webkit-overflow-scrolling:touch}
 #gcv{margin:auto;flex:none;touch-action:pan-x pan-y;border-radius:14px}
-.dock{display:flex;justify-content:center;gap:18px;padding:8px 12px 14px}
+.dock{display:flex;justify-content:center;gap:10px;padding:8px 8px 14px}
 .db{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:var(--mut)}
-.db .ib{width:54px;height:54px}
+.db .ib{width:52px;height:52px}
 .db:active .ib{transform:scale(.9)}
 
 /* SHEET */
@@ -130,24 +180,37 @@ svg{display:block}
 <div id="app">
 
   <section id="home" class="screen active">
-    <div class="scroll">
-      <div class="toprow">
-        <button class="ib" id="bHelp" aria-label="Nasıl oynanır"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg></button>
-        <button class="ib" id="bSet" aria-label="Ayarlar"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
+    <div class="scroll"><div class="home-in">
+      <div class="aurora"><i></i><i></i><i></i></div>
+      <div class="hero">
+        <canvas id="heroCv"></canvas>
+        <div class="toprow">
+          <button class="ib" id="bHelp" aria-label="Nasıl oynanır"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg></button>
+          <div class="tr">
+            <button class="ib" id="bSnd" aria-label="Ses"></button>
+            <button class="ib" id="bSet" aria-label="Ayarlar"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></button>
+          </div>
+        </div>
+        <div class="brand">
+          <h1 class="logo" aria-label="Oklar"><span style="--i:0">O</span><span style="--i:1">K</span><span style="--i:2">L</span><span class="hot" style="--i:3">A</span><span style="--i:4">R</span></h1>
+          <p class="sub">Hepsini dışarı çıkar.</p>
+        </div>
       </div>
-      <div class="hero"><canvas id="heroCv"></canvas></div>
-      <h1 class="logo">OKLAR</h1>
-      <p class="sub">Hepsini dışarı çıkar.</p>
-      <button class="primary" id="bCont">Devam et</button>
+      <div class="stats" id="stats"></div>
+      <button class="play" id="bCont"></button>
+      <div id="daily"></div>
+      <div class="sec">Seviyeler</div>
       <div id="cards"></div>
-      <p class="foot">400 bölüm · internetsiz çalışır</p>
-    </div>
+      <div id="tipbox"></div>
+      <div class="foot"><button class="lnk" id="bShare">Arkadaşına gönder</button><p>400 bölüm + her gün yeni bulmaca · internetsiz çalışır</p></div>
+    </div></div>
   </section>
 
   <section id="levels" class="screen">
     <div class="head">
       <button class="ib" id="lBack" aria-label="Geri"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h2 id="lTitle"></h2>
+      <button class="ib home" id="lHome" aria-label="Ana sayfa"><svg class="i" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h4v-5h4v5h4V9.5"/></svg></button>
     </div>
     <div class="scroll"><div class="grid" id="grid"></div></div>
   </section>
@@ -155,8 +218,8 @@ svg{display:block}
   <section id="game" class="screen">
     <div class="gtop">
       <div class="gl">
+        <button class="ib" id="gHome" aria-label="Ana sayfa"><svg class="i" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h4v-5h4v5h4V9.5"/></svg></button>
         <button class="ib" id="gBack" aria-label="Geri"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-        <button class="ib" id="gRestart" aria-label="Yeniden başlat"><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5"/></svg></button>
       </div>
       <div class="gc"><div class="gt" id="gTitle"></div><div class="hearts" id="hearts"></div></div>
       <div class="gr">kalan<b id="gLeft">0</b></div>
@@ -166,6 +229,7 @@ svg{display:block}
     <div class="dock">
       <button class="db" id="gUndo"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg></span>Geri al</button>
       <button class="db" id="gHint"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span>İpucu</button>
+      <button class="db" id="gRestart"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5"/></svg></span>Baştan</button>
       <button class="db" id="gZo"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span>Uzaklaş</button>
       <button class="db" id="gZi"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Yakınlaş</button>
     </div>
@@ -173,8 +237,8 @@ svg{display:block}
 
 </div>
 <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast"></div>
 <canvas id="confetti"></canvas>
-
 <script>
 //#GEN_START
 const DIFFS=[
@@ -303,10 +367,10 @@ const I={
 
 /* ---------- kayıt ---------- */
 const KEY='oklar.v1';
-const defSave=()=>({stars:DIFFS.map(()=>Array(100).fill(0)),set:{sound:true,vib:true,all:false},seen:false,last:[0,0]});
+const defSave=()=>({stars:DIFFS.map(()=>Array(100).fill(0)),set:{sound:true,vib:true,all:false},seen:false,last:[0,0],daily:{last:'',streak:0},tipHide:false});
 function load(){
   try{const s=JSON.parse(localStorage.getItem(KEY));
-    if(s&&s.stars&&s.stars.length===4){const d=defSave();return{...d,...s,set:{...d.set,...s.set}}}}catch(e){}
+    if(s&&s.stars&&s.stars.length===4){const d=defSave();return{...d,...s,set:{...d.set,...s.set},daily:{...d.daily,...(s.daily||{})}}}}catch(e){}
   return defSave();
 }
 let save=load();
@@ -448,41 +512,85 @@ class Board{
 }
 
 /* ---------- ekranlar ---------- */
-let curScreen='home',hero=null,heroTimer=0,board=null,G=null;
+let curScreen='home',hero=null,heroTimer=0,board=null,G=null,depth=0;
+const IC={
+  snd:'<svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
+  mute:'<svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>',
+  flame:'<svg class="i" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.2 2-4.2.2 1.2.8 2 1.6 2.4C10.200 8.400 10.800 5.400 12 3z"/></svg>',
+  check:'<svg class="i" viewBox="0 0 24 24"><path d="M5 12.5l4.500 4.500L19 7.500"/></svg>'
+};
 function show(id){
   curScreen=id;document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
   if(id==='home'){renderHome();startHero()}else stopHero();
 }
+/* telefonun geri tuşu: oyun → bölümler → ana sayfa */
+const navPush=st=>{try{history.pushState({...st,d:++depth},'')}catch(e){}};
+const navReplace=st=>{try{history.replaceState({...st,d:depth},'')}catch(e){}};
+function goBack(){if(depth>0){try{history.back();return}catch(e){}}show('home')}
+function goHome(){closeSheet();if(depth>0){try{history.go(-depth);return}catch(e){}}show('home')}
+addEventListener('popstate',e=>{
+  const st=e.state||{s:'home',d:0};depth=st.d||0;closeSheet();
+  if(st.s==='levels')openLevels(st.di,true);else show('home');
+});
+try{history.replaceState({s:'home',d:0},'')}catch(e){}
+
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
+const pad=n=>String(n).padStart(2,'0');
+const keyOf=off=>{const d=new Date();d.setDate(d.getDate()+off);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+function dailyInfo(){
+  const d=new Date(),n=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5);
+  return{di:1+n%3,li:(n*37+11)%100,key:keyOf(0)};
+}
+function streakNow(){const dl=save.daily;return(dl.last===keyOf(0)||dl.last===keyOf(-1))?dl.streak:0}
+function sndIcon(){$('#bSnd').innerHTML=save.set.sound?IC.snd:IC.mute}
+
 function stopHero(){clearInterval(heroTimer);heroTimer=0;hero=null}
 function startHero(){
   stopHero();
   const cv=$('#heroCv'),W=cv.parentElement.clientWidth;if(!W)return;
-  const cell=Math.floor(W/15),cols=Math.floor(W/cell),rows=6;
-  const mk=()=>genOnce(cols,rows,3,8,(Math.random()*1e9)|0,.35,.3);
+  const cell=Math.floor(W/16),cols=Math.floor(W/cell),rows=Math.max(6,Math.floor(250/cell));
+  const mk=()=>genOnce(cols,rows,3,9,(Math.random()*1e9)|0,.35,.35);
   hero=new Board(cv,mk(),{col:'#aab4f5',acc:'#fb7185'});hero.size(cell);let wait=0;const h=hero;
   heroTimer=setInterval(()=>{
     if(document.hidden||hero!==h)return;
-    if(h.left===0){if(++wait>2){wait=0;h.lv=mk();h.reset();h.size(cell)}return}
-    const fr=h.arrows.filter(a=>!a.removed&&h.blocker(a)<0);
-    if(fr.length)h.remove(fr[(Math.random()*fr.length)|0],performance.now());
-  },520);
+    if(h.left===0){if(++wait>3){wait=0;h.lv=mk();h.reset();h.size(cell)}return}
+    for(let k=0;k<2;k++){
+      const fr=h.arrows.filter(a=>!a.removed&&h.blocker(a)<0);
+      if(fr.length)h.remove(fr[(Math.random()*fr.length)|0],performance.now()+k*120);
+    }
+  },420);
 }
 function renderHome(){
+  sndIcon();
+  let done=0,sum=0;save.stars.forEach(st=>st.forEach(x=>{if(x>0)done++;sum+=x}));
+  const streak=streakNow(),dl=dailyInfo(),dd=DIFFS[dl.di],today=save.daily.last===dl.key;
+  $('#stats').innerHTML=`<div class="stat"><b>${done}<small style="font-size:13px;color:var(--mut);font-weight:600">/400</small></b><small>BÖLÜM</small></div>
+    <div class="stat"><b style="color:#ffd166">★ ${sum}</b><small>YILDIZ</small></div>
+    <div class="stat"><b style="color:#fb923c">${IC.flame}${streak}</b><small>GÜNLÜK SERİ</small></div>`;
+  const[ld,ll]=save.last,LD=DIFFS[ld];
+  $('#bCont').innerHTML=`<span class="pi"><svg viewBox="0 0 24 24"><path d="M7 4.500v15L19 12z"/></svg></span><span><b>${done===0?'OYNA':'DEVAM ET'}</b><small>${LD.name} · Bölüm ${ll+1}</small></span>`;
+  $('#daily').innerHTML=`<div class="daily ${today?'done':''}" id="dailyCard"><div class="ic">${today?IC.check:IC.flame}</div>
+    <div class="tx"><b>Günün Bulmacası</b><small>${today?'Bugün tamam · yarın yenisi gelir':`Bugün: ${dd.name} · seriyi koru`}</small></div><div class="go">${today?'Tekrar':'Oyna'}</div></div>`;
+  $('#dailyCard').onclick=()=>{audio();startGame(dl.di,dl.li,{daily:true})};
   const box=$('#cards');box.innerHTML='';
   DIFFS.forEach((D,di)=>{
-    const st=save.stars[di],done=st.filter(x=>x>0).length,sum=st.reduce((a,b)=>a+b,0);
+    const st=save.stars[di],dn=st.filter(x=>x>0).length,sm=st.reduce((a,b)=>a+b,0);
     const el=document.createElement('div');el.className='card';
-    el.style.setProperty('--c',D.accent);el.style.setProperty('--cr',D.rgb);
+    el.style.setProperty('--c',D.accent);el.style.setProperty('--cr',D.rgb);el.style.setProperty('--n',di);
     el.innerHTML=`<canvas class="pv"></canvas><div class="ct"><div class="cn">${D.name}</div><div class="cg">${D.tag}</div>
-      <div class="cp"><i style="width:${done}%"></i></div><div class="cs"><span>${done} / 100</span><span>★ ${sum} / 300</span></div></div><div class="chev">${I.next}</div>`;
+      <div class="cs">${dn} / 100 bölüm · ★ ${sm}</div></div>
+      <svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="5"/>
+      ${dn?`<circle cx="30" cy="30" r="24" fill="none" stroke="${D.accent}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${dn*1.508} 151" transform="rotate(-90 30 30)"/>`:''}
+      <text x="30" y="35" text-anchor="middle" font-size="15" font-weight="800" fill="#eaedff">${dn}</text></svg>`;
     el.onclick=()=>openLevels(di);box.appendChild(el);
     const cv=el.querySelector('canvas'),cell=22,cols=Math.ceil(el.clientWidth/cell),rows=Math.ceil(el.clientHeight/cell);
     const b=new Board(cv,genOnce(cols,rows,3,8,777+di*31,.4,.5),{col:D.line,acc:D.accent,dots:false});b.size(cell);
   });
-  const[d,l]=save.last,D=DIFFS[d];
-  $('#bCont').innerHTML=`Devam et · ${D.name} ${l+1}`;
+  const standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone;
+  $('#tipbox').innerHTML=(!standalone&&!save.tipHide)?`<div class="tipcard"><span>Uygulama gibi açılsın: tarayıcı menüsünden <b>Ana ekrana ekle</b>'ye dokun.</span><button id="tipX" aria-label="Kapat">×</button></div>`:'';
+  const x=$('#tipX');if(x)x.onclick=()=>{save.tipHide=true;persist();$('#tipbox').innerHTML=''};
 }
-function openLevels(di){
+function openLevels(di,noPush){
   const D=DIFFS[di],s=$('#levels');s.style.setProperty('--c',D.accent);s.style.setProperty('--cr',D.rgb);
   const st=save.stars[di],done=st.filter(x=>x>0).length,nx=nextOf(di);
   $('#lTitle').innerHTML=`${D.name}<small>${done} / 100 tamamlandı</small>`;
@@ -493,18 +601,20 @@ function openLevels(di){
     t.innerHTML=ok?`${li+1}<span class="st">${[0,1,2].map(i=>i<n?'<b>★</b>':'★').join('')}</span>`:I.lock;
     if(ok)t.onclick=()=>startGame(di,li);g.appendChild(t);
   }
+  if(!noPush){if(curScreen==='levels')navReplace({s:'levels',di});else navPush({s:'levels',di})}
   show('levels');
   const nt=g.querySelector('.next');if(nt)nt.scrollIntoView({block:'center'});
 }
 
 /* ---------- oyun ---------- */
-function startGame(di,li){
+function startGame(di,li,o={}){
   closeSheet();{const c=$('#confetti');c.getContext('2d').clearRect(0,0,c.width,c.height)}const D=DIFFS[di];
   const lv=makeLevel(di,li);
-  G={di,li,hearts:D.hearts,mistakes:0,hintUsed:false,over:false,zoom:1,base:20};
+  G={di,li,daily:!!o.daily,hearts:D.hearts,mistakes:0,hintUsed:false,over:false,zoom:1,base:20};
   board=new Board($('#gcv'),lv,{col:D.line,acc:D.accent});
   $('#game').style.setProperty('--c',D.accent);
-  save.last=[di,li];persist();
+  if(!G.daily){save.last=[di,li];persist()}
+  if(curScreen==='game')navReplace({s:'game'});else navPush({s:'game'});
   show('game');fit();hud();
 }
 function fit(){
@@ -514,7 +624,7 @@ function fit(){
 }
 function hud(first){
   const D=DIFFS[G.di];
-  $('#gTitle').innerHTML=`<b style="color:${D.accent}">${D.name}</b> · Bölüm ${G.li+1}`;
+  $('#gTitle').innerHTML=G.daily?`<b style="color:#fbbf24">Günlük</b> · ${D.name}`:`<b style="color:${D.accent}">${D.name}</b> · Bölüm ${G.li+1}`;
   $('#hearts').innerHTML=Array.from({length:D.hearts},(_,i)=>
     `<svg class="h ${i<G.hearts?'':'lost'} ${(i===G.hearts&&first==='hit')?'hit':''}" viewBox="0 0 24 24"><path d="${I.heart}"/></svg>`).join('');
   $('#gLeft').textContent=board.left;
@@ -570,20 +680,31 @@ function zoom(f){
 }
 function win(){
   const D=DIFFS[G.di];let n=3-(G.mistakes>0?1:0)-(G.hintUsed?1:0);n=Math.max(1,n);
+  const info=G.mistakes?`${G.mistakes} hata`:'Hatasız';
+  const msg=n===3?'Kusursuz!':n===2?'Güzel iş!':'Bitirdin!';
+  const starsHtml=`<div class="stars">${[0,1,2].map(i=>`<svg viewBox="0 0 24 24" class="${i<n?'on':''}" style="animation-delay:${.15+i*.18}s"><path d="${I.star}"/></svg>`).join('')}</div>`;
+  const tail=`<div class="two"><button class="btn" data-act="levels">Bölümler</button><button class="btn" data-act="home">Ana sayfa</button></div>`;
+  if(G.daily){
+    const k=keyOf(0),dl=save.daily;
+    if(dl.last!==k){dl.streak=(dl.last===keyOf(-1)?dl.streak:0)+1;dl.last=k}
+    persist();sfx.win();vib([30,50,30,50,80]);confetti('#fbbf24');
+    sheet(`<h3>Günün bulmacası tamam!</h3>${starsHtml}<div class="meta">${D.name} · ${info}<br>Günlük seri: <b style="color:#fb923c">${dl.streak} gün</b></div>
+      <button class="btn p" data-act="home">Ana sayfa</button><button class="btn" data-act="again">Tekrar oyna</button>`,true);
+    return;
+  }
   const cur=save.stars[G.di][G.li];if(n>cur)save.stars[G.di][G.li]=n;
   const nx=G.li+1<100?[G.di,G.li+1]:(G.di+1<4?[G.di+1,0]:null);
   save.last=nx||[G.di,G.li];persist();sfx.win();vib([30,50,30,50,80]);confetti(D.accent);
-  const msg=n===3?'Kusursuz!':n===2?'Güzel iş!':'Bitirdin!';
-  const info=G.mistakes?`${G.mistakes} hata`:'Hatasız';
-  sheet(`<h3>${msg}</h3><div class="stars">${[0,1,2].map(i=>`<svg viewBox="0 0 24 24" class="${i<n?'on':''}" style="animation-delay:${.15+i*.18}s"><path d="${I.star}"/></svg>`).join('')}</div>
+  sheet(`<h3>${msg}</h3>${starsHtml}
     <div class="meta">${D.name} · Bölüm ${G.li+1} · ${info}${G.hintUsed?' · ipucu kullanıldı':''}</div>
     ${nx?`<button class="btn p" data-act="next">${nx[0]!==G.di?DIFFS[nx[0]].name+' seviyesine geç':'Sonraki bölüm'}</button>`:`<div class="meta">Bu seviyenin sonuna geldin. Tebrikler!</div>`}
-    <button class="btn" data-act="again">Tekrar oyna</button><button class="btn" data-act="levels">Bölümler</button>`,true);
+    <button class="btn" data-act="again">Tekrar oyna</button>${tail}`,true);
 }
 function lose(){
   sfx.lose();
   sheet(`<h3>Kalpler bitti</h3><div class="meta">Önü kapalı oklara dikkat et.<br>Tıkanan oku bulmak için ipucunu kullanabilirsin.</div>
-    <button class="btn p" data-act="again">Tekrar dene</button><button class="btn" data-act="levels">Bölümler</button>`,true);
+    <button class="btn p" data-act="again">Tekrar dene</button>
+    <div class="two"><button class="btn" data-act="levels">${G.daily?'Vazgeç':'Bölümler'}</button><button class="btn" data-act="home">Ana sayfa</button></div>`,true);
 }
 
 /* ---------- paneller ---------- */
@@ -608,11 +729,12 @@ function settingsSheet(){
 }
 const acts={
   close:closeSheet,
-  tog(b){const k=b.dataset.k;save.set[k]=!save.set[k];persist();settingsSheet();if(k==='sound'&&save.set.sound)sfx.ok(.3)},
+  tog(b){const k=b.dataset.k;save.set[k]=!save.set[k];persist();settingsSheet();sndIcon();if(k==='sound'&&save.set.sound)sfx.ok(.3)},
   reset(){if(confirm('Tüm yıldızlar ve ilerleme silinsin mi?')){save=defSave();save.seen=true;persist();closeSheet();if(curScreen==='home')renderHome()}},
   next(){const[d,l]=save.last;startGame(d,l)},
-  again(){startGame(G.di,G.li)},
-  levels(){closeSheet();openLevels(G.di)}
+  again(){startGame(G.di,G.li,{daily:G.daily})},
+  home(){goHome()},
+  levels(){closeSheet();goBack()}
 };
 $('#panel').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b)acts[b.dataset.act](b)});
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet'&&!lockSheet)closeSheet()});
@@ -631,10 +753,16 @@ function confetti(acc){
 
 /* ---------- bağlantılar ---------- */
 $('#bHelp').onclick=helpSheet;$('#bSet').onclick=settingsSheet;
+$('#bSnd').onclick=()=>{save.set.sound=!save.set.sound;persist();sndIcon();if(save.set.sound)sfx.ok(.3)};
 $('#bCont').onclick=()=>{audio();const[d,l]=save.last;startGame(d,unlocked(d,l)?l:nextOf(d))};
-$('#lBack').onclick=()=>show('home');
-$('#gBack').onclick=()=>openLevels(G.di);
-$('#gRestart').onclick=()=>startGame(G.di,G.li);
+$('#bShare').onclick=async()=>{
+  const url=location.href.split('#')[0];
+  try{if(navigator.share){await navigator.share({title:'Oklar',text:'Oklar bulmacasını dene: hepsini dışarı çıkar!',url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(url);toast('Bağlantı kopyalandı')}catch(e){toast(url)}
+};
+$('#lBack').onclick=goBack;$('#lHome').onclick=goHome;
+$('#gBack').onclick=goBack;$('#gHome').onclick=goHome;
+$('#gRestart').onclick=()=>startGame(G.di,G.li,{daily:G.daily});
 $('#gUndo').onclick=undo;$('#gHint').onclick=hint;
 $('#gZi').onclick=()=>zoom(1.3);$('#gZo').onclick=()=>zoom(1/1.3);
 addEventListener('resize',()=>{if(curScreen==='game')fit();else if(curScreen==='home')startHero()});
