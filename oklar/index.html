@@ -198,6 +198,8 @@ svg{display:block}
 #board{position:relative;flex:1;min-height:0;margin:8px;border-radius:18px;overflow:hidden;
   background:radial-gradient(120% 90% at 50% 0%,rgba(120,110,255,.07),transparent 70%);border:1px solid rgba(170,180,245,.08)}
 #gcv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#mmBtn{position:absolute;right:10px;bottom:10px;width:40px;height:40px;display:none;background:rgba(10,12,22,.7);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#mmBtn.off{opacity:.55}
 #mm{position:absolute;left:10px;bottom:10px;display:none;touch-action:none;border-radius:12px;
   background:rgba(10,12,22,.7);border:1px solid rgba(170,180,245,.3);box-shadow:0 8px 22px -8px #000}
 .dock{display:flex;justify-content:center;gap:10px;padding:8px 8px 14px}
@@ -307,7 +309,7 @@ svg{display:block}
       <div class="gr">kalan<b id="gLeft">0</b></div>
     </div>
     <div class="bar"><i id="gBar"></i></div>
-    <div id="board"><canvas id="gcv"></canvas><canvas id="mm"></canvas></div>
+    <div id="board"><canvas id="gcv"></canvas><canvas id="mm"></canvas><button id="mmBtn" class="ib" aria-label="Mini harita"><svg class="i" viewBox="0 0 24 24"><path d="M9 4L3 6.5v13L9 17l6 3 6-2.5v-13L15 7zM9 4v13M15 7v13"/></svg></button></div>
     <div class="dock">
       <button class="db" id="gUndo"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg></span>Geri al</button>
       <button class="db" id="gHint"><span class="ib"><svg class="i" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span>İpucu</button>
@@ -330,13 +332,13 @@ svg{display:block}
 <script>
 //#GEN_START
 const DIFFS=[
- {id:'kolay',name:'Kolay',tag:'Isınma turu · küçük labirent',accent:'#5eead4',rgb:'94,234,212',line:'#8fe9d9',hearts:5,c:[6,10],r:[8,14],len:[[2,4],[3,6]],turn:.25,hard:[0,.5],tries:3},
- {id:'orta',name:'Orta',tag:'Keyifli beyin egzersizi',accent:'#fbbf24',rgb:'251,191,36',line:'#f6d37f',hearts:5,c:[10,16],r:[14,24],len:[[3,6],[4,10]],turn:.35,hard:[.4,.8],tries:3},
- {id:'zor',name:'Zor',tag:'Geniş haritalar, uzun yollar',accent:'#a78bfa',rgb:'167,139,250',line:'#bfb1ff',hearts:4,c:[16,26],r:[24,42],len:[[4,10],[6,18]],turn:.45,hard:[.7,.95],tries:2},
- {id:'kabus',name:'Kabus',tag:'Dev labirent · yüzlerce ok',accent:'#fb7185',rgb:'251,113,133',line:'#aab4f5',hearts:4,c:[26,44],r:[42,80],len:[[6,14],[8,28]],turn:.5,hard:[.9,1],tries:1}
+ {id:'kolay',name:'Kolay',tag:'Isınma turu · küçük labirent',accent:'#5eead4',rgb:'94,234,212',line:'#8fe9d9',hearts:5,c:[7,12],r:[10,18],len:[[2,5],[3,10]],turn:.25,hard:[0,.5],tries:3},
+ {id:'orta',name:'Orta',tag:'Keyifli beyin egzersizi',accent:'#fbbf24',rgb:'251,191,36',line:'#f6d37f',hearts:5,c:[12,20],r:[18,32],len:[[2,6],[4,16]],turn:.35,hard:[.4,.8],tries:3},
+ {id:'zor',name:'Zor',tag:'Geniş haritalar, uzun yollar',accent:'#a78bfa',rgb:'167,139,250',line:'#bfb1ff',hearts:4,c:[22,36],r:[34,60],len:[[3,8],[5,26]],turn:.45,hard:[.7,.95],tries:2},
+ {id:'kabus',name:'Kabus',tag:'Dev labirent · yüzlerce ok',accent:'#fb7185',rgb:'251,113,133',line:'#aab4f5',hearts:4,c:[30,50],r:[50,88],len:[[5,16],[12,70]],turn:.5,hard:[.8,.95],tries:1}
 ];
-const PACK={c:[9,22],r:[13,40],len:[[3,8],[6,20]],turn:.4,hard:[.4,1],tries:2,hearts:4};
-const DAILY={c:[8,24],r:[12,40],len:[[3,6],[6,18]],turn:.4,hard:[.3,1],tries:2,hearts:4};
+const PACK={c:[10,40],r:[16,76],len:[[2,8],[5,30]],turn:.4,hard:[.4,1],tries:2,hearts:4};
+const DAILY={c:[10,56],r:[16,104],len:[[2,8],[5,36]],turn:.4,hard:[.3,1],tries:2,hearts:4};
 const lerp=(a,b,t)=>a+(b-a)*t;
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
@@ -347,7 +349,7 @@ function tile(cols,rows,minL,maxL,seed,turn){
   for(let i=N-1;i>0;i--){const j=(rnd()*(i+1))|0;[order[i],order[j]]=[order[j],order[i]]}
   for(const s of order){
     if(occ[s]>=0)continue;
-    const L=minL+((rnd()*(maxL-minL+1))|0),path=[s];occ[s]=-2;let dir=-1;
+    const L=rnd()<.07?Math.round(maxL*(1.4+rnd()*1.2)):minL+((Math.pow(rnd(),1.4)*(maxL-minL+1))|0),path=[s];occ[s]=-2;let dir=-1;
     while(path.length<L){
       const cur=path[path.length-1],cx=cur%cols,cy=(cur/cols)|0,cand=[];
       for(let d=0;d<4;d++){const x=cx+DIRS[d][0],y=cy+DIRS[d][1];if(x>=0&&y>=0&&x<cols&&y<rows&&occ[y*cols+x]===-1)cand.push(d)}
@@ -364,22 +366,28 @@ function tile(cols,rows,minL,maxL,seed,turn){
         if(sn.cells[0]===n){sn.cells.unshift(s);occ[s]=id;done=true;break}
         if(sn.cells[sn.cells.length-1]===n){sn.cells.push(s);occ[s]=id;done=true;break}
       }
-      if(!done)occ[s]=-3;
+      if(!done){const id=snakes.length;snakes.push({cells:[s]});occ[s]=id}
     }
   }
   return{snakes,occ0:occ};
 }
-function rayOf(cols,rows,cells,end){
-  const n=cells.length,h=end?cells[0]:cells[n-1],p=end?cells[1]:cells[n-2];
-  const dx=(h%cols)-(p%cols),dy=((h/cols)|0)-((p/cols)|0),ray=[];
-  let x=h%cols+dx,y=((h/cols)|0)+dy;
+function rayDir(cols,rows,h,dx,dy){
+  const ray=[];let x=h%cols+dx,y=((h/cols)|0)+dy;
   while(x>=0&&x<cols&&y>=0&&y<rows){ray.push(y*cols+x);x+=dx;y+=dy}
   return{dx,dy,ray,ib:-1};
+}
+function mkRays(cols,rows,cells){
+  const n=cells.length;
+  if(n===1)return DIRS.map(d=>{const r=rayDir(cols,rows,cells[0],d[0],d[1]);r.rev=false;return r});
+  return[0,1].map(e=>{
+    const h=e?cells[0]:cells[n-1],p=e?cells[1]:cells[n-2];
+    const r=rayDir(cols,rows,h,(h%cols)-(p%cols),((h/cols)|0)-((p/cols)|0));r.rev=!!e;return r;
+  });
 }
 /* 2) çözülebilir bir sırayla okların yönlerini seç (hard: 0 kolay … 1 çok zor) */
 function orient(cols,rows,T,rnd,hard){
   const occ=new Int32Array(cols*rows).fill(-1),byId=new Map(),out=[];let nextId=0;
-  const add=cells=>{const s={id:nextId++,cells,rays:[rayOf(cols,rows,cells,0),rayOf(cols,rows,cells,1)]};byId.set(s.id,s);for(const c of cells)occ[c]=s.id};
+  const add=cells=>{const s={id:nextId++,cells,rays:mkRays(cols,rows,cells)};byId.set(s.id,s);for(const c of cells)occ[c]=s.id};
   T.snakes.forEach(s=>add(s.cells.slice()));
   const score=new Map();
   for(const s of byId.values())for(const r of s.rays){
@@ -388,7 +396,7 @@ function orient(cols,rows,T,rnd,hard){
   }
   while(byId.size){
     const cand=[];
-    for(const s of byId.values())for(let e=0;e<2;e++){
+    for(const s of byId.values())for(let e=0;e<s.rays.length;e++){
       const r=s.rays[e];let ok=true;
       for(const c of r.ray)if(occ[c]>=0){ok=false;break}
       if(ok){
@@ -397,9 +405,12 @@ function orient(cols,rows,T,rnd,hard){
       }
     }
     if(!cand.length){
-      const arr=[...byId.values()],s=arr[(rnd()*arr.length)|0];
+      let arr=[...byId.values()].filter(q=>q.cells.length>=4);if(!arr.length)arr=[...byId.values()].filter(q=>q.cells.length>=2);if(!arr.length)arr=[...byId.values()];
+      const s=arr[(rnd()*arr.length)|0];
       byId.delete(s.id);for(const c of s.cells)occ[c]=-1;
-      if(s.cells.length>=4){const m=s.cells.length>>1;add(s.cells.slice(0,m));add(s.cells.slice(m))}
+      if(s.cells.length>=4){const m=2+((rnd()*(s.cells.length-3))|0);add(s.cells.slice(0,m));add(s.cells.slice(m))}
+      else if(s.cells.length>=2)for(const c of s.cells)add([c]);
+      else add(s.cells);
       continue;
     }
     let pc;
@@ -408,7 +419,7 @@ function orient(cols,rows,T,rnd,hard){
     else if(rnd()<hard){let b=null,bs=-1e9;for(const c of cand){const v=(score.get(c.s.id)||0)+rnd()*.5;if(v>bs){bs=v;b=c}}pc=b}
     else{const fr=cand.filter(c=>c.ib===0),pool=fr.length?fr:cand;pc=pool[(rnd()*pool.length)|0]}
     const s=pc.s;
-    out.push({cells:pc.e?s.cells.slice().reverse():s.cells.slice(),dx:pc.r.dx,dy:pc.r.dy,ray:pc.r.ray});
+    out.push({cells:pc.r.rev?s.cells.slice().reverse():s.cells.slice(),dx:pc.r.dx,dy:pc.r.dy,ray:pc.r.ray});
     byId.delete(s.id);for(const c of s.cells)occ[c]=-1;
   }
   out.forEach((a,i)=>a.id=i);
@@ -450,7 +461,7 @@ function makeFrom(D,li,seedBase){
 const makeLevel=(di,li)=>makeFrom(DIFFS[di],li,(di+1)*100003);
 //#GEN_END
 
-const GEN_VER='g3';
+const GEN_VER='g4';
 const $=s=>document.querySelector(s);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const I={
@@ -488,7 +499,7 @@ function dayDiff(k){const p=parseKey(k),dow=new Date(p.y,p.m,p.d).getDay(),t=((d
 
 /* ---------- kayıt ---------- */
 const KEY='oklar.v1';
-const defSave=()=>({stars:DIFFS.map(()=>Array(100).fill(0)),set:{sound:true,vib:true,all:false},seen:false,last:[0,0],
+const defSave=()=>({stars:DIFFS.map(()=>Array(100).fill(0)),set:{sound:true,vib:true,all:false,map:true},seen:false,last:[0,0],
   daily:{last:'',streak:0},tipHide:false,packs:{},days:{},snap:null});
 function load(){
   try{const s=JSON.parse(localStorage.getItem(KEY));
@@ -591,17 +602,16 @@ class Board{
     a.removed=false;a.anim=null;a.pop=now;for(const i of a.cells)this.occ[i]=a.id;this.left++;this.kick();
   }
   bestHint(){
-    let best=null,bs=-1;const pres=this.arrows.filter(a=>!a.removed);
-    for(const a of pres){
-      if(this.blocker(a)>=0)continue;let s=0;
-      for(const b of pres)if(b!==a&&b.ray.some(i=>this.occ[i]===a.id))s++;
-      if(s>bs){bs=s;best=a}
-    }
+    const cnt=new Map(),pres=this.arrows.filter(a=>!a.removed);
+    for(const b of pres){const seen=new Set();for(const i of b.ray){const o=this.occ[i];if(o>=0&&o!==b.id&&!seen.has(o)){seen.add(o);cnt.set(o,(cnt.get(o)||0)+1)}}}
+    let best=null,bs=-1;
+    for(const a of pres){if(this.blocker(a)>=0)continue;const s=cnt.get(a.id)||0;if(s>bs){bs=s;best=a}}
     return best;
   }
   slidePts(a,travel){
     const n=a.pc.length,D=(n-1)+travel,c=this.cell;
     const pt=d=>{
+      if(n===1){const p=a.pc[0];return[p[0]+a.dx*d,p[1]+a.dy*d]}
       if(d<=n-1){const i=Math.min(Math.floor(d),n-2),f=d-i,p=a.pc[i],q=a.pc[i+1];return[p[0]+(q[0]-p[0])*f,p[1]+(q[1]-p[1])*f]}
       const h=a.pc[n-1],e=d-(n-1);return[h[0]+a.dx*e,h[1]+a.dy*e];
     };
@@ -611,7 +621,7 @@ class Board{
     return pts.map(p=>[p[0]*c,p[1]*c]);
   }
   snake(pts,dx,dy,col,w,gcol,ga){
-    const ctx=this.ctx,c=this.cell,n=pts.length,head=pts[n-1];
+    const ctx=this.ctx,c=this.cell;if(pts.length===1)pts=[[pts[0][0]-dx*c*.2,pts[0][1]-dy*c*.2],pts[0]];const n=pts.length,head=pts[n-1];
     const tip=[head[0]+dx*c*.3,head[1]+dy*c*.3],bs=[tip[0]-dx*c*.46,tip[1]-dy*c*.46];
     const hw=c*.25,px=-dy,py=dx;
     const path=()=>{ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<n;i++)ctx.lineTo(pts[i][0],pts[i][1])};
@@ -690,7 +700,8 @@ class Board{
   }
   drawMini(){
     const m=this.mm,c=this.cell,W=this.cols*c,H=this.rows*c;
-    const show=W>this.vw*1.04||H>this.vh*1.04;
+    const big=W>this.vw*1.04||H>this.vh*1.04,show=big&&save.set.map!==false;
+    const bt=$('#mmBtn');if(bt&&bt.style.display!==(big?'grid':'none'))bt.style.display=big?'grid':'none';
     if(!show){if(m.style.display!=='none')m.style.display='none';return}
     if(m.style.display!=='block')m.style.display='block';
     const k=Math.min(96/this.cols,150/this.rows),w=Math.max(20,Math.round(this.cols*k)),h=Math.max(20,Math.round(this.rows*k));
@@ -1056,7 +1067,7 @@ function helpSheet(){
     <div class="step"><span class="n">1</span><span>Bir oka dokun. Okun gittiği yol boşsa ok kayıp çıkar.</span></div>
     <div class="step"><span class="n">2</span><span>Yol doluysa bir kalp gider. Kalpler biterse bölümü baştan oynarsın.</span></div>
     <div class="step"><span class="n">3</span><span>Haritada gezmek için parmağını basılı tutup sürükle. İki parmakla yakınlaştır.</span></div>
-    <div class="step"><span class="n">4</span><span>Büyük haritada köşedeki mini haritaya dokunarak istediğin yere atla.</span></div>
+    <div class="step"><span class="n">4</span><span>Büyük haritada köşedeki mini haritaya dokunarak istediğin yere atla. Harita düğmesiyle onu kapatabilirsin.</span></div>
     <div class="step"><span class="n">5</span><span>Hatasız ve ipucusuz bitirirsen 3 yıldız. Yarım bıraktığın bölüm kaydedilir.</span></div>
     <div class="tip">Takılırsan <b>İpucu</b> çıkabilecek oku gösterir.</div>
     <button class="btn p" data-act="close">Anladım</button>`);
@@ -1105,6 +1116,7 @@ $('#lBack').onclick=goBack;$('#lHome').onclick=goHome;
 $('#gBack').onclick=goBack;$('#gHome').onclick=goHome;
 $('#gRestart').onclick=()=>startGame(G.src,{fresh:true});
 $('#gUndo').onclick=undo;$('#gHint').onclick=hint;
+$('#mmBtn').onclick=()=>{save.set.map=save.set.map===false;persist();$('#mmBtn').classList.toggle('off',save.set.map===false);if(board){board.mmK=0;const m=$('#mm');if(save.set.map===false)m.style.display='none';board.kick()}};
 $('#gZi').onclick=()=>zoom(1.4);$('#gZo').onclick=()=>zoom(1/1.4);
 addEventListener('resize',()=>{if(curScreen==='game')fit(false);else if(curScreen==='home')startHero()});
 ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
