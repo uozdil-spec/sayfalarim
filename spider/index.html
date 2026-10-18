@@ -829,9 +829,10 @@ body.isfs #bFS .fs-out{display:inline}
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
   };
   var defaults = { deck: 0, difficulty: 2, tintMin: 5, shift: true, idle: 60, dimCards: true, ul: 20, ur: 28,
-    tap: true, emptyDeal: false, table: 'black', face: 0, spread: 2, idx2: false, rail: 0, showStats: true, sound: true, haptic: true, wake: true, oled: true };
+    tap: true, emptyDeal: false, table: 'black', face: 0, spread: 2, idx2: true, rail: 0, showStats: true, sound: true, haptic: true, wake: true, oled: true };
   var S = Object.assign({}, defaults, store.get('spider.settings.v1', {}));
   function saveS() { store.set('spider.settings.v1', S); }
+  if (!S._m1) { S.idx2 = true; S._m1 = 1; saveS(); } // alt köşe rakamı varsayılan açık (eski kayıtlar için bir kez)
 
   /* ---------- Durum ---------- */
   var G = null, undo = [], elapsed = 0, busy = false, drag = null, photos = {};
