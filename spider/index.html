@@ -222,6 +222,9 @@ body.isfs #bFS .fs-out{display:inline}
 #game.rail-r .gsign{left:calc(var(--pl) + 96px)}
 .msign{margin:18px 0 4px;text-align:center;font:italic 500 13px var(--font-display);color:var(--gold2)}
 
+.ibtn.undo{border-color:#2f5185;background:#0a1322;color:#8fb6ee}
+.ibtn.undo:active{border-color:#8fb6ee}
+
 </style>
 </head>
 <body>
@@ -426,7 +429,6 @@ body.isfs #bFS .fs-out{display:inline}
   <section id="game" class="screen" hidden>
     <div id="rail">
       <button class="ibtn" id="bMenu" aria-label="Ana menü" title="Ana menü"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg></button>
-      <button class="ibtn" id="bUndo" aria-label="Geri al" title="Geri al"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 010 12h-3"/></svg></button>
       <button class="ibtn" id="bHint" aria-label="İpucu" title="İpucu"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-3.500 10.900c.700.600 1 1.300 1 2.100h5c0-.800.300-1.500 1-2.100A6 6 0 0012 3z"/></svg></button>
       <button class="ibtn" id="bNew" aria-label="Yeni oyun" title="Yeni oyun"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.400-5.700"/><path d="M20 4v5h-5"/></svg></button>
       <button class="ibtn" id="bSet" aria-label="Ayarlar" title="Ayarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.700 1.700 0 00.300 1.800l.1.100a2 2 0 11-2.800 2.800l-.1-.1a1.700 1.700 0 00-1.800-.3 1.700 1.700 0 00-1 1.500V21a2 2 0 11-4 0v-.1a1.700 1.700 0 00-1.100-1.500 1.700 1.700 0 00-1.800.3l-.1.100a2 2 0 11-2.800-2.800l.1-.1a1.700 1.700 0 00.3-1.800 1.700 1.700 0 00-1.500-1H3a2 2 0 110-4h.1a1.700 1.700 0 001.500-1.100 1.700 1.700 0 00-.3-1.800l-.1-.1a2 2 0 112.800-2.800l.1.100a1.700 1.700 0 001.800.3H9a1.700 1.700 0 001-1.500V3a2 2 0 114 0v.1a1.700 1.700 0 001 1.500 1.700 1.700 0 001.800-.3l.1-.1a2 2 0 112.800 2.800l-.1.100a1.700 1.700 0 00-.3 1.800V9a1.700 1.700 0 001.500 1H21a2 2 0 110 4h-.1a1.700 1.700 0 00-1.500 1z"/></svg></button>
@@ -434,6 +436,7 @@ body.isfs #bFS .fs-out{display:inline}
       
       <button class="ibtn" id="bFS" aria-label="Tam ekran" title="Tam ekran"><svg viewBox="0 0 24 24"><path class="fs-in" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/><path class="fs-out" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
       <button class="ibtn accent" id="bAuto" aria-label="Otomatik tamamla" title="Otomatik tamamla" hidden><svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg></button>
+      <button class="ibtn undo" id="bUndo" aria-label="Geri al" title="Geri al"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 010 12h-3"/></svg></button>
     </div>
     <div id="found" aria-label="Tamamlanan sıralar"></div>
     <div id="board"></div>
