@@ -567,7 +567,7 @@ body.isfs #bFS .fs-out{display:inline}
 </div>
 <div id="dim"></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="rotate"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><div>Telefonu yan çevirin.<br><span style="color:var(--dim);font-size:13px">Spider yatay ekranda oynanır.</span></div></div>
+<div id="rotate"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><div>Telefonu yan çevirin.<br><span style="color:var(--dim);font-size:13px">Spider yatay ekranda oynanır.</span><div id="inapp" hidden style="margin-top:16px;color:var(--gold);font-size:13px;line-height:1.5;max-width:300px">Bu bağlantı Threads gibi bir uygulamanın içinde açılmış; bu tarayıcılar ekranı yatay çevirmeyebilir. Sağ üstteki ⋮ ya da paylaş düğmesinden <b>Tarayıcıda aç</b> (Chrome) seçin.</div></div></div>
 
 <script>
 /* Spider Solitaire kuralları: saf mantık, ekrandan bağımsız. */
@@ -1609,6 +1609,8 @@ body.isfs #bFS .fs-out{display:inline}
     elapsed++; $('#hTime').textContent = fmtTime(elapsed);
     if (elapsed % 10 === 0) persist();
   }, 1000);
+  // Uygulama içi tarayıcı (Threads, Instagram, Facebook...) uyarısı
+  try { if (/Barcelona|Threads|Instagram|FBAN|FBAV|FB_IAB|Line\/|Snapchat|Twitter|; wv\)/i.test(navigator.userAgent)) $('#inapp').hidden = false; } catch (e) { }
   var rt = null, rt2 = [];
   function relayout() { if (G && gameOpen) { measure(); render(); } }
   // Android döndürmede ölçüleri geç bildirebilir: birkaç kez yeniden ölç
