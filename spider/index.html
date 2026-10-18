@@ -52,9 +52,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .card.up .back{display:none}
 .card .back{background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 0 0 1px rgba(0,0,0,.55)}
 .card .back svg{display:block;width:100%;height:100%}
-.card .idx{position:absolute;left:calc(var(--cw)*.07);top:calc(var(--cw)*.03);display:flex;align-items:center;gap:calc(var(--cw)*.045);
-  font:700 calc(var(--cw)*.26)/1 var(--font-ui);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:inherit}
-.card .idx svg{width:calc(var(--cw)*.19);height:calc(var(--cw)*.19);fill:currentColor}
+.card .idx{position:absolute;left:calc(var(--cw)*.07);top:calc(var(--cw)*.025);display:flex;align-items:center;gap:calc(var(--cw)*.03);
+  font:800 calc(var(--cw)*.31)/1 var(--font-ui);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:inherit}
+.card .idx span,.card .idx2 span{display:inline-block;transform:scaleX(.84);transform-origin:left center;margin-right:-.15em}
+.card .idx svg{width:calc(var(--cw)*.13);height:calc(var(--cw)*.13);fill:currentColor;margin-top:calc(var(--cw)*.02)}
 .card .big{position:absolute;left:50%;top:calc(var(--cw)*.58);width:calc(var(--cw)*.52);height:calc(var(--cw)*.52);transform:translateX(-50%);color:inherit;fill:currentColor}
 .card .big.ace{top:calc(var(--cw)*.52);width:calc(var(--cw)*.66);height:calc(var(--cw)*.66)}
 .card .art{position:absolute;left:50%;top:calc(var(--cw)*.3);height:calc(var(--cw)*1.4 - var(--cw)*.3 - var(--cw)*.05);aspect-ratio:74/126;transform:translateX(-50%);display:block}
@@ -198,12 +199,13 @@ body.guides .guide{display:block}
 .mc.red{color:var(--red)}
 
 /* Gerçek kart gibi semboller */
-.pips{position:absolute;left:calc(var(--cw)*.22);top:calc(var(--cw)*.42);width:calc(var(--cw)*.56);height:calc(var(--cw)*.58)}
-.pips svg{position:absolute;width:calc(var(--cw)*.17);height:calc(var(--cw)*.17);fill:currentColor;transform:translate(-50%,-50%)}
+.pips{position:absolute;left:calc(var(--cw)*.30);top:calc(var(--cw)*.45);width:calc(var(--cw)*.40);height:calc(var(--cw)*.72)}
+body.i2 .pips{height:calc(var(--cw)*.58)}
+.pips svg{position:absolute;width:calc(var(--cw)*.21);height:calc(var(--cw)*.21);fill:currentColor;transform:translate(-50%,-50%)}
 .pips svg.f{transform:translate(-50%,-50%) rotate(180deg)}
-.card .idx2{display:none;position:absolute;right:calc(var(--cw)*.07);bottom:calc(var(--cw)*.03);align-items:center;gap:calc(var(--cw)*.045);transform:rotate(180deg);
-  font:700 calc(var(--cw)*.26)/1 var(--font-ui);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.card .idx2 svg{width:calc(var(--cw)*.19);height:calc(var(--cw)*.19);fill:currentColor}
+.card .idx2{display:none;position:absolute;right:calc(var(--cw)*.07);bottom:calc(var(--cw)*.025);align-items:center;gap:calc(var(--cw)*.03);transform:rotate(180deg);
+  font:800 calc(var(--cw)*.31)/1 var(--font-ui);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.card .idx2 svg{width:calc(var(--cw)*.13);height:calc(var(--cw)*.13);fill:currentColor;margin-top:calc(var(--cw)*.02)}
 body.i2 .card .idx2{display:flex}
 body.i2 .card .art{height:calc(var(--cw)*1.4 - var(--cw)*.3 - var(--cw)*.34)}
 .swatches{display:inline-flex;gap:10px}
@@ -934,7 +936,7 @@ body.i2 .card .art{height:calc(var(--cw)*1.4 - var(--cw)*.3 - var(--cw)*.34)}
     var ch = M.cw * 1.4, n = col.length, nd = 0;
     for (var i = 0; i < n; i++) { if (!col[i].up) nd++; else break; }
     var nu = Math.max(0, n - nd - 1);
-    var sp = [0, .19, .225, .28][S.spread] || .225;
+    var sp = [0, .21, .245, .30][S.spread] || .245;
     var dMax = ch * 0.075, uMax = ch * sp, dMin = ch * 0.04, uHard = ch * Math.min(.17, sp * .78);
     var availH = M.H - ch - 2;
     var d = dMax, u = uMax, need = nd * dMax + nu * uMax;
@@ -1569,7 +1571,7 @@ body.i2 .card .art{height:calc(var(--cw)*1.4 - var(--cw)*.3 - var(--cw)*.34)}
   updateMenu();
   loadPhotos();
   if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () { }); }
-  window.__spider = { get G() { return G; }, startNew: startNew, render: render, S: S };
+  window.__spider = { get G() { return G; }, startNew: startNew, render: render, cardHTML: cardHTML, S: S };
 })();
 
 </script>
