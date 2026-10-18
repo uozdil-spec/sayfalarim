@@ -180,6 +180,22 @@ body.guides .guide{display:block}
 @media (max-height:420px){.sheet header{padding:6px 10px 6px 16px}.btn{height:34px}.row{padding:8px 0}}
 @media (prefers-reduced-motion:reduce){.card{transition-duration:.01s}#stage{transition:none}}
 
+.help section{margin:0 0 18px;scroll-margin-top:56px}
+.help h3{font:600 17px var(--font-display);color:var(--gold);margin:0 0 8px}
+.htabs{flex:none;min-height:54px;box-sizing:border-box;align-items:center;display:flex;gap:6px;overflow-x:auto;padding:10px 22px;border-bottom:1px solid var(--line)}
+.htabs a{flex:none;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--text);font-size:13px;text-decoration:none}
+.htabs a:active{border-color:var(--gold);color:var(--gold)}
+.fig{display:flex;align-items:center;gap:6px;padding:12px;margin:6px 0;background:#050608;border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.fig i{font-style:normal;color:var(--gold);font-size:20px;padding:0 4px}
+.mc{flex:none;display:grid;place-items:center;width:38px;height:53px;border-radius:5px;background:#d6d1c4;color:#1d1f27;font:700 14px var(--font-ui)}
+.mc.sh{margin-left:-24px;box-shadow:-2px 0 3px rgba(0,0,0,.3)}
+.mc.empty{background:none;border:1px dashed var(--gold2)}
+.mc.back{background:#0d1a3a;border:1px solid #2c4a8a}
+.mc.dots{background:none;color:var(--dim)}
+.mc.done{background:none;border:1px solid var(--gold2);color:var(--gold);font-size:18px}
+.mc.tiny{width:auto;height:auto;background:none;color:var(--dim);font:12px var(--font-ui);padding:0}
+.mc.red{color:var(--red)}
+
 </style>
 </head>
 <body>
@@ -388,6 +404,7 @@ body.guides .guide{display:block}
       <button class="ibtn" id="bHint" aria-label="İpucu" title="İpucu"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-3.500 10.900c.700.600 1 1.300 1 2.100h5c0-.800.300-1.500 1-2.100A6 6 0 0012 3z"/></svg></button>
       <button class="ibtn" id="bNew" aria-label="Yeni oyun" title="Yeni oyun"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.400-5.700"/><path d="M20 4v5h-5"/></svg></button>
       <button class="ibtn" id="bSet" aria-label="Ayarlar" title="Ayarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.700 1.700 0 00.300 1.800l.1.100a2 2 0 11-2.800 2.800l-.1-.1a1.700 1.700 0 00-1.800-.3 1.700 1.700 0 00-1 1.500V21a2 2 0 11-4 0v-.1a1.700 1.700 0 00-1.100-1.500 1.700 1.700 0 00-1.800.3l-.1.100a2 2 0 11-2.800-2.800l.1-.1a1.700 1.700 0 00.3-1.800 1.700 1.700 0 00-1.500-1H3a2 2 0 110-4h.1a1.700 1.700 0 001.500-1.100 1.700 1.700 0 00-.3-1.800l-.1-.1a2 2 0 112.800-2.800l.1.100a1.700 1.700 0 001.800.3H9a1.700 1.700 0 001-1.500V3a2 2 0 114 0v.1a1.700 1.700 0 001 1.500 1.700 1.700 0 001.800-.3l.1-.1a2 2 0 112.800 2.800l-.1.100a1.700 1.700 0 00-.3 1.800V9a1.700 1.700 0 001.500 1H21a2 2 0 110 4h-.1a1.700 1.700 0 00-1.500 1z"/></svg></button>
+      <button class="ibtn" id="bHelp" aria-label="Yardım" title="Yardım"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.600 2.600 0 015 .9c0 1.700-2.500 2.100-2.500 3.800"/><path d="M12 17.500h.01"/></svg></button>
       <div class="stats"><div>Skor<b id="hScore">500</b></div><div>Hamle<b id="hMoves">0</b></div><div>Süre<b id="hTime">0:00</b></div></div>
       <button class="ibtn accent" id="bAuto" aria-label="Otomatik tamamla" title="Otomatik tamamla" hidden><svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg></button>
       <div id="found" aria-label="Tamamlanan sıralar"></div>
@@ -443,14 +460,32 @@ body.guides .guide{display:block}
   <div class="modal" id="mHelp" hidden>
     <div class="sheet" role="dialog" aria-label="Nasıl oynanır">
       <header><h2>Nasıl oynanır</h2><button class="btn" data-close>Kapat</button></header>
+      <nav class="htabs"><a href="#h1">Amaç</a><a href="#h2">Taşıma</a><a href="#h3">Dağıtma</a><a href="#h4">Kolaylıklar</a><a href="#h5">Ekran</a><a href="#h6">Zorluk</a></nav>
       <div class="body help">
-        <p><b>Amaç:</b> Her sütunda Kralı (K) Ası (A) kadar aynı renk ve sırayla dizmek. Tamamlanan sıra otomatik kalkar. 8 sıra tamamlanınca oyun biter.</p>
-        <p><b>Taşıma:</b> Bir kartı, üstüne bir küçük değer gelecek şekilde (örneğin 6 üstüne 5) başka sütuna bırakın. Renk fark etmez. Ama birden fazla kart taşımak için kartlar aynı renk ve ardışık olmalı.</p>
-        <p><b>Boş sütun:</b> Her kart ya da sıra boş sütuna taşınabilir.</p>
-        <p><b>Dağıtma:</b> Sağ üstteki desteye dokununca her sütuna bir kart gelir. Standart kuralda boş sütun kalmamış olmalı.</p>
-        <p><b>Kolaylıklar:</b> Karta bir kez dokununca en uygun yere gider. İpucu, geri al ve otomatik tamamla düğmeleri üstte. Bilgisayarda: Z geri al, H ipucu, Boşluk dağıt, F tam ekran, Esc pencereyi kapatır.</p>
-        <p><b>Tam ekran:</b> Tarayıcı çubukları oyunu daraltırsa menüdeki Tam ekran düğmesini kullanın. Tarayıcıya dönmek için Geri tuşuna basın, yukarıdan aşağı kaydırın ya da menüden "Tarayıcıya dön"e dokunun. Tarayıcı menüsündeki "Ana ekrana ekle" ile uygulama gibi, çubuksuz açılır.</p>
-        <p><b>Zorluk:</b> 1 renk (sadece maça), 2 renk (maça, kupa), 4 renk (hepsi).</p>
+        <section id="h1"><h3>Amaç</h3>
+          <div class="fig"><span class="mc">K♠</span><span class="mc">Q♠</span><span class="mc">J♠</span><span class="mc dots">⋯</span><span class="mc">A♠</span><i>→</i><span class="mc done">✓</span></div>
+          <p>Bir sütunda Kral'dan (K) As'a (A) kadar <b>aynı renk</b> kartları sırayla dizin. Tamamlanan sıra otomatik üstteki yuvaya kalkar. <b>8 sıra</b> tamamlanınca oyun biter.</p></section>
+        <section id="h2"><h3>Kart taşıma</h3>
+          <div class="fig"><span class="mc red">5♥</span><i>→</i><span class="mc">6♠</span></div>
+          <p>Bir kartı, <b>bir büyük</b> değerli kartın üstüne bırakın (5, 6'nın üstüne). Renk fark etmez.</p>
+          <div class="fig"><span class="mc">7♠</span><span class="mc sh">6♠</span><span class="mc sh">5♠</span><i>→</i><span class="mc red">8♥</span></div>
+          <p>Birden fazla kartı birlikte taşımak için kartlar <b>aynı renk ve ardışık</b> olmalı.</p>
+          <div class="fig"><span class="mc empty"></span><i>←</i><span class="mc">9♠</span></div>
+          <p><b>Boş sütuna</b> her kart ya da sıra taşınabilir.</p></section>
+        <section id="h3"><h3>Dağıtma</h3>
+          <div class="fig"><span class="mc back"></span><i>→</i><span class="mc tiny">10 sütuna 1'er kart</span></div>
+          <p>Sağ üstteki desteye dokununca her sütuna bir kart gelir. Standart kuralda <b>hiçbir sütun boş olmamalı</b>. Ayarlardan bu kuralı kapatabilirsiniz. Toplam 5 dağıtım hakkı var.</p></section>
+        <section id="h4"><h3>Kolaylıklar</h3>
+          <p><b>Dokunma:</b> Karta bir kez dokunursanız en uygun yere gider. Sürükleyerek de taşıyabilirsiniz.</p>
+          <p><b>İpucu</b> (ampul): bir sonraki iyi hamleyi gösterir. <b>Geri al</b>: son hamleyi geri alır, istediğiniz kadar. <b>Otomatik tamamla</b>: tüm kartlar açılınca belirir.</p>
+          <p><b>Devam et:</b> Oyun her hamlede kaydedilir, menüden kaldığınız yerden sürdürebilirsiniz.</p>
+          <p><b>Bilgisayar:</b> Z geri al, H ipucu, Boşluk dağıt, F tam ekran, Esc pencereyi kapatır.</p></section>
+        <section id="h5"><h3>Ekran ve koruma</h3>
+          <p><b>Tam ekran:</b> Tarayıcı çubukları oyunu daraltırsa menüdeki Tam ekran'a dokunun. Geri dönmek için Geri tuşuna basın, yukarıdan aşağı kaydırın ya da "Tarayıcıya dön"ü seçin. Tarayıcı menüsünden "Ana ekrana ekle" ile oyun çubuksuz, uygulama gibi açılır.</p>
+          <p><b>Kamera ve tuşlar:</b> Kartlar kameraya ya da Android tuşlarına denk geliyorsa Ayarlar'dan sol ve sağ boşluğu artırın.</p>
+          <p><b>OLED koruma:</b> Zemin saf siyahtır. Masa rengi çok yavaş değişir, ekran birkaç piksel kayar ve boşta kalınca kararır.</p></section>
+        <section id="h6"><h3>Zorluk</h3>
+          <p><b>1 renk:</b> sadece maça, en kolay. <b>2 renk:</b> maça ve kupa, önerilen. <b>4 renk:</b> dört takım, en zor.</p></section>
       </div>
     </div>
   </div>
@@ -1289,6 +1324,8 @@ body.guides .guide{display:block}
   $('#btnSettings').addEventListener('click', openSettings);
   $('#btnStats').addEventListener('click', function () { openModal('#mStats', renderStats); });
   $('#btnHelp').addEventListener('click', function () { openModal('#mHelp'); });
+  $('#bHelp').addEventListener('click', function () { openModal('#mHelp'); });
+  $$('.htabs a').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); var t = $(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); });
   $('#bResetStats').addEventListener('click', function () { store.set('spider.stats.v1', { 1: {}, 2: {}, 4: {} }); renderStats(); });
   $('#bMenu').addEventListener('click', closeLayer);
   $('#bSet').addEventListener('click', openSettings);
