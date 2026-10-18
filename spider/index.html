@@ -164,7 +164,18 @@ body.guides .guide{display:block}
 #rotate{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:var(--text);text-align:center;padding:24px;font-size:15px}
 #rotate svg{width:64px;height:64px;stroke:var(--gold);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;animation:turn 2.4s ease-in-out infinite}
 @keyframes turn{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
-@media (orientation:portrait) and (max-width:820px){#rotate{display:flex}}
+@media (orientation:portrait) and (max-width:600px){#rotate{display:flex}}
+/* Tablet / dik ekran: iki satırlı üst çubuk, tek sütun menü */
+@media (orientation:portrait){
+  #bar{height:92px;flex-wrap:wrap;align-content:flex-start;row-gap:6px;padding-top:2px}
+  #bar .stats{order:9;flex:1 0 100%;justify-content:center;font-size:14px}
+  #found{margin-left:auto}
+  #board{top:calc(var(--pt) + 96px)}
+  .menu-wrap{grid-template-columns:1fr;align-content:center;overflow:auto;gap:18px}
+  .fan{display:none}
+  .menu-list{max-width:420px;width:100%;margin:0 auto}
+  .brand{text-align:center}
+}
 @media (max-width:620px){.menu-wrap{grid-template-columns:1fr 1fr}.fan{display:none}.stats span.opt{display:none}}
 @media (max-height:420px){.sheet header{padding:6px 10px 6px 16px}.btn{height:34px}.row{padding:8px 0}}
 @media (prefers-reduced-motion:reduce){.card{transition-duration:.01s}#stage{transition:none}}
@@ -363,6 +374,8 @@ body.guides .guide{display:block}
         <button class="mbtn" id="btnDecks">Deste seçimi</button>
         <button class="mbtn" id="btnSettings">Ayarlar</button>
         <button class="mbtn" id="btnStats">İstatistikler</button>
+        <button class="mbtn" id="btnFull">Tam ekran <small>çubuklar gizlenir</small></button>
+        <button class="mbtn" id="btnInstall" hidden>Uygulama olarak kur</button>
         <button class="mbtn" id="btnHelp">Nasıl oynanır</button>
       </nav>
     </div>
@@ -398,7 +411,8 @@ body.guides .guide{display:block}
         <div class="group">Ekran düzeni</div>
         <div class="row"><div class="lab">Sol boşluk<small>Kamera adası kartları kapatıyorsa artır.</small></div><div class="step" data-step="ul"><button data-d="-8" aria-label="Azalt">−</button><output></output><button data-d="8" aria-label="Artır">+</button></div></div>
         <div class="row"><div class="lab">Sağ boşluk<small>Android geri, ana ekran tuşları için.</small></div><div class="step" data-step="ur"><button data-d="-8" aria-label="Azalt">−</button><output></output><button data-d="8" aria-label="Artır">+</button></div></div>
-        <div class="row"><div class="lab">Tam ekran<small>Tarayıcı çubuklarını gizler.</small></div><button class="btn" id="bFull">Aç</button></div>
+        <div class="row"><div class="lab">Açılışta tam ekran<small>İlk dokunuşta tarayıcı çubukları gizlenir (telefon/tablet).</small></div><button class="sw" role="switch" data-toggle="autoFull"></button></div>
+        <div class="row"><div class="lab">Tam ekran<small>Çıkmak için Geri tuşu ya da yukarıdan aşağı kaydırma.</small></div><button class="btn" id="bFull">Aç</button></div>
         <div class="row"><div class="lab">Ekranı açık tut</div><button class="sw" role="switch" data-toggle="wake"></button></div>
         <div class="group">Oyun</div>
         <div class="row"><div class="lab">Dokununca otomatik taşı<small>Karta bir kez dokunmak en uygun yere taşır.</small></div><button class="sw" role="switch" data-toggle="tap"></button></div>
@@ -434,7 +448,8 @@ body.guides .guide{display:block}
         <p><b>Taşıma:</b> Bir kartı, üstüne bir küçük değer gelecek şekilde (örneğin 6 üstüne 5) başka sütuna bırakın. Renk fark etmez. Ama birden fazla kart taşımak için kartlar aynı renk ve ardışık olmalı.</p>
         <p><b>Boş sütun:</b> Her kart ya da sıra boş sütuna taşınabilir.</p>
         <p><b>Dağıtma:</b> Sağ üstteki desteye dokununca her sütuna bir kart gelir. Standart kuralda boş sütun kalmamış olmalı.</p>
-        <p><b>Kolaylıklar:</b> Karta bir kez dokununca en uygun yere gider. İpucu, geri al ve otomatik tamamla düğmeleri üstte.</p>
+        <p><b>Kolaylıklar:</b> Karta bir kez dokununca en uygun yere gider. İpucu, geri al ve otomatik tamamla düğmeleri üstte. Bilgisayarda: Z geri al, H ipucu, Boşluk dağıt, F tam ekran, Esc pencereyi kapatır.</p>
+        <p><b>Tam ekran:</b> Tarayıcı çubukları oyunu daraltırsa menüdeki Tam ekran düğmesini kullanın. Tarayıcıya dönmek için Geri tuşuna basın, yukarıdan aşağı kaydırın ya da menüden "Tarayıcıya dön"e dokunun. Tarayıcı menüsündeki "Ana ekrana ekle" ile uygulama gibi, çubuksuz açılır.</p>
         <p><b>Zorluk:</b> 1 renk (sadece maça), 2 renk (maça, kupa), 4 renk (hepsi).</p>
       </div>
     </div>
@@ -1315,14 +1330,53 @@ body.guides .guide{display:block}
     });
   });
   $('#bDeckFromSet').addEventListener('click', function () { openModal('#mDecks', buildDecks); });
-  $('#bFull').addEventListener('click', function () {
+  function isFull() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function standalone() { return (window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches)) || navigator.standalone === true; }
+  function updateFullUi() {
+    var f = isFull(), sa = standalone();
+    var bf = $('#bFull'); if (bf) bf.textContent = f ? 'Tarayıcıya dön' : 'Aç';
+    var mf = $('#btnFull'); if (mf) { mf.firstChild.nodeValue = f ? 'Tarayıcıya dön ' : 'Tam ekran '; mf.hidden = sa; }
+  }
+  function toggleFull(quiet) {
     var de = document.documentElement;
     try {
-      if (document.fullscreenElement) { document.exitFullscreen(); return; }
-      var p = de.requestFullscreen ? de.requestFullscreen() : null;
-      if (p && p.then) p.then(function () { try { screen.orientation.lock('landscape').catch(function () { }); } catch (e) { } }).catch(function () { toast('Tam ekran bu tarayıcıda açılamadı'); });
-      else toast('Tam ekran desteklenmiyor');
-    } catch (e) { toast('Tam ekran desteklenmiyor'); }
+      if (isFull()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+      var rq = de.requestFullscreen || de.webkitRequestFullscreen;
+      if (!rq) { if (!quiet) toast('Tam ekran bu tarayıcıda yok. Tarayıcı menüsünden "Ana ekrana ekle" ile uygulama gibi açın.'); return; }
+      var p = rq.call(de, { navigationUI: 'hide' });
+      var ok = function () {
+        try { if (window.matchMedia('(pointer:coarse)').matches) screen.orientation.lock('landscape').catch(function () { }); } catch (e) { }
+        if (!quiet) toast('Tarayıcıya dönmek için Geri tuşuna basın veya yukarıdan aşağı kaydırın');
+      };
+      if (p && p.then) p.then(ok).catch(function () { if (!quiet) toast('Tam ekran açılamadı'); }); else ok();
+    } catch (e) { if (!quiet) toast('Tam ekran açılamadı'); }
+  }
+  $('#bFull').addEventListener('click', function () { toggleFull(false); });
+  $('#btnFull').addEventListener('click', function () { toggleFull(false); });
+  document.addEventListener('fullscreenchange', function () { updateFullUi(); onResize(); });
+  document.addEventListener('webkitfullscreenchange', function () { updateFullUi(); onResize(); });
+  // İlk dokunuşta (telefon/tablet) otomatik tam ekran: tarayıcı çubukları gizlenir
+  var autoTried = false;
+  document.addEventListener('click', function () {
+    if (autoTried) return; autoTried = true;
+    if (S.autoFull && !isFull() && !standalone() && window.matchMedia('(pointer:coarse)').matches) toggleFull(true);
+  }, true);
+  var installEv = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); installEv = e; $('#btnInstall').hidden = false; });
+  $('#btnInstall').addEventListener('click', function () { if (installEv) { installEv.prompt(); installEv = null; $('#btnInstall').hidden = true; } });
+  window.addEventListener('appinstalled', function () { $('#btnInstall').hidden = true; updateFullUi(); });
+  updateFullUi();
+
+  /* ---------- Klavye (bilgisayar) ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && gameOpen && !layers.length) { e.preventDefault(); doUndo(); } return; }
+    if (e.key === 'Escape') { if (layers.length) closeLayer(); return; }
+    if (!gameOpen || layers.length) return;
+    var k = e.key.toLowerCase();
+    if (k === 'z' || k === 'u') doUndo();
+    else if (k === 'h' || k === 'i') showHint();
+    else if (k === 'd' || k === ' ') { e.preventDefault(); doDeal(); }
+    else if (k === 'f') toggleFull(false);
   });
 
   /* ---------- OLED koruma ---------- */
