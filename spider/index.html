@@ -1609,10 +1609,19 @@ body.isfs #bFS .fs-out{display:inline}
     elapsed++; $('#hTime').textContent = fmtTime(elapsed);
     if (elapsed % 10 === 0) persist();
   }, 1000);
-  var rt = null;
-  function onResize() { clearTimeout(rt); rt = setTimeout(function () { if (G && gameOpen) { measure(); render(); } }, 120); }
+  var rt = null, rt2 = [];
+  function relayout() { if (G && gameOpen) { measure(); render(); } }
+  // Android döndürmede ölçüleri geç bildirebilir: birkaç kez yeniden ölç
+  function onResize() {
+    clearTimeout(rt); rt2.forEach(clearTimeout); rt2 = [];
+    rt = setTimeout(relayout, 100);
+    [350, 800, 1600].forEach(function (d) { rt2.push(setTimeout(relayout, d)); });
+  }
   window.addEventListener('resize', onResize);
   window.addEventListener('orientationchange', onResize);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+  try { if (screen.orientation) screen.orientation.addEventListener('change', onResize); } catch (e) { }
+  try { var mq = window.matchMedia('(orientation:portrait)'); (mq.addEventListener ? mq.addEventListener('change', onResize) : mq.addListener(onResize)); } catch (e) { }
 
   /* ---------- Açılış ---------- */
   buildFound();
