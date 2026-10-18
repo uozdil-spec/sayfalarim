@@ -74,7 +74,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .slot.hint-t{border-color:#7d9a5a;border-style:solid}
 
 /* ---------- Oyun ekranı ---------- */
-#rail{position:absolute;left:var(--pl);top:calc(var(--pt) + 8px);display:flex;flex-direction:column;gap:6px;z-index:2;--ib:clamp(28px,calc((100dvh - var(--pt) - var(--pb) - 96px)/8),40px)}
+#rail{position:absolute;left:var(--pl);top:calc(var(--pt) + 8px);display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:6px;z-index:2;--ib:clamp(28px,calc((100dvh - var(--pt) - var(--pb) - 96px)/8),40px)}
 #game{--rw:calc(var(--ib0) + 12px);--ib0:clamp(28px,calc((100dvh - var(--pt) - var(--pb) - 96px)/8),40px)}
 #game.rail-r #board{left:var(--pl);right:calc(var(--pr) + var(--rw))}
 #game.rail-r #rail{left:auto;right:var(--pr)}
@@ -926,7 +926,18 @@ body.isfs #bFS .fs-out{display:inline}
   }
 
   /* ---------- Ölçü ve yerleşim ---------- */
+  function layoutRail() {
+    var rail = $('#rail'), game = $('#game'); if (!rail || game.hidden) return;
+    var n = $$('.ibtn', rail).filter(function (b) { return !b.hidden; }).length || 1;
+    var H0 = window.innerHeight - 64;
+    var ib = Math.max(28, Math.min(40, (H0 - (n - 1) * 6) / n));
+    var per = Math.max(1, Math.floor((H0 + 6) / (ib + 6)));
+    var cols = Math.ceil(n / per);
+    rail.style.setProperty('--ib', ib + 'px'); rail.style.maxHeight = H0 + 'px';
+    game.style.setProperty('--rw', (cols * (ib + 6) + 6) + 'px');
+  }
   function measure() {
+    layoutRail();
     var W = board.clientWidth, H = board.clientHeight;
     if (!W || !H) return false;
     var gap = Math.max(4, Math.min(12, W * 0.011));
@@ -1073,6 +1084,7 @@ body.isfs #bFS .fs-out{display:inline}
     while (have > want) { sk.removeChild($('svg.bk', sk)); have--; }
     $('#bUndo').disabled = !undo.length || busy;
     $('#bAuto').hidden = !L.canAutoFinish(G) || L.isWon(G);
+    layoutRail();
   }
 
   /* ---------- Hamleler ---------- */
@@ -1432,7 +1444,7 @@ body.isfs #bFS .fs-out{display:inline}
   function updateFullUi() {
     var f = isFull(), sa = standalone();
     document.body.classList.toggle('isfs', f);
-    var bfs = $('#bFS'); if (bfs) { bfs.hidden = sa; bfs.title = f ? 'Tam ekrandan çık' : 'Tam ekran'; }
+    var bfs = $('#bFS'); if (bfs) { bfs.hidden = sa; setTimeout(layoutRail, 0); bfs.title = f ? 'Tam ekrandan çık' : 'Tam ekran'; }
     var bf = $('#bFull'); if (bf) bf.textContent = f ? 'Tarayıcıya dön' : 'Aç';
     var mf = $('#btnFull'); if (mf) { mf.firstChild.nodeValue = f ? 'Tarayıcıya dön ' : 'Tam ekran '; mf.hidden = sa; }
   }
