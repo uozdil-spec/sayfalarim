@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="author" content="uozdil">
 <meta name="theme-color" content="#0a0c16">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -112,6 +113,9 @@ svg{display:block}
   color:#ffd98a;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2)}
 .tipcard button{margin-left:auto;flex:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);font-size:16px;line-height:1}
 .foot{text-align:center;color:#4f5784;font-size:12px;margin:18px 0 0}
+.by{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:26px 0 6px;letter-spacing:.16em;opacity:.9}
+.by span{font-size:12px;font-style:italic;font-weight:600;color:#6b74ad;letter-spacing:.12em}
+.by b{font-size:17px;font-weight:900;letter-spacing:.2em;text-transform:lowercase;background:linear-gradient(90deg,#aab4f5,#fb7185);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(170,180,245,.35))}
 .lnk{padding:10px 18px;border-radius:14px;color:#aab4f5;font-weight:700;font-size:14px;background:var(--glass);border:1px solid rgba(170,180,245,.16);margin-bottom:10px}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translate(-50%,20px);padding:12px 18px;border-radius:14px;max-width:86vw;text-align:center;
   background:#222849;border:1px solid rgba(170,180,245,.25);font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:40}
@@ -286,7 +290,8 @@ textarea.inp{font-size:12px;font-weight:500;text-align:left;height:96px;resize:n
       <div class="sec">Seviyeler</div>
       <div id="cards"></div>
       <div id="tipbox"></div>
-      <div class="foot"><button class="lnk" id="bShare">Arkadaşına gönder</button><p>400 bölüm + her ay 100 bulmaca + her gün yeni bir meydan okuma<br>internetsiz çalışır</p></div>
+      <div class="foot"><button class="lnk" id="bShare">Arkadaşına gönder</button><p>400 bölüm + her ay 100 bulmaca + her gün yeni bir meydan okuma<br>internetsiz çalışır</p>
+      <div class="by"><span>by</span><b>uozdil</b></div></div>
     </div></div>
   </section>
 
@@ -1256,7 +1261,7 @@ function settingsSheet(){
   const row=(k,t,s)=>`<div class="row" data-act="tog" data-k="${k}"><div>${t}<small>${s}</small></div><div class="sw ${save.set[k]?'on':''}"></div></div>`;
   sheet(`<h3>Ayarlar</h3>${row('sound','Ses','Kaydırma ve uyarı sesleri')}${row('vib','Titreşim','Dokunma geri bildirimi (Android)')}
     ${row('all','Tüm bölümleri aç','Sırayla açılma kuralını kaldırır')}
-    <button class="btn d" data-act="reset">İlerlemeyi sıfırla</button><button class="btn p" data-act="close">Tamam</button>`);
+    <button class="btn d" data-act="reset">İlerlemeyi sıfırla</button><button class="btn p" data-act="close">Tamam</button><div class="by" style="margin:16px 0 0"><span>Oklar · by</span><b>uozdil</b></div>`);
 }
 function welcomeSheet(first){
   sheet(`<h3>${first?'Hoş geldin!':'Yeni oyuncu'}</h3><p class="note">Bir takma ad yaz. İlerlemen, yıldızların ve serin bu isme özel kaydedilir; başkası kendi adıyla sıfırdan başlar.</p>
