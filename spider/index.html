@@ -1440,7 +1440,11 @@ body.isfs #bFS .fs-out{display:inline}
   });
   $('#bDeckFromSet').addEventListener('click', function () { openModal('#mDecks', buildDecks); });
   function isFull() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
-  function standalone() { return (window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches)) || navigator.standalone === true; }
+  function standalone() {
+    // Tarayıcıda Fullscreen API ile tam ekrana geçince 'display-mode: fullscreen' de eşleşir; bunu kurulu uygulama sanma
+    if (isFull()) return false;
+    return !!(window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches)) || navigator.standalone === true;
+  }
   function updateFullUi() {
     var f = isFull(), sa = standalone();
     document.body.classList.toggle('isfs', f);
