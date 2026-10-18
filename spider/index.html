@@ -216,6 +216,10 @@ body.i2 .card .art{height:calc(var(--cw)*1.4 - var(--cw)*.3 - var(--cw)*.34)}
 body.isfs #bFS .fs-in{display:none}
 body.isfs #bFS .fs-out{display:inline}
 
+.gsign{position:absolute;left:calc(var(--pl) + 96px);bottom:calc(var(--pb) + 8px);font:italic 500 12px/1.2 var(--font-display);color:var(--gold2);opacity:.75;letter-spacing:.02em;pointer-events:none;z-index:3}
+#game.rail-r .gsign{left:calc(var(--pl) + 96px)}
+.msign{margin:18px 0 4px;text-align:center;font:italic 500 13px var(--font-display);color:var(--gold2)}
+
 </style>
 </head>
 <body>
@@ -431,6 +435,7 @@ body.isfs #bFS .fs-out{display:inline}
     </div>
     <div id="found" aria-label="Tamamlanan sıralar"></div>
     <div id="board"></div>
+    <div class="gsign">by uozdil</div>
     <div class="stats"><div>Skor<b id="hScore">500</b></div><div>Hamle<b id="hMoves">0</b></div><div>Süre<b id="hTime">0:00</b></div></div>
     <button id="stock" aria-label="Yeni kartları dağıt" title="Yeni kartları dağıt" data-n="5"><svg class="bk" viewBox="0 0 58 78" preserveAspectRatio="none"><use class="bkuse" href="#bk0"/></svg><span class="cnt" id="stockN">5</span></button>
 
@@ -472,6 +477,7 @@ body.isfs #bFS .fs-out{display:inline}
         <div class="row"><div class="lab">Titreşim</div><button class="sw" role="switch" data-toggle="haptic"></button></div>
         <div class="group">Deste</div>
         <div class="row"><div class="lab">Kart arka yüzü<small id="deckName"></small></div><button class="btn" id="bDeckFromSet">Seç</button></div>
+        <div class="msign">Spider · by uozdil</div>
       </div>
     </div>
   </div>
@@ -520,7 +526,8 @@ body.isfs #bFS .fs-out{display:inline}
           <p><b>Görünüm seçenekleri:</b> Ayarlar'dan masa rengini (siyah, yeşil, lacivert, bordo, gri), kart yüzünü, kart aralığını, alt köşe rakamını ve düğmelerin sağda mı solda mı durduğunu seçebilirsiniz. Siyah dışı masa renklerinde ekran yanığı riski biraz artar.</p>
           <p><b>OLED koruma:</b> Zemin saf siyahtır. Masa rengi çok yavaş değişir, ekran birkaç piksel kayar ve boşta kalınca kararır.</p></section>
         <section id="h6"><h3>Zorluk</h3>
-          <p><b>1 renk:</b> sadece maça, en kolay. <b>2 renk:</b> maça ve kupa, önerilen. <b>4 renk:</b> dört takım, en zor.</p></section>
+          <p><b>1 renk:</b> sadece maça, en kolay. <b>2 renk:</b> maça ve kupa, önerilen. <b>4 renk:</b> dört takım, en zor.</p>
+          <div class="msign">Spider · by uozdil</div></section>
       </div>
     </div>
   </div>
