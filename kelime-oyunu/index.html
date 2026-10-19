@@ -345,7 +345,7 @@ button{font:inherit;color:inherit}
         <button class="btn primary" id="startBtn" type="button">Oyunu başlat</button>
         <button class="btn" id="resumeBtn" type="button" hidden>Yarım kalan oyuna devam et</button>
       </div>
-      <p class="rules">Geçerli kelimeler: TDK sözlüğündeki sade kelimeler (isim, sıfat, mastar halindeki fiiller). Elementlerin iki harfli simgeleri de (He, Li, Na, Fe, Cu…) geçerlidir. Özel isimler, diğer kısaltmalar ve çekimli halleri geçersizdir. Her oyuncu 7 harfle başlar; 7 harfin hepsini tek hamlede kullanan 50 puan bonus alır.</p>
+      <p class="rules">Geçerli kelimeler: TDK sözlüğündeki sade kelimeler (isim, sıfat, mastar halindeki fiiller). Elementlerin iki harfli simgeleri (He, Li, Na, Fe, Cu…) ve notalar (do, re, mi, fa, sol, la, si) de geçerlidir. Özel isimler, diğer kısaltmalar ve çekimli halleri geçersizdir. Her oyuncu 7 harfle başlar; 7 harfin hepsini tek hamlede kullanan 50 puan bonus alır.</p>
     </section>
 
     <section id="game" hidden>
@@ -378,7 +378,8 @@ var WORDS=new Set("ab aba abacı abacılık abadi abajur abajurcu abajurculuk ab
 
 var LETTERS='abcçdefgğhıijklmnoöprsştuüvyz'.split('');
 /* Elementlerin iki harfli simgeleri (He, Li, Na, Fe, Cu…) geçerli sayılır */
-var ELEM=new Set();
+var ELEM=new Set(),NOTE=new Set(['do','re','mi','fa','sol','la','si']);
+NOTE.forEach(function(w){WORDS.add(w);});
 "He Li Be Ne Na Mg Al Si Cl Ar Ca Sc Ti Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og".split(' ').forEach(function(x){
   var w=x.replace('I','i').toLocaleLowerCase('tr-TR');
   var ok=true;for(var i=0;i<w.length;i++)if(LETTERS.indexOf(w.charAt(i))<0)ok=false;
@@ -1395,7 +1396,7 @@ function openLookup(){
     function check(){
       var w=lowTr(inp.value);
       if(!w){vd.className='verdict';vd.textContent='';return;}
-      if(WORDS.has(w)){vd.className='verdict ok';vd.textContent=up(w)+' geçerli'+(ELEM.has(w)?' (element simgesi).':'.');}
+      if(WORDS.has(w)){vd.className='verdict ok';vd.textContent=up(w)+' geçerli'+(NOTE.has(w)&&ELEM.has(w)?' (nota / element simgesi).':NOTE.has(w)?' (nota).':ELEM.has(w)?' (element simgesi).':'.');}
       else{vd.className='verdict bad';vd.textContent=up(w)+' sözlükte yok.';}
     }
     m.querySelector('#lgo').addEventListener('click',check);
