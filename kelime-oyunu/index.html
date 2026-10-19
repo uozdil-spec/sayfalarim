@@ -113,6 +113,39 @@ button{font:inherit;color:inherit}
 .chatrow{display:flex;gap:8px}
 .chatin{flex:1;min-width:0;box-sizing:border-box;background:rgba(0,0,0,.35);color:var(--text);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px;font-size:16px}
 .chatrow .btn{flex:0 0 auto;min-width:0;padding:10px 16px}
+.helpbtn{display:flex;align-items:center;justify-content:center;gap:8px}
+.helpbtn .q{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--brass);color:#2b2a24;font-weight:800;font-size:14px}
+.modal.help{width:min(460px,100%);max-height:92%}
+.modal.help h2{font-size:22px}
+.hbody{display:flex;flex-direction:column;gap:12px;overflow:auto;min-height:260px;max-height:56vh;font-size:15px;line-height:1.5}
+.hbody>*{flex-shrink:0}
+.hbody p{color:var(--text)}
+.hbody b{color:var(--ivory)}
+.hbody .tip{padding:10px 12px;border-radius:12px;background:rgba(220,184,95,.12);border:1px solid rgba(220,184,95,.3);font-size:14px;line-height:1.45}
+.hbody .cap{font-size:13.5px;color:var(--muted)}
+.hbody .steps,.hbody .ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;color:var(--text)}
+.mrow{display:flex;gap:4px;justify-content:flex-start}
+.hbody>.mrow{justify-content:center}
+.tile.mt{width:34px;height:34px;aspect-ratio:auto;font-size:19px;cursor:default;flex:0 0 auto}
+.tile.mt.new{outline:2px solid var(--brass);outline-offset:-2px}
+.mini{display:flex;flex-direction:column;gap:4px;align-items:center;padding:10px;border-radius:12px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);overflow:hidden}
+.mini .mrow{align-self:center;width:calc(6*38px)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.legend>div{display:flex;align-items:center;gap:8px;font-size:13.5px;line-height:1.3}
+.sq{flex:0 0 auto;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:7px;font:800 14px var(--f-ui,inherit);color:var(--prem-ink)}
+.sq.h2{background:var(--h2)}.sq.h3{background:var(--h3)}.sq.k2{background:var(--k2)}.sq.k3{background:var(--k3)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two>div{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;font-size:13.5px;line-height:1.35}
+.two .ok{background:rgba(130,214,161,.12);border:1px solid rgba(130,214,161,.35)}
+.two .no{background:rgba(240,138,118,.12);border:1px solid rgba(240,138,118,.35)}
+.two .ok b{color:var(--ok)}.two .no b{color:var(--bad)}
+.modes{display:flex;flex-direction:column;gap:8px}
+.modes>div{display:flex;flex-direction:column;gap:2px;padding:9px 12px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);font-size:14px;line-height:1.4}
+.modes span{color:var(--muted)}
+.modal .hdots{display:flex;gap:7px;justify-content:center}
+.modal .hdots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);cursor:pointer}
+.modal .hdots i.on{background:var(--brass);width:20px;border-radius:4px}
+@media (max-width:380px){.legend,.two{grid-template-columns:1fr}}
 .seg.grid2{display:grid;grid-template-columns:1fr 1fr}
 .plist{display:flex;flex-direction:column;gap:6px;margin:8px 0;max-height:30vh;overflow:auto}
 .plist:empty{display:none}
@@ -346,6 +379,7 @@ button{font:inherit;color:inherit}
         <label class="check" id="hideField"><input id="hideRacks" type="checkbox" checked><span>Sıra değişince harfleri gizle<small>Aynı ekranı paylaşırken rakip taşları görmez.</small></span></label>
         <button class="btn primary" id="startBtn" type="button">Oyunu başlat</button>
         <button class="btn" id="resumeBtn" type="button" hidden>Yarım kalan oyuna devam et</button>
+        <button class="btn helpbtn" id="helpBtn" type="button"><span class="q">?</span> Nasıl oynanır?</button>
       </div>
       <p class="rules">Geçerli kelimeler: TDK sözlüğündeki sade kelimeler (isim, sıfat, mastar halindeki fiiller). Elementlerin iki harfli simgeleri (He, Li, Na, Fe, Cu…) ve notalar (do, re, mi, fa, sol, la, si) de geçerlidir. Özel isimler, diğer kısaltmalar ve çekimli halleri geçersizdir. Her oyuncu 7 harfle başlar; 7 harfin hepsini tek hamlede kullanan 50 puan bonus alır.</p>
     </section>
@@ -1371,6 +1405,39 @@ function openChat(){
   });
 }
 
+
+/* ---------- yardım kılavuzu ---------- */
+function mt(ch,extra){var l=ch.toLocaleLowerCase('tr-TR');return '<div class="tile mt'+(extra?' '+extra:'')+'"><span class="l">'+ch+'</span><i class="v">'+(DIST[l]?DIST[l][1]:'')+'</i></div>';}
+function mrow(word,cls){var h='<div class="mrow">';word.split('').forEach(function(c){h+=mt(c,cls);});return h+'</div>';}
+function helpPages(){
+  var sq=function(c,t){return '<span class="sq '+c+'">'+t+'</span>';};
+  return [
+   {t:'Oyunun amacı',h:'<p>Elindeki harflerle tahtada <b>Türkçe kelimeler</b> kur, puan topla.</p>'+mrow('KELİME')+'<p>Oyun bitince <b>en çok puanı olan kazanır</b>. Sırayla oynarsınız: her sırada bir kelime kurar ya da pas geçersin.</p><div class="tip">Başlangıçta herkese 7 harf verilir. Kullandığın harflerin yerine torbadan yenisi gelir.</div>'},
+   {t:'Hamle nasıl yapılır?',h:'<ol class="steps"><li><b>Harfe dokun.</b> Altta rafındaki bir harfe dokun (ya da parmağınla sürükle).</li><li><b>Kareye dokun.</b> Tahtada koymak istediğin boş kareye dokun, harf oraya oturur.</li><li><b>Tamam’a bas.</b> Kelime hazırsa <i>Tamam</i> de. Puanın hemen altta görünür; sıra rakibe geçer.</li></ol><div class="tip">Yanlış koydun mu? Harfe tekrar dokunup al ya da <b>Geri al</b> de. Kırmızı yazı görürsen o kelime sözlükte yok demektir, Tamam bastırmaz.</div>'},
+   {t:'Kelime nereye konur?',h:'<div class="mini"><div class="mrow">'+mt('K')+mt('E')+mt('L')+mt('İ')+mt('M')+mt('E')+'</div><div class="mrow" style="margin-left:calc(2*(34px + 4px))">'+mt('A','new')+'</div><div class="mrow" style="margin-left:calc(2*(34px + 4px))">'+mt('R','new')+'</div></div><p class="cap">Örnek: <b>KELİME</b> tahtadaydı; L harfinden aşağı <b>LAR</b> kuruldu. Hem LAR hem de eski kelime puan getirir.</p><ul class="ul"><li><b>İlk kelime</b> ortadaki ★ karesinden geçer, en az 2 harf olur.</li><li>Sonraki kelimeler tahtadaki harflere <b>değmeli</b>: bir harfe ekle, bir kelimeyi uzat ya da çaprazla.</li><li>Harfleri <b>tek bir satıra ya da sütuna</b>, aralarında boşluk olmadan koy.</li><li>Yan yana gelen her kelime geçerli olmalı. Çaprazda oluşan kelimeler de sayılır.</li></ul>'},
+   {t:'Puanlar nasıl hesaplanır?',h:'<p>Her harfin köşesindeki küçük sayı onun puanıdır. Renkli kareler puanı artırır:</p><div class="legend"><div>'+sq('h2','H²')+'<span>Harf puanı <b>2 kat</b></span></div><div>'+sq('h3','H³')+'<span>Harf puanı <b>3 kat</b></span></div><div>'+sq('k2','K²')+'<span>Kelimenin tüm puanı <b>2 kat</b></span></div><div>'+sq('k3','K³')+'<span>Kelimenin tüm puanı <b>3 kat</b></span></div></div><ul class="ul"><li>Renkli kare <b>yalnızca onu ilk kullanan</b> hamlede işe yarar.</li><li><b>Joker</b> istediğin harfin yerine geçer ama 0 puandır.</li><li>7 harfin hepsini tek hamlede kullanırsan <b>+50 bonus</b>.</li></ul>'},
+   {t:'Hangi kelimeler geçerli?',h:'<div class="two"><div class="ok"><b>Geçerli</b><span>TDK’daki sade kelimeler: isim, sıfat, mastar (gelmek, yapmak…)</span><span>Elementlerin simgeleri: He, Li, Na, Fe, Cu…</span><span>Notalar: do, re, mi, fa, sol, la, si</span></div><div class="no"><b>Geçersiz</b><span>Çekimli kelimeler (geldim, kitaplar…)</span><span>Özel isimler (Ankara, Ali…)</span><span>Diğer kısaltmalar</span></div></div><div class="tip">Emin değil misin? Menüden <b>Kelime sorgula</b>’ya yaz, geçerli mi diye bak. Oyun, tahtadaki kelimeyi zaten kendisi kontrol eder.</div>'},
+   {t:'Pas, değiştir, oyunun sonu',h:'<ul class="ul"><li><b>Pas:</b> Kelime bulamadın mı? Hiçbir şey koymadan sırayı geç.</li><li><b>Değiştir:</b> İstemediğin harfleri torbaya at, yenisini çek. Bu sıra biter. Torbada en az 7 harf varsa yapılır.</li><li><b>Oyun biter:</b> Torba bitip biri tüm harflerini kullanınca ya da art arda 6 sıra kimse kelime koyamayınca.</li><li>Sonda elinde kalan harflerin puanı <b>puanından düşer</b>, bitiren oyuncuya eklenir.</li></ul><div class="tip">İpucu: Menüdeki <b>Görünmeyen harfler</b> hangi harflerin hâlâ torbada olduğunu gösterir.</div>'},
+   {t:'Oyun türleri',h:'<div class="modes"><div><b>Aynı cihaz</b><span>İki kişi tek telefon ya da bilgisayarda oynar. Sıra değişince harfler gizlenir, ekranı rakibe verirsin.</span></div><div><b>İki cihaz (kodla)</b><span>Herkes kendi telefonunda oynar. Hamleden sonra çıkan kodu WhatsApp’tan gönderirsin, karşı taraf “Kod yapıştır” der.</span></div><div><b>Çevrimiçi</b><span>Lobide müsait oyunculara davet gönder ya da arkadaşınla 6 harfli oda kodu kullan. Hamleler ve sohbet anında gider. İnternet gerekir.</span></div><div><b>Bilgisayar</b><span>Tek başına oyna. Kolay, Orta ya da Zor seç.</span></div></div>'}
+  ];
+}
+function openHelp(start){
+  var pages=helpPages(),i=Math.max(0,Math.min(pages.length-1,start||0));
+  openModal('<div class="eyebrow">Yardım</div><h2 id="hT"></h2><div class="hbody" id="hB"></div><div class="hdots" id="hD"></div><div class="row"><button class="btn" id="hP" type="button">Geri</button><button class="btn primary" id="hN" type="button">İleri</button></div>',function(m){
+    function draw(){
+      m.querySelector('#hT').textContent=(i+1)+'. '+pages[i].t;
+      var b=m.querySelector('#hB');b.innerHTML=pages[i].h;b.scrollTop=0;
+      var d='';pages.forEach(function(_,k){d+='<i'+(k===i?' class="on"':'')+' data-k="'+k+'"></i>';});m.querySelector('#hD').innerHTML=d;
+      m.querySelector('#hP').style.visibility=i?'visible':'hidden';
+      m.querySelector('#hN').textContent=i===pages.length-1?'Anladım, oynayalım':'İleri';
+    }
+    m.querySelector('#hP').addEventListener('click',function(){if(i>0){i--;draw();}});
+    m.querySelector('#hN').addEventListener('click',function(){if(i<pages.length-1){i++;draw();}else closeModal();});
+    m.querySelector('#hD').addEventListener('click',function(e){var k=e.target.closest('[data-k]');if(k){i=+k.dataset.k;draw();}});
+    draw();
+  },{cls:'help'});
+}
+
 /* ---------- menu & helpers ---------- */
 function openExchange(){
   if(G.bag.length<RACK){return;}
@@ -1433,7 +1500,8 @@ function openRemaining(){
   openModal(h,function(m){m.querySelector('#rx').addEventListener('click',closeModal);});
 }
 function openMenu(){
-  openModal('<h2>Menü</h2><div class="row" style="flex-direction:column"><button class="btn" id="m0" type="button">Kelime sorgula</button><button class="btn" id="m1" type="button">Görünmeyen harfler</button><button class="btn" id="m2" type="button">Hamle geçmişi</button>'+(G.live?'<button class="btn" id="m8" type="button">Sohbet</button>':'')+(G.mode==='remote'&&!G.live?'<button class="btn" id="m6" type="button">Son hamle kodunu göster</button><button class="btn" id="m7" type="button">Kod yapıştır</button>':'')+'<button class="btn" id="m3" type="button">Ses: '+(soundOn?'açık':'kapalı')+'</button><button class="btn danger" id="m4" type="button">Yeni oyun</button><button class="btn" id="m5" type="button">Kapat</button></div>',function(m){
+  openModal('<h2>Menü</h2><div class="row" style="flex-direction:column"><button class="btn" id="mh" type="button">Nasıl oynanır? (Yardım)</button><button class="btn" id="m0" type="button">Kelime sorgula</button><button class="btn" id="m1" type="button">Görünmeyen harfler</button><button class="btn" id="m2" type="button">Hamle geçmişi</button>'+(G.live?'<button class="btn" id="m8" type="button">Sohbet</button>':'')+(G.mode==='remote'&&!G.live?'<button class="btn" id="m6" type="button">Son hamle kodunu göster</button><button class="btn" id="m7" type="button">Kod yapıştır</button>':'')+'<button class="btn" id="m3" type="button">Ses: '+(soundOn?'açık':'kapalı')+'</button><button class="btn danger" id="m4" type="button">Yeni oyun</button><button class="btn" id="m5" type="button">Kapat</button></div>',function(m){
+    m.querySelector('#mh').addEventListener('click',function(){openHelp(0);});
     m.querySelector('#m0').addEventListener('click',openLookup);
     m.querySelector('#m1').addEventListener('click',function(){if(G.cover){closeModal();return;}openRemaining();});
     m.querySelector('#m2').addEventListener('click',openHistory);
@@ -1522,6 +1590,7 @@ function init(){
     var s=loadSaved();if(!s)return;
     uid=s.uid||1000;G=s.G;rsState=(G.mode==='remote'&&G.rs!=null)?G.rs:null;chatUnread=G.unread||0;G.pend={};G.sel=null;G.cover=true;G.busy=false;G.gain=null;if(!G.mode)G.mode='friend';rebuildPend();begin();
   });
+  $('helpBtn').addEventListener('click',function(){openHelp(0);});
   $('playBtn').addEventListener('click',function(){if(G&&G.mode==='remote'&&G.busy&&!G.over){if(!G.live)openPasteCode();}else commit();});
   $('preview').addEventListener('click',function(e){if(G&&e.target.closest('[data-act="mycode"]'))showCode('');});
   $('recallBtn').addEventListener('click',recall);
