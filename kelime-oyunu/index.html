@@ -99,6 +99,19 @@ button{font:inherit;color:inherit}
 .err{color:#ff9a8f;font-size:13px;margin:4px 0 0}
 .hint{font-size:12.5px;color:var(--muted,#b9b29c);line-height:1.4;margin:6px 0}
 .mini{appearance:none;border:1px solid var(--brass);background:transparent;color:var(--brass);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-left:6px}
+.seg.grid2{display:grid;grid-template-columns:1fr 1fr}
+.plist{display:flex;flex-direction:column;gap:6px;margin:8px 0;max-height:30vh;overflow:auto}
+.plist:empty{display:none}
+.prow{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(0,0,0,.22)}
+.prow .pn{flex:1;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.prow small{color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:#7a7a6a}.dot.on{background:#82d6a1;box-shadow:0 0 6px #82d6a1}
+.btn.mini2{flex:0 0 auto;min-width:0;padding:6px 12px;font-size:13px}
+.invite{border:1px solid var(--brass);border-radius:12px;padding:10px 12px;margin:8px 0;background:rgba(220,184,95,.1);line-height:1.4}
+.invite small{display:block;color:var(--muted);margin-top:4px}
+.rc{font-size:22px;letter-spacing:.2em;color:var(--brass);font-family:ui-monospace,Menlo,monospace}
+.note{color:var(--brass);font-size:13px;margin:6px 0}
+.codein{flex:1;min-width:0;box-sizing:border-box;background:rgba(0,0,0,.35);color:var(--text);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px;font:700 16px ui-monospace,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;text-align:center}
 .seg{display:flex;gap:6px}
 .seg button{flex:1;min-width:0;appearance:none;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.25);color:var(--text);border-radius:12px;padding:11px 8px;font-weight:700;font-size:14px;cursor:pointer}
 .seg button.on{background:rgba(220,184,95,.18);border-color:var(--brass);color:var(--brass)}
@@ -290,9 +303,10 @@ button{font:inherit;color:inherit}
       <p class="lead">İki kişilik, sırayla oynanan Türkçe kelime oyunu. Ortadaki yıldızdan başlayın, harfleri birleştirin, en çok puanı toplayın.</p>
       <div class="panel">
         <div class="field"><label id="modeLbl">Oyun türü</label>
-          <div class="seg" role="group" aria-labelledby="modeLbl">
+          <div class="seg grid2" role="group" aria-labelledby="modeLbl">
             <button type="button" class="on" data-mode="friend">Aynı cihaz</button>
-            <button type="button" data-mode="remote">İki cihaz</button>
+            <button type="button" data-mode="remote">İki cihaz (kodla)</button>
+            <button type="button" data-mode="live">Çevrimiçi</button>
             <button type="button" data-mode="cpu">Bilgisayar</button>
           </div>
         </div>
@@ -688,6 +702,10 @@ function renderPreview(){
   pv.className='preview';
   if(G.cover){pv.textContent='';setPlayBtn('idle');return;}
   if(G.busy&&G.mode==='remote'){
+    if(G.live){
+      pv.innerHTML='<span>'+esc(G.names[1-G.me])+' oynuyor…'+((LV&&!LV.up)?' (bağlantı koptu, yeniden deneniyor)':'')+'</span>';
+      setPlayBtn('idle');$('playBtn').innerHTML='Sıra rakipte';return;
+    }
     pv.innerHTML='<span>'+esc(G.names[1-G.me])+' oynuyor. Hamle kodunu bekle…</span> <button type="button" class="mini" data-act="mycode">Kodumu göster</button>';
     setPlayBtn('idle');var pb=$('playBtn');pb.innerHTML='Kod yapıştır';pb.classList.remove('idle');return;
   }
@@ -711,7 +729,7 @@ function renderAll(){
   var off=!!(G.cover||G.busy);
   if(G.busy&&G.mode==='remote')$('playBtn').disabled=false;
   $('exchBtn').disabled=off||G.bag.length<RACK;
-  $('playBtn').disabled=off&&!(G.busy&&G.mode==='remote'&&!G.cover);
+  $('playBtn').disabled=off&&!(G.busy&&G.mode==='remote'&&!G.cover&&!G.live);
   $('passBtn').disabled=off;
   $('recallBtn').disabled=off||!Object.keys(G.pend).length;
   $('shuffleBtn').disabled=off;
@@ -829,7 +847,7 @@ function nextTurn(msg){
   if(G.mode==='remote'){
     if(REPLAY)return;
     G.cover=false;G.busy=(G.turn!==G.me);renderAll();
-    if(G.busy){showCode(msg);}else if(msg)toast(msg);
+    if(G.busy){if(G.live){liveSend();toast((msg||'')+' Rakibin hamlesi bekleniyor…');}else showCode(msg);}else if(msg)toast(msg);
     return;
   }
   if(G.mode==='cpu'){
@@ -903,6 +921,7 @@ function endGame(out){
   G.scores=f;
   try{localStorage.removeItem(KEY);}catch(e){}
   if(REPLAY)return;
+  if(G.live&&G.turn===G.me)liveSend();
   renderAll();
   showOver();
 }
@@ -915,7 +934,7 @@ function showOver(){
     h+='<div class="pc'+(w===p?' w':'')+'"><small>'+esc(G.names[p])+'</small><b>'+f.total[p]+'</b><small>'+(d.join(' · ')||'&nbsp;')+'</small></div>';
   }
   h+='</div><div class="row"><button class="btn primary" id="again" type="button">Yeni oyun</button><button class="btn" id="viewb" type="button">Tahtaya bak</button></div>';
-  if(G.mode==='remote'&&!REPLAY&&G.turn===G.me){
+  if(G.mode==='remote'&&!G.live&&!REPLAY&&G.turn===G.me){
     h=h.replace('<div class="row"><button class="btn primary" id="again"','<p class="hint">Rakibin de sonucu görmesi için bu son hamle kodunu gönderin:</p><textarea class="code" id="cd" readonly rows="3"></textarea><div class="row"><button class="btn" id="cp" type="button">Kodu kopyala</button></div><div class="row"><button class="btn primary" id="again"');
   }
   openModal(h,function(m){
@@ -1047,10 +1066,235 @@ function joinFromCode(text,myName){
   var r=parseCode(text);if(r.err)return r;
   var o=r.o;
   newGame([o.n[0]||'Rakip',myName],false,'remote','mid',o.s,1);
-  var res=applyCode(o);
-  if(res.err){G=null;return res;}
+  if(o.m.length){
+    var res=applyCode(o);
+    if(res.err){G=null;return res;}
+  }else{G.busy=true;G.cover=false;}
   G.names[1]=myName;
   return {ok:true};
+}
+
+
+/* ---------- çevrimiçi (MQTT + uçtan uca şifreli) ---------- */
+var KO_CFG=window.KO_CFG||{};
+var BROKERS=KO_CFG.brokers||['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];
+var MQTT_SRC=KO_CFG.src||'https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js';
+var TP='uozdil-kelime/v1/',LV=null;
+function rid(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return Array.prototype.map.call(a,function(x){return ('0'+x.toString(16)).slice(-2);}).join('');}
+function b64u(buf){var s='',a=new Uint8Array(buf);for(var i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s);}
+function unb64(x){var b=atob(x),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+function genKP(){return crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true,['deriveKey']).then(function(kp){return crypto.subtle.exportKey('raw',kp.publicKey).then(function(r){return {priv:kp.privateKey,pk:b64u(r)};});});}
+function deriveK(priv,pkB64){return crypto.subtle.importKey('raw',unb64(pkB64),{name:'ECDH',namedCurve:'P-256'},false,[]).then(function(pub){return crypto.subtle.deriveKey({name:'ECDH',public:pub},priv,{name:'AES-GCM',length:256},true,['encrypt','decrypt']);});}
+function encMsg(key,obj){var iv=crypto.getRandomValues(new Uint8Array(12));return crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,new TextEncoder().encode(JSON.stringify(obj))).then(function(ct){var o=new Uint8Array(12+ct.byteLength);o.set(iv);o.set(new Uint8Array(ct),12);return b64u(o);});}
+function decMsg(key,str){var a=unb64(str);return crypto.subtle.decrypt({name:'AES-GCM',iv:a.slice(0,12)},key,a.slice(12)).then(function(pt){return JSON.parse(new TextDecoder().decode(pt));});}
+function loadMqtt(){return new Promise(function(res,rej){
+  if(window.mqtt)return res();
+  var sc=document.createElement('script');sc.src=MQTT_SRC;
+  sc.onload=function(){window.mqtt?res():rej(new Error('lib'));};sc.onerror=function(){rej(new Error('lib'));};
+  document.head.appendChild(sc);
+});}
+function lvUI(){if(LV&&LV.ui)LV.ui();}
+function liveConnect(name){
+  if(LV&&LV.c){LV.name=name||LV.name;return Promise.resolve(LV);}
+  if(!(window.crypto&&crypto.subtle))return Promise.reject(new Error('crypto'));
+  var lv=LV={id:rid(6),name:name||'',c:null,up:false,peers:{},status:'lobby',visible:true,inc:null,out:null,room:null,gid:null,key:null,hb:null,ui:null,wantLobby:false,joinWait:null};
+  return loadMqtt().then(function(){return new Promise(function(res,rej){
+    var bi=0,done=false;
+    function attempt(){
+      if(bi>=BROKERS.length){rej(new Error('net'));return;}
+      var c=mqtt.connect(BROKERS[bi],{clientId:'ko-'+lv.id+'-'+rid(2),clean:true,reconnectPeriod:3000,connectTimeout:8000,keepalive:30,will:{topic:TP+'p/'+lv.id,payload:'',retain:true,qos:0}});
+      var timer=setTimeout(function(){if(!done){c.end(true);bi++;attempt();}},9000);
+      c.once('connect',function(){
+        if(done)return;done=true;clearTimeout(timer);lv.c=c;lv.up=true;
+        c.on('message',lvMsg);
+        c.on('connect',function(){lv.up=true;lvSubs();lvPresence();lvUI();if(G)renderPreview();});
+        c.on('close',function(){lv.up=false;lvUI();if(G&&G.live)renderPreview();});
+        lvSubs();lv.hb=setInterval(lvPresence,25000);
+        res(lv);
+      });
+      c.on('error',function(){if(!done){clearTimeout(timer);c.end(true);bi++;attempt();}});
+    }
+    attempt();
+  });});
+}
+function lvSubs(){
+  var t=[TP+'in/'+LV.id];
+  if(LV.wantLobby)t.push(TP+'p/+');
+  if(LV.room)t.push(TP+'r/'+LV.room.code);
+  if(LV.gid)t.push(TP+'g/'+LV.gid);
+  LV.c.subscribe(t,{qos:1});
+}
+function lvPub(topic,obj,retain){LV.c.publish(topic,typeof obj==='string'?obj:JSON.stringify(obj),{qos:1,retain:!!retain});}
+function lvPresence(){
+  if(!LV||!LV.c)return;
+  if(LV.visible&&LV.name)lvPub(TP+'p/'+LV.id,{id:LV.id,n:LV.name,s:LV.status,t:Date.now()},true);
+  else LV.c.publish(TP+'p/'+LV.id,'',{retain:true,qos:0});
+}
+function liveClose(){
+  if(!LV)return;var lv=LV;LV=null;
+  try{clearInterval(lv.hb);clearTimeout(lv.joinWait);if(lv.c){lv.c.publish(TP+'p/'+lv.id,'',{retain:true,qos:0},function(){lv.c.end(true);});setTimeout(function(){try{lv.c.end(true);}catch(e){}},600);}}catch(e){}
+}
+function lvMsg(topic,payload){
+  if(!LV)return;
+  var txt=payload?payload.toString():'';
+  if(topic.indexOf(TP+'p/')===0){
+    var id=topic.slice((TP+'p/').length);
+    if(id===LV.id)return;
+    if(!txt){delete LV.peers[id];}
+    else{try{var o=JSON.parse(txt);if(o&&o.n)LV.peers[id]={id:id,n:String(o.n).slice(0,14),s:o.s,t:o.t||0};}catch(e){}}
+    lvUI();return;
+  }
+  if(topic===TP+'in/'+LV.id){try{lvInbox(JSON.parse(txt));}catch(e){}return;}
+  if(LV.room&&topic===TP+'r/'+LV.room.code){try{lvRoomMsg(JSON.parse(txt));}catch(e){}return;}
+  if(LV.gid&&topic===TP+'g/'+LV.gid){if(txt&&LV.key)decMsg(LV.key,txt).then(lvState).catch(function(){});}
+}
+function lvInbox(m){
+  if(!m||!m.t)return;
+  if(m.t==='inv'){
+    if(LV.status!=='lobby'||!LV.visible)return;
+    if(LV.inc&&Date.now()-LV.inc.at<45000)return;
+    LV.inc={from:m.from,name:String(m.name||'Oyuncu').slice(0,14),gid:m.gid,pk:m.pk,at:Date.now()};
+    sOk();lvUI();
+    setTimeout(function(){if(LV&&LV.inc&&LV.inc.gid===m.gid&&Date.now()-LV.inc.at>=44000){LV.inc=null;lvUI();}},45500);
+  }else if(m.t==='acc'){
+    var o=LV.out;if(!o||o.gid!==m.gid||o.to!==m.from)return;
+    clearTimeout(o.timer);LV.out=null;
+    deriveK(o.kp.priv,m.pk).then(function(k){hostStart(o.gid,k,String(m.name||'Rakip').slice(0,14));});
+  }else if(m.t==='dec'){
+    var o2=LV.out;if(!o2||o2.gid!==m.gid)return;clearTimeout(o2.timer);LV.out=null;LV.note=(LV.peers[o2.to]?LV.peers[o2.to].n:'Oyuncu')+' daveti reddetti.';lvUI();
+  }else if(m.t==='rm'){
+    var w=LV.joinWait;if(!w)return;clearTimeout(w.timer);LV.joinWait=null;
+    deriveK(w.kp.priv,m.pk).then(function(k){guestWait(m.gid,k);});
+  }
+}
+function lvRoomMsg(m){
+  if(!m||m.t!=='join'||!LV.room||LV.room.taken)return;
+  LV.room.taken=true;var room=LV.room;
+  var gid=rid(10);
+  deriveK(room.kp.priv,m.pk).then(function(k){
+    lvPub(TP+'in/'+m.from,{t:'rm',from:LV.id,name:LV.name,gid:gid,pk:room.pk});
+    LV.c.unsubscribe(TP+'r/'+room.code);LV.room=null;
+    hostStart(gid,k,String(m.name||'Rakip').slice(0,14));
+  });
+}
+function hostStart(gid,key,peerName){
+  LV.gid=gid;LV.key=key;LV.status='game';lvSubs();lvPresence();
+  crypto.subtle.exportKey('jwk',key).then(function(jwk){
+    newGame([LV.name,peerName],false,'remote','mid',(Math.random()*4294967296)|0,0);
+    G.live={gid:gid,k:jwk};
+    closeModal();begin();save();
+    liveSend();
+    toast('Eşleşildi: '+esc(peerName)+' ile oynuyorsun. İlk hamle sende!');
+  });
+}
+function guestWait(gid,key){
+  LV.gid=gid;LV.key=key;LV.status='game';lvSubs();lvPresence();
+  LV.note='Eşleşildi, oyun başlıyor…';lvUI();
+}
+function liveSend(){
+  if(!LV||!LV.key||!G)return;
+  encMsg(LV.key,{t:'st',code:makeCode()}).then(function(x){if(LV)lvPub(TP+'g/'+LV.gid,x,true);});
+}
+function lvState(m){
+  if(!m||m.t!=='st')return;
+  var r=parseCode(m.code);if(r.err)return;
+  if(!G){
+    var jr=joinFromCode(m.code,LV.name);if(jr.err)return;
+    crypto.subtle.exportKey('jwk',LV.key).then(function(jwk){
+      G.live={gid:LV.gid,k:jwk};closeModal();begin();save();
+      toast('Eşleşildi: '+esc(G.names[0])+' ile oynuyorsun. Önce o başlıyor.');
+    });
+    return;
+  }
+  if(!G.live||G.live.gid!==LV.gid)return;
+  var res=applyCode(r.o);
+  if(res.ok){renderAll();var last=G.log[G.log.length-1];if(G.over){if(LV)LV.status='lobby';showOver();}else{sTick();toast(lastMoveMsg(last));}}
+}
+function liveResume(){
+  var name=G.names[G.me];
+  liveConnect(name).then(function(lv){
+    lv.status='game';lv.visible=false;lv.gid=G.live.gid;
+    return crypto.subtle.importKey('jwk',G.live.k,{name:'AES-GCM'},true,['encrypt','decrypt']).then(function(k){lv.key=k;lvSubs();lvPresence();});
+  }).catch(function(){toast('Bağlantı kurulamadı. İnternetini kontrol edip oyunu yeniden aç.');});
+}
+function openLobby(name){
+  var h='<div class="eyebrow">Çevrimiçi</div><h2>Oyuncular</h2><p class="hint" id="lbStat">Bağlanıyor…</p><div id="lbNote"></div><div id="lbInc"></div><div id="lbOut"></div><div class="plist" id="lbList"></div>'+
+   '<label class="check"><input id="lbVis" type="checkbox" checked><span>Listede görün<small>Kapatırsan kimse sana davet gönderemez. Arkadaşınla yine oda koduyla eşleşebilirsin.</small></span></label>'+
+   '<div class="eyebrow" style="margin-top:14px">Özel oda (arkadaşınla)</div>'+
+   '<div class="row"><button class="btn" id="lbRoom" type="button">Oda kodu oluştur</button></div><div id="lbRoomBox"></div>'+
+   '<div class="row"><input class="codein" id="lbCode" maxlength="6" placeholder="ODA KODU" autocomplete="off" autocapitalize="characters"><button class="btn primary" id="lbJoin" type="button">Odaya katıl</button></div>'+
+   '<div class="row"><button class="btn" id="lbBack" type="button">Geri</button></div>';
+  openModal(h,function(m){
+    m.querySelector('#lbBack').addEventListener('click',function(){closeModal();liveClose();});
+    m.querySelector('#lbVis').addEventListener('change',function(e){if(LV){LV.visible=e.target.checked;lvPresence();}});
+    m.querySelector('#lbRoom').addEventListener('click',function(){
+      if(!LV||!LV.up||LV.room)return;
+      genKP().then(function(kp){
+        var A='ABCDEFGHJKLMNPRSTUVYZ23456789',code='',a=crypto.getRandomValues(new Uint8Array(6));
+        for(var i=0;i<6;i++)code+=A.charAt(a[i]%A.length);
+        LV.room={code:code,kp:kp.priv?kp:kp,pk:kp.pk,taken:false};lvSubs();lvUI();
+      });
+    });
+    m.querySelector('#lbJoin').addEventListener('click',function(){
+      if(!LV||!LV.up)return;
+      var code=m.querySelector('#lbCode').value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+      if(code.length!==6){LV.note='Oda kodu 6 karakter olmalı.';lvUI();return;}
+      genKP().then(function(kp){
+        LV.note='Odaya katılınıyor…';
+        LV.joinWait={kp:kp,timer:setTimeout(function(){if(LV){LV.joinWait=null;LV.note='Bu kodla bekleyen bir oda bulunamadı.';lvUI();}},12000)};
+        lvPub(TP+'r/'+code,{t:'join',from:LV.id,name:LV.name,pk:kp.pk});lvUI();
+      });
+    });
+    m.addEventListener('click',function(e){
+      var b=e.target.closest('[data-inv]');
+      if(b&&LV&&LV.up&&!LV.out){
+        var to=b.dataset.inv;
+        genKP().then(function(kp){
+          var gid=rid(10);
+          LV.out={to:to,gid:gid,kp:kp,at:Date.now(),timer:setTimeout(function(){if(LV&&LV.out&&LV.out.gid===gid){LV.out=null;LV.note='Davet yanıtsız kaldı.';lvUI();}},45000)};
+          lvPub(TP+'in/'+to,{t:'inv',from:LV.id,name:LV.name,gid:gid,pk:kp.pk});lvUI();
+        });
+        return;
+      }
+      if(e.target.closest('#cxl')&&LV&&LV.out){clearTimeout(LV.out.timer);LV.out=null;lvUI();return;}
+      if(e.target.closest('#cxr')&&LV&&LV.room){LV.c.unsubscribe(TP+'r/'+LV.room.code);LV.room=null;lvUI();return;}
+      if(e.target.closest('#acc')&&LV&&LV.inc){
+        var inc=LV.inc;LV.inc=null;
+        genKP().then(function(kp){
+          return deriveK(kp.priv,inc.pk).then(function(k){
+            LV.gid=inc.gid;LV.key=k;LV.status='game';LV.out=null;lvSubs();lvPresence();
+            lvPub(TP+'in/'+inc.from,{t:'acc',from:LV.id,name:LV.name,gid:inc.gid,pk:kp.pk});
+            LV.note=esc(inc.name)+' ile eşleşiliyor…';lvUI();
+          });
+        });
+        return;
+      }
+      if(e.target.closest('#dec')&&LV&&LV.inc){var i2=LV.inc;LV.inc=null;lvPub(TP+'in/'+i2.from,{t:'dec',gid:i2.gid});lvUI();}
+    });
+  },{sticky:true});
+  liveConnect(name).then(function(lv){
+    lv.name=name;lv.wantLobby=true;lv.status='lobby';lv.visible=true;
+    lvSubs();lvPresence();
+    lv.ui=function(){
+      if(!$('lbList'))return;
+      var now=Date.now(),ps=Object.keys(lv.peers).map(function(k){return lv.peers[k];}).filter(function(p){return Math.abs(now-p.t)<180000;}).sort(function(a,b){return a.n.localeCompare(b.n,'tr');});
+      $('lbStat').textContent=lv.up?(ps.length?ps.length+' kişi çevrimiçi':'Şu an listede başka oyuncu yok. Arkadaşını çağır ya da oda kodu kullan.'):'Bağlantı koptu, yeniden deneniyor…';
+      $('lbNote').innerHTML=lv.note?'<p class="note">'+lv.note+'</p>':'';
+      $('lbInc').innerHTML=lv.inc?'<div class="invite"><b>'+esc(lv.inc.name)+'</b> seni oyuna davet ediyor<div class="row"><button class="btn primary" id="acc" type="button">Kabul et</button><button class="btn" id="dec" type="button">Reddet</button></div></div>':'';
+      $('lbOut').innerHTML=lv.out?'<div class="invite">'+esc((lv.peers[lv.out.to]||{n:'Oyuncu'}).n)+' kişisinin yanıtı bekleniyor…<div class="row"><button class="btn" id="cxl" type="button">Daveti iptal et</button></div></div>':'';
+      var h='';
+      ps.forEach(function(p){
+        var free=p.s==='lobby'&&!lv.out;
+        h+='<div class="prow"><span class="dot'+(p.s==='lobby'?' on':'')+'"></span><span class="pn">'+esc(p.n)+'</span><small>'+(p.s==='lobby'?'müsait':'oyunda')+'</small>'+(p.s==='lobby'?'<button class="btn mini2" type="button" data-inv="'+p.id+'"'+(free?'':' disabled')+'>Davet et</button>':'')+'</div>';
+      });
+      $('lbList').innerHTML=h;
+      $('lbRoomBox').innerHTML=lv.room?'<div class="invite">Oda kodun: <b class="rc">'+lv.room.code+'</b><small>Arkadaşın “Odaya katıl” alanına bu kodu yazsın. Eşleşince oyun başlar.</small><div class="row"><button class="btn" id="cxr" type="button">Odayı kapat</button></div></div>':'';
+      $('lbRoom').disabled=!lv.up||!!lv.room;
+    };
+    lv.ui();
+  }).catch(function(e){
+    var st=$('lbStat');if(st)st.textContent=(e&&e.message==='crypto')?'Bu tarayıcı çevrimiçi modu desteklemiyor.':'Bağlanılamadı. Bu sayfa internete erişemiyor olabilir (claude.ai önizlemesinde çevrimiçi mod çalışmaz; GitHub sayfasındaki sürümü kullan).';
+  });
 }
 
 /* ---------- menu & helpers ---------- */
@@ -1115,7 +1359,7 @@ function openRemaining(){
   openModal(h,function(m){m.querySelector('#rx').addEventListener('click',closeModal);});
 }
 function openMenu(){
-  openModal('<h2>Menü</h2><div class="row" style="flex-direction:column"><button class="btn" id="m0" type="button">Kelime sorgula</button><button class="btn" id="m1" type="button">Görünmeyen harfler</button><button class="btn" id="m2" type="button">Hamle geçmişi</button>'+(G.mode==='remote'?'<button class="btn" id="m6" type="button">Son hamle kodunu göster</button><button class="btn" id="m7" type="button">Kod yapıştır</button>':'')+'<button class="btn" id="m3" type="button">Ses: '+(soundOn?'açık':'kapalı')+'</button><button class="btn danger" id="m4" type="button">Yeni oyun</button><button class="btn" id="m5" type="button">Kapat</button></div>',function(m){
+  openModal('<h2>Menü</h2><div class="row" style="flex-direction:column"><button class="btn" id="m0" type="button">Kelime sorgula</button><button class="btn" id="m1" type="button">Görünmeyen harfler</button><button class="btn" id="m2" type="button">Hamle geçmişi</button>'+(G.mode==='remote'&&!G.live?'<button class="btn" id="m6" type="button">Son hamle kodunu göster</button><button class="btn" id="m7" type="button">Kod yapıştır</button>':'')+'<button class="btn" id="m3" type="button">Ses: '+(soundOn?'açık':'kapalı')+'</button><button class="btn danger" id="m4" type="button">Yeni oyun</button><button class="btn" id="m5" type="button">Kapat</button></div>',function(m){
     m.querySelector('#m0').addEventListener('click',openLookup);
     m.querySelector('#m1').addEventListener('click',function(){if(G.cover){closeModal();return;}openRemaining();});
     m.querySelector('#m2').addEventListener('click',openHistory);
@@ -1141,7 +1385,7 @@ function logoRow(id,word){
   });
 }
 function toSetup(){
-  G=null;$('game').hidden=true;$('setup').hidden=false;
+  liveClose();G=null;$('game').hidden=true;$('setup').hidden=false;
   var s=loadSaved();$('resumeBtn').hidden=!s;
   window.scrollTo(0,0);
 }
@@ -1150,7 +1394,9 @@ function begin(){
   buildBoard();
   if(G.mode==='remote'){
     G.cover=false;G.busy=(G.turn!==G.me);renderAll();
-    if(G.busy&&!G.over)toast('Rakibin hamle kodunu bekliyorsun. “Kod yapıştır” ile uygula.');
+    if(G.live){if(!G.over)liveResume();}
+    else if(G.busy&&!G.over)toast('Rakibin hamle kodunu bekliyorsun. “Kod yapıştır” ile uygula.');
+    else if(!G.mv.length&&!G.over)toast('İlk hamleni yapıp Tamam’a bas. Arkadaşına göndereceğin kod o zaman çıkacak.');
   }else if(G.mode==='cpu'){
     G.cover=false;G.busy=false;renderAll();
     if(G.turn===1){G.busy=true;renderAll();setTimeout(cpuTurn,500);}
@@ -1161,13 +1407,14 @@ function init(){
   try{soundOn=localStorage.getItem('kelime-oyunu-ses')!=='0';}catch(e){}
   logoRow('logo1','KELİME');logoRow('logo2','OYUNU');
   toSetup();
+  try{var sn=localStorage.getItem('kelime-oyunu-ad');if(sn)$('n1').value=sn;}catch(e){}
   function syncSetup(){
-    var cpu=setupMode==='cpu',rem=setupMode==='remote';
+    var cpu=setupMode==='cpu',live=setupMode==='live',rem=setupMode==='remote'||live;
     $('n2Field').hidden=cpu||rem;$('hideField').hidden=cpu||rem;$('lvlField').hidden=!cpu;
-    $('roleField').hidden=!rem;$('joinField').hidden=!(rem&&setupRole==='join');
+    $('roleField').hidden=!(rem&&!live);$('joinField').hidden=!(rem&&!live&&setupRole==='join');
     $('n1Lbl').textContent=rem?'Adın':'1. oyuncu';
     $('roleHint').textContent=setupRole==='join'?'Arkadaşın ilk hamlesini yapıp sana kod gönderecek. Gelen kodu aşağıya yapıştır.':'Sen başlarsın: ilk hamleni yap, çıkan hamle kodunu arkadaşına gönder.';
-    $('startBtn').textContent=rem?(setupRole==='join'?'Oyuna katıl':'Oyunu başlat'):'Oyunu başlat';
+    $('startBtn').textContent=live?'Çevrimiçi lobiye gir':(rem?(setupRole==='join'?'Oyuna katıl':'Oyunu başlat'):'Oyunu başlat');
     document.querySelectorAll('[data-role]').forEach(function(b){b.classList.toggle('on',b.dataset.role===setupRole);b.setAttribute('aria-pressed',b.dataset.role===setupRole);});
     document.querySelectorAll('[data-mode]').forEach(function(b){b.classList.toggle('on',b.dataset.mode===setupMode);b.setAttribute('aria-pressed',b.dataset.mode===setupMode);});
     document.querySelectorAll('[data-lvl]').forEach(function(b){b.classList.toggle('on',b.dataset.lvl===setupLevel);b.setAttribute('aria-pressed',b.dataset.lvl===setupLevel);});
@@ -1179,6 +1426,8 @@ function init(){
   $('startBtn').addEventListener('click',function(){
     var a=$('n1').value.trim()||'Oyuncu 1',b=$('n2').value.trim()||'Oyuncu 2';
     if(a===b)b=b+' (2)';
+    try{localStorage.setItem('kelime-oyunu-ad',a);}catch(e){}
+    if(setupMode==='live'){openLobby(a);return;}
     if(setupMode==='remote'){
       if(setupRole==='join'){
         var jr=joinFromCode($('joinCode').value,a);
@@ -1198,7 +1447,7 @@ function init(){
     var s=loadSaved();if(!s)return;
     uid=s.uid||1000;G=s.G;rsState=(G.mode==='remote'&&G.rs!=null)?G.rs:null;G.pend={};G.sel=null;G.cover=true;G.busy=false;G.gain=null;if(!G.mode)G.mode='friend';rebuildPend();begin();
   });
-  $('playBtn').addEventListener('click',function(){if(G&&G.mode==='remote'&&G.busy&&!G.over)openPasteCode();else commit();});
+  $('playBtn').addEventListener('click',function(){if(G&&G.mode==='remote'&&G.busy&&!G.over){if(!G.live)openPasteCode();}else commit();});
   $('preview').addEventListener('click',function(e){if(G&&e.target.closest('[data-act="mycode"]'))showCode('');});
   $('recallBtn').addEventListener('click',recall);
   $('shuffleBtn').addEventListener('click',function(){shuffle(myRack());renderRack();sTick();});
