@@ -99,6 +99,18 @@ button{font:inherit;color:inherit}
 .err{color:#ff9a8f;font-size:13px;margin:4px 0 0}
 .hint{font-size:12.5px;color:var(--muted,#b9b29c);line-height:1.4;margin:6px 0}
 .mini{appearance:none;border:1px solid var(--brass);background:transparent;color:var(--brass);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-left:6px}
+.scores.live{grid-template-columns:1fr auto 1fr auto auto}
+.chat-btn{position:relative;width:44px;border-radius:14px;padding:0;display:flex;align-items:center;justify-content:center;color:var(--brass)}
+.chat-btn .badge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:#d9443a;color:#fff;font:800 11px/18px var(--f-ui,inherit);font-style:normal;text-align:center;padding:0 4px}
+.chatlist{display:flex;flex-direction:column;gap:6px;height:38vh;min-height:160px;overflow:auto;padding:8px;border-radius:12px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1)}
+.bub{max-width:80%;padding:7px 11px;border-radius:14px;line-height:1.35;word-break:break-word;font-size:14.5px}
+.bub.me{align-self:flex-end;background:rgba(220,184,95,.22);border-bottom-right-radius:4px}
+.bub.ot{align-self:flex-start;background:rgba(255,255,255,.1);border-bottom-left-radius:4px}
+.qks{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.qk{appearance:none;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:var(--text);border-radius:999px;padding:6px 11px;font-size:13px;cursor:pointer}
+.chatrow{display:flex;gap:8px}
+.chatin{flex:1;min-width:0;box-sizing:border-box;background:rgba(0,0,0,.35);color:var(--text);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px;font-size:16px}
+.chatrow .btn{flex:0 0 auto;min-width:0;padding:10px 16px}
 .seg.grid2{display:grid;grid-template-columns:1fr 1fr}
 .plist{display:flex;flex-direction:column;gap:6px;margin:8px 0;max-height:30vh;overflow:auto}
 .plist:empty{display:none}
@@ -286,6 +298,8 @@ button{font:inherit;color:inherit}
   .scores .bag{grid-area:2/1;flex-direction:row;gap:8px;padding:8px 10px;justify-content:flex-start}
   .scores .bag small{margin:0}
   .scores .menu-btn{grid-area:2/2;width:auto;padding:8px 12px}
+  .scores.live{grid-template-columns:1fr 1fr}
+  .scores .chat-btn{grid-area:3/1/3/3;width:auto;padding:8px 12px}
   .pcard .sc{font-size:32px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -400,8 +414,9 @@ function makeBag(){
 }
 function draw(p){while(G.racks[p].length<RACK&&G.bag.length)G.racks[p].push(G.bag.pop());}
 function newGame(names,hide,mode,level,seed,me){
+  chatUnread=0;
   if(mode==='remote'){rsState=seed|0;uid=0;}else rsState=null;
-  G={seed:mode==='remote'?(seed|0):null,me:me||0,mv:[],names:names,hide:hide,mode:mode||'friend',level:level||'mid',busy:false,board:new Array(N*N).fill(null),racks:[[],[]],bag:makeBag(),scores:[0,0],turn:0,pend:{},sel:null,passes:0,log:[],last:[],over:false,cover:true,gain:null,final:null};
+  G={chat:[],seed:mode==='remote'?(seed|0):null,me:me||0,mv:[],names:names,hide:hide,mode:mode||'friend',level:level||'mid',busy:false,board:new Array(N*N).fill(null),racks:[[],[]],bag:makeBag(),scores:[0,0],turn:0,pend:{},sel:null,passes:0,log:[],last:[],over:false,cover:true,gain:null,final:null};
   draw(0);draw(1);
   rebuildPend();
 }
@@ -677,6 +692,11 @@ function renderScores(){
   s.appendChild(card(0));
   s.appendChild(el('div','bag','<b>'+G.bag.length+'</b><small>torba</small>'));
   s.appendChild(card(1));
+  s.classList.toggle('live',!!G.live);
+  if(G.live){
+    var cb=el('button','btn chat-btn','<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>'+(chatUnread?'<i class="badge">'+chatUnread+'</i>':''));
+    cb.type='button';cb.setAttribute('aria-label','Sohbet');cb.dataset.act='chat';s.appendChild(cb);
+  }
   var m=el('button','btn menu-btn','<span class="dots"></span>');m.type='button';m.setAttribute('aria-label','Menü');m.dataset.act='menu';
   s.appendChild(m);
 }
@@ -1121,7 +1141,7 @@ function lvSubs(){
   var t=[TP+'in/'+LV.id];
   if(LV.wantLobby)t.push(TP+'p/+');
   if(LV.room)t.push(TP+'r/'+LV.room.code);
-  if(LV.gid)t.push(TP+'g/'+LV.gid);
+  if(LV.gid){t.push(TP+'g/'+LV.gid);t.push(TP+'c/'+LV.gid);}
   LV.c.subscribe(t,{qos:1});
 }
 function lvPub(topic,obj,retain){LV.c.publish(topic,typeof obj==='string'?obj:JSON.stringify(obj),{qos:1,retain:!!retain});}
@@ -1146,6 +1166,7 @@ function lvMsg(topic,payload){
   }
   if(topic===TP+'in/'+LV.id){try{lvInbox(JSON.parse(txt));}catch(e){}return;}
   if(LV.room&&topic===TP+'r/'+LV.room.code){try{lvRoomMsg(JSON.parse(txt));}catch(e){}return;}
+  if(LV.gid&&topic===TP+'c/'+LV.gid){if(txt&&LV.key)decMsg(LV.key,txt).then(chatIn).catch(function(){});return;}
   if(LV.gid&&topic===TP+'g/'+LV.gid){if(txt&&LV.key)decMsg(LV.key,txt).then(lvState).catch(function(){});}
 }
 function lvInbox(m){
@@ -1297,6 +1318,46 @@ function openLobby(name){
   });
 }
 
+
+/* ---------- sohbet ---------- */
+var chatUnread=0,chatLast=0;
+var QUICK=['Merhaba 👋','İyi oyunlar!','Güzel hamle 👏','Biraz bekle','Teşekkürler','Yine oynayalım mı?'];
+function chatIn(m){
+  if(!m||m.t!=='chat'||!G||!G.live||m.w===G.me)return;
+  var x=String(m.x||'').slice(0,200);if(!x)return;
+  G.chat=G.chat||[];G.chat.push({w:1-G.me,x:x,t:Date.now()});if(G.chat.length>80)G.chat.shift();
+  save();
+  if($('chatList')){drawChat();}
+  else{chatUnread++;sTick();renderScores();toast('<b>'+esc(G.names[1-G.me])+':</b> '+esc(x));}
+}
+function chatSend(x){
+  x=String(x||'').trim().slice(0,200);if(!x||!LV||!LV.key||!G||!G.live)return false;
+  var now=Date.now();if(now-chatLast<700)return false;chatLast=now;
+  G.chat=G.chat||[];G.chat.push({w:G.me,x:x,t:now});if(G.chat.length>80)G.chat.shift();save();
+  encMsg(LV.key,{t:'chat',w:G.me,x:x}).then(function(e){if(LV)LV.c.publish(TP+'c/'+LV.gid,e,{qos:1,retain:false});});
+  drawChat();return true;
+}
+function drawChat(){
+  var l=$('chatList');if(!l)return;
+  var h='';(G.chat||[]).forEach(function(c){h+='<div class="bub '+(c.w===G.me?'me':'ot')+'">'+esc(c.x)+'</div>';});
+  l.innerHTML=h||'<p class="hint" style="text-align:center">Henüz mesaj yok. Selam ver!</p>';
+  l.scrollTop=l.scrollHeight;
+}
+function openChat(){
+  if(!G||!G.live)return;
+  chatUnread=0;renderScores();
+  var q='';QUICK.forEach(function(t,i){q+='<button type="button" class="qk" data-q="'+i+'">'+esc(t)+'</button>';});
+  var h='<div class="eyebrow">Sohbet</div><h2>'+esc(G.names[1-G.me])+'</h2><div class="chatlist" id="chatList"></div><div class="qks">'+q+'</div>'+
+    '<form class="chatrow" id="chatForm"><input class="chatin" id="chatIn" maxlength="200" placeholder="Mesaj yaz…" autocomplete="off"><button class="btn primary" type="submit">Gönder</button></form>'+
+    '<div class="row"><button class="btn" id="chatX" type="button">Kapat</button></div>';
+  openModal(h,function(m){
+    drawChat();
+    m.querySelector('#chatX').addEventListener('click',function(){closeModal();});
+    m.querySelector('#chatForm').addEventListener('submit',function(e){e.preventDefault();var i=m.querySelector('#chatIn');if(chatSend(i.value))i.value='';});
+    m.addEventListener('click',function(e){var b=e.target.closest('[data-q]');if(b)chatSend(QUICK[+b.dataset.q]);});
+  });
+}
+
 /* ---------- menu & helpers ---------- */
 function openExchange(){
   if(G.bag.length<RACK){return;}
@@ -1359,7 +1420,7 @@ function openRemaining(){
   openModal(h,function(m){m.querySelector('#rx').addEventListener('click',closeModal);});
 }
 function openMenu(){
-  openModal('<h2>Menü</h2><div class="row" style="flex-direction:column"><button class="btn" id="m0" type="button">Kelime sorgula</button><button class="btn" id="m1" type="button">Görünmeyen harfler</button><button class="btn" id="m2" type="button">Hamle geçmişi</button>'+(G.mode==='remote'&&!G.live?'<button class="btn" id="m6" type="button">Son hamle kodunu göster</button><button class="btn" id="m7" type="button">Kod yapıştır</button>':'')+'<button class="btn" id="m3" type="button">Ses: '+(soundOn?'açık':'kapalı')+'</button><button class="btn danger" id="m4" type="button">Yeni oyun</button><button class="btn" id="m5" type="button">Kapat</button></div>',function(m){
+  openModal('<h2>Menü</h2><div class="row" style="flex-direction:column"><button class="btn" id="m0" type="button">Kelime sorgula</button><button class="btn" id="m1" type="button">Görünmeyen harfler</button><button class="btn" id="m2" type="button">Hamle geçmişi</button>'+(G.live?'<button class="btn" id="m8" type="button">Sohbet</button>':'')+(G.mode==='remote'&&!G.live?'<button class="btn" id="m6" type="button">Son hamle kodunu göster</button><button class="btn" id="m7" type="button">Kod yapıştır</button>':'')+'<button class="btn" id="m3" type="button">Ses: '+(soundOn?'açık':'kapalı')+'</button><button class="btn danger" id="m4" type="button">Yeni oyun</button><button class="btn" id="m5" type="button">Kapat</button></div>',function(m){
     m.querySelector('#m0').addEventListener('click',openLookup);
     m.querySelector('#m1').addEventListener('click',function(){if(G.cover){closeModal();return;}openRemaining();});
     m.querySelector('#m2').addEventListener('click',openHistory);
@@ -1371,6 +1432,7 @@ function openMenu(){
       });
     });
     m.querySelector('#m5').addEventListener('click',closeModal);
+    var m8=m.querySelector('#m8');if(m8)m8.addEventListener('click',openChat);
     var m6=m.querySelector('#m6');if(m6){m6.addEventListener('click',function(){showCode('');});m.querySelector('#m7').addEventListener('click',function(){if(G.over||!G.busy){closeModal();return;}openPasteCode();});}
   });
 }
@@ -1453,7 +1515,7 @@ function init(){
   $('shuffleBtn').addEventListener('click',function(){shuffle(myRack());renderRack();sTick();});
   $('exchBtn').addEventListener('click',openExchange);
   $('passBtn').addEventListener('click',openPass);
-  $('scores').addEventListener('click',function(e){if(G&&e.target.closest('[data-act="menu"]'))openMenu();});
+  $('scores').addEventListener('click',function(e){if(!G)return;if(e.target.closest('[data-act="menu"]'))openMenu();else if(e.target.closest('[data-act="chat"]'))openChat();});
   $('board').addEventListener('click',onBoardClick);
   document.addEventListener('pointerdown',onDown);
   document.addEventListener('keydown',function(e){
