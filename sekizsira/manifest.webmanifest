@@ -1,7 +1,7 @@
 {
-  "name": "Spider by uozdil",
-  "short_name": "Spider",
-  "description": "OLED dostu Spider Solitaire",
+  "name": "Sekiz Sıra by uozdil",
+  "short_name": "Sekiz Sıra",
+  "description": "OLED dostu sekiz sıralı kart oyunu",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

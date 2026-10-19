@@ -1,0 +1,1641 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sekiz Sıra">
+<title>Sekiz Sıra by uozdil</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap">
+<style>
+@font-face{font-family:'CardIdx';font-weight:700;src:url(data:font/woff;base64,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) format('woff')}
+:root{
+  --font-idx:'Playfair Display',Georgia,'Times New Roman',serif;--table:#000;--gold:#ab8c3c;--gold2:#7d6529;--paper:#F1ECE0;--ink:#1d1f27;--red:#b5382f;
+  --text:#cdc7b9;--dim:#86827a;--line:#24262e;--panel:#08090c;--dimcard:.12;
+  --ul:20px;--ur:28px;--sx:0px;--sy:0px;
+  --pl:calc(env(safe-area-inset-left,0px) + var(--ul));
+  --pr:calc(env(safe-area-inset-right,0px) + var(--ur));
+  --pt:env(safe-area-inset-top,0px);
+  --pb:env(safe-area-inset-bottom,0px);
+  --font-ui:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--table);color:var(--text);
+  font-family:var(--font-ui);transition:background-color 25s linear;-webkit-user-select:none;user-select:none;touch-action:manipulation;
+  -webkit-touch-callout:none}
+button{font:inherit;color:inherit;cursor:pointer}
+[hidden]{display:none!important}
+#stage{position:fixed;inset:0;transform:translate(var(--sx),var(--sy));transition:transform 6s ease-in-out}
+.screen{position:absolute;inset:0;padding:var(--pt) var(--pr) var(--pb) var(--pl)}
+
+/* ---------- Kartlar ---------- */
+.card{position:absolute;left:0;top:0;width:var(--cw);height:calc(var(--cw)*1.4);border-radius:calc(var(--cw)*.085);
+  transition:transform .26s cubic-bezier(.2,.75,.25,1),opacity .22s;will-change:transform;touch-action:none;
+  --ink:#1d1f27;color:var(--ink);--rl:#4d1714;--rd:#6e2420;--rm:#7d2a26;--rt:#8f342d}
+.card.s1,.card.s2{color:var(--red)}
+.card.s0{--rl:#151c30;--rd:#1c2640;--rm:#25304a;--rt:#34446a}
+.card.s1{--rl:#4d1714;--rd:#6e2420;--rm:#7d2a26;--rt:#8f342d}
+.card.s2{--rl:#4a1e0e;--rd:#6b2f19;--rm:#86371f;--rt:#9b4527}
+.card.s3{--rl:#0f221b;--rd:#183229;--rm:#1f3d33;--rt:#2d5646}
+.card .face,.card .back{position:absolute;inset:0;border-radius:inherit;overflow:hidden}
+.card .face{display:none;background:var(--paper);box-shadow:inset 0 0 0 .5px #cfc8b4,0 0 0 1px rgba(0,0,0,.55)}
+.card .face::after{content:"";position:absolute;inset:0;background:#000;opacity:var(--dimcard);pointer-events:none}
+.card.up .face{display:block}
+.card.up .back{display:none}
+.card .back{background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 0 0 1px rgba(0,0,0,.55)}
+.card .back svg{display:block;width:100%;height:100%}
+.card .idx{position:absolute;left:calc(var(--cw)*.07);top:calc(var(--cw)*.025);display:flex;align-items:center;gap:calc(var(--cw)*.03);
+  font:700 calc(var(--cw)*.34)/1 var(--font-idx);letter-spacing:-.02em;font-variant-numeric:lining-nums;font-variant-numeric:tabular-nums;color:inherit}
+.card .idx span,.card .idx2 span{display:inline-block}
+.card .idx svg{width:calc(var(--cw)*.13);height:calc(var(--cw)*.13);fill:currentColor;margin-top:calc(var(--cw)*.02)}
+.card .big{position:absolute;left:50%;top:calc(var(--cw)*.58);width:calc(var(--cw)*.52);height:calc(var(--cw)*.52);transform:translateX(-50%);color:inherit;fill:currentColor}
+.card .big.ace{top:calc(var(--cw)*.40);width:calc(var(--cw)*.62);height:calc(var(--cw)*.62)}
+.card .art{position:absolute;left:50%;top:calc(var(--cw)*.36);height:calc(var(--cw)*1.4 - var(--cw)*.36 - var(--cw)*.05);aspect-ratio:74/126;transform:translateX(-50%);display:block}
+.card img.art{object-fit:cover;border:1px solid #a98a3a;border-radius:2px;background:#222}
+.card.flip .face{animation:flipin .3s ease-out}
+.card.shake .face{animation:shake .32s}
+.card.hint .face{box-shadow:inset 0 0 0 calc(var(--cw)*.04) var(--gold),0 0 0 1px rgba(0,0,0,.55);animation:pulse .9s ease-in-out 2}
+.card.hint-t .face{box-shadow:inset 0 0 0 calc(var(--cw)*.04) #7d9a5a,0 0 0 1px rgba(0,0,0,.55);animation:pulse .9s ease-in-out 2}
+.card.drop-ok .face{box-shadow:inset 0 0 0 calc(var(--cw)*.04) var(--gold2),0 0 0 1px rgba(0,0,0,.55)}
+.card.drag{transition:none}
+@keyframes flipin{from{transform:scaleX(.08)}to{transform:scaleX(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.25)}}
+.slot{position:absolute;left:0;top:0;width:var(--cw);height:calc(var(--cw)*1.4);border:1px dashed rgba(255,255,255,.16);border-radius:calc(var(--cw)*.085)}
+.slot.drop-ok{border-color:var(--gold2)}
+.slot.hint-t{border-color:#7d9a5a;border-style:solid}
+
+/* ---------- Oyun ekranı ---------- */
+#rail{position:absolute;left:var(--pl);top:calc(var(--pt) + 8px);display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:6px;z-index:2;--ib:clamp(28px,calc((100dvh - var(--pt) - var(--pb) - 96px)/8),40px)}
+#game{--rw:calc(var(--ib0) + 12px);--ib0:clamp(28px,calc((100dvh - var(--pt) - var(--pb) - 96px)/8),40px)}
+#game.rail-r #board{left:var(--pl);right:calc(var(--pr) + var(--rw))}
+#game.rail-r #rail{left:auto;right:var(--pr)}
+.ibtn{width:var(--ib,38px);height:var(--ib,38px);border-radius:10px;border:1px solid var(--line);background:#07080b;color:var(--text);display:grid;place-items:center;padding:0;flex:none}
+.ibtn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ibtn:active{border-color:var(--gold);color:var(--gold)}
+.ibtn[disabled]{opacity:.32;pointer-events:none}
+.ibtn.accent{border-color:var(--gold2);color:var(--gold)}
+.stats{position:absolute;left:var(--pl);right:var(--pr);bottom:calc(var(--pb) + 8px);display:flex;gap:clamp(12px,2.4vw,28px);font-size:13px;color:var(--dim);white-space:nowrap;pointer-events:none;z-index:3}
+.stats div:nth-child(3){order:-1;margin-right:auto}
+.stats b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums;margin-left:4px}
+#found{position:absolute;right:calc(50% + 72px);bottom:calc(var(--pb) + 12px);display:flex;gap:3px;z-index:3;--fw:clamp(10px,1.7vw,15px)}
+.fslot{width:var(--fw);height:calc(var(--fw)*1.4);border:1px solid rgba(255,255,255,.18);border-radius:3px;display:grid;place-items:center;color:var(--ink)}
+.fslot svg{width:62%;height:44%;fill:currentColor;display:none}
+.fslot.on{background:#b9b4a6;border-color:#8c877a}
+.fslot.on svg{display:block}
+.fslot.r{color:var(--red)}
+#stock{position:absolute;left:50%;bottom:calc(var(--pb) + 3px);transform:translateX(-50%);display:flex;align-items:flex-end;height:54px;border:0;padding:0;background:none;z-index:3;--sw:40px}
+#stock svg.bk{display:block;width:var(--sw);height:54px;margin-left:calc(var(--sw)*-.62);border-radius:5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 0 0 1px #000,-2px 0 4px rgba(0,0,0,.6)}
+#stock svg.bk:first-of-type{margin-left:0}
+#stock .cnt{display:none}
+#stock[data-n="0"] svg.bk{opacity:.25}
+#stock.hint{animation:pulse .9s ease-in-out 2;outline:2px solid var(--gold);outline-offset:2px}
+#board{position:absolute;left:calc(var(--pl) + var(--rw));right:var(--pr);top:calc(var(--pt) + 8px);bottom:calc(var(--pb) + 40px);touch-action:none;z-index:1;isolation:isolate}
+
+/* ---------- Ana menü ---------- */
+.menu-wrap{height:100%;display:grid;grid-template-columns:1.15fr .85fr 1fr;align-items:center;gap:clamp(8px,3vw,40px);min-height:0}
+.brand h1{white-space:nowrap;font:700 clamp(36px,6.6vw,84px)/.95 var(--font-display);margin:0;color:var(--gold);letter-spacing:.005em}
+.brand .sub{font:500 clamp(11px,1.5vw,15px) var(--font-ui);letter-spacing:.42em;color:var(--dim);margin:.8em 0 0 .15em}
+.brand .sign{font:italic 500 clamp(14px,2.2vw,22px) var(--font-display);color:var(--gold2);margin-top:.8em;letter-spacing:.02em}
+.brand .seg{margin-top:clamp(10px,3vh,26px)}
+.fan{position:relative;height:100%;min-height:0;--cw:clamp(56px,10.5vw,104px)}
+.fan .card{left:50%;top:50%;margin-left:calc(var(--cw)*-.5);margin-top:calc(var(--cw)*-.7);transition:none;pointer-events:none}
+.fan .card:nth-child(1){transform:translate(calc(var(--cw)*-.72),calc(var(--cw)*.06)) rotate(-13deg)}
+.fan .card:nth-child(2){transform:translate(0,calc(var(--cw)*-.06)) rotate(0)}
+.fan .card:nth-child(3){transform:translate(calc(var(--cw)*.72),calc(var(--cw)*.06)) rotate(13deg)}
+.menu-list{display:flex;flex-direction:column;gap:clamp(5px,1.6vh,10px);justify-self:end;width:min(100%,290px)}
+.mbtn{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;height:clamp(36px,9vh,46px);border-radius:11px;border:1px solid var(--line);background:#07080b;color:var(--text);font-size:15px;font-weight:500;text-align:left}
+.mbtn small{color:var(--dim);font-size:11px;font-weight:400}
+.mbtn:active,.mbtn:focus-visible{border-color:var(--gold);outline:none}
+.mbtn.primary{border-color:var(--gold2);color:var(--gold)}
+
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#07080b}
+.seg button{border:0;background:transparent;color:var(--dim);padding:0 14px;height:34px;font-size:13px;font-weight:500;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:#14120a;color:var(--gold)}
+
+/* ---------- Pencereler ---------- */
+.modal{position:absolute;inset:0;background:rgba(0,0,0,.86);padding:calc(var(--pt) + 8px) var(--pr) calc(var(--pb) + 8px) var(--pl);display:grid;place-items:center;z-index:20}
+.sheet{width:min(720px,100%);max-height:100%;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;min-height:0}
+.sheet header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 18px;border-bottom:1px solid var(--line);flex:none}
+.sheet h2{margin:0;font:600 18px var(--font-display);color:var(--gold);letter-spacing:.01em}
+.sheet .body{overflow:auto;padding:6px 18px 14px;min-height:0;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.sheet .foot{display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;border-top:1px solid var(--line);flex:none;flex-wrap:wrap}
+.btn{height:38px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:#07080b;color:var(--text);font-size:14px;font-weight:500}
+.btn.primary{border-color:var(--gold2);color:var(--gold)}
+.btn:active{border-color:var(--gold)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid #15171c;font-size:14px}
+.row:last-child{border-bottom:0}
+.row .lab{min-width:0}
+.row .lab small{display:block;color:var(--dim);font-size:11.5px;margin-top:2px;line-height:1.35}
+.group{margin:14px 0 2px;color:var(--gold2);font:600 11px var(--font-ui);letter-spacing:.16em;text-transform:uppercase}
+.sw{flex:none;width:46px;height:26px;border-radius:13px;background:#12141a;border:1px solid var(--line);position:relative;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--dim);transition:left .18s,background .18s}
+.sw[aria-checked="true"]{border-color:var(--gold2)}
+.sw[aria-checked="true"]::after{left:23px;background:var(--gold)}
+.step{display:inline-flex;align-items:center;gap:6px;flex:none}
+.step button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#07080b;font-size:18px;line-height:1;padding:0}
+.step output{min-width:44px;text-align:center;font-variant-numeric:tabular-nums;color:var(--text);font-size:13px}
+.decks{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:12px 0}
+.decks button{border:1px solid var(--line);background:#07080b;border-radius:12px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+.decks button svg{width:min(64px,100%);aspect-ratio:58/78;height:auto;border-radius:5px;box-shadow:0 0 0 1px #000}
+.decks button.on{border-color:var(--gold);color:var(--gold)}
+.table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+.table th,.table td{padding:8px 6px;text-align:right;border-bottom:1px solid #15171c;font-variant-numeric:tabular-nums}
+.table th:first-child,.table td:first-child{text-align:left}
+.table th{color:var(--dim);font-weight:500;font-size:11.5px}
+.help p{margin:.7em 0;line-height:1.5;font-size:14px;color:var(--text)}
+.help b{color:var(--gold);font-weight:600}
+.big-msg{text-align:center;padding:10px 0 4px}
+.big-msg h3{font:700 34px var(--font-display);color:var(--gold);margin:6px 0}
+.big-msg p{color:var(--dim);margin:4px 0 12px;font-size:14px}
+.guide{position:absolute;top:0;bottom:0;pointer-events:none;background:repeating-linear-gradient(45deg,#1d170a 0 7px,#000 7px 14px);z-index:25;display:none}
+body.guides .guide{display:block}
+#guideL{left:0;width:var(--pl)}
+#guideR{right:0;width:var(--pr)}
+
+/* ---------- Genel ---------- */
+#dim{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity 2.5s;z-index:50}
+#dim.on{opacity:.6}
+#toast{position:fixed;left:50%;bottom:calc(var(--pb) + 14px);transform:translate(-50%,10px);background:#0c0d11;border:1px solid var(--line);color:var(--text);padding:8px 14px;border-radius:10px;font-size:13px;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:60;max-width:86vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#rotate{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:var(--text);text-align:center;padding:24px;font-size:15px}
+#rotate svg{width:64px;height:64px;stroke:var(--gold);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;animation:turn 2.4s ease-in-out infinite}
+@keyframes turn{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait) and (max-width:600px){#rotate{display:flex}}
+/* Tablet / dik ekran: iki satırlı üst çubuk, tek sütun menü */
+@media (orientation:portrait){
+  .menu-wrap{grid-template-columns:1fr;align-content:center;overflow:auto;gap:18px}
+  .fan{display:none}
+  .menu-list{max-width:420px;width:100%;margin:0 auto}
+  .brand{text-align:center}
+}
+@media (max-width:620px){.menu-wrap{grid-template-columns:1fr 1fr}.fan{display:none}.stats span.opt{display:none}}
+@media (max-height:420px){.sheet header{padding:6px 10px 6px 16px}.btn{height:34px}.row{padding:8px 0}}
+@media (prefers-reduced-motion:reduce){.card{transition-duration:.01s}#stage{transition:none}}
+
+.help section{margin:0 0 18px;scroll-margin-top:56px}
+.help h3{font:600 17px var(--font-display);color:var(--gold);margin:0 0 8px}
+.htabs{flex:none;min-height:54px;box-sizing:border-box;align-items:center;display:flex;gap:6px;overflow-x:auto;padding:10px 22px;border-bottom:1px solid var(--line)}
+.htabs a{flex:none;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--text);font-size:13px;text-decoration:none}
+.htabs a:active{border-color:var(--gold);color:var(--gold)}
+.fig{display:flex;align-items:center;gap:6px;padding:12px;margin:6px 0;background:#050608;border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.fig i{font-style:normal;color:var(--gold);font-size:20px;padding:0 4px}
+.mc{flex:none;display:grid;place-items:center;width:38px;height:53px;border-radius:5px;background:#d6d1c4;color:#1d1f27;font:700 14px var(--font-ui)}
+.mc.sh{margin-left:-24px;box-shadow:-2px 0 3px rgba(0,0,0,.3)}
+.mc.empty{background:none;border:1px dashed var(--gold2)}
+.mc.back{background:#0d1a3a;border:1px solid #2c4a8a}
+.mc.dots{background:none;color:var(--dim)}
+.mc.done{background:none;border:1px solid var(--gold2);color:var(--gold);font-size:18px}
+.mc.tiny{width:auto;height:auto;background:none;color:var(--dim);font:12px var(--font-ui);padding:0}
+.mc.red{color:var(--red)}
+
+/* Gerçek kart gibi semboller */
+.pips{position:absolute;left:calc(var(--cw)*.30);top:calc(var(--cw)*.45);width:calc(var(--cw)*.40);height:calc(var(--cw)*.72)}
+body.i2 .pips{height:calc(var(--cw)*.56)}
+body.i2 .pips svg{width:calc(var(--cw)*.17);height:calc(var(--cw)*.17)}
+.pips svg{position:absolute;width:calc(var(--cw)*.21);height:calc(var(--cw)*.21);fill:currentColor;transform:translate(-50%,-50%)}
+.pips svg.f{transform:translate(-50%,-50%) rotate(180deg)}
+.card .idx2{display:none;position:absolute;right:calc(var(--cw)*.07);bottom:calc(var(--cw)*.02);align-items:center;gap:calc(var(--cw)*.03);transform:rotate(180deg);
+  font:700 calc(var(--cw)*.34)/1 var(--font-idx);letter-spacing:-.02em;font-variant-numeric:lining-nums;font-variant-numeric:tabular-nums}
+.card .idx2 svg{width:calc(var(--cw)*.13);height:calc(var(--cw)*.13);fill:currentColor;margin-top:calc(var(--cw)*.02)}
+body.i2 .card .idx2{display:flex}
+body.i2 .card .art{height:calc(var(--cw)*1.4 - var(--cw)*.36 - var(--cw)*.3)}
+.swatches{display:inline-flex;gap:10px}
+.swatches button{width:32px;height:32px;border-radius:50%;background:var(--c);border:2px solid var(--line);padding:0}
+.swatches button.on{border-color:var(--gold);box-shadow:0 0 0 2px #000 inset}
+
+#bFS .fs-out{display:none}
+body.isfs #bFS .fs-in{display:none}
+body.isfs #bFS .fs-out{display:inline}
+
+.gsign{position:absolute;left:calc(var(--pl) + 96px);bottom:calc(var(--pb) + 8px);font:italic 500 12px/1.2 var(--font-display);color:var(--gold2);opacity:.75;letter-spacing:.02em;pointer-events:none;z-index:3}
+#game.rail-r .gsign{left:calc(var(--pl) + 96px)}
+.msign{margin:18px 0 4px;text-align:center;font:italic 500 13px var(--font-display);color:var(--gold2)}
+
+.ibtn.undo{border-color:#2f5185;background:#0a1322;color:#8fb6ee}
+.ibtn.undo:active{border-color:#8fb6ee}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<symbol id="su0" viewBox="0 0 100 100"><path fill="currentColor" d="M50 5C50 5 93 38 93 61C93 77 79 85 66 81C61 79.500 57 76 54.500 71C54.500 82 58.500 90 67 95L33 95C41.500 90 45.500 82 45.500 71C43 76 39 79.500 34 81C21 85 7 77 7 61C7 38 50 5 50 5Z"/></symbol>
+<symbol id="su1" viewBox="0 0 100 100"><path fill="currentColor" d="M50 93C17 69 5 51 5 34C5 18 17 7 31 7C41 7 47.500 13 50 20C52.500 13 59 7 69 7C83 7 95 18 95 34C95 51 83 69 50 93Z"/></symbol>
+<symbol id="su2" viewBox="0 0 100 100"><path fill="currentColor" d="M50 3C62 22 78 38 93 50C78 62 62 78 50 97C38 78 22 62 7 50C22 38 38 22 50 3Z"/></symbol>
+<symbol id="su3" viewBox="0 0 100 100"><g fill="currentColor"><circle cx="50" cy="28" r="22"/><circle cx="25" cy="62" r="22"/><circle cx="75" cy="62" r="22"/><path d="M50 36L33 68L67 68Z"/><path d="M50 52L50 68C50 83 46 91 35 96L65 96C54 91 50 83 50 68Z"/></g></symbol>
+
+<symbol id="bk0" viewBox="0 0 58 78"><rect width="58" height="78" fill="#0d1830"/><rect x="3" y="3" width="52" height="72" rx="3" fill="none" stroke="#35508a" stroke-width=".7"/><rect x="6" y="6" width="46" height="66" rx="2" fill="none" stroke="#243a68" stroke-width=".5"/><path d="M29 13L47 39L29 65L11 39Z" fill="none" stroke="#5a78b8" stroke-width=".9"/><path d="M29 22L40 39L29 56L18 39Z" fill="none" stroke="#5a78b8" stroke-width=".9"/><path d="M29 31L34 39L29 47L24 39Z" fill="#5a78b8"/><circle cx="12" cy="13" r="1.200" fill="#5a78b8"/><circle cx="46" cy="13" r="1.200" fill="#5a78b8"/><circle cx="12" cy="65" r="1.200" fill="#5a78b8"/><circle cx="46" cy="65" r="1.200" fill="#5a78b8"/></symbol>
+<symbol id="bk1" viewBox="0 0 58 78"><rect width="58" height="78" fill="#07070a"/><rect x="3" y="3" width="52" height="72" rx="3" fill="none" stroke="#8a6d2a" stroke-width=".7"/><rect x="6" y="6" width="46" height="66" rx="2" fill="none" stroke="#5c4a1e" stroke-width=".5"/><circle cx="29" cy="39" r="20" fill="none" stroke="#bf9b45" stroke-width=".9"/><circle cx="29" cy="39" r="13" fill="none" stroke="#bf9b45" stroke-width=".9"/><circle cx="29" cy="39" r="5" fill="#bf9b45"/><path d="M29 10V17M29 61V68M10 39H15M43 39H48" stroke="#bf9b45" stroke-width=".9"/></symbol>
+<symbol id="bk2" viewBox="0 0 58 78"><rect width="58" height="78" fill="#082820"/><rect x="3" y="3" width="52" height="72" rx="3" fill="none" stroke="#3a8a6e" stroke-width=".7"/><rect x="6" y="6" width="46" height="66" rx="2" fill="none" stroke="#235a48" stroke-width=".5"/><g fill="none" stroke="#5fb594" stroke-width=".9"><circle cx="17" cy="24" r="10"/><circle cx="41" cy="24" r="10"/><circle cx="29" cy="39" r="10"/><circle cx="17" cy="54" r="10"/><circle cx="41" cy="54" r="10"/></g></symbol>
+<symbol id="bk3" viewBox="0 0 58 78"><rect width="58" height="78" fill="#260b12"/><rect x="3" y="3" width="52" height="72" rx="3" fill="none" stroke="#b5566a" stroke-width=".7"/><rect x="6" y="6" width="46" height="66" rx="2" fill="none" stroke="#7a3a48" stroke-width=".5"/><g stroke="#c97b8c" stroke-width=".9"><path d="M29 68L10 12"/><path d="M29 68L19 10"/><path d="M29 68L29 9"/><path d="M29 68L39 10"/><path d="M29 68L48 12"/></g><path d="M13 48Q29 32 45 48" fill="none" stroke="#c97b8c" stroke-width=".9"/><circle cx="29" cy="68" r="4" fill="#c97b8c"/></symbol>
+<symbol id="bk4" viewBox="0 0 58 78"><rect width="58" height="78" fill="#150f28"/><rect x="3" y="3" width="52" height="72" rx="3" fill="none" stroke="#8a6fd0" stroke-width=".7"/><rect x="6" y="6" width="46" height="66" rx="2" fill="none" stroke="#5a4890" stroke-width=".5"/><g fill="none" stroke="#a88ae8" stroke-width=".9"><rect x="16" y="26" width="26" height="26"/><rect x="16" y="26" width="26" height="26" transform="rotate(45 29 39)"/></g><circle cx="29" cy="39" r="4" fill="#a88ae8"/><g fill="#a88ae8"><circle cx="14" cy="14" r="1.600"/><circle cx="44" cy="14" r="1.600"/><circle cx="14" cy="64" r="1.600"/><circle cx="44" cy="64" r="1.600"/></g></symbol>
+
+<g id="jfU" transform="translate(10,0)">
+<path d="M20 70Q22 48 38 43L62 43Q78 48 80 70Z" style="fill:var(--rm)"/>
+<path d="M30 70Q31 58 36 48M70 70Q69 58 64 48M40 70Q41 60 43 50M60 70Q59 60 57 50" fill="none" style="stroke:var(--rl)" stroke-width=".5"/>
+<path d="M23 57L33 52M22 62L33 57M22 67L33 62M77 57L67 52M78 62L67 57M78 67L67 62" stroke="#c9ab62" stroke-width="1" fill="none"/>
+<path d="M50 52V70" stroke="#b8963f" stroke-width="1.2"/>
+<circle cx="50" cy="58" r="1" fill="#b8963f"/><circle cx="50" cy="63" r="1" fill="#b8963f"/><circle cx="50" cy="68" r="1" fill="#b8963f"/>
+<path d="M43.500 36L56.500 36L58 46Q50 51 42 46Z" fill="#C9A07A"/>
+<path d="M44 38Q50 42.500 56 38L56.500 41.500Q50 46 43.500 41.500Z" fill="#A67C58"/>
+<path d="M37 43Q40 48 43 45Q46 51 50 47Q54 51 57 45Q60 48 63 43L61 42Q50 50 39 42Z" fill="#E6E0D0" stroke="#a9a290" stroke-width=".4"/>
+<path d="M39 18Q32 32 35 47Q40 43 42 30Z" fill="#5e4129"/>
+<path d="M61 18Q68 32 65 47Q60 43 58 30Z" fill="#5e4129"/>
+<path d="M37 26Q35 36 37 44M63 26Q65 36 63 44" fill="none" stroke="#8a6440" stroke-width=".4"/>
+<ellipse cx="40.800" cy="27.600" rx="1.700" ry="3" fill="#CFA979"/>
+<ellipse cx="59.200" cy="27.600" rx="1.700" ry="3" fill="#CFA979"/>
+<path d="M41 24Q40.600 17.500 50 17Q59.400 17.500 59 24Q59.200 31 56 35.500Q53 40 50 40.600Q47 40 44 35.500Q40.800 31 41 24Z" fill="#E0BC92"/>
+<path d="M50 17Q59.400 17.500 59 24Q59.200 31 56 35.500Q53 40 50 40.600Q54 32 52.500 25Q52 21 50 17Z" fill="#D1A87D"/>
+<ellipse cx="49" cy="21" rx="5" ry="2.200" fill="#EFD6B2" opacity=".55"/>
+<ellipse cx="46" cy="26.800" rx="3.400" ry="2.200" fill="#B88D66" opacity=".28"/><ellipse cx="54" cy="26.800" rx="3.400" ry="2.200" fill="#B88D66" opacity=".28"/>
+<circle cx="44.600" cy="32.400" r="2.400" fill="#D99A80" opacity=".3"/><circle cx="55.400" cy="32.400" r="2.400" fill="#D99A80" opacity=".3"/>
+<path d="M41.600 29Q41.400 33 44.400 36Q47 39.800 50 40.200Q53 39.800 55.600 36Q58.600 33 58.400 29Q56 35.600 50 36.400Q44 35.600 41.600 29Z" fill="#7a6350" opacity=".14"/>
+<path d="M45.400 34.400Q50 33.400 54.600 34.400Q55 36.200 53.200 36.600L46.800 36.600Q45 36.200 45.400 34.400Z" fill="#7a6350" opacity=".1"/>
+<path d="M42.800 23.900Q46 22.500 49 23.500M51 23.500Q54 22.500 57.200 23.900" fill="none" stroke="#5e4129" stroke-width=".8"/>
+<path d="M43.800 26.800Q46 25.600 48.200 26.800Q46 28 43.800 26.800Z" fill="#E9E0CE"/>
+<path d="M51.800 26.800Q54 25.600 56.200 26.800Q54 28 51.800 26.800Z" fill="#E9E0CE"/>
+<circle cx="46" cy="26.800" r=".95" fill="#4a3a2a"/><circle cx="54" cy="26.800" r=".95" fill="#4a3a2a"/>
+<path d="M43.500 26.700Q46 25.200 48.500 26.700M51.500 26.700Q54 25.200 56.500 26.700" fill="none" stroke="#3a281c" stroke-width=".5"/>
+<path d="M49 26L48.400 32.400L49.400 33.200Z" fill="#C89F72" opacity=".5"/>
+<path d="M52 25.800L52.600 32.600L51.400 33.600Z" fill="#C89F72"/>
+<ellipse cx="50" cy="32.400" rx="1.300" ry=".8" fill="#EFD6B2" opacity=".5"/>
+<ellipse cx="49" cy="33.600" rx=".7" ry=".4" fill="#6a4a30"/><ellipse cx="51.300" cy="33.500" rx=".7" ry=".4" fill="#6a4a30"/>
+<path d="M47 36.600Q50 36 53 36.600Q50 37.600 47 36.600Z" fill="#B98468"/>
+<ellipse cx="50" cy="38" rx="2.200" ry=".9" fill="#C28E74"/>
+<path d="M47 36.700Q50 37.700 53 36.700" fill="none" stroke="#6e3f34" stroke-width=".5"/>
+<path d="M36 24Q36 8 52 7Q66 8 66 22Q60 18 50 18Q40 18 36 24Z" style="fill:var(--rm);stroke:var(--rl)" stroke-width=".5"/>
+<path d="M37 22Q50 17 65 21" fill="none" stroke="#b8963f" stroke-width="1.500"/>
+<path d="M62 14Q70 4 74 14Q70 12 66 19Z" fill="#E6E0D0" stroke="#a9a290" stroke-width=".4"/>
+<path d="M64 16Q70 9 73 13" fill="none" stroke="#a9a290" stroke-width=".4"/>
+<path d="M77 33Q73 39 74.500 45" fill="none" stroke="#8f2a24" stroke-width="1.400"/>
+<circle cx="74.500" cy="46" r="1.600" fill="#8f2a24"/>
+<rect x="76" y="22" width="2.200" height="47" fill="#5b3420"/>
+<rect x="75.600" y="40" width="3" height="1.600" fill="#b8963f"/><rect x="75.600" y="50" width="3" height="1.600" fill="#b8963f"/>
+<path d="M76 22L77.100 11L78.200 22Z" fill="#c3c8d0" stroke="#6e737d" stroke-width=".35"/>
+<path d="M78.200 23Q86.500 23 84.500 36Q83 30 78.200 30.500Z" fill="#c3c8d0" stroke="#6e737d" stroke-width=".35"/>
+<path d="M78.200 25Q83 25.500 83 31" fill="none" stroke="#eef1f5" stroke-width=".5"/>
+<path d="M76 27L69.500 29.200L76 31Z" fill="#aeb3bc" stroke="#6e737d" stroke-width=".35"/>
+<ellipse cx="77.100" cy="58" rx="3.600" ry="3.100" fill="#CDA57C"/>
+</g>
+
+<g id="qfU" transform="translate(10,0)">
+<path d="M18 70Q20 48 38 43L62 43Q80 48 82 70Z" style="fill:var(--rm)"/>
+<path d="M28 70Q29 58 35 47M34 70Q35 60 39 49M72 70Q71 58 65 47M66 70Q65 60 61 49" fill="none" style="stroke:var(--rl)" stroke-width=".5"/>
+<path d="M50 56V70M40 59L50 56L60 59" fill="none" stroke="#b8963f" stroke-width=".9"/>
+<path d="M43.500 36L56.500 36L58 46Q50 51 42 46Z" fill="#CDA57C"/>
+<path d="M44 38Q50 42.500 56 38L56.500 41.500Q50 46 43.500 41.500Z" fill="#A67C58"/>
+<path d="M37 43Q40 49 43 45Q46 51 50 47Q54 51 57 45Q60 49 63 43L61 42Q50 50 39 42Z" fill="#E6E0D0" stroke="#a9a290" stroke-width=".4"/>
+<path d="M38 16Q29 36 32 62Q38 66 43 58L45 28Z" fill="#5e3e26"/>
+<path d="M62 16Q71 36 68 62Q62 66 57 58L55 28Z" fill="#5e3e26"/>
+<path d="M35 26Q31 42 34 58M65 26Q69 42 66 58" fill="none" stroke="#8a6240" stroke-width=".45"/>
+<circle cx="45" cy="47.600" r=".9" fill="#EDE6D4"/><circle cx="47.500" cy="49.400" r="1" fill="#EDE6D4"/><circle cx="50" cy="50" r="1" fill="#EDE6D4"/><circle cx="52.500" cy="49.400" r="1" fill="#EDE6D4"/><circle cx="55" cy="47.600" r=".9" fill="#EDE6D4"/>
+<circle cx="50" cy="53.400" r="1.700" fill="#8f2a24" stroke="#b8963f" stroke-width=".5"/>
+<ellipse cx="40.800" cy="27.600" rx="1.700" ry="3" fill="#D2AC80"/>
+<ellipse cx="59.200" cy="27.600" rx="1.700" ry="3" fill="#D2AC80"/>
+<path d="M41 24Q40.600 17.500 50 17Q59.400 17.500 59 24Q59.200 31 56 35.500Q53 40 50 40.600Q47 40 44 35.500Q40.800 31 41 24Z" fill="#E6C6A0"/>
+<path d="M50 17Q59.400 17.500 59 24Q59.200 31 56 35.500Q53 40 50 40.600Q54 32 52.500 25Q52 21 50 17Z" fill="#D6AE84"/>
+<ellipse cx="49" cy="21" rx="5" ry="2.200" fill="#F3DFC0" opacity=".6"/>
+<ellipse cx="46" cy="26.800" rx="3.400" ry="2.200" fill="#B88D66" opacity=".22"/><ellipse cx="54" cy="26.800" rx="3.400" ry="2.200" fill="#B88D66" opacity=".22"/>
+<circle cx="44.600" cy="32.400" r="2.500" fill="#D99A80" opacity=".32"/><circle cx="55.400" cy="32.400" r="2.500" fill="#D99A80" opacity=".32"/>
+<ellipse cx="50" cy="38.800" rx="2.600" ry="1" fill="#F3DFC0" opacity=".4"/>
+<path d="M40.500 24Q40 14.500 50 14.500Q60 14.500 59.500 24Q57 18.500 50 18.500Q43 18.500 40.500 24Z" fill="#5e3e26"/>
+<path d="M42.800 24.300Q46 23 49 23.800M51 23.800Q54 23 57.200 24.300" fill="none" stroke="#5e3e26" stroke-width=".55"/>
+<path d="M43.800 26.800Q46 25.600 48.200 26.800Q46 28 43.800 26.800Z" fill="#EDE5D4"/>
+<path d="M51.800 26.800Q54 25.600 56.200 26.800Q54 28 51.800 26.800Z" fill="#EDE5D4"/>
+<circle cx="46" cy="26.800" r=".95" fill="#4a3a2a"/><circle cx="54" cy="26.800" r=".95" fill="#4a3a2a"/>
+<path d="M43.500 26.700Q46 25 48.500 26.700M51.500 26.700Q54 25 56.500 26.700" fill="none" stroke="#3a281c" stroke-width=".6"/>
+<path d="M49 26L48.400 32.400L49.400 33.200Z" fill="#CFA67B" opacity=".5"/>
+<path d="M52 25.800L52.600 32.600L51.400 33.600Z" fill="#CFA67B"/>
+<ellipse cx="50" cy="32.400" rx="1.300" ry=".8" fill="#F3DFC0" opacity=".5"/>
+<ellipse cx="49" cy="33.600" rx=".65" ry=".38" fill="#6a4a30"/><ellipse cx="51.300" cy="33.500" rx=".65" ry=".38" fill="#6a4a30"/>
+<path d="M46.800 36.700Q48.600 35.900 50 36.400Q51.400 35.900 53.200 36.700Q50 37.700 46.800 36.700Z" fill="#A85D52"/>
+<ellipse cx="50" cy="38.100" rx="2.400" ry="1" fill="#B66A5C"/>
+<path d="M40 19L41 12.500L45 16L50 9.500L55 16L59 12.500L60 19Z" fill="#bf9b45" stroke="#7a5f22" stroke-width=".4"/>
+<circle cx="41" cy="12" r="1" fill="#E6DFCC"/><circle cx="50" cy="8.800" r="1.100" fill="#E6DFCC"/><circle cx="59" cy="12" r="1" fill="#E6DFCC"/>
+<circle cx="50" cy="14.200" r="1.300" fill="#28467f"/><circle cx="45" cy="17.400" r=".9" fill="#8f2a24"/><circle cx="55" cy="17.400" r=".9" fill="#8f2a24"/>
+<path d="M77 54L77 69" stroke="#3b5a37" stroke-width="1.700"/>
+<path d="M77 60L75 61.400L77.400 62ZM77 66L79 67.400L76.600 68Z" fill="#3b5a37"/>
+<path d="M77 55Q70 51.500 68.500 56.500Q73 59 77 55Z" fill="#3b5a37" stroke="#25402a" stroke-width=".3"/>
+<path d="M77 57Q84 53.500 85.500 58.500Q81 61 77 57Z" fill="#3b5a37" stroke="#25402a" stroke-width=".3"/>
+<ellipse cx="77" cy="62.500" rx="3.600" ry="3" fill="#CDA57C"/>
+<circle cx="77" cy="47.500" r="6.300" fill="#6e2420"/>
+<circle cx="77" cy="47.500" r="4.600" fill="#8f342d"/>
+<circle cx="77" cy="47.500" r="2.900" fill="#a8453a"/>
+<path d="M74.800 47.800Q77 44.800 79.400 47.500Q77 50.600 75.400 48.400" fill="none" stroke="#4a1512" stroke-width=".5"/>
+<path d="M72.600 44.200Q74.500 42 77 42M81.400 44.200Q81 42.800 79.500 42.400" fill="none" stroke="#c0695a" stroke-width=".5"/>
+</g>
+
+<g id="kfU" transform="translate(10,0)">
+<path d="M16 70Q18 46 36 42L64 42Q82 46 84 70Z" style="fill:var(--rd)"/>
+<path d="M24 70Q25 56 31 47M30 70Q31 58 35 49M76 70Q75 56 69 47M70 70Q69 58 65 49" fill="none" style="stroke:var(--rl)" stroke-width=".6"/>
+<path d="M32 70Q34 52 50 47Q66 52 68 70Z" style="fill:var(--rt)"/>
+<path d="M42 70Q43 60 46 52M58 70Q57 60 54 52" fill="none" style="stroke:var(--rl)" stroke-width=".5"/>
+<path d="M50 56V70" stroke="#b8963f" stroke-width="1.400"/>
+<path d="M50 58l2 2l-2 2l-2 -2ZM50 64l2 2l-2 2l-2 -2Z" fill="#b8963f"/>
+<path d="M43.500 36L56.500 36L58 47Q50 52 42 47Z" fill="#C9A07A"/>
+<path d="M44 38Q50 42.500 56 38L56.500 41.500Q50 46 43.500 41.500Z" fill="#A67C58"/>
+<path d="M33 43Q50 56 67 43L69 47Q50 62 31 47Z" fill="#E6E0D0" stroke="#a9a290" stroke-width=".4"/>
+<path d="M38 47v2M44 51v2M56 51v2M62 47v2M50 54v2" stroke="#2b2b2b" stroke-width="1" stroke-linecap="round"/>
+<path d="M36 50Q50 64 64 50" fill="none" stroke="#b8963f" stroke-width="1.100"/>
+<circle cx="50" cy="61.600" r="1.800" fill="#8f2a24" stroke="#b8963f" stroke-width=".5"/>
+<path d="M40 18Q33 32 36 48Q41 44 42 30Z" fill="#8f8a80"/>
+<path d="M60 18Q67 32 64 48Q59 44 58 30Z" fill="#8f8a80"/>
+<ellipse cx="40.800" cy="27.600" rx="1.700" ry="3" fill="#CFA979"/>
+<ellipse cx="59.200" cy="27.600" rx="1.700" ry="3" fill="#CFA979"/>
+<path d="M41 24Q40.600 17.500 50 17Q59.400 17.500 59 24Q59.200 31 56 35.500Q53 40 50 40.600Q47 40 44 35.500Q40.800 31 41 24Z" fill="#DDB98E"/>
+<path d="M50 17Q59.400 17.500 59 24Q59.200 31 56 35.500Q53 40 50 40.600Q54 32 52.500 25Q52 21 50 17Z" fill="#CBA074"/>
+<ellipse cx="49" cy="21" rx="5" ry="2.200" fill="#EBD0AA" opacity=".55"/>
+<ellipse cx="46" cy="26.800" rx="3.400" ry="2.200" fill="#B88D66" opacity=".32"/><ellipse cx="54" cy="26.800" rx="3.400" ry="2.200" fill="#B88D66" opacity=".32"/>
+<circle cx="44.600" cy="32.200" r="2.400" fill="#D99A80" opacity=".25"/><circle cx="55.400" cy="32.200" r="2.400" fill="#D99A80" opacity=".25"/>
+<path d="M42.200 23.900Q46 22.300 49 23.500M51 23.500Q54 22.300 57.800 23.900" fill="none" stroke="#6b665c" stroke-width="1"/>
+<path d="M43.800 26.800Q46 25.600 48.200 26.800Q46 28 43.800 26.800Z" fill="#E9E0CE"/>
+<path d="M51.800 26.800Q54 25.600 56.200 26.800Q54 28 51.800 26.800Z" fill="#E9E0CE"/>
+<circle cx="46" cy="26.800" r=".95" fill="#4a3a2a"/><circle cx="54" cy="26.800" r=".95" fill="#4a3a2a"/>
+<path d="M43.500 26.700Q46 25.200 48.500 26.700M51.500 26.700Q54 25.200 56.500 26.700" fill="none" stroke="#3a281c" stroke-width=".5"/>
+<path d="M49 26L48.400 32.400L49.400 33.200Z" fill="#C49A6E" opacity=".5"/>
+<path d="M52 25.800L52.600 32.600L51.400 33.600Z" fill="#C49A6E"/>
+<ellipse cx="50" cy="32.400" rx="1.300" ry=".8" fill="#EBD0AA" opacity=".5"/>
+<ellipse cx="49" cy="33.600" rx=".7" ry=".4" fill="#6a4a30"/><ellipse cx="51.300" cy="33.500" rx=".7" ry=".4" fill="#6a4a30"/>
+<path d="M47.400 38.400Q50 39.200 52.600 38.400" fill="none" stroke="#7a4a40" stroke-width=".6"/>
+<path d="M41.500 31Q41 45 50 51Q59 45 58.500 31Q56.500 41.500 50 42Q43.500 41.500 41.500 31Z" fill="#8f8a80"/>
+<ellipse cx="46" cy="44" rx="3" ry="2" fill="#A39E93" opacity=".5"/>
+<path d="M44 35.400Q50 32.800 56 35.400Q53 37.600 50 36.600Q47 37.600 44 35.400Z" fill="#8f8a80"/>
+<path d="M42 15Q50 6 58 15Z" style="fill:var(--rd)"/>
+<path d="M38 21Q50 17 62 21L62 15Q50 12 38 15Z" fill="#bf9b45" stroke="#7a5f22" stroke-width=".4"/>
+<path d="M38 15L38.500 6.500L43.500 11L50 3.500L56.500 11L61.500 6.500L62 15Q50 12 38 15Z" fill="#cfa94c" stroke="#7a5f22" stroke-width=".4"/>
+<circle cx="38.500" cy="6" r="1.300" fill="#E6DFCC"/><circle cx="50" cy="3" r="1.300" fill="#E6DFCC"/><circle cx="61.500" cy="6" r="1.300" fill="#E6DFCC"/>
+<circle cx="44" cy="17" r="1.200" fill="#28467f"/><circle cx="50" cy="16.400" r="1.400" fill="#8f2a24"/><circle cx="56" cy="17" r="1.200" fill="#28467f"/>
+<path d="M74.800 56L74.800 8.500L77 4L79.200 8.500L79.200 56Z" fill="#c3c8d0" stroke="#6e737d" stroke-width=".35"/>
+<path d="M77 4L79.200 8.500L79.200 56L77 56Z" fill="#9ca2ac" opacity=".6"/>
+<path d="M77 10V54" stroke="#eef1f5" stroke-width=".5"/>
+<path d="M70.500 56Q70.500 54.400 72.500 54.800L81.500 54.800Q83.500 54.400 83.500 56Q83.500 57.600 81.500 57.200L72.500 57.200Q70.500 57.600 70.500 56Z" fill="#c9a24a" stroke="#7a5f22" stroke-width=".35"/>
+<circle cx="70.500" cy="56" r="1.400" fill="#c9a24a" stroke="#7a5f22" stroke-width=".3"/><circle cx="83.500" cy="56" r="1.400" fill="#c9a24a" stroke="#7a5f22" stroke-width=".3"/>
+<rect x="76" y="57.200" width="2" height="8" fill="#4e2c1c"/>
+<path d="M76 59H78M76 61H78M76 63H78" stroke="#2e180d" stroke-width=".3"/>
+<circle cx="77" cy="67.400" r="2.200" fill="#c9a24a" stroke="#7a5f22" stroke-width=".3"/>
+<circle cx="77" cy="67.400" r=".8" fill="#8f2a24"/>
+<ellipse cx="77" cy="61.500" rx="3.600" ry="3.100" fill="#CDA57C"/>
+<ellipse cx="23" cy="62.500" rx="4.600" ry="2.600" fill="#CDA57C"/>
+<circle cx="23" cy="55" r="6.600" fill="#b8963f" stroke="#7a5f22" stroke-width=".5"/>
+<path d="M16.600 55Q23 58.400 29.400 55M23 48.400Q26 55 23 61.600" fill="none" stroke="#7a5f22" stroke-width=".5"/>
+<circle cx="20.600" cy="52.400" r="1.700" fill="#e6cb7a" opacity=".7"/>
+<path d="M23 41.500V48M20.200 44H25.800" stroke="#b8963f" stroke-width="1.800" stroke-linecap="round"/>
+<circle cx="23" cy="55" r="1.300" fill="#8f2a24"/>
+</g>
+
+<symbol id="fg-J" viewBox="23 7 74 126"><rect x="24" y="8" width="72" height="124" rx="3" fill="#E9E0CB" stroke="#a98a3a" stroke-width=".8"/><rect x="26.500" y="10.500" width="67" height="119" rx="2" fill="none" stroke="#a98a3a" stroke-width=".4"/><line x1="24" y1="70" x2="96" y2="70" stroke="#a98a3a" stroke-width=".5"/><use href="#jfU"/><use href="#jfU" transform="rotate(180 60 70)"/></symbol>
+<symbol id="fg-Q" viewBox="23 7 74 126"><rect x="24" y="8" width="72" height="124" rx="3" fill="#E9E0CB" stroke="#a98a3a" stroke-width=".8"/><rect x="26.500" y="10.500" width="67" height="119" rx="2" fill="none" stroke="#a98a3a" stroke-width=".4"/><line x1="24" y1="70" x2="96" y2="70" stroke="#a98a3a" stroke-width=".5"/><use href="#qfU"/><use href="#qfU" transform="rotate(180 60 70)"/></symbol>
+<symbol id="fg-K" viewBox="23 7 74 126"><rect x="24" y="8" width="72" height="124" rx="3" fill="#E9E0CB" stroke="#a98a3a" stroke-width=".8"/><rect x="26.500" y="10.500" width="67" height="119" rx="2" fill="none" stroke="#a98a3a" stroke-width=".4"/><line x1="24" y1="70" x2="96" y2="70" stroke="#a98a3a" stroke-width=".5"/><use href="#kfU"/><use href="#kfU" transform="rotate(180 60 70)"/></symbol>
+</defs>
+</svg>
+
+<div id="stage">
+
+  <section id="menu" class="screen">
+    <div class="menu-wrap">
+      <div class="brand">
+        <h1>Sekiz Sıra</h1>
+        <div class="sub">KART OYUNU</div>
+        <div class="sign">by uozdil</div>
+        <div class="seg" id="menuDiff" role="group" aria-label="Zorluk">
+          <button data-v="1">1 renk</button><button data-v="2">2 renk</button><button data-v="4">4 renk</button>
+        </div>
+      </div>
+      <div class="fan" id="fan" aria-hidden="true"></div>
+      <nav class="menu-list">
+        <button class="mbtn primary" id="btnContinue">Devam et <small id="contInfo"></small></button>
+        <button class="mbtn" id="btnNew">Yeni oyun</button>
+        <button class="mbtn" id="btnDecks">Deste seçimi</button>
+        <button class="mbtn" id="btnSettings">Ayarlar</button>
+        <button class="mbtn" id="btnStats">İstatistikler</button>
+        <button class="mbtn" id="btnFull">Tam ekran <small>çubuklar gizlenir</small></button>
+        <button class="mbtn" id="btnInstall" hidden>Uygulama olarak kur</button>
+        <button class="mbtn" id="btnHelp">Nasıl oynanır</button>
+      </nav>
+    </div>
+  </section>
+
+  <section id="game" class="screen" hidden>
+    <div id="rail">
+      <button class="ibtn" id="bMenu" aria-label="Ana menü" title="Ana menü"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg></button>
+      <button class="ibtn" id="bHint" aria-label="İpucu" title="İpucu"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 00-3.500 10.900c.700.600 1 1.300 1 2.100h5c0-.800.300-1.500 1-2.100A6 6 0 0012 3z"/></svg></button>
+      <button class="ibtn" id="bNew" aria-label="Yeni oyun" title="Yeni oyun"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.400-5.700"/><path d="M20 4v5h-5"/></svg></button>
+      <button class="ibtn" id="bSet" aria-label="Ayarlar" title="Ayarlar"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.400 15a1.700 1.700 0 00.300 1.800l.1.100a2 2 0 11-2.800 2.800l-.1-.1a1.700 1.700 0 00-1.800-.3 1.700 1.700 0 00-1 1.500V21a2 2 0 11-4 0v-.1a1.700 1.700 0 00-1.100-1.500 1.700 1.700 0 00-1.800.3l-.1.100a2 2 0 11-2.800-2.800l.1-.1a1.700 1.700 0 00.3-1.800 1.700 1.700 0 00-1.500-1H3a2 2 0 110-4h.1a1.700 1.700 0 001.500-1.100 1.700 1.700 0 00-.3-1.800l-.1-.1a2 2 0 112.800-2.800l.1.100a1.700 1.700 0 001.800.3H9a1.700 1.700 0 001-1.500V3a2 2 0 114 0v.1a1.700 1.700 0 001 1.500 1.700 1.700 0 001.800-.3l.1-.1a2 2 0 112.800 2.800l-.1.100a1.700 1.700 0 00-.3 1.800V9a1.700 1.700 0 001.500 1H21a2 2 0 110 4h-.1a1.700 1.700 0 00-1.500 1z"/></svg></button>
+      <button class="ibtn" id="bHelp" aria-label="Yardım" title="Yardım"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.600 2.600 0 015 .9c0 1.700-2.500 2.100-2.500 3.800"/><path d="M12 17.500h.01"/></svg></button>
+      
+      <button class="ibtn" id="bFS" aria-label="Tam ekran" title="Tam ekran"><svg viewBox="0 0 24 24"><path class="fs-in" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/><path class="fs-out" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg></button>
+      <button class="ibtn accent" id="bAuto" aria-label="Otomatik tamamla" title="Otomatik tamamla" hidden><svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/></svg></button>
+      <button class="ibtn undo" id="bUndo" aria-label="Geri al" title="Geri al"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 010 12h-3"/></svg></button>
+    </div>
+    <div id="found" aria-label="Tamamlanan sıralar"></div>
+    <div id="board"></div>
+    <div class="gsign">by uozdil</div>
+    <div class="stats"><div>Skor<b id="hScore">500</b></div><div>Hamle<b id="hMoves">0</b></div><div>Süre<b id="hTime">0:00</b></div></div>
+    <button id="stock" aria-label="Yeni kartları dağıt" title="Yeni kartları dağıt" data-n="5"><svg class="bk" viewBox="0 0 58 78" preserveAspectRatio="none"><use class="bkuse" href="#bk0"/></svg><span class="cnt" id="stockN">5</span></button>
+
+  </section>
+
+  <div class="modal" id="mSettings" hidden>
+    <div class="sheet" role="dialog" aria-label="Ayarlar">
+      <header><h2>Ayarlar</h2><button class="btn" data-close>Kapat</button></header>
+      <div class="body">
+        <div class="group">Görünüm</div>
+        <div class="row"><div class="lab">Masa rengi<small id="tableNote">Siyah dışı zeminde ekran yanığı riski artar. Kayma ve kısma yine çalışır.</small></div>
+          <div class="swatches" data-pick="table"><button data-v="black" style="--c:#000" aria-label="Siyah"></button><button data-v="green" style="--c:#2a7040" aria-label="Yeşil"></button><button data-v="navy" style="--c:#1d3a70" aria-label="Lacivert"></button><button data-v="wine" style="--c:#6b1f2a" aria-label="Bordo"></button><button data-v="slate" style="--c:#3b4250" aria-label="Gri"></button></div></div>
+        <div class="row"><div class="lab">Kart yüzü<small>Krem daha yumuşak, beyaz daha parlak.</small></div>
+          <div class="seg" data-seg="face"><button data-v="0">Krem</button><button data-v="1">Beyaz</button></div></div>
+        <div class="row"><div class="lab">Kart aralığı<small>Üst üste binen kartların görünen kısmı.</small></div>
+          <div class="seg" data-seg="spread"><button data-v="1">Sıkı</button><button data-v="2">Normal</button><button data-v="3">Geniş</button></div></div>
+        <div class="row"><div class="lab">Alt köşe rakamı<small>Gerçek kartlardaki gibi ters çevrilmiş ikinci rakam.</small></div><button class="sw" role="switch" data-toggle="idx2"></button></div>
+        <div class="row"><div class="lab">Düğmelerin yeri<small>Sol elle oynayanlar için sağa alınabilir.</small></div>
+          <div class="seg" data-seg="rail"><button data-v="0">Sol</button><button data-v="1">Sağ</button></div></div>
+        <div class="row"><div class="lab">Skor ve süreyi göster</div><button class="sw" role="switch" data-toggle="showStats"></button></div>
+        <div class="group">Ekran yanığı koruması</div>
+        <div class="row"><div class="lab">Koruma açık<small>Saf siyah zemin, hafif renk geçişi, kayma ve kısma bir arada çalışır.</small></div><button class="sw" role="switch" data-toggle="oled"></button></div>
+        <div class="row"><div class="lab">Masa rengi değişimi<small>Çok koyu tonlar arasında yavaşça geçer.</small></div>
+          <div class="seg" data-seg="tintMin"><button data-v="2">2 dk</button><button data-v="5">5 dk</button><button data-v="10">10 dk</button></div></div>
+        <div class="row"><div class="lab">Ekranı birkaç piksel kaydır<small>Sabit kenarlar aynı piksellerde kalmaz.</small></div><button class="sw" role="switch" data-toggle="shift"></button></div>
+        <div class="row"><div class="lab">Boşta kısma<small>Dokunmayınca ekran kararır, dokununca geri gelir.</small></div>
+          <div class="seg" data-seg="idle"><button data-v="30">30 sn</button><button data-v="60">1 dk</button><button data-v="120">2 dk</button><button data-v="0">Kapalı</button></div></div>
+        <div class="row"><div class="lab">Kart parlaklığını düşür<small>Krem kartlar biraz daha az parlar.</small></div><button class="sw" role="switch" data-toggle="dimCards"></button></div>
+        <div class="group">Ekran düzeni</div>
+        <div class="row"><div class="lab">Sol boşluk<small>Kamera adası kartları kapatıyorsa artır.</small></div><div class="step" data-step="ul"><button data-d="-8" aria-label="Azalt">−</button><output></output><button data-d="8" aria-label="Artır">+</button></div></div>
+        <div class="row"><div class="lab">Sağ boşluk<small>Android geri, ana ekran tuşları için.</small></div><div class="step" data-step="ur"><button data-d="-8" aria-label="Azalt">−</button><output></output><button data-d="8" aria-label="Artır">+</button></div></div>
+        <div class="row"><div class="lab">Açılışta tam ekran<small>İlk dokunuşta tarayıcı çubukları gizlenir (telefon/tablet).</small></div><button class="sw" role="switch" data-toggle="autoFull"></button></div>
+        <div class="row"><div class="lab">Tam ekran<small>Çıkmak için Geri tuşu ya da yukarıdan aşağı kaydırma.</small></div><button class="btn" id="bFull">Aç</button></div>
+        <div class="row"><div class="lab">Ekranı açık tut</div><button class="sw" role="switch" data-toggle="wake"></button></div>
+        <div class="group">Oyun</div>
+        <div class="row"><div class="lab">Dokununca otomatik taşı<small>Karta bir kez dokunmak en uygun yere taşır.</small></div><button class="sw" role="switch" data-toggle="tap"></button></div>
+        <div class="row"><div class="lab">Boş sütun varken dağıtmaya izin ver<small>Standart kuralda önce boş sütunlar doldurulur.</small></div><button class="sw" role="switch" data-toggle="emptyDeal"></button></div>
+        <div class="row"><div class="lab">Ses</div><button class="sw" role="switch" data-toggle="sound"></button></div>
+        <div class="row"><div class="lab">Titreşim</div><button class="sw" role="switch" data-toggle="haptic"></button></div>
+        <div class="group">Deste</div>
+        <div class="row"><div class="lab">Kart arka yüzü<small id="deckName"></small></div><button class="btn" id="bDeckFromSet">Seç</button></div>
+        <div class="row"><div class="lab">Güncelle<small id="verText"></small></div><button class="btn" id="bRefresh">Yenile</button></div>
+        <div class="msign">Sekiz Sıra · by uozdil</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="mDecks" hidden>
+    <div class="sheet" role="dialog" aria-label="Deste seçimi">
+      <header><h2>Deste seçimi</h2><button class="btn" data-close>Tamam</button></header>
+      <div class="body"><div class="decks" id="deckList"></div></div>
+    </div>
+  </div>
+
+  <div class="modal" id="mStats" hidden>
+    <div class="sheet" role="dialog" aria-label="İstatistikler">
+      <header><h2>İstatistikler</h2><button class="btn" data-close>Kapat</button></header>
+      <div class="body" id="statsBody"></div>
+      <div class="foot"><button class="btn" id="bResetStats">Sıfırla</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="mHelp" hidden>
+    <div class="sheet" role="dialog" aria-label="Nasıl oynanır">
+      <header><h2>Nasıl oynanır</h2><button class="btn" data-close>Kapat</button></header>
+      <nav class="htabs"><a href="#h1">Amaç</a><a href="#h2">Taşıma</a><a href="#h3">Dağıtma</a><a href="#h4">Kolaylıklar</a><a href="#h5">Ekran</a><a href="#h6">Zorluk</a></nav>
+      <div class="body help">
+        <section id="h1"><h3>Amaç</h3>
+          <div class="fig"><span class="mc">K♠</span><span class="mc">Q♠</span><span class="mc">J♠</span><span class="mc dots">⋯</span><span class="mc">A♠</span><i>→</i><span class="mc done">✓</span></div>
+          <p>Bir sütunda Kral'dan (K) As'a (A) kadar <b>aynı renk</b> kartları sırayla dizin. Tamamlanan sıra otomatik üstteki yuvaya kalkar. <b>8 sıra</b> tamamlanınca oyun biter.</p></section>
+        <section id="h2"><h3>Kart taşıma</h3>
+          <div class="fig"><span class="mc red">5♥</span><i>→</i><span class="mc">6♠</span></div>
+          <p>Bir kartı, <b>bir büyük</b> değerli kartın üstüne bırakın (5, 6'nın üstüne). Renk fark etmez.</p>
+          <div class="fig"><span class="mc">7♠</span><span class="mc sh">6♠</span><span class="mc sh">5♠</span><i>→</i><span class="mc red">8♥</span></div>
+          <p>Birden fazla kartı birlikte taşımak için kartlar <b>aynı renk ve ardışık</b> olmalı.</p>
+          <div class="fig"><span class="mc empty"></span><i>←</i><span class="mc">9♠</span></div>
+          <p><b>Boş sütuna</b> her kart ya da sıra taşınabilir.</p></section>
+        <section id="h3"><h3>Dağıtma</h3>
+          <div class="fig"><span class="mc back"></span><i>→</i><span class="mc tiny">10 sütuna 1'er kart</span></div>
+          <p>Sağ üstteki desteye dokununca her sütuna bir kart gelir. Standart kuralda <b>hiçbir sütun boş olmamalı</b>. Ayarlardan bu kuralı kapatabilirsiniz. Toplam 5 dağıtım hakkı var.</p></section>
+        <section id="h4"><h3>Kolaylıklar</h3>
+          <p><b>Dokunma:</b> Karta bir kez dokunursanız en uygun yere gider. Sürükleyerek de taşıyabilirsiniz.</p>
+          <p><b>İpucu</b> (ampul): bir sonraki iyi hamleyi gösterir. <b>Geri al</b>: son hamleyi geri alır, istediğiniz kadar. <b>Otomatik tamamla</b>: tüm kartlar açılınca belirir.</p>
+          <p><b>Devam et:</b> Oyun her hamlede kaydedilir, menüden kaldığınız yerden sürdürebilirsiniz.</p>
+          <p><b>Bilgisayar:</b> Z geri al, H ipucu, Boşluk dağıt, F tam ekran, Esc pencereyi kapatır.</p></section>
+        <section id="h5"><h3>Ekran ve koruma</h3>
+          <p><b>Tam ekran:</b> Tarayıcı çubukları oyunu daraltırsa menüdeki Tam ekran'a dokunun. Geri dönmek için Geri tuşuna basın, yukarıdan aşağı kaydırın ya da "Tarayıcıya dön"ü seçin. Tarayıcı menüsünden "Ana ekrana ekle" ile oyun çubuksuz, uygulama gibi açılır.</p>
+          <p><b>Kamera ve tuşlar:</b> Kartlar kameraya ya da Android tuşlarına denk geliyorsa Ayarlar'dan sol ve sağ boşluğu artırın.</p>
+          <p><b>Görünüm seçenekleri:</b> Ayarlar'dan masa rengini (siyah, yeşil, lacivert, bordo, gri), kart yüzünü, kart aralığını, alt köşe rakamını ve düğmelerin sağda mı solda mı durduğunu seçebilirsiniz. Siyah dışı masa renklerinde ekran yanığı riski biraz artar.</p>
+          <p><b>OLED koruma:</b> Zemin saf siyahtır. Masa rengi çok yavaş değişir, ekran birkaç piksel kayar ve boşta kalınca kararır.</p></section>
+        <section id="h6"><h3>Zorluk</h3>
+          <p><b>1 renk:</b> sadece maça, en kolay. <b>2 renk:</b> maça ve kupa, önerilen. <b>4 renk:</b> dört takım, en zor.</p>
+          <div class="msign">Sekiz Sıra · by uozdil</div></section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="mNew" hidden>
+    <div class="sheet" role="dialog" aria-label="Yeni oyun" style="width:min(460px,100%)">
+      <header><h2>Yeni oyun</h2><button class="btn" data-close>Vazgeç</button></header>
+      <div class="body">
+        <div class="row"><div class="lab">Zorluk</div><div class="seg" id="newDiff"><button data-v="1">1 renk</button><button data-v="2">2 renk</button><button data-v="4">4 renk</button></div></div>
+      </div>
+      <div class="foot"><button class="btn" id="bReplay">Aynı oyunu baştan</button><button class="btn primary" id="bDealNew">Yeni dağıtım</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="mConfirm" hidden>
+    <div class="sheet" role="dialog" aria-label="Onay" style="width:min(420px,100%)">
+      <header><h2 id="cTitle">Emin misiniz?</h2></header>
+      <div class="body"><p id="cText" style="font-size:14px;line-height:1.5"></p></div>
+      <div class="foot"><button class="btn" id="cNo">Vazgeç</button><button class="btn primary" id="cYes">Tamam</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="mWin" hidden>
+    <div class="sheet" role="dialog" aria-label="Tebrikler" style="width:min(460px,100%)">
+      <div class="body"><div class="big-msg"><h3>Tebrikler</h3><p id="winText"></p></div></div>
+      <div class="foot"><button class="btn" id="winMenu">Ana menü</button><button class="btn primary" id="winNew">Yeni oyun</button></div>
+    </div>
+  </div>
+
+  <div class="guide" id="guideL"></div><div class="guide" id="guideR"></div>
+</div>
+<div id="dim"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="rotate"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg><div>Telefonu yan çevirin.<br><span style="color:var(--dim);font-size:13px">Sekiz Sıra yatay ekranda oynanır.</span><div id="inapp" hidden style="margin-top:16px;color:var(--gold);font-size:13px;line-height:1.5;max-width:300px">Bu bağlantı Threads gibi bir uygulamanın içinde açılmış; bu tarayıcılar ekranı yatay çevirmeyebilir. Sağ üstteki ⋮ ya da paylaş düğmesinden <b>Tarayıcıda aç</b> (Chrome) seçin.</div></div></div>
+
+<script>
+/* Spider Solitaire kuralları: saf mantık, ekrandan bağımsız. */
+(function (root) {
+  'use strict';
+
+  function makeRng(seed) {
+    var a = seed >>> 0;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // 0 maça, 1 kupa, 2 karo, 3 sinek
+  function suitSlots(n) {
+    if (n === 1) return [0, 0, 0, 0, 0, 0, 0, 0];
+    if (n === 2) return [0, 0, 0, 0, 1, 1, 1, 1];
+    return [0, 1, 2, 3, 0, 1, 2, 3];
+  }
+
+  function newGame(suitCount, seed) {
+    if (seed == null) seed = (Math.random() * 4294967296) >>> 0;
+    var rng = makeRng(seed);
+    var deck = [], id = 0;
+    suitSlots(suitCount).forEach(function (s) {
+      for (var r = 1; r <= 13; r++) deck.push({ id: id++, s: s, r: r, up: false });
+    });
+    for (var i = deck.length - 1; i > 0; i--) {
+      var j = Math.floor(rng() * (i + 1));
+      var t = deck[i]; deck[i] = deck[j]; deck[j] = t;
+    }
+    var all = [];
+    deck.forEach(function (c) { all[c.id] = c; });
+    var tab = [[], [], [], [], [], [], [], [], [], []];
+    var k = 0;
+    for (var c = 0; c < 10; c++) {
+      var n = c < 4 ? 6 : 5;
+      for (var m = 0; m < n; m++) tab[c].push(deck[k++]);
+      tab[c][tab[c].length - 1].up = true;
+    }
+    return {
+      suitCount: suitCount, seed: seed, all: all, last: null,
+      tab: tab, stock: deck.slice(k), done: [],
+      moves: 0, score: 500
+    };
+  }
+
+  function isRun(col, idx) {
+    if (idx < 0 || idx >= col.length) return false;
+    for (var i = idx; i < col.length; i++) {
+      if (!col[i].up) return false;
+      if (i > idx && (col[i].s !== col[i - 1].s || col[i].r !== col[i - 1].r - 1)) return false;
+    }
+    return true;
+  }
+
+  function canDrop(state, from, idx, to) {
+    if (from === to) return false;
+    var src = state.tab[from];
+    if (!isRun(src, idx)) return false;
+    var dst = state.tab[to];
+    if (dst.length === 0) return true;
+    return dst[dst.length - 1].r === src[idx].r + 1;
+  }
+
+  // Sütunun sonunda K..A aynı renk sıra varsa çıkarır
+  function takeComplete(state, ci) {
+    var col = state.tab[ci];
+    if (col.length < 13) return null;
+    var base = col.length - 13;
+    for (var i = 0; i < 13; i++) {
+      var c = col[base + i];
+      if (!c.up || c.r !== 13 - i || c.s !== col[base].s) return null;
+    }
+    var removed = col.splice(base, 13);
+    state.done.push(removed[0].s);
+    state.score += 100;
+    return { col: ci, cards: removed, slot: state.done.length - 1 };
+  }
+
+  function flipTop(state, ci) {
+    var col = state.tab[ci];
+    if (col.length && !col[col.length - 1].up) { col[col.length - 1].up = true; return col[col.length - 1].id; }
+    return null;
+  }
+
+  function move(state, from, idx, to) {
+    var src = state.tab[from], dst = state.tab[to];
+    var run = src.splice(idx);
+    for (var i = 0; i < run.length; i++) dst.push(run[i]);
+    state.last = { from: from, to: to, n: run.length };
+    state.moves++;
+    state.score = Math.max(0, state.score - 1);
+    var flipped = flipTop(state, from);
+    var completed = [];
+    var r = takeComplete(state, to);
+    if (r) { completed.push(r); var f2 = flipTop(state, to); if (f2 != null && flipped == null) flipped = f2; }
+    return { flipped: flipped, completed: completed, ids: run.map(function (c) { return c.id; }) };
+  }
+
+  function hasEmpty(state) {
+    return state.tab.some(function (c) { return c.length === 0; });
+  }
+
+  function deal(state) {
+    if (state.stock.length < 10) return null;
+    var cards = state.stock.splice(state.stock.length - 10, 10);
+    state.last = null;
+    var completed = [];
+    for (var c = 0; c < 10; c++) {
+      cards[c].up = true;
+      state.tab[c].push(cards[c]);
+    }
+    state.moves++;
+    state.score = Math.max(0, state.score - 1);
+    for (var c2 = 0; c2 < 10; c2++) {
+      var r = takeComplete(state, c2);
+      if (r) { completed.push(r); flipTop(state, c2); }
+    }
+    return { ids: cards.map(function (c) { return c.id; }), completed: completed };
+  }
+
+  function isWon(state) { return state.done.length === 8; }
+
+  // Bir (from, idx, to) hamlesinin değeri. 20 ve üstü "gerçekten işe yarar" demektir.
+  function scoreMove(state, from, idx, to) {
+    var src = state.tab[from], dst = state.tab[to];
+    var card = src[idx];
+    var runLen = src.length - idx;
+    var sc = 0;
+    var below = idx > 0 ? src[idx - 1] : null;
+    if (dst.length === 0) {
+      if (idx === 0) return -1000;          // boş sütundan boş sütuna taşımak anlamsız
+      sc -= 5;
+    } else {
+      var top = dst[dst.length - 1];
+      sc += (top.s === card.s) ? 50 : 5;
+      if (idx === 0) sc += 30;              // sütunu boşaltır
+    }
+    if (below) {
+      if (!below.up) sc += 40;              // yeni kart açılır
+      else if (below.s === card.s && below.r === card.r + 1) sc -= 45; // mevcut sırayı bozar
+    }
+    if (dst.length) {
+      var test = dst.concat(src.slice(idx));
+      if (test.length >= 13) {
+        var base = test.length - 13, ok = true;
+        for (var i = 0; i < 13; i++) {
+          var t = test[base + i];
+          if (!t.up || t.r !== 13 - i || t.s !== test[base].s) { ok = false; break; }
+        }
+        if (ok) sc += 200;
+      }
+    }
+    return sc + Math.min(runLen, 6) * 0.5;
+  }
+
+  // Sütunun sonundaki taşınabilir sıranın başlangıç indeksi (yoksa col.length)
+  function runStart(col) {
+    var n = col.length;
+    if (!n || !col[n - 1].up) return n;
+    var i = n - 1;
+    while (i > 0 && col[i - 1].up && col[i - 1].s === col[i].s && col[i - 1].r === col[i].r + 1) i--;
+    return i;
+  }
+
+  function validMoves(state) {
+    var list = [];
+    for (var from = 0; from < 10; from++) {
+      var col = state.tab[from];
+      var rs = runStart(col);
+      for (var idx = rs; idx < col.length; idx++) {
+        var card = col[idx];
+        for (var to = 0; to < 10; to++) {
+          if (to === from) continue;
+          var dst = state.tab[to];
+          if (dst.length === 0 || dst[dst.length - 1].r === card.r + 1) {
+            list.push({ from: from, idx: idx, to: to, score: scoreMove(state, from, idx, to) });
+          }
+        }
+      }
+    }
+    return list;
+  }
+
+  function bestMove(state) {
+    var list = validMoves(state);
+    var best = null;
+    list.forEach(function (m) { if (!best || m.score > best.score) best = m; });
+    return best;
+  }
+
+  // Dokunmayla taşıma: verilen kart için en iyi hedef sütun
+  function bestTarget(state, from, idx) {
+    var best = null;
+    for (var to = 0; to < 10; to++) {
+      if (!canDrop(state, from, idx, to)) continue;
+      var sc = scoreMove(state, from, idx, to);
+      if (state.tab[to].length === 0) sc -= 30;
+      if (!best || sc > best.score) best = { from: from, idx: idx, to: to, score: sc };
+    }
+    return best;
+  }
+
+  function notBack(state, m) {
+    var l = state.last;
+    return !(l && m.from === l.to && m.to === l.from);
+  }
+
+  function hint(state) {
+    var list = validMoves(state).filter(function (m) { return notBack(state, m); });
+    var best = null;
+    list.forEach(function (m) { if (!best || m.score > best.score) best = m; });
+    if (best && best.score >= 20) return { type: 'move', from: best.from, idx: best.idx, to: best.to };
+    if (state.stock.length >= 10) return { type: 'deal' };
+    if (best && best.score > -50) return { type: 'move', from: best.from, idx: best.idx, to: best.to };
+    return null;
+  }
+
+  function canAutoFinish(state) {
+    if (state.stock.length) return false;
+    return state.tab.every(function (col) { return col.every(function (c) { return c.up; }); });
+  }
+
+  // Kompakt kayıt: kart kimliği*2 + açık/kapalı
+  function snapshot(state) {
+    var enc = function (c) { return c.id * 2 + (c.up ? 1 : 0); };
+    return JSON.stringify([state.tab.map(function (col) { return col.map(enc); }), state.stock.map(enc), state.done, state.moves, state.score]);
+  }
+  function restore(state, snap) {
+    var o = JSON.parse(snap);
+    var dec = function (v) { var c = state.all[v >> 1]; c.up = !!(v & 1); return c; };
+    state.tab = o[0].map(function (col) { return col.map(dec); });
+    state.stock = o[1].map(dec);
+    state.done = o[2]; state.moves = o[3]; state.score = o[4]; state.last = null;
+  }
+
+  function countCards(state) {
+    var n = state.stock.length + state.done.length * 13;
+    state.tab.forEach(function (c) { n += c.length; });
+    return n;
+  }
+
+  var api = {
+    makeRng: makeRng, newGame: newGame, isRun: isRun, canDrop: canDrop, move: move, deal: deal,
+    hasEmpty: hasEmpty, runStart: runStart, isWon: isWon, validMoves: validMoves, bestMove: bestMove, bestTarget: bestTarget,
+    hint: hint, canAutoFinish: canAutoFinish, snapshot: snapshot, restore: restore, countCards: countCards
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.SpiderLogic = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  var L = window.SpiderLogic;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  var RANKS = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+  var DECKS = ['Safir', 'Altın', 'Zümrüt', 'Bordo', 'Selçuklu'];
+  var TINTS = ['#000000', '#04070f', '#0b0408', '#02090a', '#09050f', '#080804'];
+  var SUITL = 'SHDC';
+
+  /* ---------- Kayıt ---------- */
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+  };
+  var VERSION = 'v14';
+  var defaults = { deck: 0, difficulty: 2, tintMin: 5, shift: true, idle: 60, dimCards: true, ul: 20, ur: 28,
+    tap: true, emptyDeal: false, table: 'black', face: 0, spread: 2, idx2: true, rail: 0, showStats: true, sound: true, haptic: true, wake: true, oled: true };
+  var S = Object.assign({}, defaults, store.get('spider.settings.v1', {}));
+  function saveS() { store.set('spider.settings.v1', S); }
+  if (!S._m1) { S.idx2 = true; S._m1 = 1; saveS(); } // alt köşe rakamı varsayılan açık (eski kayıtlar için bir kez)
+
+  /* ---------- Durum ---------- */
+  var G = null, undo = [], elapsed = 0, busy = false, drag = null, photos = {};
+  var els = new Map();
+  var board = $('#board');
+  var M = { W: 0, H: 0, gap: 6, cw: 60, x0: 0 };
+  var hintTimer = null;
+
+  /* ---------- Yardımcılar ---------- */
+  function toast(msg) {
+    var t = $('#toast'); t.textContent = msg; t.classList.add('on');
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove('on'); }, 2200);
+  }
+  function fmtTime(s) { var m = Math.floor(s / 60), r = s % 60; return m + ':' + (r < 10 ? '0' : '') + r; }
+  function vib(p) { if (S.haptic && navigator.vibrate) { try { navigator.vibrate(p); } catch (e) { } } }
+
+  /* ---------- Ses ---------- */
+  var actx = null, noiseBuf = null;
+  function audio() {
+    if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  function tone(kind) {
+    if (!S.sound) return;
+    var a = audio(); if (!a) return;
+    var t = a.currentTime;
+    function note(freq, start, dur, vol) {
+      var o = a.createOscillator(), g = a.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t + start);
+      g.gain.exponentialRampToValueAtTime(vol, t + start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + start + dur);
+      o.connect(g); g.connect(a.destination); o.start(t + start); o.stop(t + start + dur + 0.05);
+    }
+    if (kind === 'done') { note(523, 0, .35, .07); note(659, .09, .35, .07); note(784, .18, .5, .07); return; }
+    if (kind === 'win') { [523, 659, 784, 1047, 784, 1047, 1319].forEach(function (f, i) { note(f, i * .13, .5, .07); }); return; }
+    if (kind === 'bad') { note(150, 0, .12, .06); return; }
+    if (!noiseBuf) {
+      noiseBuf = a.createBuffer(1, Math.floor(a.sampleRate * 0.08), a.sampleRate);
+      var d = noiseBuf.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    }
+    var src = a.createBufferSource(); src.buffer = noiseBuf;
+    var f = a.createBiquadFilter(); f.type = 'bandpass';
+    f.frequency.value = kind === 'flip' ? 2600 : kind === 'deal' ? 1100 : 1700; f.Q.value = 0.9;
+    var g = a.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(kind === 'deal' ? .16 : .24, t + .006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + .08);
+    src.connect(f); f.connect(g); g.connect(a.destination); src.start(t);
+  }
+
+  /* ---------- Kart elemanı ---------- */
+  function photoKey(c) { return 'JQK'.charAt(c.r - 11) + '_' + SUITL.charAt(c.s); }
+  function faceArt(c) {
+    if (c.r >= 11) {
+      var p = photos[photoKey(c)];
+      if (p) return '<img class="art" alt="" src="' + p + '" draggable="false">';
+      return '<svg class="art" viewBox="0 0 74 126"><use href="#fg-' + 'JQK'.charAt(c.r - 11) + '"/></svg>';
+    }
+    if (c.r === 1) return '<svg class="big ace" viewBox="0 0 100 100"><use href="#su' + c.s + '"/></svg>';
+    var h = '<div class="pips">';
+    PIPS[c.r].forEach(function (q) {
+      h += '<svg class="' + (q[1] > .5 ? 'f' : '') + '" style="left:' + (q[0] * 100) + '%;top:' + (q[1] * 100) + '%" viewBox="0 0 100 100"><use href="#su' + c.s + '"/></svg>';
+    });
+    return h + '</div>';
+  }
+  var T3 = 1 / 3, T6 = 1 / 6;
+  var SIX = [[0, 0], [1, 0], [0, .5], [1, .5], [0, 1], [1, 1]];
+  var NINE = [[0, 0], [1, 0], [0, T3], [1, T3], [0, 1 - T3], [1, 1 - T3], [0, 1], [1, 1]];
+  var PIPS = { 2: [[.5, 0], [.5, 1]], 3: [[.5, 0], [.5, .5], [.5, 1]], 4: [[0, 0], [1, 0], [0, 1], [1, 1]],
+    5: [[0, 0], [1, 0], [.5, .5], [0, 1], [1, 1]], 6: SIX, 7: SIX.concat([[.5, .25]]), 8: SIX.concat([[.5, .25], [.5, .75]]),
+    9: NINE.concat([[.5, .5]]), 10: NINE.concat([[.5, T6], [.5, 1 - T6]]) };
+  function cardHTML(c) {
+    return '<div class="face"><div class="idx"><span>' + RANKS[c.r] + '</span><svg viewBox="0 0 100 100"><use href="#su' + c.s + '"/></svg></div>' + faceArt(c) + '<div class="idx2"><span>' + RANKS[c.r] + '</span><svg viewBox="0 0 100 100"><use href="#su' + c.s + '"/></svg></div></div>' +
+      '<div class="back"><svg viewBox="0 0 58 78" preserveAspectRatio="none"><use class="bkuse" href="#bk' + S.deck + '"/></svg></div>';
+  }
+  function makeCardEl(c) {
+    var el = document.createElement('div');
+    el.className = 'card s' + c.s + (c.up ? ' up' : '');
+    el.dataset.id = c.id;
+    el.innerHTML = cardHTML(c);
+    return el;
+  }
+
+  /* ---------- Ölçü ve yerleşim ---------- */
+  function layoutRail() {
+    var rail = $('#rail'), game = $('#game'); if (!rail || game.hidden) return;
+    var n = $$('.ibtn', rail).filter(function (b) { return !b.hidden; }).length || 1;
+    var H0 = window.innerHeight - 64;
+    var ib = Math.max(28, Math.min(40, (H0 - (n - 1) * 6) / n));
+    var per = Math.max(1, Math.floor((H0 + 6) / (ib + 6)));
+    var cols = Math.ceil(n / per);
+    rail.style.setProperty('--ib', ib + 'px'); rail.style.maxHeight = H0 + 'px';
+    game.style.setProperty('--rw', (cols * (ib + 6) + 6) + 'px');
+  }
+  function measure() {
+    layoutRail();
+    var W = board.clientWidth, H = board.clientHeight;
+    if (!W || !H) return false;
+    var gap = Math.max(4, Math.min(12, W * 0.011));
+    var cw = (W - 9 * gap) / 10;
+    cw = Math.min(cw, 150);
+    if (cw * 1.4 * 2.7 > H) cw = H / 2.7 / 1.4;
+    M = { W: W, H: H, gap: gap, cw: cw, x0: (W - (10 * cw + 9 * gap)) / 2 };
+    board.style.setProperty('--cw', cw + 'px');
+    var slots = $$('.slot', board);
+    if (!slots.length) {
+      for (var i = 0; i < 10; i++) { var s = document.createElement('div'); s.className = 'slot'; board.insertBefore(s, board.firstChild); }
+      slots = $$('.slot', board);
+    }
+    slots.forEach(function (s, i) { s.style.transform = 'translate3d(' + (M.x0 + i * (M.cw + M.gap)) + 'px,0,0)'; });
+    return true;
+  }
+  function colX(i) { return M.x0 + i * (M.cw + M.gap); }
+
+  function offsets(col) {
+    var ch = M.cw * 1.4, n = col.length, nd = 0;
+    for (var i = 0; i < n; i++) { if (!col[i].up) nd++; else break; }
+    var nu = Math.max(0, n - nd - 1);
+    var sp = [0, .21, .245, .30][S.spread] || .245;
+    var dMax = ch * 0.075, uMax = ch * sp, dMin = ch * 0.04, uHard = ch * Math.min(.17, sp * .78);
+    var availH = M.H - ch - 2;
+    var d = dMax, u = uMax, need = nd * dMax + nu * uMax;
+    if (need > availH) {
+      var f = availH / need;
+      d = Math.max(dMin, dMax * f);
+      if (nu > 0) { u = (availH - nd * d) / nu; u = Math.max(uHard, Math.min(uMax, u)); }
+      else d = Math.max(ch * 0.025, availH / Math.max(1, nd));
+    }
+    return { d: d, u: u };
+  }
+
+  function cardById(id) {
+    for (var c = 0; c < G.tab.length; c++) { var col = G.tab[c]; for (var j = 0; j < col.length; j++) if (col[j].id === id) return col[j]; }
+    return null;
+  }
+  function findCard(id) {
+    for (var c = 0; c < G.tab.length; c++) { var col = G.tab[c]; for (var j = 0; j < col.length; j++) if (col[j].id === id) return { ci: c, idx: j }; }
+    return null;
+  }
+  function syncUp(el, c) {
+    var has = el.classList.contains('up');
+    if (has === c.up) return;
+    el.classList.toggle('up', c.up);
+    if (c.up) { el.classList.add('flip'); setTimeout(function () { el.classList.remove('flip'); }, 330); }
+  }
+  function centerPos(rect) {
+    var b = board.getBoundingClientRect();
+    return { x: rect.left - b.left + rect.width / 2 - M.cw / 2, y: rect.top - b.top + rect.height / 2 - M.cw * 0.7 };
+  }
+  function stockPos() { return centerPos($('#stock').getBoundingClientRect()); }
+  function foundPos(i) { var f = $$('.fslot')[i]; return centerPos(f.getBoundingClientRect()); }
+
+  /* ---------- Çizim ---------- */
+  function render(opt) {
+    if (!G) return;
+    opt = opt || {};
+    if (!measure()) return;
+    var spawn = opt.spawn || {}, delays = opt.delays || {}, keep = opt.keep || new Set(), late = opt.late || new Set();
+    var seen = new Set();
+    G.tab.forEach(function (col, ci) {
+      var off = offsets(col), y = 0, x = colX(ci);
+      col.forEach(function (c, j) {
+        seen.add(c.id);
+        var el = els.get(c.id), fresh = false;
+        if (!el) {
+          el = makeCardEl(c); fresh = true; els.set(c.id, el);
+          if (late.has(c.id)) el.classList.remove('up');
+          board.appendChild(el);
+          var sp = spawn[c.id] || opt.defaultSpawn;
+          el.style.transition = 'none';
+          if (sp) {
+            el.style.opacity = sp.o == null ? 1 : sp.o;
+            el.style.transform = 'translate3d(' + sp.x + 'px,' + sp.y + 'px,0) scale(' + (sp.s || 1) + ')';
+          } else {
+            el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+          }
+          el.getBoundingClientRect();
+          el.style.transition = '';
+        }
+        el._flying = false;
+        el.style.zIndex = (fresh && (spawn[c.id] || opt.defaultSpawn)) ? 200 + j : j + 1;
+        el.style.transitionDelay = delays[c.id] != null ? delays[c.id] + 'ms' : '';
+        el.style.opacity = 1;
+        el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+        el._x = x; el._y = y;
+        if (fresh && late.has(c.id)) {
+          (function (el2, id2) { setTimeout(function () { var cc = G && cardById(id2); if (cc) syncUp(el2, cc); }, (delays[id2] || 0) + 300); })(el, c.id);
+        } else if (!late.has(c.id)) syncUp(el, c);
+        y += c.up ? off.u : off.d;
+      });
+    });
+    els.forEach(function (el, id) {
+      if (seen.has(id) || keep.has(id) || el._flying) return;
+      if (opt.flyTo) {
+        el._flying = true; el.style.transitionDelay = '';
+        el.style.transform = 'translate3d(' + opt.flyTo.x + 'px,' + opt.flyTo.y + 'px,0) scale(.5)'; el.style.opacity = 0;
+        setTimeout(function () { if (el._flying) { el.remove(); els.delete(id); } }, 380);
+      } else { el.remove(); els.delete(id); }
+    });
+    updateHud();
+  }
+
+  function flyComplete(completed) {
+    completed.forEach(function (r) {
+      var fp = foundPos(r.slot);
+      r.cards.forEach(function (c, k) {
+        var el = els.get(c.id); if (!el) return;
+        el._flying = true; el.style.zIndex = 700 + k;
+        el.style.transitionDelay = (k * 40) + 'ms';
+        el.style.transform = 'translate3d(' + fp.x + 'px,' + fp.y + 'px,0) scale(.3)';
+        el.style.opacity = 0;
+        setTimeout(function () { if (el._flying) { el.remove(); els.delete(c.id); } }, 1100);
+      });
+    });
+  }
+  function keepSet(completed) {
+    var k = new Set(); completed.forEach(function (r) { r.cards.forEach(function (c) { k.add(c.id); }); }); return k;
+  }
+
+  /* ---------- HUD ---------- */
+  function buildFound() {
+    var f = $('#found'); f.innerHTML = '';
+    for (var i = 0; i < 8; i++) { var d = document.createElement('div'); d.className = 'fslot'; d.innerHTML = '<svg viewBox="0 0 100 100"><use href="#su0"/></svg>'; f.appendChild(d); }
+  }
+  function updateHud() {
+    if (!G) return;
+    $('#hScore').textContent = G.score;
+    $('#hMoves').textContent = G.moves;
+    $('#hTime').textContent = fmtTime(elapsed);
+    $$('.fslot').forEach(function (d, i) {
+      var s = G.done[i];
+      d.classList.toggle('on', s != null);
+      d.classList.toggle('r', s === 1 || s === 2);
+      if (s != null) d.firstChild.firstChild.setAttribute('href', '#su' + s);
+    });
+    var n = Math.floor(G.stock.length / 10);
+    $('#stockN').textContent = n; $('#stock').dataset.n = n;
+    var sk = $('#stock'), want = Math.max(1, n), have = $$('svg.bk', sk).length;
+    while (have < want) { var t = document.createElement('div'); t.innerHTML = '<svg class="bk" viewBox="0 0 58 78" preserveAspectRatio="none"><use class="bkuse" href="#bk' + S.deck + '"/></svg>'; sk.insertBefore(t.firstChild, sk.firstChild); have++; }
+    while (have > want) { sk.removeChild($('svg.bk', sk)); have--; }
+    $('#bUndo').disabled = !undo.length || busy;
+    $('#bAuto').hidden = !L.canAutoFinish(G) || L.isWon(G);
+    layoutRail();
+  }
+
+  /* ---------- Hamleler ---------- */
+  function pushUndo() { undo.push(L.snapshot(G)); if (undo.length > 400) undo.shift(); }
+  function clearHint() {
+    clearTimeout(hintTimer);
+    $$('.hint,.hint-t', document).forEach(function (e) { e.classList.remove('hint', 'hint-t'); });
+  }
+  function clearDrop() { $$('.drop-ok', board).forEach(function (e) { e.classList.remove('drop-ok'); }); }
+
+  function afterAction() {
+    updateHud(); persist();
+    if (L.isWon(G)) win();
+  }
+
+  function commit(from, idx, to, auto) {
+    clearHint();
+    pushUndo();
+    var res = L.move(G, from, idx, to);
+    tone('card'); vib(8);
+    var keep = keepSet(res.completed);
+    render({ keep: keep });
+    if (res.completed.length) { flyComplete(res.completed); tone('done'); vib([10, 30, 10]); }
+    else if (res.flipped != null) tone('flip');
+    afterAction();
+  }
+
+  function doDeal() {
+    if (!G || busy) return;
+    if (G.stock.length < 10) { toast('Dağıtılacak kart kalmadı'); return; }
+    if (!S.emptyDeal && L.hasEmpty(G)) { toast('Önce boş sütunları doldurun'); tone('bad'); vib(30); return; }
+    clearHint(); pushUndo();
+    var sp = stockPos();
+    var res = L.deal(G);
+    var spawn = {}, delays = {}, late = new Set();
+    res.ids.forEach(function (id, i) { spawn[id] = { x: sp.x, y: sp.y, s: .55, o: 0 }; delays[id] = i * 45; late.add(id); });
+    render({ spawn: spawn, delays: delays, late: late, keep: keepSet(res.completed) });
+    tone('deal'); vib(12);
+    if (res.completed.length) setTimeout(function () { if (!G) return; flyComplete(res.completed); tone('done'); }, 700);
+    afterAction();
+  }
+
+  function doUndo() {
+    if (!G || busy || !undo.length) return;
+    clearHint();
+    var prevStock = G.stock.length, prevDone = G.done.length;
+    L.restore(G, undo.pop());
+    G.score = Math.max(0, G.score - 1);
+    var o = {};
+    if (G.stock.length > prevStock) o.flyTo = stockPos();
+    if (G.done.length < prevDone) { var fp = foundPos(prevDone - 1); o.defaultSpawn = { x: fp.x, y: fp.y, s: .3, o: 0 }; }
+    render(o);
+    tone('card'); vib(8);
+    persist();
+  }
+
+  function showHint() {
+    if (!G || busy) return;
+    clearHint();
+    var h = L.hint(G);
+    if (!h) { toast('Hamle kalmadı. Geri alın ya da yeni oyun deneyin.'); tone('bad'); return; }
+    if (h.type === 'deal') {
+      var sb = $('#stock'); sb.classList.add('hint'); toast('Yeni kartları dağıtın');
+      hintTimer = setTimeout(function () { sb.classList.remove('hint'); }, 2200);
+      return;
+    }
+    var col = G.tab[h.from];
+    for (var j = h.idx; j < col.length; j++) { var e = els.get(col[j].id); if (e) e.classList.add('hint'); }
+    var dst = G.tab[h.to];
+    if (dst.length) { var te = els.get(dst[dst.length - 1].id); if (te) te.classList.add('hint-t'); }
+    else { var sl = $$('.slot', board)[h.to]; if (sl) sl.classList.add('hint-t'); }
+    hintTimer = setTimeout(clearHint, 2600);
+  }
+
+  function autoFinish() {
+    if (!G || busy) return;
+    busy = true; updateHud();
+    var guard = 0, seenK = new Set();
+    (function step() {
+      if (!G || L.isWon(G) || guard++ > 700) { busy = false; if (G) updateHud(); return; }
+      var m = L.bestMove(G);
+      var key = L.snapshot(G).split('],').slice(0, 2).join('');
+      if (!m || m.score < -50 || seenK.has(key)) { busy = false; updateHud(); toast('Otomatik tamamlama ilerleyemedi'); return; }
+      seenK.add(key);
+      commit(m.from, m.idx, m.to, true);
+      setTimeout(step, 240);
+    })();
+  }
+
+  /* ---------- Sürükle-bırak ---------- */
+  function dropColFor(d, dx) {
+    var first = d.items[0]; if (!first) return -1;
+    var cx = first._x + dx + M.cw / 2, best = -1, bd = 1e9;
+    for (var i = 0; i < 10; i++) { var cc = colX(i) + M.cw / 2, dd = Math.abs(cx - cc); if (dd < bd) { bd = dd; best = i; } }
+    return bd < M.cw * 0.8 ? best : -1;
+  }
+  function markDrop(tc) {
+    clearDrop();
+    if (tc < 0 || !drag || !L.canDrop(G, drag.ci, drag.idx, tc)) return;
+    var dst = G.tab[tc];
+    var t = dst.length ? els.get(dst[dst.length - 1].id) : $$('.slot', board)[tc];
+    if (t) t.classList.add('drop-ok');
+  }
+  function shake(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); setTimeout(function () { el.classList.remove('shake'); }, 340); }
+
+  board.addEventListener('pointerdown', function (e) {
+    if (!G || busy || drag) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    var el = e.target.closest ? e.target.closest('.card') : null;
+    if (!el || !el.classList.contains('up') || !board.contains(el)) return;
+    var loc = findCard(+el.dataset.id); if (!loc) return;
+    var col = G.tab[loc.ci];
+    if (!L.isRun(col, loc.idx)) { shake(el); tone('bad'); return; }
+    var items = col.slice(loc.idx).map(function (c) { return els.get(c.id); }).filter(Boolean);
+    drag = { pid: e.pointerId, sx: e.clientX, sy: e.clientY, ci: loc.ci, idx: loc.idx, items: items, moved: false, dx: 0 };
+    try { board.setPointerCapture(e.pointerId); } catch (_) { }
+    e.preventDefault();
+  });
+  board.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.pid) return;
+    var dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+    if (!drag.moved) {
+      if (Math.hypot(dx, dy) < 7) return;
+      drag.moved = true; clearHint();
+      drag.items.forEach(function (it, k) { it.classList.add('drag'); it.style.transitionDelay = ''; it.style.zIndex = 1000 + k; });
+    }
+    drag.dx = dx;
+    drag.items.forEach(function (it) { it.style.transform = 'translate3d(' + (it._x + dx) + 'px,' + (it._y + dy) + 'px,0)'; });
+    markDrop(dropColFor(drag, dx));
+  });
+  function endDrag(e) {
+    if (!drag || (e && e.pointerId !== drag.pid)) return;
+    var d = drag; drag = null; clearDrop();
+    d.items.forEach(function (it) { it.classList.remove('drag'); });
+    var cancelled = e && e.type === 'pointercancel';
+    if (!d.moved) { if (!cancelled) onTap(d); return; }
+    var tc = cancelled ? -1 : dropColFor(d, d.dx);
+    if (tc >= 0 && L.canDrop(G, d.ci, d.idx, tc)) commit(d.ci, d.idx, tc);
+    else { render(); if (!cancelled) tone('bad'); }
+  }
+  board.addEventListener('pointerup', endDrag);
+  board.addEventListener('pointercancel', endDrag);
+  board.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  function onTap(d) {
+    if (!S.tap) return;
+    var best = L.bestTarget(G, d.ci, d.idx);
+    if (best && best.score > -500) commit(d.ci, d.idx, best.to);
+    else { d.items.forEach(shake); tone('bad'); vib(20); }
+  }
+  $('#stock').addEventListener('click', doDeal);
+  $('#bUndo').addEventListener('click', doUndo);
+  $('#bHint').addEventListener('click', showHint);
+  $('#bAuto').addEventListener('click', autoFinish);
+
+  /* ---------- İstatistik ---------- */
+  function getStats() { return store.get('spider.stats.v1', { 1: {}, 2: {}, 4: {} }); }
+  function bump(d, fn) {
+    var st = getStats(); var o = st[d] || {}; o.played = o.played || 0; o.won = o.won || 0; fn(o); st[d] = o; store.set('spider.stats.v1', st);
+  }
+  function renderStats() {
+    var st = getStats();
+    var rows = [1, 2, 4].map(function (d) {
+      var o = st[d] || {}, p = o.played || 0, w = o.won || 0;
+      return '<tr><td>' + d + ' renk</td><td>' + p + '</td><td>' + w + '</td><td>' + (p ? Math.round(w * 100 / p) + '%' : '-') + '</td><td>' + (o.best || '-') + '</td><td>' + (o.bestTime ? fmtTime(o.bestTime) : '-') + '</td></tr>';
+    }).join('');
+    $('#statsBody').innerHTML = '<table class="table"><thead><tr><th>Zorluk</th><th>Oyun</th><th>Galibiyet</th><th>Oran</th><th>En iyi skor</th><th>En kısa süre</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  /* ---------- Kayıt / yükleme ---------- */
+  function persist() {
+    if (!G) return;
+    store.set('spider.save.v1', { sc: G.suitCount, seed: G.seed, snap: L.snapshot(G), undo: undo.slice(-80), elapsed: elapsed, over: L.isWon(G) });
+  }
+  function loadSave() {
+    var o = store.get('spider.save.v1', null);
+    if (!o || o.over) return null;
+    try { var g = L.newGame(o.sc, o.seed); L.restore(g, o.snap); return { g: g, undo: o.undo || [], elapsed: o.elapsed || 0 }; } catch (e) { return null; }
+  }
+
+  /* ---------- Katmanlar ve geri tuşu ---------- */
+  var layers = [];
+  function openLayer(name, show, hide) {
+    var pushed = false;
+    show();
+    try { history.pushState({ l: name }, ''); pushed = true; } catch (e) { }
+    layers.push({ name: name, hide: hide, pushed: pushed });
+  }
+  function popLayer() { var l = layers.pop(); if (l) l.hide(); }
+  function closeLayer() {
+    if (!layers.length) return;
+    var top = layers[layers.length - 1];
+    if (top.pushed) { try { history.back(); return; } catch (e) { } }
+    popLayer();
+  }
+  window.addEventListener('popstate', function () { if (layers.length) popLayer(); });
+
+  function openModal(id, onShow) {
+    var m = $(id);
+    openLayer(id, function () { m.hidden = false; if (onShow) onShow(); }, function () { m.hidden = true; document.body.classList.remove('guides'); });
+  }
+  $$('[data-close]').forEach(function (b) { b.addEventListener('click', closeLayer); });
+
+  /* ---------- Ekranlar ---------- */
+  var gameOpen = false;
+  function showGameScreen() {
+    openLayer('game', function () {
+      $('#menu').hidden = true; $('#game').hidden = false; gameOpen = true;
+      requestAnimationFrame(function () { render(); });
+      wake();
+    }, function () {
+      gameOpen = false; persist();
+      $('#game').hidden = true; $('#menu').hidden = false; updateMenu(); releaseWake();
+    });
+  }
+
+  function clearBoard() { els.forEach(function (e) { e.remove(); }); els.clear(); }
+
+  function startNew(d, seed) {
+    var prevWasOpen = gameOpen;
+    G = L.newGame(d, seed); undo = []; elapsed = 0; busy = false; drag = null;
+    S.difficulty = d; saveS();
+    bump(d, function (o) { o.played++; });
+    clearBoard(); clearHint();
+    if (!prevWasOpen) showGameScreen();
+    requestAnimationFrame(function () {
+      if (!measure()) return;
+      var sp = stockPos(), spawn = {}, delays = {}, late = new Set(), k = 0;
+      for (var j = 0; j < 6; j++) for (var c = 0; c < 10; c++) {
+        var card = G.tab[c][j]; if (!card) continue;
+        spawn[card.id] = { x: sp.x, y: sp.y, s: .55, o: 0 }; delays[card.id] = k++ * 22;
+        if (card.up) late.add(card.id);
+      }
+      render({ spawn: spawn, delays: delays, late: late });
+      tone('deal');
+    });
+    persist();
+  }
+  function resume() {
+    var sv = loadSave(); if (!sv) return;
+    if (!G || gameOpen === false && (!G || L.snapshot(G) !== L.snapshot(sv.g))) { G = sv.g; undo = sv.undo; elapsed = sv.elapsed; clearBoard(); }
+    busy = false;
+    showGameScreen();
+  }
+  function hasGame() { return !!G && !L.isWon(G) || !!loadSave(); }
+
+  function updateMenu() {
+    var sv = G && !L.isWon(G) ? { g: G, elapsed: elapsed } : loadSave();
+    var b = $('#btnContinue');
+    b.hidden = !sv;
+    if (sv) $('#contInfo').textContent = sv.g.suitCount + ' renk · ' + sv.g.moves + ' hamle';
+    $$('#menuDiff button').forEach(function (x) { x.classList.toggle('on', +x.dataset.v === S.difficulty); });
+    buildFan();
+  }
+  function buildFan() {
+    var fan = $('#fan'); if (!fan) return;
+    var back = { id: -1, s: 0, r: 1, up: false }, q = { id: -2, s: 0, r: 12, up: true }, k = { id: -3, s: 1, r: 13, up: true };
+    fan.innerHTML = '';
+    [back, q, k].forEach(function (c) { fan.appendChild(makeCardEl(c)); });
+  }
+
+  function newGameFlow(fromMenu) {
+    var d = fromMenu ? S.difficulty : +$('#newDiff .on').dataset.v;
+    var run = function () { startNew(d); };
+    if (fromMenu && G && !L.isWon(G) && G.moves > 0) { confirmBox('Yeni oyun', 'Devam eden oyun kaybolacak. Başlansın mı?', 'Başla', run); }
+    else run();
+  }
+
+  /* ---------- Onay penceresi ---------- */
+  var confirmCb = null;
+  function confirmBox(title, text, ok, cb) {
+    $('#cTitle').textContent = title; $('#cText').textContent = text; $('#cYes').textContent = ok; confirmCb = cb;
+    openModal('#mConfirm');
+  }
+  $('#cNo').addEventListener('click', closeLayer);
+  $('#cYes').addEventListener('click', function () {
+    var cb = confirmCb; confirmCb = null;
+    if (layers.length && layers[layers.length - 1].name === '#mConfirm') {
+      var top = layers[layers.length - 1];
+      popLayerSilently(top); if (cb) cb();
+    }
+  });
+  // history'yi geri sararak katmanı kapat, ardından işlemi çalıştır
+  function popLayerSilently(top) {
+    if (top.pushed) { var once = function () { window.removeEventListener('popstate', once); }; window.addEventListener('popstate', once); try { history.back(); } catch (e) { popLayer(); } }
+    else popLayer();
+  }
+
+  /* ---------- Kazanma ---------- */
+  function win() {
+    var d = G.suitCount, sc = G.score, t = elapsed;
+    bump(d, function (o) { o.won++; if (!o.best || sc > o.best) o.best = sc; if (!o.bestTime || t < o.bestTime) o.bestTime = t; });
+    persist(); tone('win'); vib([20, 40, 20, 40, 60]);
+    setTimeout(function () {
+      $('#winText').textContent = 'Skor ' + sc + ' · ' + G.moves + ' hamle · ' + fmtTime(t);
+      openModal('#mWin');
+    }, 1300);
+  }
+  $('#winMenu').addEventListener('click', function () { closeLayer(); setTimeout(closeLayer, 60); });
+  $('#winNew').addEventListener('click', function () { var d = G ? G.suitCount : S.difficulty; closeLayer(); setTimeout(function () { startNew(d); }, 60); });
+
+  /* ---------- Menü düğmeleri ---------- */
+  $$('#menuDiff button').forEach(function (b) { b.addEventListener('click', function () { S.difficulty = +b.dataset.v; saveS(); updateMenu(); }); });
+  $('#btnNew').addEventListener('click', function () { newGameFlow(true); });
+  $('#btnContinue').addEventListener('click', resume);
+  $('#btnDecks').addEventListener('click', function () { openModal('#mDecks', buildDecks); });
+  $('#btnSettings').addEventListener('click', openSettings);
+  $('#btnStats').addEventListener('click', function () { openModal('#mStats', renderStats); });
+  $('#btnHelp').addEventListener('click', function () { openModal('#mHelp'); });
+  $('#bHelp').addEventListener('click', function () { openModal('#mHelp'); });
+  $$('.htabs a').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); var t = $(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); });
+  $('#bResetStats').addEventListener('click', function () { store.set('spider.stats.v1', { 1: {}, 2: {}, 4: {} }); renderStats(); });
+  $('#bMenu').addEventListener('click', closeLayer);
+  $('#bSet').addEventListener('click', openSettings);
+  $('#bNew').addEventListener('click', function () {
+    $$('#newDiff button').forEach(function (x) { x.classList.toggle('on', +x.dataset.v === (G ? G.suitCount : S.difficulty)); });
+    openModal('#mNew');
+  });
+  $$('#newDiff button').forEach(function (b) { b.addEventListener('click', function () { $$('#newDiff button').forEach(function (x) { x.classList.toggle('on', x === b); }); }); });
+  $('#bDealNew').addEventListener('click', function () { var d = +$('#newDiff .on').dataset.v; closeLayer(); setTimeout(function () { startNew(d); }, 60); });
+  $('#bReplay').addEventListener('click', function () {
+    var d = +$('#newDiff .on').dataset.v, seed = G ? G.seed : undefined;
+    closeLayer(); setTimeout(function () { startNew(d, d === (G && G.suitCount) ? seed : undefined); }, 60);
+  });
+
+  function buildDecks() {
+    var list = $('#deckList'); list.innerHTML = '';
+    DECKS.forEach(function (name, i) {
+      var b = document.createElement('button');
+      b.innerHTML = '<svg viewBox="0 0 58 78"><use href="#bk' + i + '"/></svg><span>' + name + '</span>';
+      b.classList.toggle('on', i === S.deck);
+      b.addEventListener('click', function () { S.deck = i; saveS(); applySettings(); $$('button', list).forEach(function (x, k) { x.classList.toggle('on', k === i); }); });
+      list.appendChild(b);
+    });
+  }
+
+  /* ---------- Ayarlar ---------- */
+  function openSettings() { openModal('#mSettings', function () { document.body.classList.add('guides'); syncSettingsUi(); }); }
+  function syncSettingsUi() {
+    $$('[data-toggle]').forEach(function (b) { b.setAttribute('aria-checked', String(!!S[b.dataset.toggle])); });
+    $$('[data-seg]').forEach(function (box) { $$('button', box).forEach(function (x) { x.classList.toggle('on', +x.dataset.v === S[box.dataset.seg]); }); });
+    $$('[data-pick]').forEach(function (box) { $$('button', box).forEach(function (x) { x.classList.toggle('on', x.dataset.v === S[box.dataset.pick]); }); });
+    $$('[data-step]').forEach(function (box) { $('output', box).textContent = S[box.dataset.step] + ' px'; });
+    $('#deckName').textContent = DECKS[S.deck];
+  }
+  $$('[data-toggle]').forEach(function (b) { b.addEventListener('click', function () { var k = b.dataset.toggle; S[k] = !S[k]; saveS(); applySettings(); syncSettingsUi(); }); });
+  $$('[data-seg]').forEach(function (box) { $$('button', box).forEach(function (x) { x.addEventListener('click', function () { S[box.dataset.seg] = +x.dataset.v; saveS(); applySettings(); syncSettingsUi(); }); }); });
+  $$('[data-pick]').forEach(function (box) { $$('button', box).forEach(function (x) { x.addEventListener('click', function () { S[box.dataset.pick] = x.dataset.v; saveS(); applySettings(); syncSettingsUi(); }); }); });
+  $$('[data-step]').forEach(function (box) {
+    $$('button', box).forEach(function (x) {
+      x.addEventListener('click', function () { var k = box.dataset.step; S[k] = Math.max(0, Math.min(200, S[k] + +x.dataset.d)); saveS(); applySettings(); syncSettingsUi(); });
+    });
+  });
+  $('#bRefresh').addEventListener('click', function () {
+    var done = function () { location.reload(); };
+    try {
+      var jobs = [];
+      if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }));
+      if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+      Promise.all(jobs).then(done, done);
+    } catch (e) { done(); }
+  });
+  $('#verText').textContent = 'Sürüm ' + VERSION;
+  $('#bDeckFromSet').addEventListener('click', function () { openModal('#mDecks', buildDecks); });
+  function isFull() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function standalone() {
+    // Tarayıcıda Fullscreen API ile tam ekrana geçince 'display-mode: fullscreen' de eşleşir; bunu kurulu uygulama sanma
+    if (isFull()) return false;
+    return !!(window.matchMedia && (matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches)) || navigator.standalone === true;
+  }
+  function updateFullUi() {
+    var f = isFull(), sa = standalone();
+    document.body.classList.toggle('isfs', f);
+    var bfs = $('#bFS'); if (bfs) { bfs.hidden = sa; setTimeout(layoutRail, 0); bfs.title = f ? 'Tam ekrandan çık' : 'Tam ekran'; }
+    var bf = $('#bFull'); if (bf) bf.textContent = f ? 'Tarayıcıya dön' : 'Aç';
+    var mf = $('#btnFull'); if (mf) { mf.firstChild.nodeValue = f ? 'Tarayıcıya dön ' : 'Tam ekran '; mf.hidden = sa; }
+  }
+  function toggleFull(quiet) {
+    var de = document.documentElement;
+    try {
+      if (isFull()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+      var rq = de.requestFullscreen || de.webkitRequestFullscreen;
+      if (!rq) { if (!quiet) toast('Tam ekran bu tarayıcıda yok. Tarayıcı menüsünden "Ana ekrana ekle" ile uygulama gibi açın.'); return; }
+      var p = rq.call(de, { navigationUI: 'hide' });
+      var ok = function () {
+        try { if (window.matchMedia('(pointer:coarse)').matches) screen.orientation.lock('landscape').catch(function () { }); } catch (e) { }
+        if (!quiet) toast('Tarayıcıya dönmek için Geri tuşuna basın veya yukarıdan aşağı kaydırın');
+      };
+      if (p && p.then) p.then(ok).catch(function () { if (!quiet) toast('Tam ekran açılamadı'); }); else ok();
+    } catch (e) { if (!quiet) toast('Tam ekran açılamadı'); }
+  }
+  $('#bFull').addEventListener('click', function () { toggleFull(false); });
+  $('#bFS').addEventListener('click', function () { toggleFull(false); });
+  $('#btnFull').addEventListener('click', function () { toggleFull(false); });
+  document.addEventListener('fullscreenchange', function () { updateFullUi(); onResize(); });
+  document.addEventListener('webkitfullscreenchange', function () { updateFullUi(); onResize(); });
+  // İlk dokunuşta (telefon/tablet) otomatik tam ekran: tarayıcı çubukları gizlenir
+  var autoTried = false;
+  document.addEventListener('click', function () {
+    if (autoTried) return; autoTried = true;
+    if (S.autoFull && !isFull() && !standalone() && window.matchMedia('(pointer:coarse)').matches) toggleFull(true);
+  }, true);
+  var installEv = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); installEv = e; $('#btnInstall').hidden = false; });
+  $('#btnInstall').addEventListener('click', function () { if (installEv) { installEv.prompt(); installEv = null; $('#btnInstall').hidden = true; } });
+  window.addEventListener('appinstalled', function () { $('#btnInstall').hidden = true; updateFullUi(); });
+  updateFullUi();
+
+  /* ---------- Klavye (bilgisayar) ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && gameOpen && !layers.length) { e.preventDefault(); doUndo(); } return; }
+    if (e.key === 'Escape') { if (layers.length) closeLayer(); return; }
+    if (!gameOpen || layers.length) return;
+    var k = e.key.toLowerCase();
+    if (k === 'z' || k === 'u') doUndo();
+    else if (k === 'h' || k === 'i') showHint();
+    else if (k === 'd' || k === ' ') { e.preventDefault(); doDeal(); }
+    else if (k === 'f') toggleFull(false);
+  });
+
+  /* ---------- OLED koruma ---------- */
+  var tintTimer = null, shiftTimer = null, idleTimer = null, lastAct = Date.now(), tintIdx = 0;
+  var TABLES = {
+    black: null,
+    green: ['#1e5a30', 'radial-gradient(ellipse at 50% 30%,#35834a 0%,#1f5e32 55%,#123a20 100%)'],
+    navy: ['#14305e', 'radial-gradient(ellipse at 50% 30%,#2a5192 0%,#183a70 55%,#0d2144 100%)'],
+    wine: ['#4d1620', 'radial-gradient(ellipse at 50% 30%,#7d2a38 0%,#561924 55%,#33101a 100%)'],
+    slate: ['#2c323d', 'radial-gradient(ellipse at 50% 30%,#4a5160 0%,#333945 55%,#1f232b 100%)']
+  };
+  function setupTint() {
+    clearInterval(tintTimer);
+    var tb = TABLES[S.table];
+    document.body.style.backgroundImage = tb ? tb[1] : 'none';
+    if (tb) { document.documentElement.style.setProperty('--table', tb[0]); return; }
+    if (!S.oled) { document.documentElement.style.setProperty('--table', '#000'); return; }
+    tintTimer = setInterval(function () {
+      var n; do { n = Math.floor(Math.random() * TINTS.length); } while (n === tintIdx);
+      tintIdx = n; document.documentElement.style.setProperty('--table', TINTS[n]);
+    }, S.tintMin * 60000);
+  }
+  var sx = 0, sy = 0;
+  function setupShift() {
+    clearInterval(shiftTimer);
+    var r = document.documentElement.style;
+    if (!S.oled || !S.shift) { r.setProperty('--sx', '0px'); r.setProperty('--sy', '0px'); return; }
+    var go = function () {
+      var nx, ny; do { nx = Math.floor(Math.random() * 7) - 3; ny = Math.floor(Math.random() * 7) - 3; } while (nx === sx && ny === sy);
+      sx = nx; sy = ny; r.setProperty('--sx', nx + 'px'); r.setProperty('--sy', ny + 'px');
+    };
+    shiftTimer = setInterval(go, 120000);
+  }
+  function setupIdle() {
+    clearInterval(idleTimer);
+    $('#dim').classList.remove('on');
+    if (!S.oled || !S.idle) return;
+    idleTimer = setInterval(function () { if (Date.now() - lastAct > S.idle * 1000) $('#dim').classList.add('on'); }, 3000);
+  }
+  function activity() { lastAct = Date.now(); var d = $('#dim'); if (d.classList.contains('on')) d.classList.remove('on'); }
+  ['pointerdown', 'pointermove', 'keydown', 'touchstart', 'wheel'].forEach(function (ev) { window.addEventListener(ev, activity, { passive: true, capture: true }); });
+
+  /* ---------- Ekran açık tut ---------- */
+  var lock = null;
+  function wake() {
+    if (!S.wake || !gameOpen || document.hidden || !navigator.wakeLock || lock) return;
+    try { navigator.wakeLock.request('screen').then(function (l) { lock = l; l.addEventListener('release', function () { lock = null; }); }).catch(function () { }); } catch (e) { }
+  }
+  function releaseWake() { try { if (lock) lock.release(); } catch (e) { } lock = null; }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { persist(); releaseWake(); } else wake();
+  });
+
+  /* ---------- Ayarları uygula ---------- */
+  function applySettings() {
+    var r = document.documentElement.style;
+    r.setProperty('--ul', S.ul + 'px'); r.setProperty('--ur', S.ur + 'px');
+    r.setProperty('--paper', S.face === 1 ? '#FBF9F2' : '#F1ECE0');
+    document.body.classList.toggle('i2', !!S.idx2);
+    $('#game').classList.toggle('rail-r', S.rail === 1);
+    $('.stats').style.display = S.showStats ? '' : 'none';
+    r.setProperty('--dimcard', (S.oled && S.dimCards) ? '.12' : '0');
+    $$('.bkuse').forEach(function (u) { u.setAttribute('href', '#bk' + S.deck); });
+    setupTint(); setupShift(); setupIdle();
+    if (S.wake) wake(); else releaseWake();
+    if (G && gameOpen) { measure(); render(); }
+  }
+
+  /* ---------- Resimli kartlar (isteğe bağlı) ---------- */
+  function loadPhotos() {
+    if (!/^https?:/.test(location.protocol)) return;
+    var pending = 0, got = 0;
+    'JQK'.split('').forEach(function (r) {
+      SUITL.split('').forEach(function (s) {
+        pending++;
+        var url = 'kartlar/' + r + '_' + s + '.png', img = new Image();
+        img.onload = function () { photos[r + '_' + s] = url; got++; done(); };
+        img.onerror = function () { done(); };
+        img.src = url;
+      });
+    });
+    function done() {
+      if (--pending) return;
+      if (!got) return;
+      els.forEach(function (el) {
+        var c = G && cardById(+el.dataset.id); if (!c || c.r < 11) return;
+        var f = $('.face', el); var old = $('.art', f); var tmp = document.createElement('div'); tmp.innerHTML = faceArt(c);
+        if (old) f.replaceChild(tmp.firstChild, old);
+      });
+      buildFan();
+    }
+  }
+
+  /* ---------- Zamanlayıcı ve boyut ---------- */
+  setInterval(function () {
+    if (!G || !gameOpen || document.hidden || L.isWon(G)) return;
+    elapsed++; $('#hTime').textContent = fmtTime(elapsed);
+    if (elapsed % 10 === 0) persist();
+  }, 1000);
+  // Uygulama içi tarayıcı (Threads, Instagram, Facebook...) uyarısı
+  try { if (/Barcelona|Threads|Instagram|FBAN|FBAV|FB_IAB|Line\/|Snapchat|Twitter|; wv\)/i.test(navigator.userAgent)) $('#inapp').hidden = false; } catch (e) { }
+  var rt = null, rt2 = [];
+  function relayout() { if (G && gameOpen) { measure(); render(); } }
+  // Android döndürmede ölçüleri geç bildirebilir: birkaç kez yeniden ölç
+  function onResize() {
+    clearTimeout(rt); rt2.forEach(clearTimeout); rt2 = [];
+    rt = setTimeout(relayout, 100);
+    [350, 800, 1600].forEach(function (d) { rt2.push(setTimeout(relayout, d)); });
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+  try { if (screen.orientation) screen.orientation.addEventListener('change', onResize); } catch (e) { }
+  try { var mq = window.matchMedia('(orientation:portrait)'); (mq.addEventListener ? mq.addEventListener('change', onResize) : mq.addListener(onResize)); } catch (e) { }
+
+  /* ---------- Açılış ---------- */
+  buildFound();
+  applySettings();
+  updateMenu();
+  loadPhotos();
+  if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) { try { reg.update(); } catch (e) { } }).catch(function () { });
+    var hadCtl = !!navigator.serviceWorker.controller, reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadCtl && !reloaded && !gameOpen) { reloaded = true; location.reload(); } }); }
+  window.__spider = { get G() { return G; }, startNew: startNew, render: render, cardHTML: cardHTML, S: S };
+})();
+
+</script>
+</body>
+</html>
