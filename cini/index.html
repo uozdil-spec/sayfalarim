@@ -55,14 +55,14 @@ h1{font-family:var(--display);font-size:30px;line-height:1;margin:0;letter-spaci
 #board{position:relative;margin:auto;flex:none;isolation:isolate;z-index:0}
 .tile{position:absolute;border-radius:calc(var(--tw)*.14);cursor:pointer;
   background:linear-gradient(155deg,#fffaf0 0%,var(--ivory) 45%,var(--ivory2) 100%);
-  box-shadow:calc(var(--tw)*.06) calc(var(--tw)*.08) 0 var(--side1),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2),calc(var(--tw)*.14) calc(var(--tw)*.22) calc(var(--tw)*.2) rgba(0,0,0,.5);
-  transition:transform .12s ease,filter .15s ease,opacity .2s ease}
+  box-shadow:calc(var(--tw)*.06) calc(var(--tw)*.08) 0 var(--side1),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2),calc(var(--tw)*.16) calc(var(--tw)*.24) 0 rgba(0,0,0,.26);
+  transition:transform .12s ease}
 .tile::before{content:"";position:absolute;inset:calc(var(--tw)*.05);border-radius:calc(var(--tw)*.1);border:1px solid rgba(143,127,88,.45);pointer-events:none}
 .tile svg{position:absolute;inset:calc(var(--tw)*.06);width:calc(100% - var(--tw)*.12);height:calc(100% - var(--tw)*.12);pointer-events:none}
-.tile.locked{filter:brightness(.74) saturate(.8)}
-.tile.sel{transform:translateY(calc(var(--tw)*-.08));filter:brightness(1.06);box-shadow:0 0 0 2px var(--gold),0 0 18px 4px rgba(227,188,75,.65),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}
+.tile.locked::after{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(14,18,38,.34);pointer-events:none}
+.tile.sel{transform:translateY(calc(var(--tw)*-.08));box-shadow:0 0 0 2px var(--gold),0 0 10px 2px rgba(227,188,75,.6),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}
 .tile.hint{animation:hint .7s ease-in-out infinite alternate}
-@keyframes hint{from{box-shadow:0 0 0 2px var(--tur),0 0 6px 1px var(--tur),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}to{box-shadow:0 0 0 3px var(--tur),0 0 22px 7px var(--tur),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}}
+@keyframes hint{from{box-shadow:0 0 0 2px var(--tur),0 0 6px 1px var(--tur),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}to{box-shadow:0 0 0 3px var(--tur),0 0 12px 3px var(--tur),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}}
 .tile.shake{animation:shake .28s}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .tile.out{animation:out .28s ease forwards;pointer-events:none}
@@ -75,7 +75,7 @@ h1{font-family:var(--display);font-size:30px;line-height:1;margin:0;letter-spaci
 .act:active{transform:scale(.97)}
 .act[disabled]{opacity:.4}
 .act small{font-size:10px;color:var(--mut);font-weight:500}
-.layer{position:fixed;inset:0;z-index:100000;background:rgba(5,9,24,.78);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;
+.layer{position:fixed;inset:0;z-index:100000;background:rgba(5,9,24,.88);display:flex;align-items:flex-end;justify-content:center;
   padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
 .layer.mid{align-items:center;padding:16px}
 .sheet{width:100%;max-width:560px;max-height:92%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:22px 22px 0 0;
@@ -649,7 +649,7 @@ var CINI = (function () {
     const minY = Math.min(...ts.map(t => t.y)), maxY = Math.max(...ts.map(t => t.y)) + 1;
     const mz = Math.max(...ts.map(t => t.z));
     const cols = maxX - minX, rws = maxY - minY;
-    const sw = el.stage.clientWidth - 22, sh = el.stage.clientHeight - 22;
+    const sw = el.stage.clientWidth - 22 - 6, sh = el.stage.clientHeight - 22 - 10;
     let TW = Math.min(sw / (cols + .07 * mz + .22), sh / (rws * 1.3333 + .1 * mz + .3), 66);
     TW = Math.max(30, Math.floor(TW));
     const TH = Math.round(TW * 4 / 3), ox = TW * .07, oy = TW * .1;
