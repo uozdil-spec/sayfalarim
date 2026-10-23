@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><radialGradient id="bg" cx="50%" cy="30%" r="90%"><stop offset="0" stop-color="#1d3680"/><stop offset="1" stop-color="#0b1431"/></radialGradient>
+<linearGradient id="tl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#e6dcbc"/></linearGradient></defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<rect x="150" y="104" width="224" height="304" rx="34" fill="#8f7f58" transform="translate(14 20)"/>
+<rect x="150" y="104" width="224" height="304" rx="34" fill="#bfae82" transform="translate(7 10)"/>
+<rect x="150" y="104" width="224" height="304" rx="34" fill="url(#tl)"/>
+<rect x="166" y="120" width="192" height="272" rx="24" fill="none" stroke="#8f7f58" stroke-opacity=".5" stroke-width="3"/>
+<g transform="translate(262 256)"><circle r="92" fill="#fffdf6" stroke="#1f4e9c" stroke-width="5"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(0)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(45)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(90)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(135)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(180)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(225)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(270)"/><ellipse cx="0" cy="-54" rx="27" ry="43" fill="#1f4e9c" transform="rotate(315)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(22.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(67.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(112.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(157.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(202.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(247.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(292.5)"/><circle cx="0" cy="-84" r="7" fill="#cf3a2e" transform="rotate(337.5)"/><circle r="30" fill="#fffdf6"/><circle r="19" fill="#cf3a2e"/><circle r="8" fill="#e3bc4b"/></g>
+<circle cx="262" cy="256" r="104" fill="none" stroke="#c79a1f" stroke-width="3" stroke-dasharray="6 10"/>
+</svg>
