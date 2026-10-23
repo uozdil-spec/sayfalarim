@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1431">
+<meta name="description" content="Çini: İznik çinisi ve Selçuklu motifli taşlarla oynanan tek kişilik eşleştirme oyunu. by uozdil">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1431'/%3E%3Cpath d='M16 5l3 8 8 3-8 3-3 8-3-8-8-3 8-3z' fill='%23e3bc4b'/%3E%3C/svg%3E">
+<style>[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Çini</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Figtree:wght@400;500;600;700&family=Great+Vibes&display=swap">
+<style>
+/* Düzen: tek ekranlık oyun. Üstte skor şeridi, ortada ölçeklenen tahta, altta eylem çubuğu. Menü ve rehber üst katman. */
+:root{
+  --bg:#0b1431; --bg2:#14245a; --panel:#13214f; --line:#2c418a; --fg:#f4eddb; --mut:#a3b3de;
+  --gold:#e3bc4b; --tur:#33c7c2; --red:#e2594a; --ivory:#f7f0dc; --ivory2:#e6dcbc;
+  --side1:#bfae82; --side2:#8f7f58; --pat:.05;
+  --display:'Amiri','Noto Naskh Arabic',Georgia,serif; --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+:root[data-table="zumrut"]{--bg:#07201a;--bg2:#0f3d31;--panel:#0d2f26;--line:#1f6a55;--tur:#58d6a4}
+:root[data-table="bordo"]{--bg:#240c18;--bg2:#4a1730;--panel:#38112a;--line:#7a2d55;--tur:#f08d6a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.app{height:100%;display:flex;flex-direction:column;gap:8px;padding-block:8px;
+  background:radial-gradient(120% 70% at 50% 0%,var(--bg2),transparent 70%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:30px;height:38px;border-radius:6px;background:linear-gradient(160deg,var(--ivory),var(--ivory2));box-shadow:2px 3px 0 var(--side1),3px 5px 0 var(--side2);display:grid;place-items:center}
+.mark svg{width:26px;height:26px}
+h1{font-family:var(--display);font-size:30px;line-height:1;margin:0;letter-spacing:.02em;font-weight:700}
+.sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-top:3px}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line)}
+.iconbtn svg{width:20px;height:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 8px;min-width:0}
+.stat b{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.stat span{display:block;font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat.combo span{color:var(--gold)}
+#stage{flex:1;min-height:0;position:relative;display:flex;padding:11px;border-radius:18px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;border:1px solid var(--line);
+  background:
+   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M28 5l5 14 14 5-14 5-5 14-5-14-14-5 14-5z' fill='none' stroke='%23ffffff' stroke-opacity='.06'/%3E%3Ccircle cx='0' cy='0' r='3' fill='none' stroke='%23ffffff' stroke-opacity='.05'/%3E%3Ccircle cx='56' cy='56' r='3' fill='none' stroke='%23ffffff' stroke-opacity='.05'/%3E%3C/svg%3E"),
+   radial-gradient(90% 80% at 50% 45%,var(--bg2),var(--bg))}
+#board{position:relative;margin:auto;flex:none}
+.tile{position:absolute;border-radius:calc(var(--tw)*.14);cursor:pointer;
+  background:linear-gradient(155deg,#fffaf0 0%,var(--ivory) 45%,var(--ivory2) 100%);
+  box-shadow:calc(var(--tw)*.06) calc(var(--tw)*.08) 0 var(--side1),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2),calc(var(--tw)*.14) calc(var(--tw)*.22) calc(var(--tw)*.2) rgba(0,0,0,.5);
+  transition:transform .12s ease,filter .15s ease,opacity .2s ease}
+.tile::before{content:"";position:absolute;inset:calc(var(--tw)*.05);border-radius:calc(var(--tw)*.1);border:1px solid rgba(143,127,88,.45);pointer-events:none}
+.tile svg{position:absolute;inset:calc(var(--tw)*.06);width:calc(100% - var(--tw)*.12);height:calc(100% - var(--tw)*.12);pointer-events:none}
+.tile.locked{filter:brightness(.74) saturate(.8)}
+.tile.sel{transform:translateY(calc(var(--tw)*-.08));filter:brightness(1.06);box-shadow:0 0 0 2px var(--gold),0 0 18px 4px rgba(227,188,75,.65),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}
+.tile.hint{animation:hint .7s ease-in-out infinite alternate}
+@keyframes hint{from{box-shadow:0 0 0 2px var(--tur),0 0 6px 1px var(--tur),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}to{box-shadow:0 0 0 3px var(--tur),0 0 22px 7px var(--tur),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2)}}
+.tile.shake{animation:shake .28s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.tile.out{animation:out .28s ease forwards;pointer-events:none}
+@keyframes out{to{transform:scale(1.25) rotate(6deg);opacity:0}}
+.pop{position:absolute;pointer-events:none;font-weight:800;font-size:22px;color:var(--gold);text-shadow:0 2px 6px #000a;animation:pop .9s ease-out forwards;z-index:99999}
+@keyframes pop{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,-46px)}}
+.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.act{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 4px 8px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-size:12px;font-weight:600;min-height:54px}
+.act svg{width:21px;height:21px}
+.act:active{transform:scale(.97)}
+.act[disabled]{opacity:.4}
+.act small{font-size:10px;color:var(--mut);font-weight:500}
+.layer{position:fixed;inset:0;z-index:50;background:rgba(5,9,24,.78);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;
+  padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+.layer.mid{align-items:center;padding:16px}
+.sheet{width:100%;max-width:560px;max-height:92%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:22px 22px 0 0;
+  padding:18px max(16px,env(safe-area-inset-left,0px)) calc(20px + env(safe-area-inset-bottom,0px));animation:up .25s ease}
+.layer.mid .sheet{border-radius:22px;max-height:88%;text-align:center}
+@keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.sheet h2{font-family:var(--display);font-size:26px;margin:0 0 4px}
+.sheet h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:20px 0 8px;font-weight:700}
+.sheet p{margin:0;color:var(--mut);line-height:1.5;font-size:14px}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lays{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lay{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+.lay.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.lay svg{width:100%;height:64px}
+.lay b{font-size:14px}.lay span{font-size:11px;color:var(--mut)}
+.lay em{font-style:normal;font-size:11px;color:var(--gold)}
+.btn{display:block;width:100%;padding:13px;border-radius:14px;font-weight:700;background:linear-gradient(180deg,#f0cf6a,#c99a22);color:#241a03;margin-top:10px}
+.btn.alt{background:var(--bg);color:var(--fg);border:1px solid var(--line)}
+.sw{display:flex;gap:10px}
+.swb{flex:1;height:44px;border-radius:12px;border:2px solid transparent;font-size:12px;font-weight:600;display:grid;place-items:center}
+.swb.on{border-color:var(--gold)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.tog{width:48px;height:28px;border-radius:99px;background:var(--bg);border:1px solid var(--line);position:relative;flex:none}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--mut);transition:transform .15s}
+.tog.on{background:var(--tur)}.tog.on::after{transform:translateX(20px);background:#052a29}
+.how{display:grid;gap:8px;margin-top:6px}
+.how p{padding-left:14px;position:relative}
+.how p::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:12px 10px}
+.gi{text-align:center;font-size:10px;color:var(--mut);min-width:0}
+.gi .tile{position:relative;--tw:56px;width:56px;height:75px;margin:0 auto 6px;cursor:default}
+.gnote{margin-top:6px}
+.gnote div{display:flex;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line);text-align:left;font-size:13px;color:var(--mut)}
+.gnote b{color:var(--fg);min-width:84px}
+.big{font-family:var(--display);font-size:44px;margin:4px 0;color:var(--gold);font-weight:700}
+.bk{display:grid;gap:6px;margin:14px 0;text-align:left}
+.bk div{display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg);border-radius:10px;font-size:14px}
+.bk b{font-variant-numeric:tabular-nums}
+.orn{display:block;margin:0 auto 6px;width:120px;height:14px}
+:root[data-tile="sedef"]{--ivory:#f2f7fc;--ivory2:#d3deec;--side1:#9db0c9;--side2:#6b7f9b}
+:root[data-tile="bal"]{--ivory:#fbefd0;--ivory2:#ecd49a;--side1:#c79c4a;--side2:#8e6a24}
+.layer.home{align-items:flex-start;justify-content:center;overflow:auto;z-index:60;backdrop-filter:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M28 5l5 14 14 5-14 5-5 14-5-14-14-5 14-5z' fill='none' stroke='%23ffffff' stroke-opacity='.06'/%3E%3C/svg%3E"),radial-gradient(120% 70% at 50% 0%,var(--bg2),var(--bg) 75%);
+  padding-block:env(safe-area-inset-top,0px) env(safe-area-inset-bottom,0px)}
+.homein{width:100%;max-width:380px;margin:auto;padding:18px 16px 22px;display:flex;flex-direction:column;align-items:center}
+.fan{position:relative;width:100%;height:130px}
+.fan .tile{position:absolute;left:50%;top:12px;width:74px;height:99px;margin-left:-37px;cursor:default}
+.hero{font-family:var(--display);font-size:72px;line-height:1;margin:8px 0 4px;letter-spacing:.02em}
+.tag{color:var(--mut);margin:0 0 18px;text-align:center;font-size:14px}
+.hbtns{width:100%;display:grid;gap:10px}
+.hb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:14px 16px;border-radius:16px;background:var(--panel);border:1px solid var(--line);text-align:left}
+.hb b{font-size:17px}.hb span{font-size:12px;color:var(--mut)}
+.hb.primary{background:linear-gradient(180deg,#f0cf6a,#c99a22);color:#241a03;border:0}.hb.primary span{color:#4a3a0c}
+.hb:active,.hs:active{transform:scale(.98)}
+.hgrid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.hs{display:flex;align-items:center;gap:8px;padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--line);font-size:13px;font-weight:600;text-align:left}
+.hs svg{width:20px;height:20px;color:var(--gold);flex:none}
+.by{font-family:'Great Vibes','Pinyon Script',cursive;text-align:center;font-size:25px;color:var(--gold);line-height:1;letter-spacing:.02em}
+.by.big{font-size:36px;margin-top:22px}
+.lv{font-style:normal;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:6px;vertical-align:middle;background:var(--line)}
+.lv-k{background:#1d6e6b}.lv-o{background:#8a6a14}.lv-z{background:#9b2f27}.lv-w{background:#3b55a8}
+.subl{display:block;font-size:11px;color:var(--mut);margin-top:2px}
+.achs{display:grid;gap:8px;margin-top:10px}
+.ach{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);opacity:.5;filter:grayscale(1)}
+.ach.on{opacity:1;filter:none;border-color:var(--gold)}
+.ach svg{width:34px;height:34px;flex:none}.ach div{min-width:0}.ach b{display:block;font-size:14px}.ach span{font-size:12px;color:var(--mut)}
+.cfwrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:70}
+.cf{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (max-width:360px){.hero{font-size:60px}}
+@media (max-width:360px){h1{font-size:26px}.stat span{font-size:16px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head><body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mark"><svg viewBox="-11 -11 22 22" aria-hidden="true"><use href="#rosA"/></svg></div>
+      <div><h1>Çini</h1><div class="sub" id="subtitle">Kubbe</div></div>
+    </div>
+    <button class="iconbtn" id="btnHome" aria-label="Ana sayfa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
+    </button>
+  </header>
+  <section class="stats" aria-label="Durum">
+    <div class="stat"><b>Skor</b><span id="sScore">0</span></div>
+    <div class="stat"><b>Süre</b><span id="sTime">0:00</span></div>
+    <div class="stat"><b>Çift</b><span id="sPairs">72</span></div>
+    <div class="stat combo"><b>Seri</b><span id="sCombo">x1</span></div>
+  </section>
+  <main id="stage"><div id="board" role="application" aria-label="Oyun tahtası"></div></main>
+  <nav class="bar" aria-label="Eylemler">
+    <button class="act" id="bHint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>İpucu<small>-25 puan</small></button>
+    <button class="act" id="bUndo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>Geri al<small>son hamle</small></button>
+    <button class="act" id="bShuf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Karıştır<small id="shufLeft">3 hak</small></button>
+    <button class="act" id="bNew"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Düzenler<small>yeni oyun</small></button>
+  </nav>
+  <div class="by">by uozdil</div>
+</div>
+
+<div class="layer home" id="home">
+  <div class="homein">
+    <div class="fan" id="fan" aria-hidden="true"></div>
+    <h1 class="hero">Çini</h1>
+    <p class="tag">İznik çinisinden doğan taş eşleştirme oyunu</p>
+    <div class="hbtns">
+      <button class="hb primary" id="hContinue" hidden><b>Devam et</b><span id="hContinueSub"></span></button>
+      <button class="hb" id="hNew"><b>Yeni oyun</b><span>8 düzen, 144 taş</span></button>
+      <button class="hb" id="hDaily"><b>Günün oyunu</b><span id="hDailySub"></span></button>
+      <button class="hb" id="hSurprise"><b>Sürpriz düzen</b><span>Rastgele bir tahta aç</span></button>
+    </div>
+    <div class="hgrid">
+      <button class="hs" id="hGuide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M9 17h6"/></svg>Taş rehberi</button>
+      <button class="hs" id="hAch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H4v2a3 3 0 0 0 3 3M16 6h4v2a3 3 0 0 1-3 3M12 13v4M8 21h8M10 17h4"/></svg>Başarımlar</button>
+      <button class="hs" id="hSet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Ayarlar</button>
+      <button class="hs" id="hHow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>Nasıl oynanır</button>
+    </div>
+    <div class="by big">by uozdil</div>
+  </div>
+</div>
+
+<div class="layer" id="page" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="pTitle">
+    <div class="shead"><h2 id="pTitle"></h2><button class="iconbtn" id="pClose" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div id="pBody"></div>
+  </div>
+</div>
+
+<div class="layer mid" id="end" hidden>
+  <div class="sheet" role="dialog" aria-label="Oyun sonucu" id="endBox"></div>
+</div>
+<script>
+/* ===== Çinitaş: mantık katmanı (saf fonksiyonlar) ===== */
+function rect(z, x0, y0, w, h) {
+  const a = [];
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) a.push({ x: x0 + i, y: y0 + j, z });
+  return a;
+}
+function rows(z, widths, y0, cx) {
+  const a = [];
+  widths.forEach((w, j) => { for (let i = 0; i < w; i++) a.push({ x: cx - w / 2 + i, y: y0 + j, z }); });
+  return a;
+}
+
+const LAYOUTS = [
+  {
+    id: 'kubbe', name: 'Kubbe', desc: 'Basamak basamak yükselen sade bir kubbe.',
+    build: () => [].concat(rect(0, 0, 0, 10, 8), rect(1, 1, 1.5, 8, 5), rect(2, 2, 2.5, 6, 3), rect(3, 3, 3.5, 4, 1), rect(4, 4, 3.5, 2, 1))
+  },
+  {
+    id: 'yildiz', name: 'Selçuklu Yıldızı', desc: 'Elmas gövdeli, merkezde yoğunlaşan düzen.',
+    build: () => [].concat(
+      rows(0, [2, 4, 6, 8, 10, 10, 8, 6, 4, 2], 0, 5),
+      rows(1, [2, 4, 6, 8, 8, 6, 4, 2], 1, 5),
+      rows(2, [2, 4, 6, 6, 4, 2], 2, 5),
+      rows(3, [2, 4, 4, 2], 3, 5),
+      rows(4, [2, 4, 2], 3.5, 5))
+  },
+  {
+    id: 'kule', name: 'Kule', desc: 'Dar ve yüksek. Telefonda en büyük taşlar.',
+    build: () => [].concat(rect(0, 0, 0, 6, 10), rect(1, 1, 1, 4, 8), rect(2, 1, 2.5, 4, 5), rect(3, 2, 2, 2, 6), rect(4, 2, 3, 2, 4), rect(5, 2, 3.5, 2, 3), rect(6, 2, 3.5, 2, 3))
+  },
+  {
+    id: 'minare', name: 'İkiz Minare', desc: 'İki minare, aralarında köprü. Zorlu bir düzen.',
+    build: () => [].concat(
+      rect(0, 0, 0, 3, 8), rect(0, 7, 0, 3, 8), rect(0, 3, 2, 4, 4),
+      rect(1, 0, 1, 3, 6), rect(1, 7, 1, 3, 6), rect(1, 3, 3, 4, 2),
+      rect(2, 0.5, 2, 2, 4), rect(2, 7.5, 2, 2, 4), rect(2, 3, 3, 4, 2),
+      rect(3, 0.5, 3, 2, 2), rect(3, 7.5, 3, 2, 2), rect(3, 3, 3.5, 4, 1))
+  },
+  {
+    id: 'kosk', name: 'Köşk', desc: 'Haç planlı köşk. Dört kol ortada buluşur.',
+    build: () => uniq([].concat(rect(0, 3, 0, 4, 10), rect(0, 0, 3, 10, 4), rect(1, 3, 1, 4, 8), rect(1, 1, 3, 8, 4), rect(2, 4, 2, 2, 6), rect(2, 2, 4, 6, 2), rect(3, 4, 4, 2, 2), rect(4, 4, 4, 2, 2), rect(5, 4, 4, 2, 2)))
+  },
+  {
+    id: 'kervansaray', name: 'Kervansaray', desc: 'Ortası avlu olan halka. Çıkıntılı duvarlar.',
+    build: () => [].concat(ringRect(0, 0, 0, 10, 8), ringRect(1, 1, 1, 8, 6), ringRect(2, 2, 2, 6, 4), ringRect(3, 2, 2, 6, 4))
+  },
+  {
+    id: 'sekizgen', name: 'Sekizgen', desc: 'Selçuklu kümbetlerinin sekiz kenarı.',
+    build: () => [].concat(rows(0, [4, 6, 8, 10, 10, 8, 6, 4], 0, 5), rows(1, [4, 6, 8, 8, 6, 4], 1, 5), rows(2, [4, 6, 6, 4], 2, 5), rows(3, [2, 4, 4, 2], 2, 5), rows(4, [2, 4, 4, 2], 2, 5), rows(5, [2, 4, 2], 2.5, 5))
+  },
+  {
+    id: 'carsi', name: 'Çarşı', desc: 'Geniş çarşı sokağı. Telefonda yana kaydırılır.',
+    build: () => [].concat(rect(0, 0, 0, 14, 6), rect(1, 1, 1, 12, 4), rect(2, 4, 2, 6, 2))
+  }
+];
+const LAYOUT_META = {
+  kubbe: { lv: 'Kolay' }, sekizgen: { lv: 'Kolay' }, yildiz: { lv: 'Orta' }, kule: { lv: 'Orta' },
+  kosk: { lv: 'Orta' }, minare: { lv: 'Zor' }, kervansaray: { lv: 'Zor' }, carsi: { lv: 'Geniş', wide: true }
+};
+LAYOUTS.forEach(l => Object.assign(l, LAYOUT_META[l.id] || {}));
+
+function uniq(list) {
+  const seen = new Set(), out = [];
+  list.forEach(t => { const k = t.x + ',' + t.y + ',' + t.z; if (!seen.has(k)) { seen.add(k); out.push(t); } });
+  return out;
+}
+function ringRect(z, x0, y0, w, h) {
+  return rect(z, x0, y0, w, h).filter(t => !(t.x >= 3 && t.x <= 6 && t.y >= 3 && t.y <= 4));
+}
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffled(arr, rnd) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* Tür anahtarları: c1-c9 çini, s1-s9 servi, h1-h9 hat, w0-w3 rüzgâr, d0-d2 simge, f0-f3 çiçek, e0-e3 mevsim */
+function fullDeck() {
+  const d = [];
+  for (const s of ['c', 's', 'h']) for (let n = 1; n <= 9; n++) for (let k = 0; k < 4; k++) d.push(s + n);
+  for (let n = 0; n < 4; n++) for (let k = 0; k < 4; k++) d.push('w' + n);
+  for (let n = 0; n < 3; n++) for (let k = 0; k < 4; k++) d.push('d' + n);
+  for (let n = 0; n < 4; n++) d.push('f' + n, 'e' + n);
+  return d;
+}
+function matchKey(t) { return t[0] === 'f' ? 'F' : t[0] === 'e' ? 'E' : t; }
+function makePairs(types) {
+  const g = {};
+  types.forEach(t => { const k = matchKey(t); (g[k] = g[k] || []).push(t); });
+  const pairs = [];
+  for (const k in g) for (let i = 0; i + 1 < g[k].length; i += 2) pairs.push([g[k][i], g[k][i + 1]]);
+  return pairs;
+}
+
+function freeIn(t, list) {
+  let l = false, r = false;
+  for (const u of list) {
+    if (u === t) continue;
+    if (u.z > t.z && Math.abs(u.x - t.x) < 1 && Math.abs(u.y - t.y) < 1) return false;
+    if (u.z === t.z && Math.abs(u.y - t.y) < 1) {
+      const dx = t.x - u.x;
+      if (dx > 0 && dx < 1.2) l = true; else if (dx < 0 && dx > -1.2) r = true;
+    }
+  }
+  return !(l && r);
+}
+
+/* Tahtayı tersten kurar: her adımda iki serbest taşa bir çift yerleştirir, bu yüzden her tahta çözülebilir. */
+function assignTypes(positions, pairs, rnd) {
+  const left = positions.slice();
+  const pool = shuffled(pairs, rnd);
+  const out = new Map();
+  while (left.length) {
+    const free = left.filter(t => freeIn(t, left));
+    if (free.length < 2) return null;
+    const a = free.splice(Math.floor(rnd() * free.length), 1)[0];
+    const b = free.splice(Math.floor(rnd() * free.length), 1)[0];
+    const p = pool.pop().slice();
+    if (rnd() < 0.5) p.reverse();
+    out.set(a, p[0]); out.set(b, p[1]);
+    left.splice(left.indexOf(a), 1); left.splice(left.indexOf(b), 1);
+  }
+  return out;
+}
+
+function createBoard(layoutId, seed) {
+  const L = LAYOUTS.find(l => l.id === layoutId) || LAYOUTS[0];
+  const rnd = seed != null ? mulberry32(seed) : Math.random;
+  const pairs = makePairs(fullDeck());
+  for (let n = 0; n < 300; n++) {
+    const pos = L.build().map((p, i) => ({ id: i, x: p.x, y: p.y, z: p.z, type: null, gone: false }));
+    const m = assignTypes(pos, pairs, rnd);
+    if (m) { pos.forEach(p => { p.type = m.get(p); }); return pos; }
+  }
+  return null;
+}
+
+function reshuffleBoard(tiles, rnd) {
+  const live = tiles.filter(t => !t.gone);
+  const pairs = makePairs(live.map(t => t.type));
+  for (let n = 0; n < 300; n++) {
+    const m = assignTypes(live, pairs, rnd || Math.random);
+    if (m) { live.forEach(t => { t.type = m.get(t); }); return true; }
+  }
+  return false;
+}
+
+function liveFree(tiles) {
+  const live = tiles.filter(t => !t.gone);
+  return live.filter(t => freeIn(t, live));
+}
+function findMove(tiles) {
+  const f = liveFree(tiles);
+  for (let i = 0; i < f.length; i++)
+    for (let j = i + 1; j < f.length; j++)
+      if (matchKey(f[i].type) === matchKey(f[j].type)) return [f[i], f[j]];
+  return null;
+}
+
+if (typeof module !== 'undefined') module.exports = { LAYOUTS, createBoard, reshuffleBoard, findMove, liveFree, freeIn, matchKey, fullDeck, makePairs, mulberry32 };
+/* ===== Çini: taş yüzleri (özgün vektör çizimler) ===== */
+const C = { cob: '#1f4e9c', tur: '#12a0a6', cor: '#cf3a2e', grn: '#2f8f5b', gold: '#c79a1f', ink: '#17284d', plum: '#7b2f6e', mar: '#8d2438', ice: '#4aa8d8', ora: '#e07a1f' };
+
+function buildDefs() {
+  const ros = (id, main, alt) => {
+    let s = `<g id="${id}"><circle r="10" fill="#fffdf6" stroke="${main}" stroke-width=".8"/>`;
+    for (let k = 0; k < 8; k++) s += `<ellipse cx="0" cy="-5.3" rx="2.7" ry="4.3" fill="${main}" transform="rotate(${k * 45})"/>`;
+    for (let k = 0; k < 8; k++) s += `<circle cx="0" cy="-8.3" r=".75" fill="${alt}" transform="rotate(${k * 45 + 22.5})"/>`;
+    s += `<circle r="3.2" fill="#fffdf6"/><circle r="2" fill="${alt}"/></g>`;
+    return s;
+  };
+  return `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    ${ros('rosA', C.cob, C.cor)}${ros('rosB', C.tur, C.cob)}${ros('rosC', C.cor, C.gold)}
+    <linearGradient id="gGreen" x1="0" x2="1"><stop offset="0" stop-color="#1f7a4c"/><stop offset="1" stop-color="#46b077"/></linearGradient>
+    <linearGradient id="gTeal" x1="0" x2="1"><stop offset="0" stop-color="#136b66"/><stop offset="1" stop-color="#2fb0a4"/></linearGradient>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9c35a"/><stop offset="1" stop-color="#b8860f"/></linearGradient>
+    <linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5503f"/><stop offset="1" stop-color="#a72419"/></linearGradient>
+    <g id="cypA"><path d="M0,-15 C6.5,-8 8,2 5.2,8 Q0,11 -5.2,8 C-8,2 -6.5,-8 0,-15Z" fill="url(#gGreen)" stroke="#145a36" stroke-width=".7"/><path d="M0,-12 C2,-5 2.5,3 0,9" fill="none" stroke="#bfe8cc" stroke-width=".8" opacity=".7"/><path d="M0,9 V13.5" stroke="#6b4a2b" stroke-width="1.6" stroke-linecap="round"/></g>
+    <g id="cypB"><path d="M0,-15 C6.5,-8 8,2 5.2,8 Q0,11 -5.2,8 C-8,2 -6.5,-8 0,-15Z" fill="url(#gTeal)" stroke="#0e4f4b" stroke-width=".7"/><path d="M0,-12 C2,-5 2.5,3 0,9" fill="none" stroke="#c6efe9" stroke-width=".8" opacity=".7"/><path d="M0,9 V13.5" stroke="#6b4a2b" stroke-width="1.6" stroke-linecap="round"/></g>
+    <g id="tulip"><path d="M0,3 C.4,8 .2,10 0,12" stroke="#2f8f5b" stroke-width="1" fill="none"/><path d="M0,10 C-5,9 -6,4 -5,1 C-3,5 -1,7 0,10Z M0,10 C5,9 6,4 5,1 C3,5 1,7 0,10Z" fill="#2f8f5b"/><path d="M0,-8 C-3.6,-4.5 -4.2,.5 -2,3 C-1,3.6 1,3.6 2,3 C4.2,.5 3.6,-4.5 0,-8Z" fill="currentColor" stroke="#00000033" stroke-width=".5"/><path d="M-4.4,-5 C-5.4,-1 -4.2,2 -2,3 C-2.4,0 -3,-3 -4.4,-5Z M4.4,-5 C5.4,-1 4.2,2 2,3 C2.4,0 3,-3 4.4,-5Z" fill="currentColor" opacity=".75"/><path d="M0,-6.5 C-.8,-3 -.8,0 0,2.4" stroke="#ffffff66" stroke-width=".7" fill="none"/></g>
+    <mask id="moonMask" maskUnits="userSpaceOnUse" x="0" y="0" width="60" height="80"><rect width="60" height="80" fill="#fff"/><circle cx="36" cy="30" r="17.5" fill="#000"/></mask>
+  </defs></svg>`;
+}
+
+const POS = {
+  1: [[30, 38]], 2: [[30, 22], [30, 54]], 3: [[30, 16], [30, 38], [30, 60]],
+  4: [[18, 24], [42, 24], [18, 54], [42, 54]], 5: [[17, 23], [43, 23], [30, 39], [17, 55], [43, 55]],
+  6: [[18, 18], [42, 18], [18, 40], [42, 40], [18, 62], [42, 62]],
+  7: [[13, 15], [30, 15], [47, 15], [18, 40], [42, 40], [18, 64], [42, 64]],
+  8: [[18, 14], [42, 14], [18, 31], [42, 31], [18, 48], [42, 48], [18, 65], [42, 65]].slice(0, 8),
+  9: [[13, 18], [30, 18], [47, 18], [13, 40], [30, 40], [47, 40], [13, 62], [30, 62], [47, 62]]
+};
+const RAD = { 1: 17, 2: 11, 3: 9, 4: 10, 5: 8.6, 6: 8.6, 7: 7.4, 8: 7.4, 9: 6.6 };
+
+const txt = (s, x, y, size, fill, w, font) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="${font || 'Amiri,serif'}" font-size="${size}" font-weight="${w || 700}" fill="${fill}">${s}</text>`;
+const ARAP = ['', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+function starPts(cx, cy, ro, ri, k) {
+  const p = [];
+  for (let i = 0; i < k * 2; i++) {
+    const a = -Math.PI / 2 + (i * Math.PI) / k, r = i % 2 ? ri : ro;
+    p.push((cx + r * Math.cos(a)).toFixed(2) + ',' + (cy + r * Math.sin(a)).toFixed(2));
+  }
+  return p.join(' ');
+}
+
+const WIND = [
+  { name: 'Poyraz', ang: 45, col: C.cob }, { name: 'Keşişleme', ang: 135, col: C.cor },
+  { name: 'Lodos', ang: 225, col: C.tur }, { name: 'Karayel', ang: 315, col: C.plum }
+];
+
+function faceSVG(type) {
+  const g = type[0], n = +type.slice(1);
+  let b = '';
+  if (g === 'c') {
+    const pal = ['rosA', 'rosB', 'rosC'];
+    POS[n].forEach((p, i) => { const k = RAD[n] / 10; b += `<use href="#${n === 1 ? 'rosA' : pal[i % 3]}" transform="translate(${p[0]} ${p[1]}) scale(${k})"/>`; });
+    if (n === 1) b += `<circle cx="30" cy="38" r="21" fill="none" stroke="${C.gold}" stroke-width=".9" stroke-dasharray="1.6 2.2"/>`;
+    b += txt(n, 8, 12, 9, C.cob, 800, 'Figtree,sans-serif');
+  } else if (g === 's') {
+    POS[n].forEach((p, i) => {
+      const k = n === 1 ? 2.0 : RAD[n] / 11.5;
+      b += `<use href="#${i % 2 ? 'cypB' : 'cypA'}" transform="translate(${p[0]} ${p[1] - (n === 1 ? 2 : 0)}) scale(${k})"/>`;
+    });
+    if (n === 1) b += `<circle cx="30" cy="68" r="2" fill="${C.cor}"/><circle cx="22" cy="68" r="1.2" fill="${C.gold}"/><circle cx="38" cy="68" r="1.2" fill="${C.gold}"/>`;
+    b += txt(n, 8, 12, 9, C.grn, 800, 'Figtree,sans-serif');
+  } else if (g === 'h') {
+    b += `<path d="M14,17 Q30,9 46,17" fill="none" stroke="${C.gold}" stroke-width="1.2"/><circle cx="30" cy="12.5" r="1.8" fill="${C.cor}"/>`;
+    b += txt(ARAP[n], 30, 49, 44, C.mar, 700);
+    b += `<use href="#tulip" transform="translate(30 64) scale(1.05)" color="${C.cor}"/>`;
+    b += `<path d="M14,73 Q30,79 46,73" fill="none" stroke="${C.gold}" stroke-width="1.2"/>`;
+    b += txt(n, 8, 12, 9, C.mar, 800, 'Figtree,sans-serif');
+  } else if (g === 'w') {
+    const w = WIND[n];
+    b += `<circle cx="30" cy="34" r="21" fill="#fffdf6" stroke="${C.ink}" stroke-width=".9"/><circle cx="30" cy="34" r="17.5" fill="none" stroke="${C.gold}" stroke-width=".6" stroke-dasharray="1 1.6"/>`;
+    for (let k = 0; k < 4; k++) b += `<path d="M30,15 L32.4,34 L30,53 L27.6,34Z" fill="${C.ink}" opacity=".16" transform="rotate(${k * 45} 30 34)"/>`;
+    b += `<g transform="rotate(${w.ang} 30 34)"><path d="M30,12 L36.5,31 L30,27.5 L23.5,31Z" fill="${w.col}" stroke="#0003" stroke-width=".5"/><path d="M30,27.5 L30,50" stroke="${w.col}" stroke-width="1.6" stroke-linecap="round"/></g>`;
+    b += `<circle cx="30" cy="34" r="3" fill="${C.gold}" stroke="${C.ink}" stroke-width=".6"/>` + txt('K', 30, 11, 6.5, C.ink, 800, 'Figtree,sans-serif');
+    b += txt(w.name, 30, 70, w.name.length > 7 ? 9 : 11, w.col, 700);
+  } else if (g === 'd') {
+    if (n === 0) {
+      b += `<circle cx="30" cy="35" r="22" fill="#1b3f8f"/><circle cx="30" cy="35" r="16.5" fill="#fffdf6"/><circle cx="30" cy="35" r="11" fill="#3db3e4"/><circle cx="30" cy="35" r="5.4" fill="#0b1a3a"/><ellipse cx="25" cy="27" rx="4" ry="2.2" fill="#fff" opacity=".45" transform="rotate(-35 25 27)"/>` + txt('Nazar', 30, 72, 11, C.cob, 700);
+    } else if (n === 1) {
+      b += `<circle cx="30" cy="35" r="25" fill="none" stroke="${C.cob}" stroke-width="1"/><polygon points="${starPts(30, 35, 22, 12.5, 8)}" fill="url(#gGold)" stroke="${C.ink}" stroke-width=".8"/><polygon points="${starPts(30, 35, 10, 6, 8)}" fill="${C.cob}"/><circle cx="30" cy="35" r="3" fill="${C.tur}"/>` + txt('Selçuklu', 30, 74, 9.5, C.ink, 700);
+    } else {
+      b += `<circle cx="28" cy="31" r="22" fill="url(#gRed)" mask="url(#moonMask)"/><polygon points="${starPts(43, 31, 7.6, 3.2, 5)}" fill="url(#gGold)" stroke="#7a5a0a" stroke-width=".5"/>` + txt('Hilal', 30, 72, 11, C.cor, 700);
+    }
+  } else if (g === 'f') {
+    b += `<circle cx="8" cy="9" r="3.4" fill="none" stroke="${C.plum}" stroke-width="1"/><circle cx="8" cy="9" r="1" fill="${C.plum}"/>`;
+    if (n === 0) b += `<use href="#tulip" transform="translate(30 33) scale(2.5)" color="${C.cor}"/>` + txt('Lale', 30, 72, 11, C.cor, 700);
+    if (n === 1) {
+      for (let k = 0; k < 10; k++) b += `<circle cx="30" cy="30" r="6.6" fill="#f08fb0" stroke="#b8446f" stroke-width=".6" transform="rotate(${k * 36} 30 30) translate(0 -9.5)"/>`;
+      b += `<circle cx="30" cy="30" r="9" fill="#e0537f"/><circle cx="30" cy="30" r="4.5" fill="#b8244f"/><circle cx="30" cy="30" r="1.6" fill="#f9c5d6"/><path d="M30,46 C29,55 31,60 30,64" stroke="${C.grn}" stroke-width="1.4" fill="none"/><path d="M30,56 C23,55 20,50 19,47 C25,48 28,51 30,56Z" fill="${C.grn}"/>` + txt('Karanfil', 30, 74, 10, '#b8244f', 700);
+    }
+    if (n === 2) {
+      b += `<path d="M30,62 L30,14" stroke="${C.grn}" stroke-width="1.4"/><path d="M30,62 C22,60 17,52 16,46 C23,48 28,54 30,62Z M30,62 C38,60 43,52 44,46 C37,48 32,54 30,62Z" fill="${C.grn}"/>`;
+      for (let i = 0; i < 9; i++) { const y = 17 + i * 3.9, s = 2.2 + (i < 7 ? i * 0.05 : 0.2); const cl = i % 2 ? '#8e3f9a' : '#6a2a85'; b += `<circle cx="${30 - 3.4}" cy="${y}" r="${s + 0.7}" fill="${cl}"/><circle cx="${30 + 3.4}" cy="${y + 1}" r="${s + 0.7}" fill="${cl}"/>`; }
+      b += `<circle cx="30" cy="13.5" r="2.4" fill="#8e3f9a"/>` + txt('Sümbül', 30, 74, 10, C.plum, 700);
+    }
+    if (n === 3) {
+      b += `<path d="M22,50 L30,40 L38,50 L34,52 L30,47 L26,52Z" fill="${C.grn}"/>`;
+      for (let k = 0; k < 6; k++) b += `<ellipse cx="30" cy="22" rx="5.8" ry="9.5" fill="#e0561f" stroke="#a8360d" stroke-width=".6" transform="rotate(${k * 60} 30 31) translate(0 -2)"/>`;
+      b += `<circle cx="30" cy="31" r="5.2" fill="#f2b631"/>`;
+      for (let k = 0; k < 8; k++) b += `<circle cx="30" cy="25.6" r=".9" fill="#a8360d" transform="rotate(${k * 45} 30 31)"/>`;
+      b += txt('Nar', 30, 70, 11, '#b8400f', 700);
+    }
+  } else if (g === 'e') {
+    b += `<rect x="4.6" y="5.6" width="6.8" height="6.8" fill="none" stroke="${C.tur}" stroke-width="1" transform="rotate(45 8 9)"/><circle cx="8" cy="9" r="1" fill="${C.tur}"/>`;
+    if (n === 0) {
+      b += `<path d="M30,62 C29,50 30,42 30,34" stroke="${C.grn}" stroke-width="1.6" fill="none"/><path d="M30,48 C20,48 13,41 12,32 C22,32 29,38 30,48Z" fill="url(#gGreen)"/><path d="M30,40 C40,40 47,33 48,23 C38,23 31,29 30,40Z" fill="url(#gGreen)"/><path d="M30,34 C27,27 27,20 30,15 C33,20 33,27 30,34Z" fill="#7bc96a"/><path d="M22,64 H38" stroke="#7a5b3a" stroke-width="2" stroke-linecap="round"/>` + txt('İlkbahar', 30, 74, 10, C.grn, 700);
+    }
+    if (n === 1) {
+      for (let k = 0; k < 12; k++) b += `<path d="M30,10 L32.6,19 L27.4,19Z" fill="${C.ora}" transform="rotate(${k * 30} 30 35)"/>`;
+      b += `<circle cx="30" cy="35" r="11.5" fill="url(#gGold)" stroke="#8a5f08" stroke-width=".8"/><circle cx="30" cy="35" r="6.4" fill="#f4d46a" opacity=".8"/>` + txt('Yaz', 30, 72, 12, '#a86a0a', 700);
+    }
+    if (n === 2) {
+      b += `<path d="M30,14 C36,18 40,22 46,22 C44,28 42,30 46,36 C40,36 38,38 38,44 C34,42 32,43 30,48 C28,43 26,42 22,44 C22,38 20,36 14,36 C18,30 16,28 14,22 C20,22 24,18 30,14Z" fill="#d9661f" stroke="#8e3b0b" stroke-width=".8"/><path d="M30,17 V58 M30,30 L38,25 M30,30 L22,25 M30,39 L37,35 M30,39 L23,35" stroke="#f4c27a" stroke-width="1" fill="none" stroke-linecap="round"/>` + txt('Sonbahar', 30, 74, 9.5, '#a8460f', 700);
+    }
+    if (n === 3) {
+      for (let k = 0; k < 6; k++) b += `<g transform="rotate(${k * 60} 30 33)"><path d="M30,33 V12" stroke="${C.ice}" stroke-width="1.8" stroke-linecap="round"/><path d="M30,20 L25,15 M30,20 L35,15 M30,26 L26,23 M30,26 L34,23" stroke="${C.ice}" stroke-width="1.3" stroke-linecap="round"/></g>`;
+      b += `<circle cx="30" cy="33" r="3" fill="#e6f5ff" stroke="${C.ice}" stroke-width="1"/>` + txt('Kış', 30, 72, 12, '#2a7db0', 700);
+    }
+  }
+  return `<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${TYPE_NAME[type] || type}">${b}</svg>`;
+}
+
+/* Taş rehberi için adlar ve anlamlar */
+const TYPE_NAME = {};
+const GUIDE = [
+  { title: 'Çini Rozeti', blurb: 'İznik çinilerinin sekiz yapraklı rozeti. Taşta kaç rozet varsa sayısı odur.', types: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => 'c' + n) },
+  { title: 'Servi', blurb: 'Bahçelerimizin ve mezarlıklarımızın dik ağacı. Dirilik ve ölümsüzlüğün simgesi.', types: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => 's' + n) },
+  { title: 'Hat Sayıları', blurb: 'Osmanlı yazısındaki rakamlar ve altlarında bir lale.', types: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => 'h' + n) },
+  { title: 'Rüzgârlar', blurb: 'Denizcilerin pusulasındaki dört ara yön rüzgârı.', types: ['w0', 'w1', 'w2', 'w3'], notes: ['Kuzeydoğudan esen soğuk ve kuru rüzgâr.', 'Güneydoğudan esen rüzgâr.', 'Güneybatıdan esen ılık ve nemli rüzgâr.', 'Kuzeybatıdan esen, yağış getiren rüzgâr.'] },
+  { title: 'Simgeler', blurb: 'Anadolu\'nun üç eski işareti.', types: ['d0', 'd1', 'd2'], notes: ['Kötü bakışa karşı taşınan mavi boncuk.', 'Sekiz köşeli yıldız. Selçuklu taş işçiliğinin imzası.', 'Minare alemlerinden bayrağa kadar her yerde.'] },
+  { title: 'Çiçekler', blurb: 'Dört çiçeğin herhangi ikisi birbiriyle eşleşir.', types: ['f0', 'f1', 'f2', 'f3'], notes: ['İstanbul\'un ve Lale Devri\'nin çiçeği.', 'Çini ve kumaş desenlerinin vazgeçilmezi.', 'Bahçelerde baharın ilk müjdecilerinden.', 'Bereketin simgesi olan narın çiçeği.'] },
+  { title: 'Mevsimler', blurb: 'Dört mevsimin herhangi ikisi birbiriyle eşleşir.', types: ['e0', 'e1', 'e2', 'e3'], notes: ['Filiz veren toprak.', 'Altın rengi güneş.', 'Dökülen yaprak.', 'Kar tanesi.'] }
+];
+(function () {
+  GUIDE[0].types.forEach((t, i) => TYPE_NAME[t] = 'Çini rozeti ' + (i + 1));
+  GUIDE[1].types.forEach((t, i) => TYPE_NAME[t] = 'Servi ' + (i + 1));
+  GUIDE[2].types.forEach((t, i) => TYPE_NAME[t] = 'Hat sayısı ' + (i + 1));
+  ['Poyraz', 'Keşişleme', 'Lodos', 'Karayel'].forEach((s, i) => TYPE_NAME['w' + i] = s);
+  ['Nazar', 'Selçuklu yıldızı', 'Hilal'].forEach((s, i) => TYPE_NAME['d' + i] = s);
+  ['Lale', 'Karanfil', 'Sümbül', 'Nar çiçeği'].forEach((s, i) => TYPE_NAME['f' + i] = s);
+  ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'].forEach((s, i) => TYPE_NAME['e' + i] = s);
+})();
+/* ===== Çini: oyun çekirdeği ===== */
+var CINI = (function () {
+  const $ = id => document.getElementById(id);
+  const MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  const ACH = [
+    { id: 'ilk', name: 'İlk Zafer', desc: 'Bir tahtayı temizle.' },
+    { id: 'seri', name: 'Seri Ustası', desc: 'x5 seriye ulaş.' },
+    { id: 'sade', name: 'Sade Göz', desc: 'İpucu kullanmadan kazan.' },
+    { id: 'hizli', name: 'Çevik El', desc: '5 dakikadan kısa sürede kazan.' },
+    { id: 'yalin', name: 'Yalın Oyun', desc: 'Geri almadan ve karıştırmadan kazan.' },
+    { id: 'gunluk', name: 'Günün Ustası', desc: 'Günün oyununu kazan.' },
+    { id: 'gezgin', name: 'Gezgin', desc: 'Her düzeni en az bir kez kazan.' },
+    { id: 'sabir', name: 'Sabırlı', desc: 'On oyun kazan.' }
+  ];
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('cini.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('cini.' + k, JSON.stringify(v)); } catch (e) { } },
+    del(k) { try { localStorage.removeItem('cini.' + k); } catch (e) { } }
+  };
+  const prefs = { table: store.get('table', 'cobalt'), tile: store.get('tile', 'fildisi'), sound: store.get('sound', true), dim: store.get('dim', true), haptic: store.get('haptic', true) };
+  const data = { best: store.get('best', {}), stats: store.get('stats', { played: 0, won: 0, fastest: 0, top: 0, layouts: {} }), daily: store.get('daily', {}), ach: store.get('ach', {}) };
+  if (!data.stats.layouts) data.stats.layouts = {};
+
+  function applyPrefs() {
+    const r = document.documentElement;
+    r.dataset.table = prefs.table; r.dataset.tile = prefs.tile;
+    if (G) G.tiles.forEach(t => t.el.classList.remove('locked'));
+    if (G) refresh();
+  }
+  function setPref(k, v) { prefs[k] = v; store.set(k, v); applyPrefs(); }
+
+  /* --- ses ve titreşim --- */
+  let ac = null;
+  function tone(f, d, type, vol, delay) {
+    if (!prefs.sound) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state === 'suspended') ac.resume();
+      const t0 = ac.currentTime + (delay || 0), o = ac.createOscillator(), g = ac.createGain();
+      o.type = type || 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol || 0.12, t0 + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+      o.connect(g); g.connect(ac.destination); o.start(t0); o.stop(t0 + d + 0.05);
+    } catch (e) { }
+  }
+  function buzz(ms) { if (prefs.haptic) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) { } } }
+  const sfx = {
+    pick() { tone(587, .09, 'triangle', .1); buzz(8); },
+    bad() { tone(150, .16, 'square', .05); buzz([20, 30, 20]); },
+    match(c) { const b = 523 * Math.pow(1.122, c - 1); tone(b, .14, 'triangle', .12); tone(b * 1.5, .22, 'sine', .1, .07); buzz(16); },
+    undo() { tone(440, .08, 'sine', .08); tone(330, .1, 'sine', .08, .06); },
+    shuffle() { [392, 440, 494, 523].forEach((f, i) => tone(f, .08, 'triangle', .07, i * .05)); buzz(30); },
+    win() { [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .35, 'triangle', .11, i * .12)); buzz([40, 60, 40, 60, 80]); },
+    hint() { tone(880, .12, 'sine', .08); }
+  };
+
+  /* --- durum --- */
+  let G = null, timerId = null, hintTimer = null;
+  const faceCache = {};
+  const face = t => faceCache[t] || (faceCache[t] = faceSVG(t));
+  const el = {};
+  ['board', 'stage', 'sScore', 'sTime', 'sPairs', 'sCombo', 'subtitle', 'bHint', 'bUndo', 'bShuf', 'shufLeft', 'home', 'page', 'end', 'endBox'].forEach(i => el[i] = $(i));
+
+  const fmt = s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  function todaySeed() { const d = new Date(); return { seed: d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(), label: d.getDate() + ' ' + MONTHS[d.getMonth()] }; }
+  function setLayer(name) { el.home.hidden = name !== 'home'; el.page.hidden = name !== 'page'; el.end.hidden = name !== 'end'; }
+  const layerOpen = () => !el.home.hidden || !el.page.hidden || !el.end.hidden;
+
+  function save() {
+    if (!G || G.over) return;
+    store.set('save', {
+      layoutId: G.layoutId, seed: G.seed, label: G.label, score: G.score, combo: G.combo, time: G.time, hints: G.hints, shuf: G.shuf, pairs: G.pairs,
+      usedUndo: G.usedUndo, usedShuf: G.usedShuf, maxCombo: G.maxCombo,
+      tiles: G.tiles.map(t => ({ x: t.x, y: t.y, z: t.z, type: t.type, gone: t.gone })),
+      undo: G.undo.map(u => ({ a: u.a.id, b: u.b.id, pts: u.pts, prev: u.prev }))
+    });
+  }
+  const hasSave = () => !!store.get('save', null);
+
+  function newGame(layoutId, seed, label, restore) {
+    clearInterval(timerId); clearTimeout(hintTimer);
+    const L = LAYOUTS.find(l => l.id === layoutId) || LAYOUTS[0];
+    let tiles;
+    if (restore) tiles = restore.tiles.map((t, i) => ({ id: i, x: t.x, y: t.y, z: t.z, type: t.type, gone: t.gone }));
+    else tiles = createBoard(L.id, seed);
+    G = {
+      layoutId: L.id, seed: seed == null ? null : seed, label: label || null, tiles, sel: null, undo: [], score: 0, combo: 1, last: 0, time: 0, hints: 0,
+      shuf: 3, over: false, pairs: tiles.filter(t => !t.gone).length / 2, started: false, usedUndo: false, usedShuf: false, maxCombo: 1
+    };
+    if (restore) {
+      Object.assign(G, { score: restore.score, combo: 1, time: restore.time, hints: restore.hints, shuf: restore.shuf, pairs: restore.pairs, usedUndo: restore.usedUndo, usedShuf: restore.usedShuf, maxCombo: restore.maxCombo, started: true });
+      G.undo = restore.undo.map(u => ({ a: tiles[u.a], b: tiles[u.b], pts: u.pts, prev: u.prev }));
+    }
+    store.set('layout', L.id);
+    el.subtitle.textContent = G.label ? 'Günün oyunu · ' + G.label : L.name;
+    buildBoard(); layoutBoard(); refresh();
+    if (!restore) { el.stage.scrollLeft = (el.stage.scrollWidth - el.stage.clientWidth) / 2; el.stage.scrollTop = 0; }
+    timerId = setInterval(() => { if (G && G.started && !G.over && !layerOpen()) { G.time++; el.sTime.textContent = fmt(G.time); if (G.time % 10 === 0) save(); } }, 1000);
+    if (!restore) save();
+  }
+  function resume() {
+    const s = store.get('save', null);
+    if (!s) return false;
+    try { newGame(s.layoutId, s.seed, s.label, s); return true; } catch (e) { store.del('save'); return false; }
+  }
+
+  function buildBoard() {
+    el.board.innerHTML = '';
+    G.tiles.forEach(t => {
+      const d = document.createElement('div');
+      d.className = 'tile'; d.dataset.id = t.id; d.innerHTML = face(t.type);
+      if (t.gone) d.hidden = true;
+      t.el = d; el.board.appendChild(d);
+    });
+  }
+
+  let warned = false;
+  function layoutBoard() {
+    if (!G) return;
+    const ts = G.tiles;
+    const minX = Math.min(...ts.map(t => t.x)), maxX = Math.max(...ts.map(t => t.x)) + 1;
+    const minY = Math.min(...ts.map(t => t.y)), maxY = Math.max(...ts.map(t => t.y)) + 1;
+    const mz = Math.max(...ts.map(t => t.z));
+    const cols = maxX - minX, rws = maxY - minY;
+    const sw = el.stage.clientWidth - 22, sh = el.stage.clientHeight - 22;
+    let TW = Math.min(sw / (cols + .07 * mz + .22), sh / (rws * 1.3333 + .1 * mz + .3), 66);
+    TW = Math.max(30, Math.floor(TW));
+    const TH = Math.round(TW * 4 / 3), ox = TW * .07, oy = TW * .1;
+    el.board.style.width = Math.round(cols * TW + mz * ox + TW * .22) + 'px';
+    el.board.style.height = Math.round(rws * TH + mz * oy + TW * .3) + 'px';
+    ts.forEach(t => {
+      const s = t.el.style;
+      s.setProperty('--tw', TW + 'px'); s.width = TW + 'px'; s.height = TH + 'px';
+      s.left = Math.round((t.x - minX) * TW - t.z * ox + mz * ox) + 'px';
+      s.top = Math.round((t.y - minY) * TH - t.z * oy + mz * oy) + 'px';
+      s.zIndex = t.z * 1000 + Math.floor(t.y * 10) + Math.floor(t.x);
+    });
+    G.TW = TW; G.TH = TH;
+    if (!warned && el.stage.scrollWidth > el.stage.clientWidth + 4) { warned = true; setTimeout(() => toast('Tahtayı yana kaydırabilirsin'), 600); }
+  }
+
+  function refresh() {
+    const live = G.tiles.filter(t => !t.gone);
+    G.tiles.forEach(t => { if (!t.gone) t.el.classList.toggle('locked', prefs.dim && !freeIn(t, live)); });
+    el.sScore.textContent = G.score; el.sTime.textContent = fmt(G.time); el.sPairs.textContent = G.pairs; el.sCombo.textContent = 'x' + G.combo;
+    el.bUndo.disabled = !G.undo.length; el.bShuf.disabled = G.shuf <= 0 || G.over;
+    el.shufLeft.textContent = G.shuf + ' hak';
+  }
+
+  function toast(msg) {
+    const p = document.createElement('div');
+    const r = el.stage.getBoundingClientRect();
+    p.className = 'pop'; p.textContent = msg;
+    Object.assign(p.style, { position: 'fixed', left: '50%', top: (r.top + 14) + 'px', fontSize: '15px', color: 'var(--fg)', background: 'var(--panel)', border: '1px solid var(--line)', padding: '8px 14px', borderRadius: '99px', whiteSpace: 'nowrap' });
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1900);
+  }
+  function popAt(t, txt) {
+    const p = document.createElement('div');
+    p.className = 'pop'; p.textContent = txt;
+    p.style.left = (parseFloat(t.el.style.left) + G.TW / 2) + 'px'; p.style.top = parseFloat(t.el.style.top) + 'px';
+    el.board.appendChild(p); setTimeout(() => p.remove(), 950);
+  }
+  function clearHint() { clearTimeout(hintTimer); G && G.tiles.forEach(t => t.el && t.el.classList.remove('hint')); }
+  const mark = (t, on) => t.el.classList.toggle('sel', on);
+
+  function unlock(id) {
+    if (data.ach[id]) return;
+    data.ach[id] = Date.now(); store.set('ach', data.ach);
+    const a = ACH.find(x => x.id === id); if (a) setTimeout(() => toast('Başarım: ' + a.name), 500);
+  }
+  const saveStats = () => store.set('stats', data.stats);
+
+  function onTile(t) {
+    if (!G || G.over || t.gone) return;
+    if (!G.started) { G.started = true; data.stats.played++; saveStats(); }
+    clearHint();
+    const live = G.tiles.filter(x => !x.gone);
+    if (!freeIn(t, live)) { t.el.classList.remove('shake'); void t.el.offsetWidth; t.el.classList.add('shake'); sfx.bad(); return; }
+    if (!G.sel) { G.sel = t; mark(t, true); sfx.pick(); return; }
+    if (G.sel === t) { mark(t, false); G.sel = null; return; }
+    if (matchKey(G.sel.type) === matchKey(t.type)) { doMatch(G.sel, t); return; }
+    mark(G.sel, false); G.sel = t; mark(t, true); sfx.bad();
+  }
+
+  function doMatch(a, b) {
+    const now = Date.now(), prev = { combo: G.combo, last: G.last };
+    G.combo = (G.last && now - G.last < 4000) ? Math.min(5, G.combo + 1) : 1;
+    G.last = now; G.maxCombo = Math.max(G.maxCombo, G.combo);
+    if (G.combo === 5) unlock('seri');
+    const pts = 100 * G.combo;
+    G.score += pts; G.pairs--;
+    G.undo.push({ a, b, pts, prev });
+    [a, b].forEach(t => { t.gone = true; t.el.classList.remove('sel', 'locked'); t.el.classList.add('out'); });
+    popAt(b, '+' + pts + (G.combo > 1 ? '  x' + G.combo : ''));
+    G.sel = null; sfx.match(G.combo);
+    setTimeout(() => { [a, b].forEach(t => { if (t.gone) t.el.hidden = true; }); }, 280);
+    refresh(); save();
+    if (G.pairs === 0) { win(); return; }
+    if (!findMove(G.tiles)) setTimeout(noMoves, 450);
+  }
+
+  function undo() {
+    if (!G || !G.undo.length || G.over) return;
+    const u = G.undo.pop();
+    [u.a, u.b].forEach(t => { t.gone = false; t.el.hidden = false; t.el.classList.remove('out'); });
+    G.score = Math.max(0, G.score - u.pts); G.pairs++; G.combo = 1; G.last = 0; G.usedUndo = true;
+    if (G.sel) { mark(G.sel, false); G.sel = null; }
+    clearHint(); sfx.undo(); refresh(); save();
+  }
+  function hint() {
+    if (!G || G.over) return;
+    const m = findMove(G.tiles);
+    if (!m) { toast('Hamle kalmadı. Karıştırmayı dene.'); return; }
+    G.started = true; clearHint();
+    m.forEach(t => t.el.classList.add('hint'));
+    G.score = Math.max(0, G.score - 25); G.hints++; sfx.hint(); refresh(); save();
+    hintTimer = setTimeout(clearHint, 3500);
+  }
+  function shuffle() {
+    if (!G || G.over || G.shuf <= 0) return;
+    if (G.sel) { mark(G.sel, false); G.sel = null; }
+    if (!reshuffleBoard(G.tiles, Math.random)) { toast('Karıştırılamadı.'); return; }
+    G.tiles.forEach(t => { if (!t.gone) t.el.innerHTML = face(t.type); });
+    G.shuf--; G.combo = 1; G.last = 0; G.usedShuf = true; clearHint(); sfx.shuffle(); refresh(); save(); setLayer(null);
+  }
+
+  function noMoves() {
+    if (!G || G.over || G.pairs === 0) return;
+    el.endBox.innerHTML = `<h2>Hamle kalmadı</h2><p>Eşleşecek serbest çift yok. Taşları karıştırabilir ya da son hamleni geri alabilirsin.</p>` +
+      (G.shuf > 0 ? `<button class="btn" id="nmShuf">Karıştır (${G.shuf} hak)</button>` : '') +
+      `<button class="btn alt" id="nmUndo">Son hamleyi geri al</button><button class="btn alt" id="nmNew">Yeni oyun</button>`;
+    setLayer('end');
+    const s = $('nmShuf'); if (s) s.onclick = () => { setLayer(null); shuffle(); };
+    $('nmUndo').onclick = () => { setLayer(null); undo(); };
+    $('nmNew').onclick = () => { setLayer(null); restartSame(); };
+  }
+
+  function confetti() {
+    const cols = ['#e3bc4b', '#33c7c2', '#e2594a', '#4f69c0', '#f4eddb'];
+    let h = '';
+    for (let i = 0; i < 46; i++) h += `<i class="cf" style="left:${Math.random() * 100}%;background:${cols[i % 5]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 1.6).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`;
+    const c = document.createElement('div'); c.className = 'cfwrap'; c.innerHTML = h; el.end.appendChild(c); setTimeout(() => c.remove(), 4500);
+  }
+
+  function win() {
+    G.over = true; clearHint(); store.del('save');
+    const bonus = Math.max(0, Math.round(2000 - G.time * 3)), total = G.score + bonus;
+    const prevBest = G.label ? ((data.daily[G.seed] || {}).best || 0) : (data.best[G.layoutId] || 0);
+    const isBest = total > prevBest;
+    if (G.label) { data.daily[G.seed] = { best: Math.max(prevBest, total) }; store.set('daily', data.daily); }
+    else if (isBest) { data.best[G.layoutId] = total; store.set('best', data.best); }
+    const st = data.stats;
+    st.won++; st.top = Math.max(st.top, total); st.fastest = st.fastest ? Math.min(st.fastest, G.time) : G.time; st.layouts[G.layoutId] = true; saveStats();
+    unlock('ilk'); if (!G.hints) unlock('sade'); if (G.time < 300) unlock('hizli'); if (!G.usedUndo && !G.usedShuf) unlock('yalin');
+    if (G.label) unlock('gunluk'); if (st.won >= 10) unlock('sabir'); if (LAYOUTS.every(l => st.layouts[l.id])) unlock('gezgin');
+    sfx.win();
+    el.endBox.innerHTML = `<svg class="orn" viewBox="0 0 120 14"><path d="M4 7h42M74 7h42" stroke="#e3bc4b" stroke-width="1"/><polygon points="60,1 66,7 60,13 54,7" fill="#e3bc4b"/><circle cx="48" cy="7" r="2" fill="#33c7c2"/><circle cx="72" cy="7" r="2" fill="#33c7c2"/></svg>
+      <h2>Tahta temizlendi</h2><div class="big">${total}</div><p>${isBest ? 'Yeni en iyi skor' : 'En iyi skor: ' + prevBest}</p>
+      <div class="bk"><div><span>Eşleşme puanı</span><b>${G.score}</b></div><div><span>Süre bonusu (${fmt(G.time)})</span><b>+${bonus}</b></div><div><span>En yüksek seri</span><b>x${G.maxCombo}</b></div><div><span>İpucu kullanımı</span><b>${G.hints}</b></div></div>
+      <button class="btn" id="wNew">Yeni oyun</button><button class="btn alt" id="wHome">Ana sayfa</button>`;
+    setLayer('end'); confetti();
+    $('wNew').onclick = () => { setLayer(null); restartSame(); };
+    $('wHome').onclick = () => { setLayer('home'); if (CINI.onHome) CINI.onHome(); };
+  }
+
+  function restartSame() {
+    if (G.label) newGame(G.layoutId, Math.floor(Math.random() * 1e9));
+    else newGame(G.layoutId, null);
+  }
+
+  el.board.addEventListener('click', e => { const d = e.target.closest('.tile'); if (d && G) onTile(G.tiles[+d.dataset.id]); });
+  el.bHint.onclick = hint; el.bUndo.onclick = undo; el.bShuf.onclick = shuffle;
+  window.addEventListener('resize', layoutBoard);
+  if (window.ResizeObserver) new ResizeObserver(() => layoutBoard()).observe(el.stage);
+
+  document.body.insertAdjacentHTML('afterbegin', buildDefs());
+  applyPrefs();
+
+  return {
+    el, $, store, prefs, data, ACH, MONTHS, fmt, todaySeed, setLayer, layerOpen, setPref, applyPrefs, newGame, resume, hasSave, restartSame, toast,
+    sfx, face, get G() { return G; }, onHome: null
+  };
+})();
+/* ===== Çini: ana sayfa, sayfalar, ayarlar ===== */
+(function () {
+  const C = CINI, $ = C.$, D = C.data, P = C.prefs;
+  let pageFrom = 'home', pick = C.store.get('layout', window.innerWidth < 560 ? 'kule' : 'kubbe');
+  if (!LAYOUTS.some(l => l.id === pick)) pick = 'kule';
+
+  function previewSVG(L) {
+    const p = L.build();
+    const minX = Math.min(...p.map(t => t.x)), maxX = Math.max(...p.map(t => t.x)) + 1, minY = Math.min(...p.map(t => t.y)), maxY = Math.max(...p.map(t => t.y)) + 1;
+    const mz = Math.max(...p.map(t => t.z)), U = 10, h = 1.25;
+    const W = (maxX - minX + mz * .12) * U, H = ((maxY - minY) * h + mz * .15) * U;
+    const cols = ['#4f69c0', '#6c84d4', '#8da1e2', '#e3bc4b', '#33c7c2', '#e2594a', '#f4eddb'];
+    let s = `<svg viewBox="-2 -2 ${W + 4} ${H + 4}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">`;
+    p.slice().sort((a, b) => a.z - b.z).forEach(t => {
+      s += `<rect x="${((t.x - minX) - t.z * .12) * U}" y="${((t.y - minY) * h - t.z * .15) * U + mz * 1.5}" width="${U * .92}" height="${U * h * .92}" rx="1.4" fill="${cols[t.z % cols.length]}" stroke="#0b1431" stroke-width=".6"/>`;
+    });
+    return s + '</svg>';
+  }
+
+  function openPage(title, html, bind, from) {
+    pageFrom = from === undefined ? 'home' : from;
+    $('pTitle').textContent = title; $('pBody').innerHTML = html;
+    C.setLayer('page'); $('pBody').parentNode.scrollTop = 0;
+    if (bind) bind();
+  }
+  function closePage() { C.setLayer(pageFrom === 'home' ? 'home' : null); if (pageFrom === 'home') refreshHome(); }
+
+  /* --- düzen seçimi --- */
+  function pageLayouts(from) {
+    const draw = () => {
+      $('lays').innerHTML = LAYOUTS.map(L => `<button class="lay${L.id === pick ? ' on' : ''}" data-id="${L.id}">${previewSVG(L)}<b>${L.name}<i class="lv lv-${L.lv === 'Geniş' ? 'w' : L.lv === 'Zor' ? 'z' : L.lv === 'Orta' ? 'o' : 'k'}">${L.lv}</i></b><span>${L.desc}</span><em>${D.best[L.id] ? 'En iyi: ' + D.best[L.id] : 'Henüz kazanılmadı'}</em></button>`).join('');
+      $('lays').querySelectorAll('.lay').forEach(b => b.onclick = () => { pick = b.dataset.id; draw(); });
+    };
+    openPage('Düzen seç', `<p>Her tahta baştan sona çözülebilir olacak şekilde kurulur. Çıkıntılı katmanlar üst üste yükselir.</p><div class="lays" id="lays" style="margin-top:12px"></div><button class="btn" id="goPick">Bu düzenle başla</button>`, () => {
+      draw();
+      $('goPick').onclick = () => { C.newGame(pick, null); C.setLayer(null); };
+    }, from);
+  }
+
+  /* --- ayarlar --- */
+  const TABLES = [{ id: 'cobalt', n: 'Lacivert', bg: 'linear-gradient(135deg,#1b2f78,#0b1431)' }, { id: 'zumrut', n: 'Zümrüt', bg: 'linear-gradient(135deg,#14584a,#07201a)' }, { id: 'bordo', n: 'Bordo', bg: 'linear-gradient(135deg,#6a2347,#240c18)' }];
+  const TILES = [{ id: 'fildisi', n: 'Fildişi', bg: 'linear-gradient(135deg,#fffaf0,#e6dcbc)' }, { id: 'sedef', n: 'Sedef', bg: 'linear-gradient(135deg,#f7fbff,#d3deec)' }, { id: 'bal', n: 'Bal', bg: 'linear-gradient(135deg,#fff3d6,#ecd49a)' }];
+  function pageSettings(from) {
+    const draw = () => {
+      const sw = (arr, key, dark) => arr.map(x => `<button class="swb${P[key] === x.id ? ' on' : ''}" data-k="${key}" data-v="${x.id}" style="background:${x.bg};${dark ? '' : 'color:#3b3220'}">${x.n}</button>`).join('');
+      const tg = (k, label, sub) => `<div class="row"><span>${label}<small class="subl">${sub}</small></span><button class="tog${P[k] ? ' on' : ''}" data-t="${k}" aria-label="${label}"></button></div>`;
+      $('pBody').innerHTML = `<h3>Masa rengi</h3><div class="sw">${sw(TABLES, 'table', true)}</div><h3>Taş rengi</h3><div class="sw">${sw(TILES, 'tile', false)}</div><h3>Oyun</h3>` +
+        tg('sound', 'Ses efektleri', 'Seçme, eşleşme ve zafer sesleri') + tg('haptic', 'Titreşim', 'Destekleyen telefonlarda') + tg('dim', 'Kilitli taşları karart', 'Kapatırsan oyun zorlaşır') +
+        `<h3>Veriler</h3><button class="btn alt" id="resetAll" style="margin-top:0">Skorları ve başarımları sıfırla</button>`;
+      $('pBody').querySelectorAll('.swb').forEach(b => b.onclick = () => { C.setPref(b.dataset.k, b.dataset.v); draw(); });
+      $('pBody').querySelectorAll('.tog').forEach(b => b.onclick = () => { C.setPref(b.dataset.t, !P[b.dataset.t]); if (b.dataset.t === 'sound' && P.sound) C.sfx.pick(); draw(); });
+      const r = $('resetAll'); let armed = false;
+      r.onclick = () => {
+        if (!armed) { armed = true; r.textContent = 'Emin misin? Tekrar dokun'; return; }
+        ['best', 'stats', 'daily', 'ach'].forEach(k => C.store.del(k));
+        D.best = {}; D.daily = {}; D.ach = {}; D.stats = { played: 0, won: 0, fastest: 0, top: 0, layouts: {} };
+        Object.keys(D).forEach(k => { }); r.textContent = 'Sıfırlandı'; armed = false;
+        C.store.set('stats', D.stats);
+      };
+    };
+    openPage('Ayarlar', '', draw, from);
+  }
+
+  function pageHow(from) {
+    openPage('Nasıl oynanır', `<div class="how">
+      <p>Aynı iki taşa art arda dokun, ikisi de kalkar. Tahtayı boşaltırsan kazanırsın.</p>
+      <p>Bir taş, üstü açıksa ve sol ya da sağ yanlarından en az biri boşsa serbesttir. Kilitli taşlar koyu görünür.</p>
+      <p>Dört çiçeğin herhangi ikisi, dört mevsimin herhangi ikisi eşleşir. Geri kalan taşlar yalnızca kendi eşiyle eşleşir.</p>
+      <p>Her çift 100 puandır. Dört saniye içinde art arda eşleştirirsen seri çarpanı artar, en çok x5 olur.</p>
+      <p>Bitirdiğinde süre bonusu eklenir. İpucu 25 puana mal olur.</p>
+      <p>Hamle kalmazsa karıştırabilir ya da geri alabilirsin. Her oyunda üç karıştırma hakkın var.</p>
+      <p>Çarşı gibi geniş tahtalarda tahtayı parmağınla yana kaydırabilirsin.</p>
+      <p>Oyunun kendiliğinden kaydedilir. Ana sayfadan kaldığın yerden devam edebilirsin.</p></div>`, null, from);
+  }
+
+  function pageAch(from) {
+    const st = D.stats, rate = st.played ? Math.round(st.won / st.played * 100) : 0;
+    const got = C.ACH.filter(a => D.ach[a.id]).length;
+    openPage('Başarımlar', `<p>${got} / ${C.ACH.length} başarım açıldı.</p><div class="achs">` +
+      C.ACH.map(a => `<div class="ach${D.ach[a.id] ? ' on' : ''}"><svg viewBox="-11 -11 22 22"><use href="#rosA"/></svg><div><b>${a.name}</b><span>${a.desc}</span></div></div>`).join('') +
+      `</div><h3>İstatistikler</h3><div class="bk"><div><span>Başlanan oyun</span><b>${st.played}</b></div><div><span>Kazanılan</span><b>${st.won} (%${rate})</b></div><div><span>En yüksek skor</span><b>${st.top}</b></div><div><span>En hızlı bitiriş</span><b>${st.fastest ? C.fmt(st.fastest) : '-'}</b></div></div>`, null, from);
+  }
+
+  function pageGuide(from) {
+    let h = '<p>Takımda 42 çeşit, toplam 144 taş var. Hepsi İznik çinisi, Selçuklu ve Osmanlı süslemesinden esinlenen özgün çizimlerdir.</p>';
+    GUIDE.forEach(g => {
+      h += `<h3>${g.title}</h3><p>${g.blurb}</p><div class="gg" style="margin-top:10px">`;
+      g.types.forEach(t => { h += `<div class="gi"><div class="tile" style="--tw:56px;width:56px;height:75px">${C.face(t)}</div>${TYPE_NAME[t]}</div>`; });
+      h += '</div>';
+      if (g.notes) { h += '<div class="gnote">'; g.types.forEach((t, i) => { h += `<div><b>${TYPE_NAME[t]}</b><span>${g.notes[i]}</span></div>`; }); h += '</div>'; }
+    });
+    openPage('Taş rehberi', h, null, from);
+  }
+
+  /* --- ana sayfa --- */
+  function refreshHome() {
+    const G = C.G, can = G && !G.over && G.started;
+    $('hContinue').hidden = !can;
+    if (can) $('hContinueSub').textContent = $('subtitle').textContent + ' · ' + C.fmt(G.time) + ' · ' + G.pairs + ' çift kaldı';
+    const d = C.todaySeed(), rec = D.daily[d.seed];
+    $('hDailySub').textContent = d.label + (rec ? ' · en iyi ' + rec.best : ' · henüz oynanmadı');
+  }
+  C.onHome = refreshHome;
+
+  function buildFan() {
+    const f = $('fan'); f.innerHTML = '';
+    [['f0', -16, -62], ['d0', 0, 0], ['c1', 16, 62]].forEach(a => {
+      const d = document.createElement('div'); d.className = 'tile ft'; d.innerHTML = C.face(a[0]);
+      d.style.setProperty('--tw', '74px'); d.style.transform = `translateX(${a[2]}px) rotate(${a[1]}deg)`;
+      f.appendChild(d);
+    });
+  }
+
+  $('btnHome').onclick = () => { C.setLayer('home'); refreshHome(); };
+  $('bNew').onclick = () => pageLayouts(null);
+  $('hContinue').onclick = () => C.setLayer(null);
+  $('hNew').onclick = () => pageLayouts('home');
+  $('hDaily').onclick = () => { const d = C.todaySeed(); C.newGame(LAYOUTS[d.seed % LAYOUTS.length].id, d.seed, d.label); C.setLayer(null); };
+  $('hSurprise').onclick = () => { const L = LAYOUTS[Math.floor(Math.random() * LAYOUTS.length)]; C.newGame(L.id, null); C.setLayer(null); C.toast('Düzen: ' + L.name); };
+  $('hGuide').onclick = () => pageGuide('home'); $('hAch').onclick = () => pageAch('home');
+  $('hSet').onclick = () => pageSettings('home'); $('hHow').onclick = () => pageHow('home');
+  $('pClose').onclick = closePage;
+  C.el.page.addEventListener('click', e => { if (e.target === C.el.page) closePage(); });
+
+  /* --- açılış --- */
+  buildFan();
+  if (!C.resume()) C.newGame(pick, null);
+  C.setLayer('home'); refreshHome();
+})();
+</script>
+</body></html>
