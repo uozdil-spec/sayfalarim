@@ -145,6 +145,14 @@ h1{font-family:var(--display);font-size:30px;line-height:1;margin:0;letter-spaci
 .cfwrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:70}
 .cf{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+:root[data-perf="1"] .tile{box-shadow:calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2);transition:none}
+:root[data-perf="1"] .tile::before{display:none}
+:root[data-perf="1"] .tile.out{animation:none;opacity:0}
+:root[data-perf="1"] .tile.hint{animation:none;box-shadow:0 0 0 3px var(--tur)}
+:root[data-perf="1"] .tile.sel{box-shadow:0 0 0 3px var(--gold)}
+:root[data-perf="1"] #stage,:root[data-perf="1"] .layer.home{background-image:none}
+:root[data-perf="1"] .app{background:none}
+:root[data-perf="1"] .cfwrap{display:none}
 @media (max-width:360px){.hero{font-size:60px}}
 @media (max-width:360px){h1{font-size:26px}.stat span{font-size:16px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -545,14 +553,15 @@ var CINI = (function () {
     set(k, v) { try { localStorage.setItem('cini.' + k, JSON.stringify(v)); } catch (e) { } },
     del(k) { try { localStorage.removeItem('cini.' + k); } catch (e) { } }
   };
-  const prefs = { table: store.get('table', 'cobalt'), tile: store.get('tile', 'fildisi'), sound: store.get('sound', true), dim: store.get('dim', true), haptic: store.get('haptic', true) };
+  const prefs = { table: store.get('table', 'cobalt'), tile: store.get('tile', 'fildisi'), sound: store.get('sound', true), dim: store.get('dim', true), haptic: store.get('haptic', true),
+    perf: store.get('perf', !!((navigator.deviceMemory && navigator.deviceMemory <= 3) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4))) };
   const data = { best: store.get('best', {}), stats: store.get('stats', { played: 0, won: 0, fastest: 0, top: 0, layouts: {} }), daily: store.get('daily', {}), ach: store.get('ach', {}) };
   if (!data.stats.layouts) data.stats.layouts = {};
 
   function applyPrefs() {
     const r = document.documentElement;
-    r.dataset.table = prefs.table; r.dataset.tile = prefs.tile;
-    if (G) G.tiles.forEach(t => t.el.classList.remove('locked'));
+    r.dataset.table = prefs.table; r.dataset.tile = prefs.tile; r.dataset.perf = prefs.perf ? '1' : '0';
+    if (G) G.tiles.forEach(t => { t.el.classList.remove('locked'); t.lk = undefined; });
     if (G) refresh();
   }
   function setPref(k, v) { prefs[k] = v; store.set(k, v); applyPrefs(); }
@@ -644,6 +653,9 @@ var CINI = (function () {
   let warned = false;
   function layoutBoard() {
     if (!G) return;
+    const key = el.stage.clientWidth + 'x' + el.stage.clientHeight;
+    if (G.lastKey === key) return;
+    G.lastKey = key;
     const ts = G.tiles;
     const minX = Math.min(...ts.map(t => t.x)), maxX = Math.max(...ts.map(t => t.x)) + 1;
     const minY = Math.min(...ts.map(t => t.y)), maxY = Math.max(...ts.map(t => t.y)) + 1;
@@ -668,7 +680,7 @@ var CINI = (function () {
 
   function refresh() {
     const live = G.tiles.filter(t => !t.gone);
-    G.tiles.forEach(t => { if (!t.gone) t.el.classList.toggle('locked', prefs.dim && !freeIn(t, live)); });
+    G.tiles.forEach(t => { if (t.gone) return; const v = prefs.dim && !freeIn(t, live); if (t.lk !== v) { t.lk = v; t.el.classList.toggle('locked', v); } });
     el.sScore.textContent = G.score; el.sTime.textContent = fmt(G.time); el.sPairs.textContent = G.pairs; el.sCombo.textContent = 'x' + G.combo;
     el.bUndo.disabled = !G.undo.length; el.bShuf.disabled = G.shuf <= 0 || G.over;
     el.shufLeft.textContent = G.shuf + ' hak';
@@ -717,7 +729,7 @@ var CINI = (function () {
     const pts = 100 * G.combo;
     G.score += pts; G.pairs--;
     G.undo.push({ a, b, pts, prev });
-    [a, b].forEach(t => { t.gone = true; t.el.classList.remove('sel', 'locked'); t.el.classList.add('out'); });
+    [a, b].forEach(t => { t.gone = true; t.lk = undefined; t.el.classList.remove('sel', 'locked'); t.el.classList.add('out'); });
     popAt(b, '+' + pts + (G.combo > 1 ? '  x' + G.combo : ''));
     G.sel = null; sfx.match(G.combo);
     setTimeout(() => { [a, b].forEach(t => { if (t.gone) t.el.hidden = true; }); }, 280);
@@ -855,7 +867,7 @@ var CINI = (function () {
       const sw = (arr, key, dark) => arr.map(x => `<button class="swb${P[key] === x.id ? ' on' : ''}" data-k="${key}" data-v="${x.id}" style="background:${x.bg};${dark ? '' : 'color:#3b3220'}">${x.n}</button>`).join('');
       const tg = (k, label, sub) => `<div class="row"><span>${label}<small class="subl">${sub}</small></span><button class="tog${P[k] ? ' on' : ''}" data-t="${k}" aria-label="${label}"></button></div>`;
       $('pBody').innerHTML = `<h3>Masa rengi</h3><div class="sw">${sw(TABLES, 'table', true)}</div><h3>Taş rengi</h3><div class="sw">${sw(TILES, 'tile', false)}</div><h3>Oyun</h3>` +
-        tg('sound', 'Ses efektleri', 'Seçme, eşleşme ve zafer sesleri') + tg('haptic', 'Titreşim', 'Destekleyen telefonlarda') + tg('dim', 'Kilitli taşları karart', 'Kapatırsan oyun zorlaşır') +
+        tg('sound', 'Ses efektleri', 'Seçme, eşleşme ve zafer sesleri') + tg('haptic', 'Titreşim', 'Destekleyen telefonlarda') + tg('dim', 'Kilitli taşları karart', 'Kapatırsan oyun zorlaşır') + tg('perf', 'Hafif mod', 'Eski telefonlarda gölge ve animasyonları azaltır') +
         `<h3>Veriler</h3><button class="btn alt" id="resetAll" style="margin-top:0">Skorları ve başarımları sıfırla</button>`;
       $('pBody').querySelectorAll('.swb').forEach(b => b.onclick = () => { C.setPref(b.dataset.k, b.dataset.v); draw(); });
       $('pBody').querySelectorAll('.tog').forEach(b => b.onclick = () => { C.setPref(b.dataset.t, !P[b.dataset.t]); if (b.dataset.t === 'sound' && P.sound) C.sfx.pick(); draw(); });
