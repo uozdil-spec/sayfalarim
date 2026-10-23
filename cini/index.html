@@ -45,7 +45,8 @@ h1{font-family:var(--display);font-size:30px;line-height:1;margin:0;letter-spaci
   background:
    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cpath d='M28 5l5 14 14 5-14 5-5 14-5-14-14-5 14-5z' fill='none' stroke='%23ffffff' stroke-opacity='.06'/%3E%3Ccircle cx='0' cy='0' r='3' fill='none' stroke='%23ffffff' stroke-opacity='.05'/%3E%3Ccircle cx='56' cy='56' r='3' fill='none' stroke='%23ffffff' stroke-opacity='.05'/%3E%3C/svg%3E"),
    radial-gradient(90% 80% at 50% 45%,var(--bg2),var(--bg))}
-#board{position:relative;margin:auto;flex:none}
+#stage{isolation:isolate;z-index:0}
+#board{position:relative;margin:auto;flex:none;isolation:isolate;z-index:0}
 .tile{position:absolute;border-radius:calc(var(--tw)*.14);cursor:pointer;
   background:linear-gradient(155deg,#fffaf0 0%,var(--ivory) 45%,var(--ivory2) 100%);
   box-shadow:calc(var(--tw)*.06) calc(var(--tw)*.08) 0 var(--side1),calc(var(--tw)*.1) calc(var(--tw)*.15) 0 var(--side2),calc(var(--tw)*.14) calc(var(--tw)*.22) calc(var(--tw)*.2) rgba(0,0,0,.5);
