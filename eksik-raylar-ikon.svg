@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a4a40"/><stop offset="1" stop-color="#081714"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1d894"/><stop offset=".5" stop-color="#c9a45c"/><stop offset="1" stop-color="#8d6f35"/></linearGradient>
+<clipPath id="win"><rect x="48" y="48" width="416" height="416" rx="70"/></clipPath>
+<path id="t" d="M20 196 H196 A116 116 0 0 1 312 312 V500" fill="none"/>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<rect x="22" y="22" width="468" height="468" rx="92" fill="none" stroke="url(#gold)" stroke-width="7"/>
+<rect x="36" y="36" width="440" height="440" rx="80" fill="none" stroke="#8d6f35" stroke-width="2.5"/>
+<g clip-path="url(#win)">
+<rect x="48" y="48" width="416" height="416" fill="#0f2924"/>
+<use href="#t" stroke="#566660" stroke-width="150"/>
+<use href="#t" stroke="#a9794a" stroke-width="116" stroke-dasharray="13 21"/>
+<path d="M20 170 H196 A142 142 0 0 1 338 312 V500" fill="none" stroke="#e9eef0" stroke-width="15"/>
+<path d="M20 222 H196 A90 90 0 0 1 286 312 V500" fill="none" stroke="#e9eef0" stroke-width="15"/>
+<path d="M20 165 H196 A147 147 0 0 1 343 312 V500" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="3"/>
+<path d="M20 217 H196 A95 95 0 0 1 291 312 V500" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="3"/>
+</g>
+<path d="M256 64 L272 80 L256 96 L240 80Z" fill="url(#gold)"/>
+</svg>
