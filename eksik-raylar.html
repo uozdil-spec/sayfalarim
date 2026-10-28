@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eksik Raylar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@600;800&family=DM+Mono:wght@500&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Layout: tek ekran. Üstte pirinç çerçeveli istasyon levhası, ortada altın çerçeveli tahta, altında araçlar. Koyu zümrüt zemin, pirinç vurgu. */
+:root{
+  --bg:#0c1715; --fg:#efe6d1; --muted:#9fada4; --gold:#c9a45c; --goldHi:#e8cc8c; --goldLo:#8d6f35;
+  --board:#13231f; --grid:#27403a; --speck:rgba(232,215,170,.11);
+  --ballast:#566660; --tie:#a9794a; --rail:#dbe1e3; --rail2:#ffffff; --hintTile:#3d3419; --hintBallast:#7b6a39;
+  --ok:#74d39e; --bad:#ff7d70; --accentFg:#1a1405; --chip:#162b26; --line:#2f4c43;
+  --sign:#0f2a26; --signFg:#f3ead3; --dep:#070d0c;
+  --disp:"Bodoni Moda",Georgia,"Times New Roman",serif; --body:"DM Sans",system-ui,sans-serif; --mono:"DM Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f2ecdc; --fg:#14302a; --muted:#5a6a61; --gold:#8f6a1f; --goldHi:#b58a2c; --goldLo:#6f5116;
+  --board:#e4ddc7; --grid:#c6bda1; --speck:rgba(60,50,20,.16);
+  --ballast:#a39f8c; --tie:#7a5636; --rail:#34424a; --rail2:#a3b3bc; --hintTile:#f0dfae; --hintBallast:#cbb06a;
+  --ok:#1f7a45; --bad:#b3261e; --accentFg:#fffaf0; --chip:#e8e1cc; --line:#cfc6a8;
+  --sign:#14302a; --signFg:#f3ead3; --dep:#14302a; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#f2ecdc; --fg:#14302a; --muted:#5a6a61; --gold:#8f6a1f; --goldHi:#b58a2c; --goldLo:#6f5116;
+  --board:#e4ddc7; --grid:#c6bda1; --speck:rgba(60,50,20,.16);
+  --ballast:#a39f8c; --tie:#7a5636; --rail:#34424a; --rail2:#a3b3bc; --hintTile:#f0dfae; --hintBallast:#cbb06a;
+  --ok:#1f7a45; --bad:#b3261e; --accentFg:#fffaf0; --chip:#e8e1cc; --line:#cfc6a8;
+  --sign:#14302a; --signFg:#f3ead3; --dep:#14302a; color-scheme:light}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-block:18px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.plate{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--sign);color:var(--signFg);
+  border-radius:6px;padding:16px 20px;box-shadow:inset 0 0 0 1px var(--gold),inset 0 0 0 5px var(--sign),inset 0 0 0 6px var(--gold)}
+.plate div{display:flex;flex-direction:column;gap:2px}
+h1{font-family:var(--disp);font-weight:800;font-size:26px;line-height:1.05;margin:0;letter-spacing:.14em;text-transform:uppercase;color:var(--goldHi)}
+.tag{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--signFg);opacity:.75}
+.line{font-family:var(--mono);font-size:15px;color:var(--goldHi);border:1px solid var(--gold);border-radius:3px;padding:3px 9px;white-space:nowrap}
+.sub{margin:0;color:var(--muted);max-width:46ch}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:500;min-height:36px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--accentFg);border-color:var(--gold);font-weight:700}
+.dep{display:flex;gap:16px;background:var(--dep);border:1px solid var(--goldLo);border-radius:4px;padding:6px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:#9fada4;font-variant-numeric:tabular-nums}
+.dep b{color:#f0c96e;font-weight:500;margin-left:6px;font-size:14px;letter-spacing:.04em}
+#wrap{width:100%}
+canvas{display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+#msg{min-height:26px;font-family:var(--disp);font-weight:600;font-size:17px;color:var(--goldHi)}
+.tool{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--gold);border-radius:8px;padding:3px;gap:3px}
+.tool button{display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:6px;background:transparent;padding:10px;min-height:46px;font-weight:700;color:var(--muted)}
+.tool button[aria-pressed="true"]{background:var(--gold);color:var(--accentFg)}
+.tool svg{width:22px;height:22px;flex:none}
+.bar{display:grid;grid-template-columns:1fr 1.15fr 1fr 1fr;gap:8px}
+.btn{background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:10px 6px;font-weight:500;min-height:46px;font-size:14px}
+.btn.hint{border-color:var(--gold);color:var(--goldHi);font-weight:700}
+.btn.hint[disabled]{opacity:.4;cursor:default}
+.btn.primary{background:linear-gradient(180deg,var(--goldHi),var(--gold));color:var(--accentFg);border-color:transparent;font-weight:700}
+:focus-visible{outline:2px solid var(--goldHi);outline-offset:2px}
+details{color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:500;color:var(--fg)}
+details ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+footer{display:flex;align-items:center;gap:14px;margin-top:8px;font-family:var(--disp);font-size:15px;font-style:italic;color:var(--goldHi);letter-spacing:.12em}
+footer::before,footer::after{content:"";flex:1;height:7px;border-block:1px solid var(--goldLo);
+  background:repeating-linear-gradient(90deg,var(--goldLo) 0 2px,transparent 2px 9px)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+
+<main>
+  <header>
+    <div class="plate"><div><h1>Eksik Raylar</h1><span class="tag">Hat bulmacası</span></div><span class="line" id="line">6×6</span></div>
+  </header>
+  <p class="sub">Giriş istasyonundan çıkışa giden hattın eksik raylarını döşeyin, ray olmayacak kareleri X ile işaretleyin.</p>
+
+  <div class="row">
+    <div class="chips" role="group" aria-label="Boyut">
+      <button class="chip" data-n="5" aria-pressed="false">5×5</button>
+      <button class="chip" data-n="6" aria-pressed="true">6×6</button>
+      <button class="chip" data-n="7" aria-pressed="false">7×7</button>
+      <button class="chip" data-n="8" aria-pressed="false">8×8</button>
+    </div>
+    <div class="dep"><span>SÜRE<b id="time">0:00</b></span><span>REKOR<b id="best">–</b></span></div>
+  </div>
+
+  <div id="wrap"><canvas id="board" aria-label="Ray bulmaca tahtası"></canvas></div>
+  <div id="msg" role="status" aria-live="polite"></div>
+
+  <div class="tool" role="group" aria-label="Araç">
+    <button id="mRail" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v18M16 3v18"/><path d="M5 7h14M5 12h14M5 17h14" stroke-width="1.5"/></svg>Ray döşe</button>
+    <button id="mX" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>X işaretle</button>
+  </div>
+  <div class="bar">
+    <button class="btn" id="undo">Geri al</button>
+    <button class="btn hint" id="hint">İpucu · <span id="hl">3</span></button>
+    <button class="btn" id="reset">Sıfırla</button>
+    <button class="btn primary" id="new">Yeni</button>
+  </div>
+
+  <details>
+    <summary>Nasıl oynanır?</summary>
+    <ul>
+      <li>Hat soldaki girişten başlar, alttaki çıkıştan biter ve hiçbir kareden iki kez geçmez.</li>
+      <li>Sağdaki sayılar o satırda, üstteki sayılar o sütunda hattın kaç kareden geçtiğini söyler.</li>
+      <li>Altın fayanslı kareler hazır döşenmiştir ve olduğu gibi kalır.</li>
+      <li>Ray döşe: girişten başlayarak parmağınızı sürükleyin. Bir kareye dokunmak hattı oraya kadar geri alır.</li>
+      <li>X işaretle: ray olamayacağını düşündüğünüz karelere dokunun ya da sürükleyin.</li>
+      <li>İpucu sınırlıdır. Hattınız doğru başlamışsa sonraki iki rayı döşer, yanlış bir yere sapmışsa hatayı geri alıp doğru devamı gösterir. Her ipucu süreye 20 saniye ekler. Sıfırla süreyi ve ipucu hakkını yenilemez.</li>
+    </ul>
+  </details>
+
+  <footer><span>by uozdil</span></footer>
+</main>
+
+<script>
+
+const DR = [-1, 0, 1, 0], DC = [0, 1, 0, -1]; // 0=N 1=E 2=S 3=W
+const bit = d => 1 << d;
+const rnd = n => Math.floor(Math.random() * n);
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function genPath(N) {
+  const minLen = Math.floor(N * N * 0.5);
+  for (let attempt = 0; attempt < 400; attempt++) {
+    const sr = rnd(N), ec = rnd(N);
+    const seen = new Array(N * N).fill(false);
+    const path = [];
+    let nodes = 0;
+    const dfs = (r, c) => {
+      if (++nodes > 6000) return false;
+      seen[r * N + c] = true; path.push(r * N + c);
+      if (r === N - 1 && c === ec) {
+        if (path.length >= minLen) return true;
+        seen[r * N + c] = false; path.pop(); return false;
+      }
+      for (const d of shuffle([0, 1, 2, 3])) {
+        const nr = r + DR[d], nc = c + DC[d];
+        if (nr < 0 || nc < 0 || nr >= N || nc >= N || seen[nr * N + nc]) continue;
+        if (dfs(nr, nc)) return true;
+      }
+      seen[r * N + c] = false; path.pop(); return false;
+    };
+    if (dfs(sr, 0)) return { path, sr, ec };
+  }
+  return null;
+}
+
+function masksOf(path, N) {
+  const m = [];
+  for (let i = 0; i < path.length; i++) {
+    const r = Math.floor(path[i] / N), c = path[i] % N;
+    let din = 3, dout = 2;
+    if (i > 0) { const pr = Math.floor(path[i - 1] / N), pc = path[i - 1] % N; for (let d = 0; d < 4; d++) if (r + DR[d] === pr && c + DC[d] === pc) din = d; }
+    if (i < path.length - 1) { const nr = Math.floor(path[i + 1] / N), nc = path[i + 1] % N; for (let d = 0; d < 4; d++) if (r + DR[d] === nr && c + DC[d] === nc) dout = d; }
+    m.push(bit(din) | bit(dout));
+  }
+  return m;
+}
+
+function countSolutions(N, sr, ec, rowC, colC, hints) {
+  const visited = new Array(N * N).fill(false);
+  const rowU = new Array(N).fill(0), colU = new Array(N).fill(0);
+  let sols = 0, nodes = 0, hv = 0;
+  const hsize = hints.size;
+  const go = (r, c, din) => {
+    if (sols >= 2 || nodes > 300000) return;
+    nodes++;
+    const i = r * N + c;
+    if (rowU[r] + 1 > rowC[r] || colU[c] + 1 > colC[c]) return;
+    visited[i] = true; rowU[r]++; colU[c]++;
+    const h = hints.get(i);
+    if (h !== undefined) hv++;
+    const isExit = r === N - 1 && c === ec;
+    for (let dout = 0; dout < 4; dout++) {
+      if (dout === din) continue;
+      if (isExit && dout !== 2) continue;
+      if (h !== undefined && h !== (bit(din) | bit(dout))) continue;
+      const nr = r + DR[dout], nc = c + DC[dout];
+      if (nr < 0 || nc < 0 || nr >= N || nc >= N) {
+        if (isExit && dout === 2) {
+          let ok = hv === hsize;
+          for (let k = 0; ok && k < N; k++) if (rowU[k] !== rowC[k] || colU[k] !== colC[k]) ok = false;
+          if (ok) sols++;
+        }
+        continue;
+      }
+      if (visited[nr * N + nc]) continue;
+      go(nr, nc, (dout + 2) % 4);
+    }
+    visited[i] = false; rowU[r]--; colU[c]--;
+    if (h !== undefined) hv--;
+  };
+  go(sr, 0, 3);
+  return nodes > 300000 ? -1 : sols;
+}
+
+function makePuzzle(N) {
+  for (let tries = 0; tries < 30; tries++) {
+    const g = genPath(N);
+    if (!g) continue;
+    const { path, sr, ec } = g;
+    const masks = masksOf(path, N);
+    const rowC = new Array(N).fill(0), colC = new Array(N).fill(0);
+    path.forEach(i => { rowC[Math.floor(i / N)]++; colC[i % N]++; });
+    const hints = new Map();
+    const order = shuffle(path.map((_, k) => k));
+    // always show a couple of corner pieces first
+    let ok = false;
+    for (let k = 0; k < order.length; k++) {
+      const idx = order[k];
+      hints.set(path[idx], masks[idx]);
+      if (hints.size < 2) continue;
+      const s = countSolutions(N, sr, ec, rowC, colC, hints);
+      if (s === 1) { ok = true; break; }
+      if (hints.size > Math.ceil(N * 1.6)) break;
+    }
+    if (ok) return { N, sr, ec, rowC, colC, hints, solution: path };
+  }
+  return null;
+}
+
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const cv = $('board'); let ctx = cv.getContext('2d');
+  const sc = document.createElement('canvas'); // sabit katman önbelleği
+  const HINTS = { 5: 2, 6: 3, 7: 3, 8: 4 }, PENALTY = 20;
+  let N = 6, P = null, path = [], marks = new Set(), hinted = new Set(), hist = [], mode = 'rail';
+  let won = false, t0 = 0, elapsed = 0, penalty = 0, hintsLeft = 0, tick = null, anim = 0, flashCell = -1, flashT = 0;
+  let cs = 0, ox = 0, oy = 0, W = 0, H = 0, dpr = 1;
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  const bestKey = n => 'eksik-raylar-best-' + n;
+  const getBest = n => { try { return +localStorage.getItem(bestKey(n)) || 0; } catch (e) { return 0; } };
+  const setBest = (n, v) => { try { localStorage.setItem(bestKey(n), String(v)); } catch (e) {} };
+
+  function layout() {
+    const w = Math.min($('wrap').clientWidth || 360, 560);
+    dpr = Math.min(window.devicePixelRatio || 1, 2); // eski telefonlarda bellek için sınır
+    cs = w / (N + 1.5); ox = cs * 0.6; oy = cs * 0.85; W = w; H = cs * (N + 1.45);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildStatic();
+  }
+
+  // ---- parça çizimi ----
+  const popc = m => (m & 1) + ((m >> 1) & 1) + ((m >> 2) & 1) + ((m >> 3) & 1);
+  function geom(mask) {
+    if (popc(mask) === 2) { if (mask === 5) return { k: 'v' }; if (mask === 10) return { k: 'h' }; return { k: 'c' }; }
+    const d = [0, 1, 2, 3].find(i => mask & bit(i));
+    return { k: d % 2 === 0 ? 'v' : 'h', half: d };
+  }
+  function clipHalf(half, x, y, s) {
+    ctx.beginPath();
+    if (half === 0) ctx.rect(x, y, s, s / 2);
+    if (half === 1) ctx.rect(x + s / 2, y, s / 2, s);
+    if (half === 2) ctx.rect(x, y + s / 2, s, s / 2);
+    if (half === 3) ctx.rect(x, y, s / 2, s);
+    ctx.clip();
+  }
+  function arcInfo(mask, x, y, s) {
+    const cx = x + (mask & bit(1) ? s : 0), cy = y + (mask & bit(2) ? s : 0);
+    const ds = [0, 1, 2, 3].filter(d => mask & bit(d));
+    const mid = d => [[x + s / 2, y], [x + s, y + s / 2], [x + s / 2, y + s], [x, y + s / 2]][d];
+    const a = mid(ds[0]), b = mid(ds[1]);
+    const a1 = Math.atan2(a[1] - cy, a[0] - cx), a2 = Math.atan2(b[1] - cy, b[0] - cx);
+    let diff = a2 - a1; while (diff > Math.PI) diff -= 2 * Math.PI; while (diff <= -Math.PI) diff += 2 * Math.PI;
+    return { cx, cy, a1, diff };
+  }
+  function centerline(g, mask, x, y, s, off) {
+    ctx.beginPath();
+    if (g.k === 'v') { ctx.moveTo(x + s / 2 + off, y); ctx.lineTo(x + s / 2 + off, y + s); }
+    else if (g.k === 'h') { ctx.moveTo(x, y + s / 2 + off); ctx.lineTo(x + s, y + s / 2 + off); }
+    else { const a = arcInfo(mask, x, y, s); ctx.arc(a.cx, a.cy, s / 2 + off, a.a1, a.a1 + a.diff, a.diff < 0); }
+  }
+  function piece(mask, x, y, s, layer, col) {
+    const g = geom(mask);
+    ctx.save();
+    if (g.half !== undefined) clipHalf(g.half, x, y, s);
+    ctx.lineCap = 'butt';
+    if (layer === 0) {
+      centerline(g, mask, x, y, s, 0); ctx.strokeStyle = col.ballast; ctx.lineWidth = s * 0.7; ctx.stroke();
+    } else if (layer === 1) {
+      ctx.strokeStyle = col.tie; ctx.lineWidth = s * 0.08; ctx.lineCap = 'round';
+      ctx.beginPath();
+      if (g.k === 'c') {
+        const a = arcInfo(mask, x, y, s), r = s / 2;
+        [0.17, 0.5, 0.83].forEach(t => {
+          const ang = a.a1 + a.diff * t, c = Math.cos(ang), n = Math.sin(ang);
+          ctx.moveTo(a.cx + c * (r - s * 0.26), a.cy + n * (r - s * 0.26));
+          ctx.lineTo(a.cx + c * (r + s * 0.26), a.cy + n * (r + s * 0.26));
+        });
+      } else {
+        [0.125, 0.375, 0.625, 0.875].forEach(t => {
+          if (g.k === 'v') { ctx.moveTo(x + s * 0.24, y + s * t); ctx.lineTo(x + s * 0.76, y + s * t); }
+          else { ctx.moveTo(x + s * t, y + s * 0.24); ctx.lineTo(x + s * t, y + s * 0.76); }
+        });
+      }
+      ctx.stroke();
+    } else {
+      [-0.16, 0.16].forEach(o => {
+        centerline(g, mask, x, y, s, o * s); ctx.strokeStyle = col.rail; ctx.lineWidth = s * 0.065; ctx.stroke();
+        centerline(g, mask, x, y, s, o * s - s * 0.012); ctx.strokeStyle = col.rail2; ctx.lineWidth = s * 0.018; ctx.stroke();
+      });
+    }
+    ctx.restore();
+  }
+
+  // ---- oyuncunun hattı ----
+  const exitIdx = () => (P.N - 1) * P.N + P.ec;
+  const entryIdx = () => P.sr * P.N;
+  function playerMasks() {
+    const out = [];
+    for (let i = 0; i < path.length; i++) {
+      const r = Math.floor(path[i] / N), c = path[i] % N;
+      let m = 0;
+      if (i === 0) m |= bit(3);
+      else for (let d = 0; d < 4; d++) if ((r + DR[d]) * N + c + DC[d] === path[i - 1]) m |= bit(d);
+      if (i < path.length - 1) { for (let d = 0; d < 4; d++) if ((r + DR[d]) * N + c + DC[d] === path[i + 1]) m |= bit(d); }
+      else if (path[i] === exitIdx()) m |= bit(2);
+      out.push(m);
+    }
+    return out;
+  }
+  function counts() {
+    const rc = new Array(N).fill(0), cc = new Array(N).fill(0);
+    path.forEach(i => { rc[Math.floor(i / N)]++; cc[i % N]++; });
+    return { rc, cc };
+  }
+  function checkWin() {
+    if (!path.length || path[path.length - 1] !== exitIdx()) return false;
+    const { rc, cc } = counts();
+    for (let k = 0; k < N; k++) if (rc[k] !== P.rowC[k] || cc[k] !== P.colC[k]) return false;
+    const m = playerMasks();
+    for (const [i, hm] of P.hints) { const k = path.indexOf(i); if (k < 0 || m[k] !== hm) return false; }
+    return true;
+  }
+
+  // ---- çizim ----
+  function rr(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); }
+  const colors = () => ({ ballast: css('--ballast'), tie: css('--tie'), rail: css('--rail'), rail2: css('--rail2') });
+
+  // Sabit katman: çerçeve, tahta, çakıl, ızgara, hazır fayanslar, istasyon rayları. Bir kez çizilir, her karede kopyalanır.
+  function buildStatic() {
+    if (!P) return;
+    sc.width = cv.width; sc.height = cv.height;
+    const main = ctx; ctx = sc.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const col = colors(), gold = css('--gold'), goldLo = css('--goldLo');
+    const bx = ox, by = oy, bw = N * cs;
+    // gölge (blur yerine ucuz kaydırmalı dolgu)
+    ctx.fillStyle = 'rgba(0,0,0,.22)'; rr(bx - cs * 0.14, by - cs * 0.1, bw + cs * 0.28, bw + cs * 0.28, cs * 0.1); ctx.fill();
+    // çift pirinç çizgi
+    ctx.fillStyle = css('--board'); rr(bx - cs * 0.14, by - cs * 0.14, bw + cs * 0.28, bw + cs * 0.28, cs * 0.1); ctx.fill();
+    ctx.strokeStyle = gold; ctx.lineWidth = Math.max(1.5, cs * 0.035);
+    rr(bx - cs * 0.14, by - cs * 0.14, bw + cs * 0.28, bw + cs * 0.28, cs * 0.1); ctx.stroke();
+    ctx.strokeStyle = goldLo; ctx.lineWidth = 1;
+    rr(bx - cs * 0.07, by - cs * 0.07, bw + cs * 0.14, bw + cs * 0.14, cs * 0.06); ctx.stroke();
+    // köşe baklavaları
+    ctx.fillStyle = gold;
+    [[bx - cs * 0.14, by - cs * 0.14], [bx + bw + cs * 0.14, by - cs * 0.14], [bx - cs * 0.14, by + bw + cs * 0.14], [bx + bw + cs * 0.14, by + bw + cs * 0.14]].forEach(([x, y]) => {
+      const d = cs * 0.09; ctx.beginPath(); ctx.moveTo(x, y - d); ctx.lineTo(x + d, y); ctx.lineTo(x, y + d); ctx.lineTo(x - d, y); ctx.closePath(); ctx.fill();
+    });
+    // çakıl
+    ctx.fillStyle = css('--speck');
+    for (let i = 0; i < N * N; i++) {
+      if (P.hints.has(i)) continue;
+      const x = ox + (i % N) * cs, y = oy + Math.floor(i / N) * cs;
+      P.speck[i].forEach(s => { ctx.beginPath(); ctx.arc(x + s[0] * cs, y + s[1] * cs, cs * (0.012 + s[2] * 0.02), 0, 6.3); ctx.fill(); });
+    }
+    // ızgara
+    ctx.strokeStyle = css('--grid'); ctx.lineWidth = 1; ctx.beginPath();
+    for (let k = 0; k <= N; k++) { ctx.moveTo(ox + k * cs, oy); ctx.lineTo(ox + k * cs, oy + N * cs); ctx.moveTo(ox, oy + k * cs); ctx.lineTo(ox + N * cs, oy + k * cs); }
+    ctx.stroke();
+    // hazır fayanslar
+    const hintCol = { ballast: css('--hintBallast'), tie: col.tie, rail: col.rail, rail2: col.rail2 };
+    for (const [i] of P.hints) {
+      const x = ox + (i % N) * cs, y = oy + Math.floor(i / N) * cs;
+      ctx.fillStyle = css('--hintTile'); rr(x + 1.5, y + 1.5, cs - 3, cs - 3, cs * 0.08); ctx.fill();
+      ctx.strokeStyle = gold; ctx.lineWidth = 1; rr(x + 1.5, y + 1.5, cs - 3, cs - 3, cs * 0.08); ctx.stroke();
+    }
+    for (let l = 0; l < 3; l++) {
+      for (const [i, hm] of P.hints) piece(hm, ox + (i % N) * cs, oy + Math.floor(i / N) * cs, cs, l, hintCol);
+      piece(10, ox - cs, oy + P.sr * cs, cs, l, col); piece(5, ox + P.ec * cs, oy + N * cs, cs, l, col);
+    }
+    ctx.fillStyle = gold;
+    for (const [i] of P.hints) {
+      const x = ox + (i % N) * cs, y = oy + Math.floor(i / N) * cs;
+      [[0.12, 0.12], [0.88, 0.12], [0.12, 0.88], [0.88, 0.88]].forEach(([a, b]) => { ctx.beginPath(); ctx.arc(x + a * cs, y + b * cs, cs * 0.03, 0, 6.3); ctx.fill(); });
+    }
+    // giriş-çıkış okları
+    const ay = oy + P.sr * cs + cs / 2;
+    ctx.beginPath(); ctx.moveTo(3, ay - cs * 0.15); ctx.lineTo(cs * 0.24, ay); ctx.lineTo(3, ay + cs * 0.15); ctx.fill();
+    const ax = ox + P.ec * cs + cs / 2, byy = oy + N * cs + cs * 0.4;
+    ctx.beginPath(); ctx.moveTo(ax - cs * 0.15, byy - cs * 0.13); ctx.lineTo(ax + cs * 0.15, byy - cs * 0.13); ctx.lineTo(ax, byy + cs * 0.1); ctx.fill();
+    ctx = main;
+  }
+
+  function draw(train) {
+    if (!P) return;
+    const col = colors(), fg = css('--fg'), ok = css('--ok'), bad = css('--bad'), muted = css('--muted'), gold = css('--gold'), goldHi = css('--goldHi');
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(sc, 0, 0, W, H);
+    const m = playerMasks(), inPath = new Set(path), { rc, cc } = counts();
+
+    // tamamlanan satır ve sütunlardaki boş karelerin soluklaştırılması
+    ctx.fillStyle = css('--board'); ctx.globalAlpha = 0.6;
+    for (let i = 0; i < N * N; i++) {
+      const r = Math.floor(i / N), c = i % N;
+      if (inPath.has(i) || P.hints.has(i) || marks.has(i)) continue;
+      if (rc[r] === P.rowC[r] || cc[c] === P.colC[c]) ctx.fillRect(ox + c * cs + 1, oy + r * cs + 1, cs - 2, cs - 2);
+    }
+    ctx.globalAlpha = 1;
+
+    const pcol = won ? { ...col, rail: goldHi, rail2: '#fff6dc' } : col;
+    const mine = path.map((i, k) => ({ i, m: m[k] }));
+    for (let layer = 0; layer < 3; layer++) mine.forEach(p => piece(p.m, ox + (p.i % N) * cs, oy + Math.floor(p.i / N) * cs, cs, layer, pcol));
+
+    // ipucuyla gelen raylar: köşede küçük altın baklava
+    ctx.fillStyle = goldHi;
+    mine.forEach(p => {
+      if (!hinted.has(p.i)) return;
+      const x = ox + (p.i % N) * cs + cs * 0.86, y = oy + Math.floor(p.i / N) * cs + cs * 0.14, d = cs * 0.07;
+      ctx.beginPath(); ctx.moveTo(x, y - d); ctx.lineTo(x + d, y); ctx.lineTo(x, y + d); ctx.lineTo(x - d, y); ctx.closePath(); ctx.fill();
+    });
+    // X işaretleri
+    ctx.strokeStyle = muted; ctx.lineWidth = cs * 0.075; ctx.lineCap = 'round';
+    marks.forEach(i => {
+      const cx = ox + (i % N) * cs + cs / 2, cy = oy + Math.floor(i / N) * cs + cs / 2, a = cs * 0.2;
+      ctx.beginPath(); ctx.moveTo(cx - a, cy - a); ctx.lineTo(cx + a, cy + a); ctx.moveTo(cx + a, cy - a); ctx.lineTo(cx - a, cy + a); ctx.stroke();
+    });
+    // hatalı parça ve ipucu uyarısı
+    ctx.strokeStyle = bad; ctx.lineWidth = 3;
+    mine.forEach((p, k) => {
+      const hm = P.hints.get(p.i);
+      if (hm === undefined) return;
+      const open = k === mine.length - 1 && p.i !== exitIdx();
+      if (open ? (p.m & ~hm) !== 0 : p.m !== hm) { rr(ox + (p.i % N) * cs + 2, oy + Math.floor(p.i / N) * cs + 2, cs - 4, cs - 4, 6); ctx.stroke(); }
+    });
+    if (flashCell >= 0) { rr(ox + (flashCell % N) * cs + 2, oy + Math.floor(flashCell / N) * cs + 2, cs - 4, cs - 4, 6); ctx.stroke(); }
+
+    // sayılar
+    ctx.font = `500 ${Math.round(cs * 0.4)}px "DM Mono", monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const clue = (v, used, x, y) => { ctx.fillStyle = used === v ? ok : used > v ? bad : fg; ctx.fillText(String(v), x, y); };
+    for (let k = 0; k < N; k++) {
+      clue(P.colC[k], cc[k], ox + k * cs + cs / 2, oy - cs * 0.42);
+      clue(P.rowC[k], rc[k], ox + N * cs + cs * 0.5, oy + k * cs + cs / 2);
+    }
+    if (train !== undefined) drawTrain(train);
+  }
+
+  function drawTrain(t) {
+    const pts = [[ox - cs * 0.5, oy + P.sr * cs + cs / 2]];
+    path.forEach(i => pts.push([ox + (i % N) * cs + cs / 2, oy + Math.floor(i / N) * cs + cs / 2]));
+    pts.push([ox + P.ec * cs + cs / 2, oy + N * cs + cs * 0.5]);
+    const seg = []; let tot = 0;
+    for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); tot += l; }
+    const at = d => {
+      d = Math.max(0, Math.min(tot, d)); let i = 0;
+      while (i < seg.length - 1 && d > seg[i]) { d -= seg[i]; i++; }
+      const f = seg[i] ? d / seg[i] : 0;
+      return { x: pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f, y: pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f, a: Math.atan2(pts[i + 1][1] - pts[i][1], pts[i + 1][0] - pts[i][0]) };
+    };
+    const head = t * (tot + cs * 3);
+    const cols = [css('--goldHi'), '#2f5d50', '#2f5d50', '#2f5d50'];
+    for (let w = 0; w < 4; w++) {
+      const d = head - w * cs * 0.78; if (d < 0 || d > tot) continue;
+      const p = at(d);
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a);
+      ctx.fillStyle = cols[w]; rr(-cs * 0.34, -cs * 0.17, cs * 0.68, cs * 0.34, cs * 0.06); ctx.fill();
+      ctx.strokeStyle = css('--goldLo'); ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillRect(cs * 0.1, -cs * 0.09, cs * 0.14, cs * 0.18);
+      ctx.restore();
+    }
+  }
+  function playTrain() {
+    cancelAnimationFrame(anim);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(); return; }
+    const start = performance.now(), dur = 2600;
+    const step = now => {
+      const t = Math.min(1, (now - start) / dur);
+      draw(t);
+      if (t < 1) anim = requestAnimationFrame(step); else draw();
+    };
+    anim = requestAnimationFrame(step);
+  }
+
+  // ---- durum ----
+  const setMsg = t => { $('msg').textContent = t; };
+  const showTime = () => { $('time').textContent = fmt(elapsed + penalty); };
+  function startTimer() {
+    if (t0 || won) return;
+    t0 = Date.now() - elapsed * 1000;
+    tick = setInterval(() => { elapsed = (Date.now() - t0) / 1000; showTime(); }, 500);
+  }
+  function stopTimer() { clearInterval(tick); tick = null; t0 = 0; }
+  function showBest() { const b = getBest(N); $('best').textContent = b ? fmt(b) : '–'; $('line').textContent = N + '×' + N; }
+  function hintUI() { $('hl').textContent = hintsLeft; $('hint').disabled = hintsLeft <= 0 || won; }
+  function changed() {
+    if (!won && checkWin()) {
+      won = true; elapsed = (Date.now() - t0) / 1000; stopTimer(); showTime(); hintUI();
+      const total = elapsed + penalty, b = getBest(N);
+      let txt = 'Hat tamam. ' + fmt(total) + ' sürede bitirdiniz.';
+      if (!b || total < b) { setBest(N, Math.max(1, Math.round(total))); if (b) txt += ' Yeni rekor.'; }
+      setMsg(txt); showBest(); playTrain(); return;
+    }
+    draw();
+  }
+  function newPuzzle() {
+    cancelAnimationFrame(anim); stopTimer(); elapsed = 0; penalty = 0; won = false; path = []; marks = new Set(); hinted = new Set(); hist = []; flashCell = -1;
+    hintsLeft = HINTS[N]; showTime(); setMsg(''); hintUI();
+    P = makePuzzle(N);
+    P.speck = Array.from({ length: N * N }, () => Array.from({ length: 5 }, () => [Math.random(), Math.random(), Math.random()]));
+    layout(); draw(); showBest();
+  }
+  function resetPuzzle() { cancelAnimationFrame(anim); if (won) return; path = []; marks = new Set(); hinted = new Set(); hist = []; setMsg(''); draw(); }
+  const snap = () => ({ path: path.slice(), marks: [...marks] });
+
+  // ---- ipucu ----
+  function useHint() {
+    if (won || hintsLeft <= 0) return;
+    const sol = P.solution;
+    let k = 0; while (k < path.length && k < sol.length && path[k] === sol[k]) k++;
+    hist.push(snap());
+    let note = 'İpucu: sonraki raylar döşendi.';
+    if (k < path.length) {
+      flashCell = path[k]; clearTimeout(flashT); flashT = setTimeout(() => { flashCell = -1; draw(); }, 1100);
+      path.length = k; note = 'Kırmızı kareden sonrası yanlıştı, geri alındı ve doğru devamı döşendi.';
+    }
+    const add = Math.min(2, sol.length - k);
+    for (let j = 0; j < add; j++) { const cell = sol[k + j]; marks.delete(cell); path.push(cell); hinted.add(cell); }
+    hintsLeft--; penalty += PENALTY; startTimer(); showTime(); hintUI();
+    setMsg(note + ' +' + PENALTY + ' sn.');
+    changed();
+  }
+
+  // ---- girdi ----
+  let down = null, moved = false, lastCell = -1, startedOnDown = false, before = null, dirty = false, paint = true;
+  const cellAt = e => {
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) * (W / r.width), y = (e.clientY - r.top) * (H / r.height);
+    const c = Math.floor((x - ox) / cs), rw = Math.floor((y - oy) / cs);
+    return (c < 0 || rw < 0 || c >= N || rw >= N) ? -1 : rw * N + c;
+  };
+  const adj = (a, b) => { const ar = Math.floor(a / N), ac = a % N, br = Math.floor(b / N), bc = b % N; return Math.abs(ar - br) + Math.abs(ac - bc) === 1; };
+  function step(cell) {
+    if (won || cell < 0) return false;
+    if (!path.length) { if (cell === entryIdx() && !marks.has(cell)) { path.push(cell); startTimer(); return true; } return false; }
+    const head = path[path.length - 1];
+    if (cell === head || !adj(cell, head)) return false;
+    if (path.length > 1 && cell === path[path.length - 2]) { path.pop(); return true; }
+    if (path.includes(cell) || head === exitIdx() || marks.has(cell)) return false;
+    path.push(cell); startTimer(); return true;
+  }
+  function setMark(cell, val) {
+    if (won || cell < 0 || P.hints.has(cell) || path.includes(cell)) return false;
+    if (marks.has(cell) === val) return false;
+    if (val) marks.add(cell); else marks.delete(cell);
+    startTimer(); return true;
+  }
+  cv.addEventListener('pointerdown', e => {
+    e.preventDefault(); cv.setPointerCapture(e.pointerId);
+    down = cellAt(e); moved = false; lastCell = down; startedOnDown = false; before = snap(); dirty = false;
+    if (mode === 'x') { paint = !marks.has(down); if (setMark(down, paint)) { dirty = true; startedOnDown = true; changed(); } return; }
+    if (!path.length && down === entryIdx()) { startedOnDown = step(down); if (startedOnDown) { dirty = true; changed(); } }
+  });
+  cv.addEventListener('pointermove', e => {
+    if (down === null) return;
+    const c = cellAt(e);
+    if (c === lastCell || c < 0) return;
+    lastCell = c;
+    if (c !== down) moved = true;
+    if (mode === 'x') { if (setMark(c, paint)) { dirty = true; changed(); } return; }
+    if (moved && step(c)) { dirty = true; changed(); }
+  });
+  const end = e => {
+    if (down === null) return;
+    const c = cellAt(e);
+    if (mode === 'rail' && !moved && !startedOnDown && !won && c >= 0 && c === down) {
+      const head = path[path.length - 1];
+      if (path.length && c === head) { path.pop(); dirty = true; changed(); }
+      else if (path.includes(c)) { path.length = path.indexOf(c) + 1; dirty = true; changed(); }
+      else if (step(c)) { dirty = true; changed(); }
+    }
+    if (dirty && before) { hist.push(before); if (hist.length > 200) hist.shift(); }
+    down = null; before = null;
+  };
+  cv.addEventListener('pointerup', end);
+  cv.addEventListener('pointercancel', () => { down = null; before = null; });
+
+  function setMode(m) {
+    mode = m;
+    $('mRail').setAttribute('aria-pressed', String(m === 'rail'));
+    $('mX').setAttribute('aria-pressed', String(m === 'x'));
+  }
+  $('mRail').addEventListener('click', () => setMode('rail'));
+  $('mX').addEventListener('click', () => setMode('x'));
+  document.querySelectorAll('.chip').forEach(b => b.addEventListener('click', () => {
+    N = +b.dataset.n;
+    document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    newPuzzle();
+  }));
+  $('new').addEventListener('click', newPuzzle);
+  $('reset').addEventListener('click', resetPuzzle);
+  $('hint').addEventListener('click', useHint);
+  $('undo').addEventListener('click', () => {
+    if (won || !hist.length) return;
+    const s = hist.pop(); path = s.path; marks = new Set(s.marks); changed();
+  });
+  const retheme = () => { if (P) { buildStatic(); draw(); } };
+  window.addEventListener('resize', () => { if (P) { layout(); draw(); } });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
+  new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(retheme);
+
+  newPuzzle();
+})();
+</script>
+
+</body>
+</html>
