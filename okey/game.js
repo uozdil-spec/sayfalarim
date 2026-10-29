@@ -58,6 +58,7 @@ function build() {
       h('button', { class: 'btn iconbtn', id: 'bMenu', 'aria-label': t('menu'), onclick: G.openMenu }, OK.icon('menu')),
       h('div', { id: 'info', onclick: G.openScores })),
     h('div', { class: 'grp' },
+      OK.fsOK() ? h('button', { class: 'btn iconbtn', id: 'bFs', 'aria-label': t('fullscreen'), onclick: OK.fsToggle }, OK.icon(OK.isFs() ? 'shrink' : 'expand')) : null,
       h('button', { class: 'btn iconbtn', id: 'bSnd', onclick: function () { OK.S.sound = !OK.S.sound; OK.save(); renderSnd(); } }),
       h('button', { class: 'btn iconbtn', id: 'bChat', style: 'display:none', onclick: function () { OK.openChat(); } }, OK.icon('chat'), h('i', { class: 'dot', id: 'chatDot' }))));
   var felt = h('div', { id: 'felt' }, hud);
@@ -835,6 +836,7 @@ G.openMenu = function () {
   if (st.table) st.table.setPaused(true);
   var body = h('div', { class: 'menubtns', style: 'width:100%' },
     h('button', { class: 'btn gold', onclick: function () { m.close(); } }, t('continue')),
+    OK.fsOK() ? h('button', { class: 'btn', onclick: function () { m.close(); OK.fsToggle(); } }, OK.icon('expand'), t('fullscreen')) : null,
     h('button', { class: 'btn', onclick: function () { OK.openSettings(); } }, OK.icon('gear'), t('settings')),
     h('button', { class: 'btn', onclick: OK.openRules }, OK.icon('book'), t('rules')),
     h('button', { class: 'btn', onclick: function () { m.close(); G.confirmExit(); } }, OK.icon('back'), st.kind === 'off' ? t('toMenu') : t('leaveTable')));

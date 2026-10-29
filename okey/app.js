@@ -37,7 +37,7 @@ OK.lsGet = lsGet; OK.lsSet = lsSet; OK.lsDel = lsDel;
 /* ---------- ayarlar ---------- */
 var DEF = { lang: 'tr', theme: 'classic', tiles: 'ivory', size: 'l', sound: true, vol: 0.6, vib: true, anim: 'normal',
   lite: false, hints: true, mark: true, cb: false, startSort: 'sorted', wake: true, confirm: true, filter: true,
-  oled: true, name: '', av: '😀', level: 'medium', speed: 'normal' };
+  oled: true, autofs: true, name: '', av: '😀', level: 'medium', speed: 'normal' };
 var saved = lsGet('settings', null);
 OK.S = Object.assign({}, DEF, saved || {});
 if (!saved) {
@@ -121,6 +121,8 @@ var P = {
   chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
   chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+  expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
+  shrink: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',
   sound: '<path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>',
   mute: '<path d="M4 9v6h4l5 4V5L8 9zM17 9l5 6M22 9l-5 6"/>',
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
@@ -185,7 +187,25 @@ OK.confirm = function (msg, yes, no, onYes) {
 };
 
 /* ---------- ekranlar ---------- */
+/* ---------- Tam ekran (adres çubuğunu gizler) ---------- */
+var de = document.documentElement;
+OK.fsOK = function () { return !!(de.requestFullscreen || de.webkitRequestFullscreen); };
+OK.isFs = function () { return !!(document.fullscreenElement || document.webkitFullscreenElement); };
+OK.fs = function (on) {
+  try {
+    if (on && !OK.isFs()) { var r = (de.requestFullscreen || de.webkitRequestFullscreen).call(de, { navigationUI: 'hide' }); if (r && r.catch) r.catch(function () {}); }
+    else if (!on && OK.isFs()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  } catch (e) {}
+};
+OK.fsToggle = function () { OK.fsDeclined = OK.isFs(); OK.fs(!OK.isFs()); };
+function onFsChange() { OK.layout(); var b = $('#bFs'); if (b) { clear(b); b.appendChild(OK.icon(OK.isFs() ? 'shrink' : 'expand')); } }
+document.addEventListener('fullscreenchange', onFsChange); document.addEventListener('webkitfullscreenchange', onFsChange);
+document.addEventListener('pointerdown', function () {
+  if (OK.cur === 'game' && OK.S.autofs && !OK.fsDeclined && OK.fsOK() && !OK.isFs() && matchMedia('(pointer:coarse)').matches) OK.fs(true);
+}, true);
 OK.screen = function (name) {
+  if (name === 'game' && OK.cur !== 'game') { OK.fsDeclined = false; if (OK.S.autofs && OK.fsOK() && matchMedia('(pointer:coarse)').matches) OK.fs(true); }
+  if (name !== 'game' && OK.cur === 'game') OK.fs(false);
   ['menu', 'online', 'game'].forEach(function (n) { $('#' + n).classList.toggle('on', n === name); });
   OK.cur = name;
   OK.wake(name === 'game');
@@ -369,7 +389,7 @@ OK.HELP = [
   ['hg_online', ['hp1', 'hp2', 'hp4']],
   ['hg_friends', ['hg_fr1', 'hg_fr2', 'hg_fr3']],
   ['hg_chat', ['hg_chat1', 'hg_chat2']],
-  ['hg_settings', ['hg_set1', 'hg_set2', 'hg_set3', 'hg_set4']],
+  ['hg_settings', ['hg_set1', 'hg_set2', 'hg_set3', 'hg_set4', 'hg_set5']],
   ['hg_resume', ['hg_res1', 'hg_res2']]
 ];
 OK.openHelp = function (open) {
@@ -472,7 +492,8 @@ OK.openSettings = function () {
       seg('anim', [['off', t('off')], ['fast', t('fast')], ['normal', t('normal')]], t('s_anim')),
       sw('lite', t('s_lite'), t('s_lite_h'), function () { OK.renderMenu(); }),
       sw('wake', t('s_wake')),
-      sw('oled', t('s_oled'), t('s_oled_h'))));
+      sw('oled', t('s_oled'), t('s_oled_h')),
+      OK.fsOK() ? sw('autofs', t('s_autofs'), t('s_autofs_h')) : null));
     body.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('s_chat')), sw('filter', t('s_filter'), t('s_filter_h'))));
     if (body.parentNode) body.parentNode.scrollTop = top;
   }
