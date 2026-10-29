@@ -554,3 +554,18 @@ window.addEventListener('DOMContentLoaded', function () { if (OK.game && OK.onli
     if (Date.now() - last > limit) dim.classList.add('on');
   }, 5000);
 })();
+
+/* çift dokunuşla yakınlaştırmayı engelle (tarayıcı yakınlaştırması oyunu küçültüyordu) */
+(function () {
+  var lastEnd = 0;
+  document.addEventListener('touchend', function (e) {
+    var now = Date.now();
+    if (now - lastEnd < 350 && e.target.closest && e.target.closest('#game') && !e.target.closest('input, textarea, .btn')) e.preventDefault();
+    lastEnd = now;
+  }, { passive: false });
+  document.addEventListener('dblclick', function (e) { if (!(e.target.closest && e.target.closest('input, textarea'))) e.preventDefault(); }, true);
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (n) { document.addEventListener(n, function (e) { e.preventDefault(); }); });
+  document.addEventListener('touchmove', function (e) { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  var vp = document.querySelector('meta[name=viewport]');
+  if (vp) vp.setAttribute('content', 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no');
+})();
