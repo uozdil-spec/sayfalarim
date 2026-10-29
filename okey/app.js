@@ -278,6 +278,7 @@ OK.renderMenu = function () {
     h('button', { class: 'btn ' + (saved ? '' : 'gold'), onclick: OK.openSetup }, OK.icon('cpu'), t('vsComputer')),
     h('button', { class: 'btn', onclick: function () { OK.online.open(); } }, OK.icon('globe'), t('playOnline')),
     h('div', { class: 'row2' },
+      h('button', { class: 'btn sm', onclick: function () { OK.openHelp(); } }, OK.icon('bulb'), t('helpShort')),
       h('button', { class: 'btn sm', onclick: OK.openRules }, OK.icon('book'), t('rules')),
       h('button', { class: 'btn sm', onclick: OK.openStats }, OK.icon('chart'), t('stats')))
   );
@@ -357,6 +358,33 @@ OK.openSetup = function () {
     } }] });
 };
 
+
+/* ---------- Yardım kılavuzu ---------- */
+OK.HELP = [
+  ['hg_start', ['hg_start1', 'hg_start2']],
+  ['hg_turn', ['hg_turn1', 'hg_turn2', 'hg_turn3']],
+  ['hg_tiles', ['hg_tiles1', 'hg_tiles2', 'hg_tiles3']],
+  ['hg_btns', ['hg_btn_sort', 'hg_btn_hint', 'hg_btn_undo', 'hg_btn_fin']],
+  ['hg_win', ['hg_win1', 'hg_win2']],
+  ['hg_online', ['hp1', 'hp2', 'hp4']],
+  ['hg_friends', ['hg_fr1', 'hg_fr2', 'hg_fr3']],
+  ['hg_chat', ['hg_chat1', 'hg_chat2']],
+  ['hg_settings', ['hg_set1', 'hg_set2', 'hg_set3', 'hg_set4']],
+  ['hg_resume', ['hg_res1', 'hg_res2']]
+];
+OK.openHelp = function (open) {
+  var body = h('div', { class: 'guide' }, h('p', { class: 'gintro' }, t('hg_intro')));
+  OK.HELP.forEach(function (sec, n) {
+    var d = h('details', open ? (open === sec[0] ? { open: 'open' } : null) : (n === 0 ? { open: 'open' } : null));
+    d.appendChild(h('summary', null, t(sec[0])));
+    var ul = h('ol');
+    sec[1].forEach(function (k) { ul.appendChild(h('li', null, t(k))); });
+    d.appendChild(ul);
+    body.appendChild(d);
+  });
+  OK.modal({ title: t('helpBtn'), body: body, wide: true, buttons: [{ label: t('rules'), onclick: function () { setTimeout(OK.openRules, 30); } }, { label: t('ok'), cls: 'gold' }] });
+};
+
 /* ---------- Kurallar ---------- */
 OK.openRules = function () {
   var s = function (k) { return h('p', null, t(k)); };
@@ -370,7 +398,7 @@ OK.openRules = function () {
     h('h3', null, t('r_modes_h')), h('ul', null, h('li', null, t('r_m1')), h('li', null, t('r_m2')), h('li', null, t('r_m3')), h('li', null, t('r_m4'))),
     h('h3', null, t('r_partner_h')), s('r_partner'),
     h('h3', null, t('r_ctrl_h')), h('ul', null, h('li', null, t('r_c1')), h('li', null, t('r_c2')), h('li', null, t('r_c3')), h('li', null, t('r_c4'))));
-  OK.modal({ title: t('rules'), body: body, wide: true, buttons: [{ label: t('helpBtn'), onclick: function () { setTimeout(OK.online.help, 30); } }, { label: t('ok'), cls: 'gold' }] });
+  OK.modal({ title: t('rules'), body: body, wide: true, buttons: [{ label: t('helpBtn'), onclick: function () { setTimeout(OK.openHelp, 30); } }, { label: t('ok'), cls: 'gold' }] });
 };
 
 /* ---------- İstatistikler ---------- */

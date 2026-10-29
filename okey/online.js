@@ -314,14 +314,7 @@ function quickPlay() {
   var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
   makeRoom({ type: last.cfg.type, value: last.cfg.type === 'single' ? 0 : last.cfg.value, partner: !!last.cfg.partner }, true, last.turn, last.level);
 }
-O.help = function () {
-  var steps = [['1', 'hp1'], ['2', 'hp2'], ['3', 'hp3'], ['4', 'hp4'], ['5', 'hp5']];
-  var body = h('div', { class: 'rules' }, h('p', null, t('hpIntro')));
-  steps.forEach(function (s) { body.appendChild(h('div', { class: 'hstep' }, h('i', null, s[0]), h('span', null, t(s[1])))); });
-  body.appendChild(h('h3', null, t('hpTipsH')));
-  body.appendChild(h('ul', null, h('li', null, t('hpT1')), h('li', null, t('hpT2')), h('li', null, t('hpT3')), h('li', null, t('hpT4'))));
-  OK.modal({ title: t('helpBtn'), body: body, wide: true, buttons: [{ label: t('ok'), cls: 'gold' }] });
-};
+O.help = function () { OK.openHelp('hg_online'); };
 function makeRoom(cfg, pub, turn, level) {
   if (!net || net.status !== 'online') { OK.toast(t('connFail')); return; }
   var speed = { fast: 0.55, normal: 1, slow: 1.7 }[OK.S.speed] || 1;

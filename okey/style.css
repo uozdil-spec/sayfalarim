@@ -332,3 +332,10 @@ body.oled #hud, body.oled #rackbar, body.oled .menuwrap, body.oled .sig, body.ol
 .hstep { display: flex; gap: 12px; align-items: flex-start; margin: 10px 0; } .hstep i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(180deg, var(--gold1), var(--gold2)); color: var(--accent-ink); font-style: normal; font-weight: 800; display: grid; place-items: center; font-size: 13px; } .hstep span { font-size: 14px; line-height: 1.45; }
 
 .item.offl { opacity: .55; }
+
+.guide details { background: rgba(255,255,255,.06); border-radius: 12px; margin: 8px 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+.guide summary { padding: 13px 14px; font-weight: 700; font-size: 15px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+.guide summary::-webkit-details-marker { display: none; } .guide summary::after { content: "▾"; opacity: .6; } .guide details[open] summary::after { content: "▴"; }
+.guide ol { margin: 0; padding: 0 16px 12px 34px; font-size: 14px; line-height: 1.5; } .guide li { margin: 6px 0; }
+.guide .gintro { margin: 0 0 6px; opacity: .8; font-size: 14px; }
+.menubtns .row2 .btn { flex-direction: column; gap: 3px; min-height: 58px; font-size: 13px; padding: 0 4px; }
