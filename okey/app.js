@@ -242,8 +242,9 @@ OK.layout = function () {
   var hFor = function (r) { return maxRackH / (r * 1.32 + (r - 1) * 0.08 + 0.6); };
   tw = Math.min(tw, hFor(rows), 68);
   var f = { l: 1, m: 0.9, s: 0.8 }[OK.S.size] || 1;
-  tw = Math.max(18, Math.floor(tw * f));
-  var rackh = Math.ceil(rows * tw * 1.32 + (rows - 1) * tw * 0.08 + tw * 0.54 + 12 + (tb ? 46 : 0));
+  var fk = OK.fitKey === W + 'x' + H + (tb ? 't' : 's') ? OK.fitK : 1;
+  tw = Math.max(18, Math.floor(tw * f * fk));
+  var rackh = Math.ceil(rows * tw * 1.32 + (rows - 1) * tw * 0.08 + tw * 0.54 + 16 + (tb ? 46 : 0));
   root.style.setProperty('--tw', tw + 'px');
   root.style.setProperty('--rtw', tw + 'px');
   root.style.setProperty('--cols', cols);
@@ -264,6 +265,20 @@ OK.layout = function () {
   if (rt) rt.classList.toggle('on', showRot);
   if (showRot && !OK.rotTimer) OK.rotTimer = setTimeout(function () { OK.rotTimer = null; OK.rotHide = true; if (rt) rt.classList.remove('on'); }, 5000);
   if (OK.game && OK.game.onLayout) OK.game.onLayout();
+  if (OK.cur === 'game') requestAnimationFrame(function () { OK.fitCheck(W, H, tb); });
+};
+/* ekran dışına taşma kontrolü: gerekirse taşları biraz küçült */
+OK.fitCheck = function (W, H, tb) {
+  var rb = $('#rackbar'); if (!rb || OK.cur !== 'game') return;
+  var key = W + 'x' + H + (tb ? 't' : 's');
+  if (OK.fitKey !== key) { OK.fitKey = key; OK.fitK = 1; OK.fitN = 0; }
+  var cs = getComputedStyle(rb), avail = rb.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  var need = 0, kids = rb.children, n = 0, i;
+  for (i = 0; i < kids.length; i++) { if (kids[i].id === 'sortpop') continue; need += kids[i].getBoundingClientRect().width; n++; }
+  if (!tb) need += (n - 1) * 8; else need = Math.max(need, 0);
+  var rk = $('#rack').getBoundingClientRect().width;
+  if (tb) need = rk;
+  if (need > avail + 1 && OK.fitN < 4) { OK.fitN++; OK.fitK = OK.fitK * Math.max(.6, (avail / need) * .985); OK.layout(); }
 };
 window.addEventListener('resize', function () { OK.layout(); });
 window.addEventListener('orientationchange', function () { setTimeout(OK.layout, 120); });

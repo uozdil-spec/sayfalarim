@@ -148,7 +148,7 @@ input[type=range] { width: 130px; accent-color: var(--gold2); }
 #game { background: radial-gradient(ellipse at 50% 42%, var(--felt1) 0%, var(--felt2) 82%); }
 #game::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .09; background: repeating-linear-gradient(45deg, #000 0 1px, transparent 1px 4px), repeating-linear-gradient(-45deg, #000 0 1px, transparent 1px 4px); }
 #felt { position: absolute; left: 0; right: 0; top: 0; bottom: var(--rackh); }
-#hud { position: absolute; top: max(4px, env(safe-area-inset-top)); left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right)); display: flex; align-items: center; justify-content: space-between; gap: 8px; z-index: 20; pointer-events: none; }
+#hud { position: absolute; top: max(4px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); right: max(16px, env(safe-area-inset-right)); display: flex; align-items: center; justify-content: space-between; gap: 8px; z-index: 20; pointer-events: none; }
 #hud > * { pointer-events: auto; }
 #hud .grp { display: flex; gap: 6px; align-items: center; }
 #hud .iconbtn { width: 36px; height: 36px; min-height: 36px; background: rgba(0,0,0,.34); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
@@ -202,7 +202,7 @@ input[type=range] { width: 130px; accent-color: var(--gold2); }
 #mine .plate { padding-right: 12px; }
 
 /* ---- Istaka ---- */
-#rackbar { position: absolute; left: 0; right: 0; bottom: 0; height: var(--rackh); display: flex; align-items: flex-end; justify-content: center; gap: 8px; padding: 0 max(6px, env(safe-area-inset-left)) max(5px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-right)); z-index: 10; }
+#rackbar { position: absolute; left: 0; right: 0; bottom: 0; height: var(--rackh); display: flex; align-items: flex-end; justify-content: center; gap: 8px; padding: 0 max(16px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); z-index: 10; }
 .tools { display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: flex-end; width: 54px; flex: none; }
 .tools .btn { width: 100%; min-height: 40px; padding: 0 4px; font-size: 12px; flex-direction: column; gap: 1px; line-height: 1.1; }
 .tools .btn svg { width: 18px; height: 18px; }
@@ -339,3 +339,18 @@ body.oled #hud, body.oled #rackbar, body.oled .menuwrap, body.oled .sig, body.ol
 .guide ol { margin: 0; padding: 0 16px 12px 34px; font-size: 14px; line-height: 1.5; } .guide li { margin: 6px 0; }
 .guide .gintro { margin: 0 0 6px; opacity: .8; font-size: 14px; }
 .menubtns .row2 .btn { flex-direction: column; gap: 3px; min-height: 58px; font-size: 13px; padding: 0 4px; }
+
+/* ---- kalite cilası (statik, performansa etkisiz) ---- */
+.tile { background: radial-gradient(120% 70% at 28% 6%, rgba(255,255,255,.5), transparent 58%), linear-gradient(165deg, var(--tile-a), var(--tile-b)); }
+.tile .n { text-shadow: 0 1px 0 rgba(255,255,255,.55), 0 calc(var(--tw) * .02) calc(var(--tw) * .04) rgba(0,0,0,.15); }
+body[data-tiles="dark"] .tile .n { text-shadow: 0 1px 1px rgba(0,0,0,.5); }
+#rack { background-image: repeating-linear-gradient(92deg, rgba(0,0,0,.055) 0 2px, transparent 2px 9px), repeating-linear-gradient(88deg, rgba(255,230,190,.05) 0 1px, transparent 1px 13px), linear-gradient(180deg, var(--wood1), var(--wood2) 60%, var(--woodd)); }
+.slot { background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.14)); box-shadow: inset 0 2px 4px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.08); }
+#felt { background: radial-gradient(ellipse at 50% 38%, rgba(255,255,255,.07), transparent 62%); }
+.dp::before { border: 1.5px dashed rgba(255,255,255,.2); background: rgba(0,0,0,.1); box-shadow: inset 0 2px 6px rgba(0,0,0,.25); }
+.plate { background: linear-gradient(180deg, rgba(8,18,12,.62), rgba(0,0,0,.4)); }
+.tools .btn { background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05)); }
+body.lite .tile { background: linear-gradient(165deg, var(--tile-a), var(--tile-b)); }
+body.lite #rack { background-image: linear-gradient(180deg, var(--wood1), var(--wood2) 60%, var(--woodd)); }
+body.lite #felt { background: none; }
+@media (orientation: landscape) and (max-height: 560px) { #center { top: 55%; } }
