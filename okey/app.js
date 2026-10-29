@@ -37,7 +37,7 @@ OK.lsGet = lsGet; OK.lsSet = lsSet; OK.lsDel = lsDel;
 /* ---------- ayarlar ---------- */
 var DEF = { lang: 'tr', theme: 'classic', tiles: 'ivory', size: 'l', sound: true, vol: 0.6, vib: true, anim: 'normal',
   lite: false, hints: true, mark: true, cb: false, startSort: 'sorted', wake: true, confirm: true, filter: true,
-  name: '', av: '😀', level: 'medium', speed: 'normal' };
+  oled: true, name: '', av: '😀', level: 'medium', speed: 'normal' };
 var saved = lsGet('settings', null);
 OK.S = Object.assign({}, DEF, saved || {});
 if (!saved) {
@@ -62,6 +62,7 @@ OK.apply = function () {
   b.classList.toggle('lite', !!S.lite);
   b.classList.toggle('mark', !!S.mark);
   b.classList.toggle('cb', !!S.cb);
+  b.classList.toggle('oled', !!S.oled);
   root.lang = S.lang;
   var tc = { classic: '#0e3a21', night: '#09182f', burgundy: '#3a0b16' }[S.theme] || '#0e3a21';
   var m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', tc);
@@ -380,9 +381,19 @@ OK.openStats = function () {
   var body = h('div', null, h('div', { class: 'stats' },
     st(S.played, t('st_played')), st(S.won, t('st_won')), st(rate, t('st_rate')), st(S.streak, t('st_streak')), st(S.best, t('st_best')),
     st(S.handsWon + '/' + S.hands, t('st_hands')), st(S.okey, t('st_okey')), st(S.pairs, t('st_pairs')), st(S.elden, t('st_elden'))));
+  var hs = lsGet('hist', []);
+  if (hs.length) {
+    var hl = h('div', { class: 'hist' }, h('div', { class: 'lbl' }, t('histTitle')));
+    hs.slice(0, 10).forEach(function (x) {
+      var d = new Date(x.d), dd = ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+      var sc = x.c.partner ? x.s[x.me] + ' - ' + x.s[1 - x.me] : x.s.join(' · ');
+      hl.appendChild(h('div', { class: 'hrow ' + (x.w ? 'w' : 'l') }, h('span', null, dd), h('span', null, (x.on ? '🌐 ' : '') + OK.modeName(x.c.type, x.c.value)), h('b', null, sc), h('i', null, x.w ? t('hWin') : t('hLoss'))));
+    });
+    body.appendChild(hl);
+  }
   OK.modal({ title: t('stats'), body: body, buttons: [
     { label: t('reset'), onclick: function () {
-      OK.confirm(t('resetAsk'), t('reset'), t('cancel'), function () { OK.stats = { played: 0, won: 0, streak: 0, best: 0, hands: 0, handsWon: 0, okey: 0, pairs: 0, elden: 0 }; OK.saveStats(); });
+      OK.confirm(t('resetAsk'), t('reset'), t('cancel'), function () { OK.stats = { played: 0, won: 0, streak: 0, best: 0, hands: 0, handsWon: 0, okey: 0, pairs: 0, elden: 0 }; OK.saveStats(); lsSet('hist', []); });
     } }, { label: t('ok'), cls: 'gold' }] });
 };
 
@@ -432,7 +443,8 @@ OK.openSettings = function () {
       sw('vib', t('s_vib')),
       seg('anim', [['off', t('off')], ['fast', t('fast')], ['normal', t('normal')]], t('s_anim')),
       sw('lite', t('s_lite'), t('s_lite_h'), function () { OK.renderMenu(); }),
-      sw('wake', t('s_wake'))));
+      sw('wake', t('s_wake')),
+      sw('oled', t('s_oled'), t('s_oled_h'))));
     body.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('s_chat')), sw('filter', t('s_filter'), t('s_filter_h'))));
     if (body.parentNode) body.parentNode.scrollTop = top;
   }
@@ -459,4 +471,22 @@ OK.init = function () {
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js').catch(function () {});
 };
 window.addEventListener('DOMContentLoaded', function () { if (OK.game && OK.online) OK.init(); });
+})();
+
+/* ---------- OLED koruma: yavaş piksel kaydırma + boşta karartma ---------- */
+(function () {
+  var pos = [[0, 0], [3, 1], [0, 3], [-3, 1], [-3, -2], [0, -3], [3, -2], [1, 0]], pi = 0, last = Date.now(), dim = null;
+  setInterval(function () {
+    pi = (pi + 1) % pos.length;
+    document.body.style.setProperty('--ox', pos[pi][0] + 'px');
+    document.body.style.setProperty('--oy', pos[pi][1] + 'px');
+  }, 40000);
+  function wake() { last = Date.now(); if (dim) dim.classList.remove('on'); }
+  ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function (e) { document.addEventListener(e, wake, true); });
+  setInterval(function () {
+    if (!OK.S.oled) { if (dim) dim.classList.remove('on'); return; }
+    if (!dim) { dim = document.createElement('div'); dim.id = 'dimmer'; document.body.appendChild(dim); }
+    var limit = OK.cur === 'game' ? 150000 : 45000;
+    if (Date.now() - last > limit) dim.classList.add('on');
+  }, 5000);
 })();

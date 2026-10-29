@@ -732,6 +732,11 @@ function updateStats(view) {
     S.played++;
     if (view.matchWinner === E.sideOf({ cfg: view.cfg }, st.me)) { S.won++; S.streak++; if (S.streak > S.best) S.best = S.streak; }
     else S.streak = 0;
+    try {
+      var hs = OK.lsGet('hist', []);
+      hs.unshift({ d: Date.now(), c: view.cfg, w: view.matchWinner === E.sideOf({ cfg: view.cfg }, st.me), s: view.scores.slice(), me: E.sideOf({ cfg: view.cfg }, st.me), on: st.kind !== 'off' });
+      OK.lsSet('hist', hs.slice(0, 30));
+    } catch (e) {}
   }
   OK.saveStats();
 }
@@ -916,6 +921,8 @@ G.attachOnline = function (ctrl, kind, seat, cfg) {
   OK.closeModals();
   OK.screen('game');
 };
-window.addEventListener('pagehide', function () { if (st.kind === 'off' && st.table) { clearTimeout(saveT); if (st.table.m.status !== 'matchEnd') OK.lsSet('save', { cfg: st.cfg, level: st.level, m: st.table.m, seats: st.table.seats, slots: st.slots, t: Date.now() }); } });
+function flushSave() { if (st.kind === 'off' && st.table) { clearTimeout(saveT); if (st.table.m.status !== 'matchEnd') OK.lsSet('save', { cfg: st.cfg, level: st.level, m: st.table.m, seats: st.table.seats, slots: st.slots, t: Date.now() }); } }
+window.addEventListener('pagehide', flushSave);
+document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flushSave(); });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && OK.cur === 'game') G.openMenu(); });
 })();

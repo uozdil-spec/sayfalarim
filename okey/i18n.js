@@ -1,6 +1,6 @@
 /* Okey — metinler: anahtar: [Türkçe, English]. {0} {1} yer tutucudur. */
 window.I18N = {
-close:['Kapat','Close'],rotateHint:['Daha geniş görünüm için telefonu yatay çevir','Rotate your phone for a wider view'],cancel:['Vazgeç','Cancel'],ok:['Tamam','OK'],yes:['Evet','Yes'],no:['Hayır','No'],back:['Geri','Back'],
+close:['Kapat','Close'],s_oled:['OLED ekran koruması','OLED screen protection'],s_oled_h:['Sabit öğeleri yavaşça kaydırır, boşta kalınca ekranı karartır (yanık ekranı önler). Dokununca geri gelir.','Slowly shifts fixed items and dims the screen when idle (prevents burn-in). Touch to restore.'],histTitle:['Son oyunlar','Recent games'],hWin:['Kazandın','Won'],hLoss:['Kaybettin','Lost'],rotateHint:['Daha geniş görünüm için telefonu yatay çevir','Rotate your phone for a wider view'],cancel:['Vazgeç','Cancel'],ok:['Tamam','OK'],yes:['Evet','Yes'],no:['Hayır','No'],back:['Geri','Back'],
 you:['Sen','You'],player:['Oyuncu','Player'],computer:['Bilgisayar','Computer'],human:['Oyuncu','Player'],host:['Kurucu','Host'],
 resume:['Devam et','Resume'],vsComputer:['Bilgisayara karşı','Play vs computer'],playOnline:['Online oyna','Play online'],
 rules:['Kurallar','Rules'],stats:['İstatistikler','Statistics'],settings:['Ayarlar','Settings'],
