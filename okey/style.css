@@ -1,7 +1,8 @@
+@font-face { font-family: "GV"; src: url(fonts/great-vibes-latin-400-normal.woff2) format("woff2"); font-display: swap; }
 /* Okey — görünüm. Görsel dosya yok: her şey CSS ile çizilir (az bellek, hızlı açılış). */
 :root {
   --font: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --script: "Snell Roundhand", "Apple Chancery", "Segoe Script", "Brush Script MT", "Lucida Handwriting", cursive;
+  --script: "GV", "Snell Roundhand", "Apple Chancery", "Segoe Script", "Brush Script MT", "Lucida Handwriting", cursive;
   --tw: 44px; --rtw: 44px; --cols: 15; --rackh: 130px; --vh: 100vh; --vw: 100vw;
   --tile-a: #fffaf0; --tile-b: #ebe0c4; --tile-edge: #b9ab82; --tile-ink: #1d1b17;
   --c0: #e08a00; --c1: #1b5fd1; --c2: #1a1a1a; --c3: #cf2424;
@@ -74,24 +75,19 @@ body.cb .tile.c3 .d { border-radius: 0; clip-path: polygon(50% 0, 100% 50%, 50% 
 .floaters .tile { --tw: 34px; position: absolute; opacity: .16; animation: drift 22s linear infinite; }
 @keyframes drift { 0% { transform: translateY(110vh) rotate(0deg); } 100% { transform: translateY(-30vh) rotate(160deg); } }
 .menuwrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: max(14px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) calc(max(14px, env(safe-area-inset-bottom)) + 40px) max(16px, env(safe-area-inset-left)); z-index: 1; }
-.logo { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 4px; }
-.logo .tile { --tw: 58px; cursor: default; }
+.logo { display: flex; gap: 8px; align-items: flex-end; justify-content: center; margin-bottom: 0; position: relative; padding: 0 14px 16px; }
+.logo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 18px; border-radius: 9px; background: linear-gradient(180deg, #b27a3e, #7a4a1f 60%, #5d3716); box-shadow: 0 8px 14px rgba(0,0,0,.45), inset 0 2px 0 rgba(255,225,170,.35); z-index: -1; }
+.logo .tile { margin-bottom: 4px; }
+.logo .tile { --tw: min(64px, 17vw); cursor: default; }
 .logo .tile:nth-child(1) { transform: rotate(-6deg) translateY(2px); animation: bob 4s ease-in-out infinite; }
 .logo .tile:nth-child(2) { transform: rotate(3deg); animation: bob 4s .5s ease-in-out infinite; }
 .logo .tile:nth-child(3) { transform: rotate(-3deg) translateY(3px); animation: bob 4s 1s ease-in-out infinite; }
 .logo .tile:nth-child(4) { transform: rotate(5deg); animation: bob 4s 1.5s ease-in-out infinite; }
-.logo .tile .n { font-size: 36px; }
+.logo .tile .n { font-size: min(40px, 10.5vw); }
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
-.tagline { font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: var(--gold1); opacity: .85; text-align: center; margin-top: 4px; }
 .menubtns { display: flex; flex-direction: column; gap: 10px; width: min(340px, 86vw); }
-.menubtns .btn { justify-content: flex-start; padding-left: 20px; }
 .menubtns .row2 { display: flex; gap: 10px; }
 .menubtns .row2 .btn { flex: 1; justify-content: center; padding: 0 10px; }
-.sig { position: absolute; left: 0; right: 0; bottom: max(10px, env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: center; gap: 12px; z-index: 2; pointer-events: none; }
-.sig .ln { height: 1px; width: min(70px, 14vw); background: linear-gradient(90deg, transparent, var(--gold2)); }
-.sig .ln.r { transform: scaleX(-1); }
-.sig .by { font-family: var(--script); font-style: italic; font-size: 17px; color: var(--gold2); opacity: .9; }
-.sig .nm { font-family: var(--script); font-style: italic; font-size: 28px; line-height: 1; background: linear-gradient(100deg, var(--gold3) 0%, var(--gold1) 30%, #fff6d2 50%, var(--gold1) 70%, var(--gold3) 100%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; text-shadow: none; animation: shine 6s ease-in-out infinite; padding: 0 2px; }
 @keyframes shine { 0%, 55% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
 .menutop { position: absolute; top: max(8px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); display: flex; gap: 8px; z-index: 3; }
 @media (orientation: landscape) and (max-height: 560px) {
@@ -288,3 +284,30 @@ body.tb .tools .btn.fin { min-height: 38px; }
 @media (max-height: 340px) { #center { top: 48%; } }
 body.tb .tools .btn span { white-space: nowrap; }
 @media (max-height: 340px) { .seat .plate { transform: scale(.9); } .fan { display: none; } }
+
+/* ---- menü cilası ---- */
+#menu::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.38) 100%); z-index: 0; }
+.menuwrap { gap: clamp(14px, 3.4vh, 30px); }
+.brand { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+.brand .logo { isolation: isolate; }
+.tagline { font-size: 11px; letter-spacing: .22em; padding-left: .22em; text-transform: uppercase; color: var(--gold1); opacity: .9; text-align: center; font-weight: 600; white-space: nowrap; }
+.orn { display: flex; align-items: center; justify-content: center; gap: 10px; width: min(300px, 78vw); }
+.orn i { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold2)); }
+.orn i:last-child { transform: scaleX(-1); }
+.orn b { width: 7px; height: 7px; transform: rotate(45deg); background: linear-gradient(135deg, var(--gold1), var(--gold3)); box-shadow: 0 0 8px var(--glow); }
+.menubtns { width: min(340px, 84vw); gap: 12px; }
+.menubtns .btn { justify-content: center; gap: 10px; min-height: 54px; font-size: 17px; letter-spacing: .01em; }
+.menubtns .btn.sm { min-height: 48px; font-size: 15px; }
+.menubtns .btn svg { flex: none; }
+.menutop.l { right: auto; left: max(10px, env(safe-area-inset-left)); }
+.menutop .btn.lang { width: 44px; font-weight: 800; font-size: 13px; letter-spacing: .04em; }
+.sig { position: absolute; left: 0; right: 0; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: center; gap: 10px; z-index: 2; pointer-events: none; }
+.sig .ln { height: 1px; width: min(64px, 13vw); background: linear-gradient(90deg, transparent, var(--gold2)); }
+.sig .ln.r { transform: scaleX(-1); }
+.sig .by { font-family: var(--script); font-size: 24px; color: var(--gold2); opacity: .85; line-height: 1; padding-top: 12px; }
+.sig .nm { position: relative; font-family: var(--script); font-size: 52px; line-height: 1.15; padding: 2px 14px 6px 8px; color: #ffe7a0;
+  text-shadow: 0 1px 0 #e0b954, 0 2px 0 #c89a35, 0 3px 0 #a87c24, 0 4px 0 #8a6218, 0 5px 0 #6e4d12, 0 9px 10px rgba(0,0,0,.55), 0 0 18px rgba(240,200,90,.28); transform: rotate(-3deg); }
+.sig .nm::after { content: attr(data-t); position: absolute; inset: 2px 14px 6px 8px; color: transparent; background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.95) 50%, transparent 62%) 200% 0 / 250% 100% no-repeat; -webkit-background-clip: text; background-clip: text; animation: glint 5.5s ease-in-out infinite; text-shadow: none; }
+@keyframes glint { 0%, 55% { background-position: 200% 0; } 100% { background-position: -100% 0; } }
+body.lite .sig .nm::after { display: none; }
+@media (orientation: landscape) and (max-height: 560px) { .sig .nm { font-size: 40px; } .sig .by { font-size: 20px; } .brand { width: auto; } .logo .tile { --tw: 48px; } .logo .tile .n { font-size: 30px; } }

@@ -282,12 +282,15 @@ OK.renderMenu = function () {
   );
   var brand = h('div', { class: 'brand' },
     h('div', { class: 'logo' }, letterTile('O', 3), letterTile('K', 1), letterTile('E', 2), letterTile('Y', 0)),
+    h('div', { class: 'orn' }, h('i'), h('b'), h('i')),
     h('div', { class: 'tagline' }, t('tagline')));
   menu.appendChild(fl);
+  menu.appendChild(h('div', { class: 'menutop l' },
+    h('button', { class: 'btn iconbtn lang', 'aria-label': t('language'), onclick: function () { OK.S.lang = OK.S.lang === 'tr' ? 'en' : 'tr'; OK.save(); OK.apply(); OK.renderMenu(); } }, OK.S.lang === 'tr' ? 'TR' : 'EN')));
   menu.appendChild(h('div', { class: 'menutop' },
     h('button', { class: 'btn iconbtn', 'aria-label': t('settings'), onclick: OK.openSettings }, OK.icon('gear'))));
   menu.appendChild(h('div', { class: 'menuwrap' }, brand, btns));
-  menu.appendChild(h('div', { class: 'sig' }, h('i', { class: 'ln' }), h('span', { class: 'by' }, 'by'), h('span', { class: 'nm' }, 'uozdil'), h('i', { class: 'ln r' })));
+  menu.appendChild(h('div', { class: 'sig' }, h('i', { class: 'ln' }), h('span', { class: 'by' }, 'by'), h('span', { class: 'nm', 'data-t': 'uozdil' }, 'uozdil'), h('i', { class: 'ln r' })));
 };
 
 /* ---------- Oyun kurma ---------- */
