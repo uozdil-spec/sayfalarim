@@ -192,13 +192,21 @@ function syncRack(hand, fresh) {
   return newly;
 }
 function reflowCols() {
-  // sütun sayısı değişti (ekran döndü): istakadaki sırayı koruyarak yeniden yerleştir
-  var order = [];
-  for (var i = 0; i < SLOTS; i++) if (st.slots[i] >= 0) order.push(st.slots[i]);
-  if (!order.length) return;
-  var half = Math.ceil(order.length / 2), C = cols();
-  st.slots = []; for (i = 0; i < SLOTS; i++) st.slots.push(-1);
-  order.forEach(function (id, k) { var r = k < half ? 0 : 1; var p = k < half ? k : k - half; st.slots[r * C + p] = id; });
+  // sütun sayısı değişti (ekran döndü / tam ekran): grupları koruyarak yeniden yerleştir;
+  // kullanıcı bu arada dokunmadıysa eski diziliş aynen geri gelir
+  var C = cols(), cur = JSON.stringify(st.slots);
+  if (st.back && st.back.C === C && st.back.sig === cur) { st.slots = st.back.slots.slice(); st.back = null; return; }
+  var oldC = st.cols || 15, groups = [], g0 = [], i;
+  for (i = 0; i < SLOTS; i++) {
+    var id = st.slots[i];
+    if (id >= 0 && !(i % oldC === 0 && g0.length)) g0.push(id);
+    else { if (g0.length) { groups.push(g0); g0 = []; } if (id >= 0) g0.push(id); }
+  }
+  if (g0.length) groups.push(g0);
+  if (!groups.length) return;
+  var before = st.slots.slice();
+  st.slots = layoutGroups(groups);
+  st.back = { C: oldC, slots: before, sig: JSON.stringify(st.slots) };
 }
 function renderRack(animate) {
   var rack = rackEl(); if (!rack || !st.view) return;
