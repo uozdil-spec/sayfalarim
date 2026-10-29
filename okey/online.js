@@ -6,6 +6,26 @@ var O = OK.online = {};
 var net = null, room = null, kind = '', roomInfo = null, tab = 'tables', lobbyMsgs = [], roomMsgs = [], unread = 0, chatApi = null;
 var muted = OK.lsGet('muted', {});
 var invSeen = {};
+var friends = OK.lsGet('friends', {}), onlineSeen = {};
+function saveFriends() { OK.lsSet('friends', friends); }
+function isFriend(id) { return !!friends[id]; }
+function toggleFriend(p) {
+  if (friends[p.id]) { delete friends[p.id]; OK.toast(t('friendRemoved', p.n)); }
+  else { friends[p.id] = { n: p.n, a: p.a }; OK.toast(t('friendAdded', p.n)); }
+  saveFriends();
+}
+function friendState(id) {
+  var p = net && net.presence && net.presence[id];
+  return p ? p.s : 'off';
+}
+function inviteFriend(id, nm) {
+  if (!net || net.status !== 'online') { OK.toast(t('connFail')); return; }
+  if (room && kind === 'host') { room.invite(id); OK.toast(t('inviteSent', nm)); return; }
+  if (room) { OK.toast(t('onlyHostInvite')); return; }
+  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
+  makeRoom({ type: last.cfg.type, value: last.cfg.type === 'single' ? 0 : last.cfg.value, partner: !!last.cfg.partner }, false, last.turn, last.level);
+  setTimeout(function () { if (room && kind === 'host') { room.invite(id); OK.toast(t('inviteSent', nm)); } }, 400);
+}
 
 /* ---------- küfür süzgeci (yalnızca gelen mesajlar, ayardan kapatılabilir) ---------- */
 var BAD = /(^|[^a-zçğıöşü0-9])(amk|aq|a\.q|mk|orospu|orosbu|piç|pic|siktir|sikeyim|sikerim|yarrak|yarak|amcık|amcik|göt\s?veren|gotveren|fuck|fucking|shit|bitch|asshole|dick|cunt)([^a-zçğıöşü0-9]|$)/gi;
@@ -47,7 +67,14 @@ O.open = function (joinCode) {
     if (net && net.status === 'online') return;
     net = new NetLib.Net({ lib: window.mqtt, id: myId(), name: OK.S.name, av: OK.S.av });
     net.cb.status = function (s) { setStatus(s); };
-    net.cb.players = function () { if (!room && tab === 'players') renderLobby(); else if (roomInfo && kind === 'host') renderRoom(); };
+    net.cb.players = function () {
+      Object.keys(friends).forEach(function (id) {
+        var on = friendState(id) !== 'off';
+        if (on && !onlineSeen[id]) { onlineSeen[id] = 1; if (!room && OK.cur !== 'game') OK.toast('★ ' + t('friendOnline', friends[id].n)); }
+        if (!on) delete onlineSeen[id];
+        var p = net.presence[id]; if (p && (p.n !== friends[id].n || p.a !== friends[id].a)) { friends[id].n = p.n; friends[id].a = p.a; saveFriends(); }
+      });
+      if (!room && (tab === 'players' || tab === 'friends')) renderLobby(); else if (roomInfo && kind === 'host') renderRoom(); };
     net.cb.tables = function () { if (!room && tab === 'tables') renderLobby(); };
     net.cb.chat = function (m) { pushLobbyMsg(m); };
     net.cb.invite = onInvite;
@@ -112,7 +139,7 @@ function renderLobby() {
   if (room) return renderRoom();
   var pane = $('#onPane'); if (!pane) return;
   var tabs = h('div', { class: 'tabs' });
-  [['tables', t('tTables')], ['players', t('tPlayers') + ' (' + (net ? net.players().length : 0) + ')'], ['chat', t('tChat')]].forEach(function (o) {
+  [['tables', t('tTables')], ['friends', '★ ' + t('tFriends') + ' (' + Object.keys(friends).filter(function (i) { return friendState(i) !== 'off'; }).length + ')'], ['players', t('tPlayers') + ' (' + (net ? net.players().length : 0) + ')'], ['chat', t('tChat')]].forEach(function (o) {
     tabs.appendChild(h('button', { class: tab === o[0] ? 'on' : '', onclick: function () { tab = o[0]; renderLobby(); } }, o[1]));
   });
   var body = h('div', { class: 'panebody' + (tab === 'chat' ? ' fix' : '') });
@@ -133,12 +160,27 @@ function renderLobby() {
     });
     body.appendChild(list);
     body.appendChild(h('button', { class: 'btn sm', style: 'margin-top:12px;align-self:center', onclick: O.help }, OK.icon('book'), t('helpBtn')));
+  } else if (tab === 'friends') {
+    var ids = Object.keys(friends), fl = h('div', { class: 'list' });
+    body.appendChild(h('div', { class: 'hint', style: 'margin-bottom:8px' }, t('friendsHint')));
+    if (!ids.length) fl.appendChild(h('div', { class: 'empty' }, t('noFriends')));
+    ids.sort(function (x, y) { return (friendState(x) === 'off' ? 1 : 0) - (friendState(y) === 'off' ? 1 : 0); });
+    ids.forEach(function (id) {
+      var f = friends[id], stt = friendState(id);
+      var row = h('div', { class: 'item' + (stt === 'off' ? ' offl' : '') }, h('div', { class: 'av' }, f.a || '🙂'),
+        h('div', { class: 'tx' }, h('b', null, f.n), h('span', null, stt === 'off' ? t('psOff') : stt === 'idle' ? '🟢 ' + t('psIdle') : stt === 'table' ? '🟡 ' + t('psTable') : '🔴 ' + t('psPlaying'))));
+      if (stt === 'idle') row.appendChild(h('button', { class: 'btn sm gold', onclick: function () { inviteFriend(id, f.n); } }, t('invite')));
+      row.appendChild(h('button', { class: 'btn sm', 'aria-label': t('remove'), onclick: function () { delete friends[id]; saveFriends(); renderLobby(); } }, '✕'));
+      fl.appendChild(row);
+    });
+    body.appendChild(fl);
   } else if (tab === 'players') {
     var pl = net ? net.players() : [], list2 = h('div', { class: 'list' });
     if (!pl.length) list2.appendChild(h('div', { class: 'empty' }, t('noPlayers')));
     pl.forEach(function (p) {
       list2.appendChild(h('div', { class: 'item' }, h('div', { class: 'av' }, p.a || '🙂'),
-        h('div', { class: 'tx' }, h('b', null, p.n), h('span', null, p.s === 'idle' ? t('psIdle') : p.s === 'table' ? t('psTable') : t('psPlaying')))));
+        h('div', { class: 'tx' }, h('b', null, (isFriend(p.id) ? '★ ' : '') + p.n), h('span', null, p.s === 'idle' ? t('psIdle') : p.s === 'table' ? t('psTable') : t('psPlaying'))),
+        h('button', { class: 'btn sm' + (isFriend(p.id) ? '' : ' gold'), onclick: function () { toggleFriend(p); renderLobby(); } }, isFriend(p.id) ? t('friendBtnOn') : t('addFriend'))));
     });
     body.appendChild(h('div', { class: 'hint', style: 'margin-bottom:8px' }, t('playersHint')));
     body.appendChild(list2);
@@ -392,12 +434,12 @@ function invitePicker() {
   var body = h('div');
   function draw() {
     clear(body);
-    var pl = net.players().filter(function (p) { return p.s === 'idle'; });
+    var pl = net.players().filter(function (p) { return p.s === 'idle'; }).sort(function (a, b) { return (isFriend(b.id) ? 1 : 0) - (isFriend(a.id) ? 1 : 0); });
     body.appendChild(h('div', { class: 'hint', style: 'margin-bottom:8px' }, t('inviteHint')));
     var list = h('div', { class: 'list' });
     if (!pl.length) list.appendChild(h('div', { class: 'empty' }, t('noPlayers')));
     pl.forEach(function (p) {
-      list.appendChild(h('div', { class: 'item' }, h('div', { class: 'av' }, p.a), h('div', { class: 'tx' }, h('b', null, p.n)),
+      list.appendChild(h('div', { class: 'item' }, h('div', { class: 'av' }, p.a), h('div', { class: 'tx' }, h('b', null, (isFriend(p.id) ? '★ ' : '') + p.n)),
         h('button', { class: 'btn sm' + (sent[p.id] ? ' dis' : ' gold'), onclick: function () { room.invite(p.id); sent[p.id] = 1; OK.toast(t('inviteSent', p.n)); draw(); } }, sent[p.id] ? t('sent') : t('invite'))));
     });
     body.appendChild(list);

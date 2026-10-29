@@ -330,3 +330,5 @@ body.oled #hud, body.oled #rackbar, body.oled .menuwrap, body.oled .sig, body.ol
 .choice button.on { background: rgba(240,200,90,.16); box-shadow: inset 0 0 0 2px var(--gold1); }
 .sumline { text-align: center; font-size: 13px; opacity: .85; padding: 6px 0; }
 .hstep { display: flex; gap: 12px; align-items: flex-start; margin: 10px 0; } .hstep i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(180deg, var(--gold1), var(--gold2)); color: var(--accent-ink); font-style: normal; font-weight: 800; display: grid; place-items: center; font-size: 13px; } .hstep span { font-size: 14px; line-height: 1.45; }
+
+.item.offl { opacity: .55; }
