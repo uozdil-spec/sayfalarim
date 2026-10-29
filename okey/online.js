@@ -37,6 +37,7 @@ function ensureName() {
 
 /* ---------- açılış / kapanış ---------- */
 O.open = function (joinCode) {
+  if (!OK.lsGet('nameset', false)) { return askName(function () { O.open(joinCode); }); }
   ensureName();
   OK.screen('online');
   renderShell();
@@ -116,11 +117,13 @@ function renderLobby() {
   });
   var body = h('div', { class: 'panebody' + (tab === 'chat' ? ' fix' : '') });
   if (tab === 'tables') {
-    var codeIn = h('input', { class: 'txt', maxlength: 6, placeholder: t('roomCode'), style: 'text-transform:uppercase;letter-spacing:.2em;text-align:center;max-width:150px' });
-    body.appendChild(h('div', { class: 'row', style: 'gap:8px;flex-wrap:wrap;justify-content:flex-start;border:0' },
-      h('button', { class: 'btn gold', onclick: createRoomDialog }, OK.icon('plus'), t('createTable')),
-      codeIn,
-      h('button', { class: 'btn', onclick: function () { var c = codeIn.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (c.length >= 4) joinRoom(c); else OK.toast(t('codeShort')); } }, t('joinByCode'))));
+    var codeIn = h('input', { class: 'txt', maxlength: 6, placeholder: t('roomCode'), style: 'text-transform:uppercase;letter-spacing:.25em;text-align:center;flex:1;min-width:0' });
+    function goCode() { var c = codeIn.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (c.length >= 4) joinRoom(c); else OK.toast(t('codeShort')); }
+    body.appendChild(h('div', { class: 'bigacts' },
+      h('button', { class: 'bigact gold', onclick: quickPlay }, h('b', null, t('quick')), h('span', null, t('quickH'))),
+      h('button', { class: 'bigact', onclick: function () { createRoomDialog(false); } }, h('b', null, t('withFriends')), h('span', null, t('withFriendsH')))));
+    body.appendChild(h('div', { class: 'codeline' }, h('span', null, t('haveCode')), codeIn, h('button', { class: 'btn', onclick: goCode }, t('join'))));
+    body.appendChild(h('div', { class: 'lbl', style: 'margin:14px 2px 6px' }, t('openTables')));
     var list = h('div', { class: 'list' }), tl = net ? net.tableList().filter(function (x) { return x.hid !== net.id; }) : [];
     if (!tl.length) list.appendChild(h('div', { class: 'empty' }, t('noTables')));
     tl.forEach(function (tb) {
@@ -129,6 +132,7 @@ function renderLobby() {
         h('button', { class: 'btn gold', onclick: function () { joinRoom(tb.code); } }, t('join'))));
     });
     body.appendChild(list);
+    body.appendChild(h('button', { class: 'btn sm', style: 'margin-top:12px;align-self:center', onclick: O.help }, OK.icon('book'), t('helpBtn')));
   } else if (tab === 'players') {
     var pl = net ? net.players() : [], list2 = h('div', { class: 'list' });
     if (!pl.length) list2.appendChild(h('div', { class: 'empty' }, t('noPlayers')));
@@ -233,26 +237,49 @@ function onInvite(inv) {
 }
 
 /* ---------- oda kurma ---------- */
-function createRoomDialog() {
-  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, pub: true, turn: 45, level: 'medium' });
-  var cfg = last.cfg, pub = last.pub !== false, turn = last.turn, level = last.level;
-  var extra = h('div');
-  function drawExtra() {
-    clear(extra);
-    function seg(opts, cur, cb) { var s = h('div', { class: 'seg full' }); opts.forEach(function (o) { s.appendChild(h('button', { class: cur === o[0] ? 'on' : '', onclick: function () { cb(o[0]); drawExtra(); } }, o[1])); }); return s; }
-    extra.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('turnTime')), seg([[0, t('unlimited')], [30, '30 ' + t('sec')], [45, '45 ' + t('sec')], [60, '60 ' + t('sec')]], turn, function (v) { turn = v; })));
-    extra.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('botLevel')), seg([['easy', t('easy')], ['medium', t('medium')], ['hard', t('hard')]], level, function (v) { level = v; })));
-    extra.appendChild(h('div', { class: 'row' }, h('div', null, h('div', { class: 't' }, t('publicTable')), h('div', { class: 's' }, t('publicHint'))),
-      h('button', { class: 'sw' + (pub ? ' on' : ''), onclick: function () { pub = !pub; drawExtra(); } })));
+function createRoomDialog(pubDefault) {
+  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
+  var cfg = last.cfg, pub = !!pubDefault, turn = last.turn, level = last.level, adv = false;
+  var body = h('div');
+  function seg(opts, cur, cb) { var s = h('div', { class: 'seg full' }); opts.forEach(function (o) { s.appendChild(h('button', { class: cur === o[0] ? 'on' : '', onclick: function () { cb(o[0]); draw(); } }, o[1])); }); return s; }
+  function draw() {
+    clear(body);
+    body.appendChild(h('div', { class: 'lbl' }, t('whoCanJoin')));
+    body.appendChild(h('div', { class: 'choice' },
+      h('button', { class: !pub ? 'on' : '', onclick: function () { pub = false; draw(); } }, h('b', null, '🔑 ' + t('privateShort')), h('span', null, t('privChoiceH'))),
+      h('button', { class: pub ? 'on' : '', onclick: function () { pub = true; draw(); } }, h('b', null, '🌐 ' + t('publicShort')), h('span', null, t('pubChoiceH')))));
+    body.appendChild(h('div', { class: 'sumline' }, OK.modeName(cfg.type, cfg.value) + (cfg.partner ? ' · ' + t('partnerShort') : '') + ' · ' + (turn ? turn + ' ' + t('sec') : t('unlimited'))));
+    body.appendChild(h('button', { class: 'btn sm', style: 'margin:6px auto 4px;display:flex', onclick: function () { adv = !adv; draw(); } }, t(adv ? 'hideAdv' : 'showAdv')));
+    if (adv) {
+      body.appendChild(OK.cfgControls(cfg, draw));
+      body.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('turnTime')), seg([[0, t('unlimited')], [30, '30 ' + t('sec')], [45, '45 ' + t('sec')], [60, '60 ' + t('sec')]], turn, function (v) { turn = v; })));
+      body.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('botLevel')), seg([['easy', t('easy')], ['medium', t('medium')], ['hard', t('hard')]], level, function (v) { level = v; })));
+    }
   }
-  drawExtra();
-  OK.modal({ title: t('createTable'), body: h('div', null, OK.cfgControls(cfg), extra), buttons: [
+  draw();
+  OK.modal({ title: t('createTable'), body: body, buttons: [
     { label: t('cancel') },
     { label: t('create'), cls: 'gold', onclick: function () {
-      OK.lsSet('lastonline', { cfg: cfg, pub: pub, turn: turn, level: level });
+      OK.lsSet('lastonline', { cfg: cfg, turn: turn, level: level });
       makeRoom({ type: cfg.type, value: cfg.type === 'single' ? 0 : cfg.value, partner: !!cfg.partner }, pub, turn, level);
     } }] });
 }
+function quickPlay() {
+  if (!net || net.status !== 'online') { OK.toast(t('connFail')); return; }
+  var tl = net.tableList().filter(function (x) { return x.hid !== net.id && x.f < 4; });
+  if (tl.length) { OK.toast(t('quickFound')); joinRoom(tl[0].code); return; }
+  OK.toast(t('quickNone'), 3200);
+  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
+  makeRoom({ type: last.cfg.type, value: last.cfg.type === 'single' ? 0 : last.cfg.value, partner: !!last.cfg.partner }, true, last.turn, last.level);
+}
+O.help = function () {
+  var steps = [['1', 'hp1'], ['2', 'hp2'], ['3', 'hp3'], ['4', 'hp4'], ['5', 'hp5']];
+  var body = h('div', { class: 'rules' }, h('p', null, t('hpIntro')));
+  steps.forEach(function (s) { body.appendChild(h('div', { class: 'hstep' }, h('i', null, s[0]), h('span', null, t(s[1])))); });
+  body.appendChild(h('h3', null, t('hpTipsH')));
+  body.appendChild(h('ul', null, h('li', null, t('hpT1')), h('li', null, t('hpT2')), h('li', null, t('hpT3')), h('li', null, t('hpT4'))));
+  OK.modal({ title: t('helpBtn'), body: body, wide: true, buttons: [{ label: t('ok'), cls: 'gold' }] });
+};
 function makeRoom(cfg, pub, turn, level) {
   if (!net || net.status !== 'online') { OK.toast(t('connFail')); return; }
   var speed = { fast: 0.55, normal: 1, slow: 1.7 }[OK.S.speed] || 1;
@@ -389,5 +416,19 @@ function enterGame(view, ev, meta, seat) {
     OK.game.attachOnline(ctrl, kind, seat, view.cfg);
   }
   OK.game.onUpdate(view, ev, meta, seat);
+}
+
+function askName(next) {
+  ensureName();
+  var name = OK.S.name, av = OK.S.av;
+  var inp = h('input', { class: 'txt', maxlength: 14, value: name, oninput: function (e) { name = e.target.value; } });
+  var avs = h('div', { class: 'avs' });
+  function drawAv() { clear(avs); OK.AVATARS.forEach(function (a) { avs.appendChild(h('button', { class: a === av ? 'on' : '', onclick: function () { av = a; drawAv(); } }, a)); }); }
+  drawAv();
+  OK.modal({ title: t('welcomeOnline'), dismiss: false, noclose: true,
+    body: h('div', null, h('p', { style: 'margin:0 0 12px;opacity:.85;font-size:14px' }, t('nameWhy')), h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('s_name')), inp), h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('s_avatar')), avs)),
+    buttons: [{ label: t('cancel') }, { label: t('continue'), cls: 'gold', onclick: function () {
+      OK.S.name = NetLib.clean(name, 14) || OK.S.name; OK.S.av = av; OK.save(); OK.lsSet('nameset', true); setTimeout(next, 50);
+    } }] });
 }
 })();

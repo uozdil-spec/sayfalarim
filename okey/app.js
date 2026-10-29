@@ -370,7 +370,7 @@ OK.openRules = function () {
     h('h3', null, t('r_modes_h')), h('ul', null, h('li', null, t('r_m1')), h('li', null, t('r_m2')), h('li', null, t('r_m3')), h('li', null, t('r_m4'))),
     h('h3', null, t('r_partner_h')), s('r_partner'),
     h('h3', null, t('r_ctrl_h')), h('ul', null, h('li', null, t('r_c1')), h('li', null, t('r_c2')), h('li', null, t('r_c3')), h('li', null, t('r_c4'))));
-  OK.modal({ title: t('rules'), body: body, wide: true, buttons: [{ label: t('ok'), cls: 'gold' }] });
+  OK.modal({ title: t('rules'), body: body, wide: true, buttons: [{ label: t('helpBtn'), onclick: function () { setTimeout(OK.online.help, 30); } }, { label: t('ok'), cls: 'gold' }] });
 };
 
 /* ---------- İstatistikler ---------- */
