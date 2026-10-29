@@ -90,6 +90,7 @@ function build() {
   g.appendChild(h('div', { id: 'rackbar' }, left, rack, right));
   g.appendChild(h('div', { id: 'sortpop', style: 'display:none;position:absolute;z-index:40' }));
   initRackEvents(rack);
+  initSourceDrag();
   OK.layout();
   renderSnd();
 }
@@ -187,7 +188,7 @@ function syncRack(hand, fresh) {
     var id = st.slots[i];
     if (id >= 0) { if (hand.indexOf(id) < 0) { st.slots[i] = -1; } else present[id] = 1; }
   }
-  hand.forEach(function (id) { if (!present[id]) { var k = nextFree(); if (k >= 0) { st.slots[k] = id; newly.push(id); } } });
+  hand.forEach(function (id) { if (!present[id]) { var k = (st.wantSlot !== undefined && st.wantSlot >= 0 && st.slots[st.wantSlot] < 0) ? st.wantSlot : nextFree(); st.wantSlot = undefined; if (k >= 0) { st.slots[k] = id; newly.push(id); } } });
   return newly;
 }
 function reflowCols() {
@@ -257,7 +258,7 @@ function moveTile(id, to) {
 }
 
 /* ================= Sürükle / dokun ================= */
-var drag = null;
+var drag = null, sdrag = null;
 function canDraw() { var v = st.view; return !!v && v.status === 'playing' && v.turn === st.me && v.phase === 'draw'; }
 function canDiscard() { var v = st.view; return !!v && v.status === 'playing' && v.turn === st.me && v.phase === 'discard'; }
 
@@ -287,6 +288,51 @@ function targetAt(x, y) {
 function clearHover() {
   var hs = document.querySelectorAll('.slot.hover, .over');
   for (var i = 0; i < hs.length; i++) hs[i].classList.remove('hover', 'over');
+}
+/* Desteden ya da soldaki atılan taştan sürükleyerek çekme */
+function initSourceDrag() {
+  var felt = $('#felt');
+  felt.addEventListener('pointerdown', function (e) {
+    if (drag || sdrag || !canDraw() || (e.button && e.button > 0)) return;
+    var from = null, el = e.target.closest ? e.target.closest('#pile, #dp3') : null;
+    if (!el) return;
+    if (el.id === 'pile') { if (!st.view.pile) return; from = 'pile'; }
+    else { if (!el.lastChild || !el.lastChild.classList || !el.lastChild.classList.contains('tile')) return; from = 'discard'; }
+    sdrag = { from: from, el: el, x0: e.clientX, y0: e.clientY, pid: e.pointerId, moved: false, ghost: null, target: null };
+    document.addEventListener('pointermove', onSMove, { passive: false });
+    document.addEventListener('pointerup', onSUp);
+    document.addEventListener('pointercancel', onSUp);
+  });
+}
+function onSMove(e) {
+  if (!sdrag || e.pointerId !== sdrag.pid) return;
+  var dx = e.clientX - sdrag.x0, dy = e.clientY - sdrag.y0;
+  if (!sdrag.moved && Math.hypot(dx, dy) > 9) {
+    sdrag.moved = true;
+    var src = sdrag.from === 'pile' ? sdrag.el : sdrag.el.lastChild, r = src.getBoundingClientRect();
+    var gh = sdrag.from === 'pile' ? mkBack() : src.cloneNode(true);
+    gh.style.cssText = 'position:fixed;z-index:200;pointer-events:none;margin:0;left:' + (r.left) + 'px;top:' + (r.top) + 'px;--tw:' + r.width + 'px;transform:scale(1.12);';
+    gh.classList.remove('can');
+    document.body.appendChild(gh); sdrag.ghost = gh; sdrag.gx = r.left; sdrag.gy = r.top; OK.vib(5);
+  }
+  if (!sdrag.moved) return;
+  e.preventDefault();
+  sdrag.ghost.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.12)';
+  clearHover();
+  var tg = targetAt(e.clientX, e.clientY); sdrag.target = tg;
+  if (tg && tg.type === 'slot') tg.el.classList.add('hover');
+}
+function onSUp(e) {
+  if (!sdrag || (e.pointerId !== undefined && e.pointerId !== sdrag.pid)) return;
+  document.removeEventListener('pointermove', onSMove);
+  document.removeEventListener('pointerup', onSUp);
+  document.removeEventListener('pointercancel', onSUp);
+  var d = sdrag; sdrag = null; clearHover();
+  if (!d.moved) return;
+  if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+  st.noClickUntil = Date.now() + 400;
+  var tg = d.target;
+  if (tg && tg.type === 'slot' && canDraw()) { st.wantSlot = tg.i; doDraw(d.from); }
 }
 function onMove(e) {
   if (!drag || e.pointerId !== drag.pid) return;
@@ -334,6 +380,7 @@ function onTileTap(id, el) {
 }
 function onPileTap(vp) {
   var v = st.view; if (!v) return;
+  if (st.noClickUntil && Date.now() < st.noClickUntil) return;
   if (vp === -1) {
     if (canDraw()) { if (v.pile > 0) doDraw('pile'); else OK.toast(t('pileEmpty')); }
     else if (v.status === 'playing') { OK.sfx('err'); nudge(); }

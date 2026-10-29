@@ -354,3 +354,4 @@ body.lite .tile { background: linear-gradient(165deg, var(--tile-a), var(--tile-
 body.lite #rack { background-image: linear-gradient(180deg, var(--wood1), var(--wood2) 60%, var(--woodd)); }
 body.lite #felt { background: none; }
 @media (orientation: landscape) and (max-height: 560px) { #center { top: 55%; } }
+#pile, .dp { touch-action: none; }
