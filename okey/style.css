@@ -358,3 +358,5 @@ body.lite #felt { background: none; }
 html, body { touch-action: manipulation; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
 #game, #game * { touch-action: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
 #game .txt, #game input { -webkit-user-select: text; user-select: text; touch-action: auto; }
+
+.errlist { font-size: 11px; opacity: .6; margin-top: 8px; text-align: left; word-break: break-all; }

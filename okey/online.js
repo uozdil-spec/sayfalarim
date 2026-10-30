@@ -65,7 +65,8 @@ O.open = function (joinCode) {
   setStatus('connecting');
   loadLib().then(function () {
     if (net && net.status === 'online') return;
-    net = new NetLib.Net({ lib: window.mqtt, id: myId(), name: OK.S.name, av: OK.S.av });
+    var pref = OK.lsGet('broker', '');
+    net = new NetLib.Net({ lib: window.mqtt, id: myId(), name: OK.S.name, av: OK.S.av, brokers: pref ? [pref] : undefined });
     net.cb.status = function (s) { setStatus(s); };
     net.cb.players = function () {
       Object.keys(friends).forEach(function (id) {
@@ -84,10 +85,21 @@ O.open = function (joinCode) {
     if (joinCode) joinRoom(joinCode);
   }).catch(function (e) {
     setStatus('offline');
-    setBody(h('div', { class: 'empty' }, h('div', { style: 'font-size:15px;margin-bottom:10px' }, e && e.message === 'lib' ? t('libFail') : t('connFail')),
-      h('button', { class: 'btn gold', onclick: function () { net = null; O.open(joinCode); } }, t('retry'))));
+    var errs = (net && net.errors) || {};
+    var detail = h('div', { class: 'errlist' });
+    Object.keys(errs).forEach(function (u) { detail.appendChild(h('div', null, srvName(u) + ': ' + errs[u])); });
+    var picks = h('div', { class: 'seg full', style: 'margin:10px 0' });
+    var cur = OK.lsGet('broker', '');
+    [['', t('srvAuto')]].concat(NetLib.BROKERS.map(function (u) { return [u, srvName(u)]; })).forEach(function (o2) {
+      picks.appendChild(h('button', { class: cur === o2[0] ? 'on' : '', onclick: function () { OK.lsSet('broker', o2[0]); net = null; O.open(joinCode); } }, o2[1]));
+    });
+    setBody(h('div', { class: 'empty' }, h('div', { style: 'font-size:15px;margin-bottom:6px' }, e && e.message === 'lib' ? t('libFail') : t('connFail')),
+      h('div', { style: 'font-size:12px;opacity:.75;margin-bottom:8px' }, t('connFailH')),
+      h('button', { class: 'btn gold', onclick: function () { net = null; O.open(joinCode); } }, t('retry')),
+      h('div', { class: 'lbl', style: 'margin-top:14px' }, t('srvPick')), picks, detail));
   });
 };
+function srvName(u) { return String(u).replace(/^wss?:\/\//, '').replace(/[:\/].*$/, ''); }
 O.shutdown = function () {
   if (room) { try { room.leave(); } catch (e) {} room = null; }
   roomInfo = null; kind = '';
@@ -100,7 +112,7 @@ function leaveToMenu() { O.shutdown(); OK.renderMenu(); OK.screen('menu'); }
 function setStatus(s) {
   var el = $('#onStatus'); if (!el) return;
   el.className = 'status ' + s;
-  el.textContent = s === 'online' ? t('stOnline') : s === 'connecting' ? t('stConnecting') : t('stOffline');
+  el.textContent = s === 'online' ? t('stOnline') + (net && net.broker ? ' · ' + srvName(net.broker).replace(/^(broker|mqtt|test)\./, '').split('.')[0] : '') : s === 'connecting' ? t('stConnecting') : t('stOffline');
 }
 function renderShell() {
   var on = clear($('#online'));

@@ -7,6 +7,7 @@ var E = root.OkeyEngine, Table = root.OkeyTable;
 var R = 'uozdil-okey/v1';
 var BROKERS = [
   'wss://broker.emqx.io:8084/mqtt',
+  'wss://mqtt.eclipseprojects.io:443/mqtt',
   'wss://broker.hivemq.com:8884/mqtt',
   'wss://test.mosquitto.org:8081'
 ];
@@ -57,33 +58,50 @@ function Net(o) {
 Net.prototype.setStatus = function (s, info) { this.status = s; this.cb.status(s, info); };
 
 Net.prototype.connect = function () {
-  var self = this, i = 0;
+  var self = this, n = this.brokers.length, results = [], clients = [], decided = false, i;
+  this.errors = {};
   this.setStatus('connecting');
   return new Promise(function (resolve, reject) {
-    function next() {
-      if (i >= self.brokers.length) { self.setStatus('offline'); reject(new Error('no-broker')); return; }
-      var url = self.brokers[i++], done = false, c;
+    function fail(idx, why) {
+      if (results[idx] !== undefined) return;
+      results[idx] = false; self.errors[self.brokers[idx]] = why || 'error';
+      try { clients[idx].end(true); } catch (e) {}
+      check();
+    }
+    function check() {
+      if (decided) return;
+      for (var k = 0; k < n; k++) {
+        if (results[k] === undefined) return;          // önce öncelikli sunucunun sonucunu bekle
+        if (results[k] === true) { decided = true; choose(k); return; }
+      }
+      decided = true; self.setStatus('offline'); reject(new Error('no-broker'));
+    }
+    function choose(k) {
+      for (var m = 0; m < n; m++) if (m !== k && clients[m]) { try { clients[m].end(true); } catch (e) {} }
+      var c = clients[k];
+      self.cli = c; self.broker = self.brokers[k];
+      c.options.reconnectPeriod = 2500;
+      self.attach();
+      self.setStatus('online');
+      resolve(self.broker);
+    }
+    function start(idx) {
+      var url = self.brokers[idx], c;
       try {
         c = self.lib.connect(url, {
           clientId: 'ok_' + self.id + '_' + rid(4),
           clean: true, keepalive: 25, connectTimeout: 7000, reconnectPeriod: 0, protocolVersion: 4,
           will: { topic: R + '/p/' + self.id, payload: '', retain: true, qos: 0 }
         });
-      } catch (e) { next(); return; }
-      var to = setTimeout(function () { if (!done) { done = true; try { c.end(true); } catch (e) {} next(); } }, 9000);
-      c.on('connect', function () {
-        if (done) { return; }
-        done = true; clearTimeout(to);
-        self.cli = c; self.broker = url;
-        c.options.reconnectPeriod = 2500;
-        self.attach();
-        self.setStatus('online');
-        resolve(url);
-      });
-      c.on('error', function () { if (!done) { done = true; clearTimeout(to); try { c.end(true); } catch (e) {} next(); } });
-      c.on('close', function () { if (!done) { done = true; clearTimeout(to); try { c.end(true); } catch (e) {} next(); } });
+      } catch (e) { clients[idx] = null; results[idx] = false; self.errors[url] = String(e && e.message || e); return; }
+      clients[idx] = c;
+      var to = setTimeout(function () { fail(idx, 'timeout'); }, 8500);
+      c.on('connect', function () { clearTimeout(to); if (results[idx] === undefined) { results[idx] = true; check(); } });
+      c.on('error', function (e) { clearTimeout(to); fail(idx, String(e && e.message || 'error')); });
+      c.on('close', function () { clearTimeout(to); fail(idx, 'closed'); });
     }
-    next();
+    for (i = 0; i < n; i++) start(i);
+    check();
   });
 };
 
@@ -179,12 +197,12 @@ Net.prototype.prune = function () {
   var now = Date.now(), ch = false, k;
   for (k in this.presence) {
     var p = this.presence[k];
-    if (Math.abs(now - p.t) > 5 * 60 * 1000 || now - p.rt > 20 * 60 * 1000) { delete this.presence[k]; ch = true; }
+    if (now - p.rt > 100000) { delete this.presence[k]; ch = true; }
   }
   var ch2 = false;
   for (k in this.tables) {
     var tb = this.tables[k];
-    if (Math.abs(now - tb.t) > 5 * 60 * 1000) { delete this.tables[k]; ch2 = true; }
+    if (now - tb.rt > 100000) { delete this.tables[k]; ch2 = true; }
   }
   if (ch) this.cb.players(this.players());
   if (ch2) this.cb.tables(this.tableList());
@@ -349,6 +367,8 @@ RoomHost.prototype.onJoin = function (id, name, av) {
 RoomHost.prototype.watch = function () {
   if (this.closed) return;
   var now = Date.now();
+  this.lt = (this.lt || 0) + 1;
+  if (this.lt % 6 === 0) this.listing();
   for (var i = 1; i < 4; i++) {
     var s = this.seats[i];
     if (s.kind === 'remote' && now - (this.lastSeen[s.id] || 0) > 25000) this.dropSeat(i, 'timeout');
