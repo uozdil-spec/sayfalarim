@@ -218,10 +218,11 @@ function renderRack(animate) {
       var te = tileEl(id);
       if (te.parentNode !== s) s.appendChild(te);
       te.classList.toggle('sel', st.sel === id);
+      te.classList.toggle('down', !!(st.flipped && st.flipped[id]));
       te.style.transform = '';
     } else while (s.firstChild) s.removeChild(s.firstChild);
   }
-  for (var k in st.tiles) if (!used[k]) { var d = st.tiles[k]; if (d.parentNode) d.parentNode.removeChild(d); delete st.tiles[k]; }
+  for (var k in st.tiles) if (!used[k]) { var d = st.tiles[k]; if (d.parentNode) d.parentNode.removeChild(d); delete st.tiles[k]; if (st.flipped) delete st.flipped[k]; }
 }
 /* FLIP: istaka yeniden düzenlenirken taşlar yumuşakça kayar */
 function flipRack(change) {
@@ -276,6 +277,7 @@ function initRackEvents(rack) {
     if (!te || !rack.contains(te) || (e.button && e.button > 0)) return;
     if (drag) return;
     drag = { id: +te.dataset.id, el: te, x0: e.clientX, y0: e.clientY, moved: false, pid: e.pointerId, target: null };
+    if (OK.S.flip) { var dd = drag; dd.lp = setTimeout(function () { if (drag === dd && !dd.moved) { dd.long = true; flipTile(dd.id, dd.el); } }, 480); }
     document.addEventListener('pointermove', onMove, { passive: false });
     document.addEventListener('pointerup', onUp);
     document.addEventListener('pointercancel', onUp);
@@ -342,11 +344,18 @@ function onSUp(e) {
   var tg = d.target;
   if (tg && tg.type === 'slot' && canDraw()) { st.wantSlot = tg.i; doDraw(d.from); }
 }
+function flipTile(id, el) {
+  st.flipped = st.flipped || {};
+  if (st.flipped[id]) delete st.flipped[id]; else st.flipped[id] = true;
+  OK.sfx('tile'); OK.vib(12);
+  el.classList.toggle('down', !!st.flipped[id]);
+  if (el.animate && !OK.S.lite) el.animate([{ transform: 'rotateY(90deg)' }, { transform: 'none' }], { duration: 220 });
+}
 function onMove(e) {
   if (!drag || e.pointerId !== drag.pid) return;
   var dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
-  if (!drag.moved && Math.hypot(dx, dy) > 7) { drag.moved = true; drag.el.classList.add('drag'); st.sel = -1; OK.vib(5); }
-  if (!drag.moved) return;
+  if (!drag.moved && !drag.long && Math.hypot(dx, dy) > 7) { clearTimeout(drag.lp); drag.moved = true; drag.el.classList.add('drag'); st.sel = -1; OK.vib(5); }
+  if (!drag.moved || drag.long) return;
   e.preventDefault();
   drag.el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.1)';
   clearHover();
@@ -362,9 +371,10 @@ function onUp(e) {
   document.removeEventListener('pointermove', onMove);
   document.removeEventListener('pointerup', onUp);
   document.removeEventListener('pointercancel', onUp);
-  var d = drag; drag = null;
+  var d = drag; drag = null; clearTimeout(d.lp);
   clearHover();
   d.el.classList.remove('drag');
+  if (d.long) return;
   if (!d.moved) { onTileTap(d.id, d.el); return; }
   var tg = d.target;
   d.el.style.transform = '';
@@ -733,7 +743,7 @@ G.onUpdate = function (view, ev, meta, seat) {
 };
 function initHand(view, ev) {
   st.handKey = view.handNo + ':' + view.indicator + ':' + view.ok.color + ':' + view.starter;
-  st.tiles = {}; st.sel = -1; clearHint(); st.resultKey = ''; st.flyFrom = null; st.pre = null;
+  st.tiles = {}; st.flipped = {}; st.sel = -1; clearHint(); st.resultKey = ''; st.flyFrom = null; st.pre = null;
   clearTimeout(st.resultTimer);
   if (st.resultModal) { st.resultModal.close(); st.resultModal = null; }
   var ps = st.pendingSlots; st.pendingSlots = null;

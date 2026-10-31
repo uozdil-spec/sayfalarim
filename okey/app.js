@@ -37,7 +37,7 @@ OK.lsGet = lsGet; OK.lsSet = lsSet; OK.lsDel = lsDel;
 /* ---------- ayarlar ---------- */
 var DEF = { lang: 'tr', theme: 'classic', tiles: 'ivory', size: 'l', sound: true, vol: 0.6, vib: true, anim: 'normal',
   lite: false, hints: true, mark: true, cb: false, startSort: 'sorted', wake: true, confirm: true, filter: true,
-  oled: true, autofs: true, name: '', av: '😀', level: 'medium', speed: 'normal' };
+  oled: true, autofs: true, flip: true, name: '', av: '😀', level: 'medium', speed: 'normal' };
 var saved = lsGet('settings', null);
 OK.S = Object.assign({}, DEF, saved || {});
 if (!saved) {
@@ -398,7 +398,7 @@ OK.openSetup = function () {
 OK.HELP = [
   ['hg_start', ['hg_start1', 'hg_start2']],
   ['hg_turn', ['hg_turn1', 'hg_turn2', 'hg_turn3']],
-  ['hg_tiles', ['hg_tiles1', 'hg_tiles2', 'hg_tiles3']],
+  ['hg_tiles', ['hg_tiles1', 'hg_tiles2', 'hg_tiles3', 'hg_tiles4']],
   ['hg_btns', ['hg_btn_sort', 'hg_btn_hint', 'hg_btn_undo', 'hg_btn_fin']],
   ['hg_win', ['hg_win1', 'hg_win2']],
   ['hg_online', ['hp1', 'hp2', 'hp4']],
@@ -499,6 +499,7 @@ OK.openSettings = function () {
       seg('startSort', [['sorted', t('sorted')], ['random', t('random')]], t('s_startsort')),
       sw('hints', t('s_hints'), t('s_hints_h')),
       seg('speed', [['fast', t('fast')], ['normal', t('normal')], ['slow', t('slow')]], t('s_botspeed')),
+      sw('flip', t('s_flip'), t('s_flip_h')),
       sw('confirm', t('s_confirm'))));
     body.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('s_fx')),
       sw('sound', t('s_sound'), null),

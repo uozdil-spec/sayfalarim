@@ -360,3 +360,7 @@ html, body { touch-action: manipulation; overscroll-behavior: none; -webkit-text
 #game .txt, #game input { -webkit-user-select: text; user-select: text; touch-action: auto; }
 
 .errlist { font-size: 11px; opacity: .6; margin-top: 8px; text-align: left; word-break: break-all; }
+
+.tile.down { background: linear-gradient(165deg, #e9dcb6, #cdbd8d); }
+.tile.down > * { visibility: hidden; }
+.tile.down::before { content: ""; position: absolute; inset: 14%; border-radius: calc(var(--tw) * .08); border: 1px solid rgba(120,90,30,.35); }
