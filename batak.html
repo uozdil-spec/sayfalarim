@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-1626">
+<meta name="surum" content="20261102-1855">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-1626" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-1626" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1626">
+<link rel="icon" href="batak-ikon.svg?v=20261102-1855" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-1855" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1855">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -64,6 +64,20 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
 .fempty{font-size:12.5px;color:#8f8a76;line-height:1.5;padding:4px 2px}
 .frow{display:flex;gap:8px;margin-top:10px}
 .set .frow input[type=text]{flex:1;min-width:0;letter-spacing:4px;text-transform:uppercase}
+#dummy{position:absolute;left:10px;right:10px;top:54px;z-index:2;display:none}
+#dummy .dlb{font-size:10px;letter-spacing:2px;color:var(--gold2);text-transform:uppercase;text-align:center;margin-bottom:3px;text-shadow:0 1px 3px #000}
+#dummy .dh{position:relative}
+#dummy .card{position:absolute;top:0;transition:top .15s,filter .2s}
+#dummy .card.sel{top:-8px;box-shadow:0 0 0 2px var(--gold2)}
+#dummy .card.dim{filter:brightness(.42)}
+.card.dc{font-size:calc(var(--cw)*.42)}
+.card.dc .md,.card.dc .br{display:none}
+.card.dc .tl{left:.18em;top:.16em}
+.card.dc.fc::after{display:none}
+#table.dm .slot.s0{top:71%}#table.dm .slot.s2{top:42%}
+#table.dm .slot.s1,#table.dm .slot.s3{top:56%}
+#table.dm .slot.s1{left:38%}#table.dm .slot.s3{left:62%}
+#table.dm .seat.l,#table.dm .seat.r{top:50%}
 
 /* GAME */
 #hud{display:flex;align-items:stretch;gap:8px;height:50px;flex:none}
@@ -230,6 +244,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
     <div class="seat l" id="seat-1"></div>
     <div class="seat r" id="seat-3"></div>
     <div class="seat m" id="seat-0"></div>
+    <div id="dummy"></div>
     <div id="trick"></div>
     <div id="status"></div>
     <div id="panel"></div>
@@ -275,13 +290,17 @@ function mkGame(settings,names,humans){
 function deal(){
   const d=newDeck();G.hands=[0,1,2,3].map(i=>d.slice(i*13,i*13+13));
   G.phase='bid';G.bids=[null,null,null,null];G.highBid=0;G.highBidder=-1;G.bidCount=0;G.turn=(G.dealer+1)%4;
-  G.trump=null;G.broken=false;G.trick=[];G.tw=[0,0,0,0];G.trickWinner=-1;G.played=new Set();
+  G.trump=null;G.broken=false;G.trick=[];G.tw=[0,0,0,0];G.trickWinner=-1;G.played=new Set();G.dummy=-1;
 }
+/* Açık el: ihaleyi alanın ortağı (dummy) oynamaz, kartlarını ihaleyi alan oynatır */
+function ctl(s){return (G.phase==='play'||G.phase==='trickEnd')&&s===G.dummy?G.highBidder:s}
 function eligible(seat){return !!G&&G.phase==='bid'&&G.turn===seat&&G.redeals<3&&hcp(G.hands[seat])<=4}
 function viewFor(me){
   const g=G;
   return {me,phase:g.phase,names:g.names,counts:g.hands.map(h=>h.length),hand:g.hands[me].slice(),
-    legal:(g.phase==='play'&&g.turn===me)?legal(g.hands[me],g.trick,g.trump,g.broken).map(cid):[],
+    legal:(g.phase==='play'&&ctl(g.turn)===me)?legal(g.hands[g.turn],g.trick,g.trump,g.broken).map(cid):[],
+    dummy:g.dummy,ctl:ctl(g.turn),
+    dummyHand:(g.dummy>=0&&['trump','play','trickEnd'].includes(g.phase))?g.hands[g.dummy].slice():null,
     turn:g.turn,dealer:g.dealer,bids:g.bids,highBid:g.highBid,highBidder:g.highBidder,trump:g.trump,
     trick:g.trick,tricksWon:g.tw,scores:g.scores,round:g.round,settings:g.settings,notice:g.notice,
     canRedeal:eligible(me),last:g.last,winner:g.trickWinner,over:g.over,isHost:me===0};
@@ -289,13 +308,13 @@ function viewFor(me){
 function commit(){
   broadcast();clearTimeout(pend);
   if(!G)return;
-  if(['bid','trump','play'].includes(G.phase)&&!G.humans[G.turn]){const s=G.turn,g=G;pend=setTimeout(()=>{if(G===g)bot(s)},G.phase==='play'?800:950)}
+  if(['bid','trump','play'].includes(G.phase)&&!G.humans[ctl(G.turn)]){const s=G.turn,g=G;pend=setTimeout(()=>{if(G===g)bot(s)},G.phase==='play'?800:950)}
 }
 function nextBid(){
   G.bidCount++;
   if(G.bidCount>=4){
     if(G.highBidder<0){G.highBidder=G.dealer;G.highBid=7;G.bids[G.dealer]=7;G.notice=G.names[G.dealer]+' herkes pas geçince 7 almak zorunda'}
-    G.phase='trump';G.turn=G.highBidder;
+    G.phase='trump';G.turn=G.highBidder;G.dummy=(G.highBidder+2)%4;
   }else G.turn=(G.turn+1)%4;
   commit();
 }
@@ -303,7 +322,7 @@ function act(seat,a){
   if(!G||!a)return;
   if(a.a==='next'){if(seat===0&&G.phase==='handEnd'){G.dealer=(G.dealer+1)%4;G.redeals=0;G.notice='';deal();commit()}return}
   if(a.a==='newgame'){if(seat===0&&G.phase==='gameEnd'){G.scores=[0,0];G.round=0;G.over=null;G.last=null;G.redeals=0;G.notice='';deal();commit()}return}
-  if(G.turn!==seat)return;
+  if(ctl(G.turn)!==seat)return;
   if(G.phase==='bid'){
     if(a.a==='pass'){G.bids[seat]=0;G.notice='';nextBid()}
     else if(a.a==='bid'){const v=a.v|0;if(v>=7&&v<=13&&v>G.highBid){G.bids[seat]=v;G.highBid=v;G.highBidder=seat;G.notice='';nextBid()}}
@@ -311,9 +330,9 @@ function act(seat,a){
   }else if(G.phase==='trump'){
     if(a.a==='trump'&&a.v>=0&&a.v<4){G.trump=a.v;G.phase='play';G.turn=G.highBidder;G.notice='';commit()}
   }else if(G.phase==='play'&&a.a==='play'){
-    const h=G.hands[seat],i=h.findIndex(c=>cid(c)===a.id);if(i<0)return;
+    const ps=G.turn,h=G.hands[ps],i=h.findIndex(c=>cid(c)===a.id);if(i<0)return;
     if(!legal(h,G.trick,G.trump,G.broken).some(c=>cid(c)===a.id))return;
-    const c=h.splice(i,1)[0];G.trick.push({seat,card:c});G.played.add(cid(c));
+    const c=h.splice(i,1)[0];G.trick.push({seat:ps,card:c});G.played.add(cid(c));
     if(c.s===G.trump)G.broken=true;
     if(G.trick.length===4){
       G.phase='trickEnd';G.trickWinner=trickWinnerOf(G.trick,G.trump);commit();
@@ -353,7 +372,7 @@ function estimate(h){
 }
 function isTop(c,hand){for(let r=c.r+1;r<=14;r++){if(!G.played.has(c.s+'-'+r)&&!hand.some(x=>x.s===c.s&&x.r===r))return false}return true}
 function bot(seat){
-  if(!G||G.turn!==seat||G.humans[seat])return;
+  if(!G||G.turn!==seat||G.humans[ctl(seat)])return;
   const h=G.hands[seat];
   if(G.phase==='bid'){
     if(eligible(seat)){act(seat,{a:'redeal'});return}
@@ -363,10 +382,16 @@ function bot(seat){
     const b=Math.max(7,G.highBid+1);
     if(want>=b)act(seat,{a:'bid',v:b});else act(seat,{a:'pass'});
   }else if(G.phase==='trump'){
-    act(seat,{a:'trump',v:estimate(h).trump});
+    act(seat,{a:'trump',v:trumpFor(seat)});
   }else if(G.phase==='play'){
-    const c=botPlay(seat);act(seat,{a:'play',id:cid(c)});
+    const c=botPlay(seat);act(ctl(seat),{a:'play',id:cid(c)});
   }
+}
+/* Koz seçerken ihaleyi alan, açılan ortak elini de hesaba katar */
+function trumpFor(seat){
+  const hs=[G.hands[seat],G.hands[(seat+2)%4]];let best=0,bs=-1;
+  for(let s=0;s<4;s++){let sc=0;hs.forEach(h=>h.filter(c=>c.s===s).forEach(c=>{sc+=2+(c.r===14?3:c.r===13?2:c.r===12?1:0)}));if(sc>bs){bs=sc;best=s}}
+  return best;
 }
 function botPlay(seat){
   const h=G.hands[seat],lg=legal(h,G.trick,G.trump,G.broken),t=G.trump,team=seat%2,mine=team===G.highBidder%2;
@@ -428,6 +453,7 @@ const RULES=`<h2>NASIL OYNANIR</h2>
 <h4>Temel</h4><ul><li>4 kişi, 2 takım. Karşındaki ortağındır. 52 kart, herkese 13.</li><li>Sıralama: A en büyük, 2 en küçük.</li></ul>
 <h4>Artırım (tek el)</h4><ul><li>Dağıtanın solundan başlayarak herkes <b>bir kez</b> konuşur: <b>Pas</b> ya da öncekinden yüksek bir teklif.</li><li>En az 7, en çok 13 el teklif edilebilir.</li><li>Herkes pas derse dağıtan 7 almak zorundadır.</li></ul>
 <h4>Elden</h4><ul><li>Teklif sırası sana geldiğinde elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam 4 veya daha az) <b>Elden Dağıt</b> diyerek kartları yeniden dağıttırabilirsin.</li></ul>
+<h4>Açık el</h4><ul><li>İhale belli olunca ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Ortak oynamaz; ihaleyi alan hem kendi elini hem açık eli oynatır.</li><li>İhaleyi alan oyuna ilk o başlar. Açık el eli alırsa sonraki eli yine ihaleyi alan o kartlardan açar.</li></ul>
 <h4>Koz</h4><ul><li>İhaleyi alan kozu seçer ve ilk eli açar.</li><li>Koz atılmadan (kırılmadan) koz ile el açılmaz; elinde yalnızca koz kaldıysa açabilirsin.</li></ul>
 <h4>El oynama</h4><ul><li>Açılan renkten varsan atmak zorundasın; yukarıdan vurabiliyorsan büyüğünü atmalısın.</li><li>Rengin yoksa koz atmak zorundasın; el kozlanmışsa üstüne koz atabiliyorsan atmalısın.</li><li>Eli en büyük koz, yoksa açılan rengin en büyüğü alır; kazanan sonraki eli açar.</li></ul>
 <h4>Puan</h4><ul><li>İhale takımı toplam aldığı el sayısı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b> yazar.</li><li>Karşı takım aldığı el sayısı kadar puan yazar.</li><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>
@@ -548,10 +574,36 @@ function cardEl(c,cw){
 }
 
 /* ====== OYUN EKRANI ====== */
+function setTcw(){
+  const t=$('#table');if(!t||!t.clientWidth)return;
+  const k=t.classList.contains('dm')?.86:1;
+  t.style.setProperty('--tcw',Math.max(32,Math.min(64,t.clientWidth*.15,t.clientHeight*.15*k))+'px');
+}
 function layout(){
   const t=$('#table');if(!t||!t.clientWidth)return;
-  t.style.setProperty('--tcw',Math.max(34,Math.min(64,t.clientWidth*.15,t.clientHeight*.15))+'px');
+  if(V)renderDummy();
+  setTcw();
   if(V)renderHand();
+}
+/* Açık el: ihaleyi alanın ortağının kartları herkese açık, ihaleyi alan oynatır */
+function renderDummy(){
+  const t=$('#table'),box=$('#dummy');if(!t||!V)return;
+  const show=!!V.dummyHand&&V.dummy>=0&&V.dummy!==V.me;
+  t.classList.toggle('dm',show);
+  if(!show){box.style.display='none';box.innerHTML='';return}
+  const W=(t.clientWidth||320)-20,cards=sortHand(V.dummyHand),n=cards.length;
+  const cw=Math.max(26,Math.min(40,W/9)),step=n>1?Math.min(cw*.72,(W-cw)/(n-1)):0,off=(W-(cw+step*(n-1)))/2;
+  box.style.display='block';
+  box.innerHTML=`<div class="dlb">${esc(V.names[V.dummy])} · açık el</div><div class="dh" style="height:${Math.round(cw*1.42)+10}px"></div>`;
+  const dh=box.querySelector('.dh'),can=V.phase==='play'&&V.ctl===V.me&&V.turn===V.dummy;
+  cards.forEach((c,i)=>{
+    const id=cid(c),e=cardEl(c,cw);e.classList.add('dc');
+    e.style.left=(off+i*step)+'px';e.style.zIndex=i;e.style.top='8px';
+    if(can&&!V.legal.includes(id))e.classList.add('dim');
+    if(sel===id){e.classList.add('sel');e.style.top='0px'}
+    e.onclick=()=>onCard(id,false);
+    dh.appendChild(e);
+  });
 }
 addEventListener('resize',layout);addEventListener('orientationchange',()=>setTimeout(layout,200));
 
@@ -559,8 +611,8 @@ function chip(i){
   const v=V,rel=(i-v.me+4)%4,active=['bid','trump','play'].includes(v.phase)&&v.turn===i;
   let sub='';
   if(v.phase==='bid')sub=v.bids[i]===null?'…':(v.bids[i]===0?'Pas':'Teklif '+v.bids[i]);
-  else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(v.bids[i]===0?'Pas':'');
-  else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'');
+  else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(i===v.dummy?'Açık el':(v.bids[i]===0?'Pas':''));
+  else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'')+(i===v.dummy?' · açık el':'');
   const mini=rel===0?'':`<span class="mini"><i>${v.counts[i]}</i></span>`;
   return `<div class="chip ${active?'turn':''}">${mini}<div class="tx"><span class="nm">${i===v.me?(v.names[i]||'Sen'):v.names[i]}${i===v.dealer?'<em class="dl">D</em>':''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
 }
@@ -568,7 +620,11 @@ function statusText(v){
   const n=i=>v.names[i];
   if(v.phase==='bid')return v.turn===v.me?'Teklif sırası sende':n(v.turn)+' teklif veriyor…';
   if(v.phase==='trump')return v.turn===v.me?'Kozu sen seç':n(v.turn)+' koz seçiyor…';
-  if(v.phase==='play')return v.turn===v.me?'Sıra sende · kartına dokun':n(v.turn)+' oynuyor…';
+  if(v.phase==='play'){
+    if(v.ctl===v.me)return v.turn===v.me?'Sıra sende · kartına dokun':'Açık eldeki kartı sen oynat';
+    if(v.turn===v.dummy)return v.me===v.dummy?'Elin açık · '+n(v.ctl)+' senin adına oynuyor':n(v.ctl)+' açık eli oynuyor…';
+    return n(v.turn)+' oynuyor…';
+  }
   if(v.phase==='trickEnd')return n(v.winner)+' eli aldı';
   return '';
 }
@@ -598,12 +654,13 @@ function render(v){
     d.appendChild(e);tr.appendChild(d);
   });
   // durum
-  const st=$('#status'),mineTurn=['bid','trump','play'].includes(v.phase)&&v.turn===v.me;
+  const st=$('#status'),mineTurn=['bid','trump','play'].includes(v.phase)&&v.ctl===v.me;
   st.textContent=v.notice&&v.phase==='bid'?v.notice:statusText(v);
   st.classList.toggle('me',mineTurn);st.style.display=(v.phase==='handEnd'||v.phase==='gameEnd')?'none':'block';
   // panel
   renderPanel(v);
-  if(!(v.phase==='play'&&v.turn===v.me))sel=null;
+  if(!(v.phase==='play'&&v.ctl===v.me))sel=null;
+  renderDummy();setTcw();
   renderHand();
   // modal sonu
   if(v.phase==='handEnd'||v.phase==='gameEnd')showEnd(v);
@@ -630,7 +687,7 @@ function renderHand(){
   const cw=Math.max(36,Math.min(84,W*.19,innerHeight*.3/1.42));
   const step=n>1?Math.min(cw*.62,(W-cw)/(n-1)):0,off=(W-(cw+step*(n-1)))/2;
   hd.style.height=(cw*1.42+30)+'px';hd.innerHTML='';
-  const mine=V.phase==='play'&&V.turn===V.me;
+  const mine=V.phase==='play'&&V.ctl===V.me&&V.turn===V.me;
   cards.forEach((c,i)=>{
     const id=cid(c),e=cardEl(c,cw),mid=(n-1)/2;
     e.style.left=(off+i*step)+'px';e.style.zIndex=i;
@@ -642,10 +699,13 @@ function renderHand(){
     hd.appendChild(e);
   });
 }
-function onCard(id){
-  if(!V||V.phase!=='play'||V.turn!==V.me){return}
+function onCard(id,own){
+  if(!V||V.phase!=='play')return;
+  if(V.ctl!==V.me){if(V.me===V.dummy)toast('Elin açık, ortağın senin adına oynuyor');return}
+  const want=own===false?V.dummy:V.me;
+  if(V.turn!==want){toast(V.turn===V.dummy?'Şimdi açık eldeki karttan oynatmalısın':'Şimdi kendi elinden oynamalısın');return}
   if(!V.legal.includes(id)){toast('Bu kartı şu an oynayamazsın');return}
-  if(sel===id){sel=null;sendAct({a:'play',id})}else{sel=id;renderHand()}
+  if(sel===id){sel=null;sendAct({a:'play',id})}else{sel=id;renderHand();renderDummy()}
 }
 function showEnd(v){
   const m=$('#modal'),t=v.me%2,o=1-t,l=v.last;if(!l)return;
