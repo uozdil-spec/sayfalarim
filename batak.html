@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-1955">
-<meta name="apple-mobile-web-app-title" content="Eşli Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-1955" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-1955" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1955">
+<meta name="surum" content="20261102-2006">
+<meta name="apple-mobile-web-app-title" content="Batak">
+<link rel="icon" href="batak-ikon.svg?v=20261102-2006" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-2006" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-2006">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Eşli Batak · by uozdil</title>
+<title>Batak · by uozdil</title>
 <style>
 :root{--gold:#c9a85a;--gold2:#e8d08a;--ivory:#f4eee0;--felt:#0e3f31;--burg:#6d1f2e;--red:#b3261e;--ink:#15171a;--tcw:48px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
@@ -32,6 +32,24 @@ button,input{font-family:inherit}
 h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,40px);letter-spacing:.12em;margin:6px 0 0 .12em;white-space:nowrap;color:var(--gold2);text-shadow:0 2px 18px rgba(201,168,90,.25)}
 .tag{font-size:11px;letter-spacing:5px;color:#9b8a5e;margin:4px 0 20px}
 .menu{width:100%;display:flex;flex-direction:column;gap:10px}
+.opt.big{padding:20px 20px}.opt.big b{font-size:20px;font-family:'Cinzel',Georgia,serif;letter-spacing:1.5px}
+.opt.big span{font-size:13px}
+.opt.pri.big b{color:#1a1405}
+.chip .sp{flex:none;font-style:normal;font-size:10px;font-weight:700;margin-left:5px;padding:0 6px;border-radius:8px;background:rgba(201,168,90,.2);color:var(--gold2)}
+.tabs{display:flex;gap:6px;margin:10px 0 4px}
+.tabs button{flex:1;padding:10px 6px;border-radius:11px;border:1px solid rgba(201,168,90,.3);background:#0b130f;color:#bdb79f;font-size:13.5px;cursor:pointer}
+.tabs button.on{background:rgba(201,168,90,.18);border-color:var(--gold);color:var(--gold2);font-weight:700}
+.box{margin:12px 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(201,168,90,.4);background:rgba(201,168,90,.07)}
+.box h4{margin:0 0 6px}
+.box ol{margin:4px 0;padding-left:20px;font-size:14px;line-height:1.6;color:#e6e0c8}
+.modal details{margin:8px 0;border:1px solid rgba(201,168,90,.2);border-radius:12px;background:#0a110e}
+.modal summary{padding:12px 14px;cursor:pointer;color:var(--gold2);font-weight:600;font-size:14px;list-style:none}
+.modal summary::-webkit-details-marker{display:none}
+.modal summary::after{content:'+';float:right;color:#9b8a5e}
+.modal details[open] summary::after{content:'−'}
+.modal details>div{padding:0 14px 10px}
+.modal details ul{padding-left:16px}
+.gl{font-size:12.5px;color:#a9a58f;margin:6px 0 0;line-height:1.5}
 .opt{width:100%;text-align:left;padding:15px 18px;border-radius:16px;border:1px solid rgba(201,168,90,.35);background:linear-gradient(180deg,#14201b,#0a110e);color:var(--ivory);display:flex;flex-direction:column;gap:3px;cursor:pointer}
 .opt b{font-size:16px;letter-spacing:.5px;color:var(--gold2);font-weight:600}
 .opt span{font-size:12.5px;color:#a9a58f}
@@ -195,16 +213,31 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
 <body>
 <div id="app">
 
-<section id="s-home" class="screen on">
+<section id="s-pick" class="screen on">
   <div class="home">
     <div class="mark">♠ <span class="r">♥</span> <span class="r">♦</span> ♣</div>
-    <h1>EŞLİ BATAK</h1>
-    <div class="tag">4 KİŞİLİK · 2 TAKIM</div>
+    <h1>BATAK</h1>
+    <div class="tag">OYUN SEÇ</div>
     <div class="menu">
-      <button class="opt pri" id="b-solo"><b>Bilgisayara Karşı Oyna</b><span>Ortağın ve rakipler bilgisayar</span></button>
+      <button class="opt big pri" id="p-esli"><b>Eşli Batak</b><span>2 takım · karşındaki ortağındır</span></button>
+      <button class="opt big" id="p-tekli"><b>Batak</b><span>Standart · herkes kendi başına</span></button>
+      <button class="opt" id="p-rules"><b>Nasıl Oynanır</b><span>Kısa ve kolay anlatım</span></button>
+    </div>
+    <div class="sign" style="margin-top:22px">by uozdil</div>
+  </div>
+</section>
+
+<section id="s-home" class="screen">
+  <div class="home">
+    <div class="mark">♠ <span class="r">♥</span> <span class="r">♦</span> ♣</div>
+    <h1 id="h-title">EŞLİ BATAK</h1>
+    <div class="tag" id="h-tag">4 KİŞİLİK · 2 TAKIM</div>
+    <div class="menu">
+      <button class="opt pri" id="b-solo"><b>Bilgisayara Karşı Oyna</b><span id="solo-d">Ortağın ve rakipler bilgisayar</span></button>
       <button class="opt" id="b-host"><b>Online Oda Kur</b><span>Kodu paylaş, arkadaşlarını masaya çağır</span></button>
       <div class="opt join"><b>Odaya Katıl</b><div class="row"><input id="i-code" maxlength="5" placeholder="KOD" autocapitalize="characters" autocomplete="off"><button class="mini-btn" id="b-join">Katıl</button></div></div>
-      <button class="opt" id="b-rules"><b>Nasıl Oynanır</b><span>Kurallar ve puanlama</span></button>
+      <button class="opt" id="b-rules"><b>Nasıl Oynanır</b><span>Kısa ve kolay anlatım</span></button>
+      <button class="back-btn" id="b-pickback">‹ Oyun seç</button>
     </div>
     <div class="set" id="friends">
       <div class="lbl">Arkadaşlarım</div>
@@ -217,9 +250,11 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
       <div class="lbl">Oyun bitişi</div>
       <div class="seg" id="seg-mode"><button data-m="points">Puana göre</button><button data-m="hands">Tur sayısına göre</button></div>
       <div class="seg" id="seg-val" style="margin-top:6px"></div>
+      <div id="open-set">
       <div class="lbl">Açık el</div>
       <div class="seg" id="seg-open"><button data-o="0">Kapalı (klasik)</button><button data-o="1">Açık</button></div>
       <div class="fempty" style="margin-top:6px">Açıksa: koz seçilince ihaleyi alanın ortağının eli herkese açılır, ortak oynamaz, ihaleyi alan iki eli birden oynatır. Kapalıysa herkes kendi elini oynar.</div>
+      </div>
       <div class="lbl">Adın</div>
       <input type="text" id="i-name" maxlength="12" placeholder="Oyuncu" autocomplete="off">
       <label class="sw"><input type="checkbox" id="c-oled"> OLED koruma (kayma ve otomatik kısma)</label>
@@ -230,7 +265,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
 
 <section id="s-lobby" class="screen">
   <div class="lob">
-    <h2>ODA</h2>
+    <h2 id="lb-title">ODA</h2>
     <div class="code" id="lb-code">-----</div>
     <button class="mini-btn" id="b-share" style="padding:10px 20px">Davet Linkini Paylaş</button>
     <div class="seatrow" id="lb-seats"></div>
@@ -296,7 +331,7 @@ function legal(hand,trick,t,broken){
 
 let G=null,pend=null;
 function mkGame(settings,names,humans){
-  G={settings,names:names.slice(),humans:humans.slice(),dealer:Math.floor(Math.random()*4),scores:[0,0],round:0,last:null,over:null,notice:'',redeals:0};
+  G={settings,names:names.slice(),humans:humans.slice(),dealer:Math.floor(Math.random()*4),scores:settings.game==='tekli'?[0,0,0,0]:[0,0],round:0,last:null,over:null,notice:'',redeals:0};
   deal();commit();
 }
 function deal(){
@@ -304,6 +339,9 @@ function deal(){
   G.phase='bid';G.bids=[null,null,null,null];G.highBid=0;G.highBidder=-1;G.bidCount=0;G.turn=(G.dealer+1)%4;
   G.trump=null;G.broken=false;G.trick=[];G.tw=[0,0,0,0];G.trickWinner=-1;G.played=new Set();G.dummy=-1;
 }
+/* İki oyun: 'esli' (2 takım, ihale en az 7) ve 'tekli' (standart Batak: herkes kendi başına, ihale en az 5) */
+const SOLO=()=>G.settings.game==='tekli';
+const minBid=()=>SOLO()?5:7;
 /* Açık el: ihaleyi alanın ortağı (dummy) oynamaz, kartlarını ihaleyi alan oynatır */
 function ctl(s){return (G.phase==='play'||G.phase==='trickEnd')&&s===G.dummy?G.highBidder:s}
 function eligible(seat){return !!G&&G.phase==='bid'&&G.turn===seat&&G.redeals<3&&hcp(G.hands[seat])<=4}
@@ -315,6 +353,7 @@ function viewFor(me){
     dummyHand:(g.dummy>=0&&['play','trickEnd'].includes(g.phase))?g.hands[g.dummy].slice():null, // koz seçildikten sonra açılır
     turn:g.turn,dealer:g.dealer,bids:g.bids,highBid:g.highBid,highBidder:g.highBidder,trump:g.trump,
     trick:g.trick,tricksWon:g.tw,scores:g.scores,round:g.round,settings:g.settings,notice:g.notice,
+    game:SOLO()?'tekli':'esli',minBid:minBid(),
     canRedeal:eligible(me),last:g.last,winner:g.trickWinner,over:g.over,isHost:me===0};
 }
 function commit(){
@@ -325,19 +364,19 @@ function commit(){
 function nextBid(){
   G.bidCount++;
   if(G.bidCount>=4){
-    if(G.highBidder<0){G.highBidder=G.dealer;G.highBid=7;G.bids[G.dealer]=7;G.notice=G.names[G.dealer]+' herkes pas geçince 7 almak zorunda'}
-    G.phase='trump';G.turn=G.highBidder;G.dummy=G.settings.open?(G.highBidder+2)%4:-1; // açık el yalnızca ayar açıksa
+    if(G.highBidder<0){const mb=minBid();G.highBidder=G.dealer;G.highBid=mb;G.bids[G.dealer]=mb;G.notice=G.names[G.dealer]+' herkes pas geçince '+mb+' almak zorunda'}
+    G.phase='trump';G.turn=G.highBidder;G.dummy=(G.settings.open&&!SOLO())?(G.highBidder+2)%4:-1; // açık el yalnızca eşli oyunda ve ayar açıksa
   }else G.turn=(G.turn+1)%4;
   commit();
 }
 function act(seat,a){
   if(!G||!a)return;
   if(a.a==='next'){if(seat===0&&G.phase==='handEnd'){G.dealer=(G.dealer+1)%4;G.redeals=0;G.notice='';deal();commit()}return}
-  if(a.a==='newgame'){if(seat===0&&G.phase==='gameEnd'){G.scores=[0,0];G.round=0;G.over=null;G.last=null;G.redeals=0;G.notice='';deal();commit()}return}
+  if(a.a==='newgame'){if(seat===0&&G.phase==='gameEnd'){G.scores=G.scores.map(()=>0);G.round=0;G.over=null;G.last=null;G.redeals=0;G.notice='';deal();commit()}return}
   if(ctl(G.turn)!==seat)return;
   if(G.phase==='bid'){
     if(a.a==='pass'){G.bids[seat]=0;G.notice='';nextBid()}
-    else if(a.a==='bid'){const v=a.v|0;if(v>=7&&v<=13&&v>G.highBid){G.bids[seat]=v;G.highBid=v;G.highBidder=seat;G.notice='';nextBid()}}
+    else if(a.a==='bid'){const v=a.v|0;if(v>=minBid()&&v<=13&&v>G.highBid){G.bids[seat]=v;G.highBid=v;G.highBidder=seat;G.notice='';nextBid()}}
     else if(a.a==='redeal'&&eligible(seat)){G.redeals++;G.notice=G.names[seat]+' elden dağıttı';deal();commit()}
   }else if(G.phase==='trump'){
     if(a.a==='trump'&&a.v>=0&&a.v<4){G.trump=a.v;G.phase='play';G.turn=G.highBidder;G.notice='';commit()}
@@ -357,19 +396,27 @@ function finishTrick(){
   if(G.hands[0].length===0)endHand();else{G.phase='play';commit()}
 }
 function endHand(){
-  const tA=G.tw[0]+G.tw[2],tB=G.tw[1]+G.tw[3],ct=G.highBidder%2,tc=ct===0?tA:tB,ok=tc>=G.highBid;
-  const d=[0,0];d[ct]=ok?G.highBid:-G.highBid;d[1-ct]=ct===0?tB:tA;
-  G.scores[0]+=d[0];G.scores[1]+=d[1];G.round++;
-  G.last={bidder:G.highBidder,bid:G.highBid,trump:G.trump,tricks:[tA,tB],delta:d,ok,ct};
-  const s=G.settings,sc=G.scores;
-  const fin=(s.mode==='points'?Math.max(sc[0],sc[1])>=s.value:G.round>=s.value)&&sc[0]!==sc[1];
+  const b=G.highBidder;let d,tr,ok,ct;
+  if(SOLO()){ // standart Batak: herkes kendi başına
+    tr=G.tw.slice();ok=tr[b]>=G.highBid;ct=b;
+    d=tr.slice();d[b]=ok?G.highBid:-G.highBid; // ihale alan: +teklif ya da −teklif, diğerleri: aldıkları el
+    for(let s=0;s<4;s++)G.scores[s]+=d[s];
+  }else{ // eşli: takım puanı
+    const tA=G.tw[0]+G.tw[2],tB=G.tw[1]+G.tw[3];ct=b%2;ok=(ct===0?tA:tB)>=G.highBid;tr=[tA,tB];
+    d=[0,0];d[ct]=ok?G.highBid:-G.highBid;d[1-ct]=ct===0?tB:tA;
+    G.scores[0]+=d[0];G.scores[1]+=d[1];
+  }
+  G.round++;
+  G.last={bidder:b,bid:G.highBid,trump:G.trump,tricks:tr,delta:d,ok,ct,game:SOLO()?'tekli':'esli'};
+  const s=G.settings,sc=G.scores,mx=Math.max(...sc),lead=sc.indexOf(mx),uniq=sc.filter(x=>x===mx).length===1;
+  const fin=(s.mode==='points'?mx>=s.value:G.round>=s.value)&&uniq; // eşitlikte bir tur daha
   G.phase=fin?'gameEnd':'handEnd';
-  if(fin)G.over={winner:sc[0]>sc[1]?0:1};
+  if(fin)G.over={winner:lead};
   commit();
 }
 
 /* ====== BİLGİSAYAR OYUNCU ====== */
-function estimate(h){
+function estimate(h,bonus=1){
   const by=[[],[],[],[]];h.forEach(c=>by[c.s].push(c.r));
   let bs=0,bsc=-1;
   by.forEach((a,s)=>{const sc=a.length*2+a.reduce((x,r)=>x+(r===14?3:r===13?2:r===12?1:0),0);if(sc>bsc){bsc=sc;bs=s}});
@@ -380,7 +427,7 @@ function estimate(h){
   const tr=by[bs];
   if(tr.includes(14))t+=1;if(tr.includes(13))t+=.9;if(tr.includes(12))t+=.6;if(tr.includes(11))t+=.4;
   t+=Math.max(0,tr.length-3);
-  return {tricks:t+1,trump:bs};
+  return {tricks:t+bonus,trump:bs}; // bonus: eşli oyunda ortaktan beklenen yaklaşık 1 el
 }
 function isTop(c,hand){for(let r=c.r+1;r<=14;r++){if(!G.played.has(c.s+'-'+r)&&!hand.some(x=>x.s===c.s&&x.r===r))return false}return true}
 function bot(seat){
@@ -388,10 +435,10 @@ function bot(seat){
   const h=G.hands[seat];
   if(G.phase==='bid'){
     if(eligible(seat)){act(seat,{a:'redeal'});return}
-    const e=estimate(h);let want=Math.min(13,Math.floor(e.tricks+.2));
+    const e=estimate(h,SOLO()?0:1);let want=Math.min(13,Math.floor(e.tricks+.2));
     const partner=(seat+2)%4;
-    if(G.highBidder===partner&&want<G.highBid+3){act(seat,{a:'pass'});return}
-    const b=Math.max(7,G.highBid+1);
+    if(!SOLO()&&G.highBidder===partner&&want<G.highBid+3){act(seat,{a:'pass'});return}
+    const b=Math.max(minBid(),G.highBid+1);
     if(want>=b)act(seat,{a:'bid',v:b});else act(seat,{a:'pass'});
   }else if(G.phase==='trump'){
     act(seat,{a:'trump',v:trumpFor(seat)});
@@ -406,7 +453,7 @@ function trumpFor(seat){
   return best;
 }
 function botPlay(seat){
-  const h=G.hands[seat],lg=legal(h,G.trick,G.trump,G.broken),t=G.trump,team=seat%2,mine=team===G.highBidder%2;
+  const h=G.hands[seat],lg=legal(h,G.trick,G.trump,G.broken),t=G.trump,team=seat%2,mine=SOLO()?seat===G.highBidder:team===G.highBidder%2;
   const val=c=>c.r+(c.s===t?20:0);
   const low=a=>a.slice().sort((x,y)=>val(x)-val(y))[0];
   if(lg.length===1)return lg[0];
@@ -421,7 +468,7 @@ function botPlay(seat){
   }
   let w=G.trick[0];for(let i=1;i<G.trick.length;i++)if(beats(G.trick[i].card,w.card,t))w=G.trick[i];
   const wins=lg.filter(c=>beats(c,w.card,t));
-  const partnerWin=w.seat%2===team,last=G.trick.length===3;
+  const partnerWin=!SOLO()&&w.seat%2===team,last=G.trick.length===3;
   if(partnerWin){
     if(!last&&w.card.s!==t&&w.card.r<12&&wins.length)return low(wins);
     return low(lg);
@@ -436,10 +483,14 @@ function botPlay(seat){
 /* ====== YARDIMCILAR ====== */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-let mode='none',V=null,sel=null,cur='home',peer=null,conn=null,conns={},L=null,myCode='',shown=new Set();
+let mode='none',V=null,sel=null,cur='pick',peer=null,conn=null,conns={},L=null,myCode='',shown=new Set();
 let cfg;try{cfg=JSON.parse(store.get('batak_cfg')||'null')}catch(e){cfg=null}
 cfg=cfg||{mode:'points',value:61};cfg.open=!!cfg.open; // açık el: varsayılan kapalı (klasik)
-const OPTS={points:[41,61,101],hands:[4,6,10]};
+cfg.game=cfg.game==='tekli'?'tekli':'esli';
+const deepLink=/[?&](oda|ark)=/.test(location.search); // davet/arkadaş linkiyle gelen oyun seçmeden doğrudan ana menüye gider
+const OPTS={esli:{points:[41,61,101],hands:[4,6,10]},tekli:{points:[21,31,51],hands:[4,6,10]}};
+const gameName=g=>g==='tekli'?'Batak':'Eşli Batak';
+const OV=()=>OPTS[cfg.game];
 const clean=s=>String(s||'').replace(/[<>&"'`]/g,'').trim().slice(0,12);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const myName=()=>clean($('#i-name').value)||'Oyuncu';
@@ -453,29 +504,67 @@ const endText=s=>s.mode==='points'?s.value+' puana kadar':s.value+' tur';
 /* ====== HOME ====== */
 function renderSettings(){
   $$('#seg-mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===cfg.mode));
-  if(!OPTS[cfg.mode].includes(cfg.value))cfg.value=OPTS[cfg.mode][1];
-  $('#seg-val').innerHTML=OPTS[cfg.mode].map(v=>`<button data-v="${v}" class="${v===cfg.value?'on':''}">${v}${cfg.mode==='points'?' puan':' tur'}</button>`).join('');
+  if(!OV()[cfg.mode].includes(cfg.value))cfg.value=OV()[cfg.mode][1];
+  $('#seg-val').innerHTML=OV()[cfg.mode].map(v=>`<button data-v="${v}" class="${v===cfg.value?'on':''}">${v}${cfg.mode==='points'?' puan':' tur'}</button>`).join('');
   $$('#seg-val button').forEach(b=>b.onclick=()=>{cfg.value=+b.dataset.v;store.set('batak_cfg',JSON.stringify(cfg));renderSettings()});
   $$('#seg-open button').forEach(b=>b.classList.toggle('on',(b.dataset.o==='1')===!!cfg.open));
   store.set('batak_cfg',JSON.stringify(cfg));
 }
-$$('#seg-mode button').forEach(b=>b.onclick=()=>{cfg.mode=b.dataset.m;cfg.value=OPTS[cfg.mode][1];renderSettings()});
+$$('#seg-mode button').forEach(b=>b.onclick=()=>{cfg.mode=b.dataset.m;cfg.value=OV()[cfg.mode][1];renderSettings()});
 $$('#seg-open button').forEach(b=>b.onclick=()=>{cfg.open=b.dataset.o==='1';renderSettings()});
 $('#i-name').value=store.get('batak_name')||'';
 $('#i-name').onchange=()=>store.set('batak_name',$('#i-name').value.trim());
 renderSettings();
 
-const RULES=`<h2>NASIL OYNANIR</h2>
-<h4>Temel</h4><ul><li>4 kişi, 2 takım. Karşındaki ortağındır. 52 kart, herkese 13.</li><li>Sıralama: A en büyük, 2 en küçük.</li></ul>
-<h4>Artırım (tek el)</h4><ul><li>Dağıtanın solundan başlayarak herkes <b>bir kez</b> konuşur: <b>Pas</b> ya da öncekinden yüksek bir teklif.</li><li>En az 7, en çok 13 el teklif edilebilir.</li><li>Herkes pas derse dağıtan 7 almak zorundadır.</li></ul>
-<h4>Elden</h4><ul><li>Teklif sırası sana geldiğinde elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam 4 veya daha az) <b>Elden Dağıt</b> diyerek kartları yeniden dağıttırabilirsin.</li></ul>
-<h4>Açık el (isteğe bağlı ayar)</h4><ul><li>Ana menüdeki <b>Açık el</b> ayarı kapalıysa (klasik) herkes kendi elini oynar, kimsenin eli görünmez.</li><li>Ayar açıksa: koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Koz, ortağın eli görülmeden seçilir. Ortak oynamaz; ihaleyi alan hem kendi elini hem açık eli oynatır.</li><li>İhaleyi alan oyuna ilk o başlar. Açık el eli alırsa sonraki eli yine ihaleyi alan o kartlardan açar.</li></ul>
-<h4>Koz</h4><ul><li>İhaleyi alan kozu seçer ve ilk eli açar.</li><li>Koz ile el açmak serbesttir; ilk elde de, istediğin her elde kozla çıkabilirsin.</li></ul>
-<h4>El oynama</h4><ul><li>Açılan renkten varsan atmak zorundasın; yukarıdan vurabiliyorsan büyüğünü atmalısın.</li><li>Rengin yoksa koz atmak zorundasın; el kozlanmışsa üstüne koz atabiliyorsan atmalısın.</li><li>Eli en büyük koz, yoksa açılan rengin en büyüğü alır; kazanan sonraki eli açar.</li></ul>
-<h4>Puan</h4><ul><li>İhale takımı toplam aldığı el sayısı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b> yazar.</li><li>Karşı takım aldığı el sayısı kadar puan yazar.</li><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>
-<h4>Kartı oynamak</h4><ul><li>Kartına bir kez dokun (yukarı kalkar), tekrar dokun, oynansın. Oynanamayan kartlar sönük görünür.</li></ul>
-<button class="mbtn" onclick="closeModal()">Tamam</button>`;
-$('#b-rules').onclick=()=>openModal(RULES);
+/* ====== OYUN SEÇİMİ ====== */
+function applyGame(){
+  const t=cfg.game==='tekli';
+  $('#h-title').textContent=t?'BATAK':'EŞLİ BATAK';
+  $('#h-tag').textContent=t?'4 KİŞİLİK · HERKES KENDİ BAŞINA':'4 KİŞİLİK · 2 TAKIM';
+  $('#solo-d').textContent=t?'Üç rakip de bilgisayar':'Ortağın ve rakipler bilgisayar';
+  $('#open-set').style.display=t?'none':'';
+  $('#wm b').textContent=gameName(cfg.game).toUpperCase();
+  $('#p-esli').classList.toggle('pri',!t);$('#p-tekli').classList.toggle('pri',t);
+  document.title=gameName(cfg.game)+' · by uozdil';
+  renderSettings();
+}
+function pickGame(g){cfg.game=g;applyGame();showScreen('home')}
+$('#p-esli').onclick=()=>pickGame('esli');
+$('#p-tekli').onclick=()=>pickGame('tekli');
+$('#b-pickback').onclick=()=>showScreen('pick');
+applyGame();
+
+/* ====== KILAVUZ ====== */
+const SUMMARY={
+ esli:['4 kişi oynarsınız. <b>Karşındaki ortağındır</b> (2 takım). Herkese 13 kart dağıtılır.','Herkes <b>bir kez</b> teklif verir: “Bu turda kaç el alırım?” (en az <b>7</b>) ya da <b>Pas</b> der. En yüksek teklifi veren <b>ihaleyi alır</b>.','İhaleyi alan <b>kozu seçer</b> ve oyunu o başlatır.','Her elde 4 kart atılır. Açılan renkten at; en büyük kart (ya da koz) eli alır.','İhaleyi alan takım teklifini tutturursa <b>+teklif</b>, tutturamazsa <b>−teklif</b> yazar. Karşı takım aldığı el kadar puan yazar.'],
+ tekli:['4 kişi oynarsınız, <b>herkes kendi başına</b>. Herkese 13 kart dağıtılır.','Herkes <b>bir kez</b> teklif verir: “Bu turda kaç el alırım?” (en az <b>5</b>) ya da <b>Pas</b> der. En yüksek teklifi veren <b>ihaleyi alır</b>.','İhaleyi alan <b>kozu seçer</b> ve oyunu o başlatır.','Her elde 4 kart atılır. Açılan renkten at; en büyük kart (ya da koz) eli alır.','İhaleyi alan teklifini tutturursa <b>+teklif</b>, tutturamazsa <b>−teklif</b> yazar. Diğer üç oyuncu kendi aldığı el kadar puan yazar.']
+};
+function rulesBody(g){
+  const t=g==='tekli',mb=t?5:7;
+  const D=(h,b,o)=>`<details${o?' open':''}><summary>${h}</summary><div>${b}</div></details>`;
+  return `<h2>NASIL OYNANIR</h2>
+<div class="tabs"><button data-t="esli" class="${t?'':'on'}">Eşli Batak</button><button data-t="tekli" class="${t?'on':''}">Batak</button></div>
+<div class="box"><h4>30 saniyede özet</h4><ol>${SUMMARY[g].map(x=>`<li>${x}</li>`).join('')}</ol></div>
+<p class="gl"><b>El</b> = 4 kartın masaya atıldığı bir hamle. <b>Tur</b> = dağıtılan 13 elin hepsi. <b>Koz</b> = o turda her rengi yenen renk.</p>
+${D('Teklif (ihale)',`<ul><li>Dağıtanın solundan başlayarak herkes <b>sadece bir kez</b> konuşur.</li><li><b>Pas</b> dersen bu turda teklif veremezsin. Teklif verirsen öncekinden <b>yüksek</b> bir sayı söylemelisin.</li><li>En az <b>${mb}</b>, en çok <b>13</b> el teklif edilir.</li><li>Herkes pas derse dağıtan <b>${mb}</b> almak zorundadır.</li></ul>`)}
+${D('Elden dağıt',`<ul><li>Elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam <b>4 veya daha az</b>) teklif sırası sana geldiğinde <b>Elden Dağıt</b> diyebilirsin.</li><li>Kartlar yeniden dağıtılır.</li></ul>`)}
+${D('Koz',`<ul><li>İhaleyi alan kozu seçer ve <b>ilk eli o açar</b>.</li><li>Koz masada renkli bir rozetle görünür.</li><li>Kozla el açmak serbesttir; ilk elde bile açabilirsin.</li></ul>`)}
+${D('Kart atma kuralları',`<ul><li>Açılan renkten varsa <b>atmak zorundasın</b>. Büyük atabiliyorsan büyüğünü at.</li><li>O renkten yoksa <b>koz atmak zorundasın</b>. Elde koz varsa üstüne daha büyük koz atmalısın.</li><li>Koz da yoksa istediğin kartı at.</li><li>Eli en büyük koz alır; koz yoksa açılan rengin en büyüğü alır. <b>Eli alan sonraki eli açar.</b></li><li>Atamayacağın kartlar sönük görünür.</li></ul>`)}
+${D('Puan hesabı',t?`<ul><li><b>İhaleyi alan:</b> teklifini tutturursa <b>+teklif</b>, tutturamazsa <b>−teklif</b>.</li><li><b>Diğer üç oyuncu:</b> her biri kendi aldığı el sayısı kadar puan yazar.</li></ul><p>Örnek: Ali 6 teklif verdi ve 7 el aldı → <b>+6</b>. Diğerleri 3, 2 ve 1 el aldı → <b>+3, +2, +1</b>.<br>Ali 6 dedi ama 5 el aldı → <b>−6</b>.</p><ul><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>`:`<ul><li><b>İhale takımı:</b> iki oyuncunun aldığı eller toplamı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b>.</li><li><b>Karşı takım:</b> aldığı el sayısı kadar puan yazar.</li></ul><p>Örnek: Biz 8 teklif verdik, toplam 9 el aldık → <b>+8</b>. Onlar 4 el aldı → <b>+4</b>.<br>8 dedik ama 7 el aldık → <b>−8</b>.</p><ul><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>`)}
+${t?'':D('Açık el (isteğe bağlı)',`<ul><li>Ana menüdeki <b>Açık el</b> ayarı <b>Kapalı</b>ysa (klasik) herkes kendi elini oynar, kimsenin eli görünmez.</li><li><b>Açık</b>sa: koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Ortak oynamaz, ihaleyi alan iki eli birden oynatır.</li><li>Koz, ortağın eli görülmeden seçilir.</li></ul>`)}
+${D('Online oynama',`<ul><li>Ana menüde <b>Online Oda Kur</b>’a bas, kodu ya da linki arkadaşına gönder.</li><li>Ya da <b>Arkadaşlarım</b> listesinden çevrimiçi arkadaşına tek dokunuşla davet gönder.</li><li>Boş kalan koltuklara bilgisayar oturur.</li></ul>`)}
+${D('Kartı nasıl oynarım?',`<ul><li>Kartına <b>bir kez dokun</b> (yukarı kalkar), <b>tekrar dokun</b>, oynansın.</li></ul>`)}
+<button class="mbtn" id="r-ok">Tamam</button>`;
+}
+let rulesBack=null;
+function showRules(g,back){
+  rulesBack=back||null;
+  openModal(rulesBody(g));
+  $$('#modal-in .tabs button').forEach(b=>b.onclick=()=>showRules(b.dataset.t,rulesBack));
+  $('#r-ok').onclick=()=>{if(rulesBack)rulesBack();else closeModal()};
+}
+$('#b-rules').onclick=()=>showRules(cfg.game);
+$('#p-rules').onclick=()=>showRules(cfg.game);
 
 $('#b-solo').onclick=()=>{
   store.set('batak_name',myName());mode='solo';
@@ -526,16 +615,18 @@ function renderLobby(){
   $('#lb-code').textContent=myCode||'-----';
   const isHost=mode==='host',you=isHost?0:L.you;
   const row=s=>`<div class="sr ${L.humans[s]?'hu':''}"><span>${L.names[s]}${s===you?' (sen)':''}</span><em>${L.humans[s]?(s===0?'Oda sahibi':'Bağlı'):'Boş · bilgisayar oynar'}</em></div>`;
-  $('#lb-seats').innerHTML=`<div class="tm">TAKIM 1</div>${row(0)}${row(2)}<div class="tm">TAKIM 2</div>${row(1)}${row(3)}`;
+  const tk=L.settings.game==='tekli';
+  $('#lb-title').textContent='ODA · '+gameName(tk?'tekli':'esli').toUpperCase();
+  $('#lb-seats').innerHTML=tk?`<div class="tm">OYUNCULAR</div>${row(0)}${row(1)}${row(2)}${row(3)}`:`<div class="tm">TAKIM 1</div>${row(0)}${row(2)}<div class="tm">TAKIM 2</div>${row(1)}${row(3)}`;
   $('#b-start').style.display=isHost?'block':'none';
   $('#b-share').style.display=isHost?'inline-block':'none';
-  $('#lb-info').textContent=(isHost?'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. ':'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings)+' · Açık el: '+(L.settings.open?'Açık':'Kapalı');
+  $('#lb-info').textContent=(isHost?(tk?'Arkadaşların boş koltuklara oturur, kalanlara bilgisayar oturur. ':'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. '):'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings)+(tk?'':' · Açık el: '+(L.settings.open?'Açık':'Kapalı'));
   renderFriends();
 }
 $('#b-share').onclick=async()=>{
   const url=location.origin+location.pathname+'?oda='+myCode;
-  const text='Eşli Batak oynayalım! Oda kodu: '+myCode;
-  if(navigator.share){try{await navigator.share({title:'Eşli Batak · by uozdil',text,url});return}catch(e){}}
+  const gn=gameName(L&&L.settings&&L.settings.game);const text=gn+' oynayalım! Oda kodu: '+myCode;
+  if(navigator.share){try{await navigator.share({title:gn+' · by uozdil',text,url});return}catch(e){}}
   try{await navigator.clipboard.writeText(url);toast('Link kopyalandı')}catch(e){toast('Kod: '+myCode)}
 };
 $('#b-start').onclick=()=>{mkGame(L.settings,L.names,L.humans)};
@@ -632,7 +723,7 @@ function chip(i){
   else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'')+(i===v.dummy?' · açık el':'');
   const mini=rel===0?'':`<span class="mini"><i>${v.counts[i]}</i></span>`;
   const open=(v.phase==='play'||v.phase==='trickEnd')&&i===v.dummy&&v.dummy!==v.me;
-  return `<div class="chip ${active?'turn':''} ${open?'dmy':''}">${mini}<div class="tx"><span class="nm"><span class="n">${esc(v.names[i]||'Sen')}</span>${i===v.dealer?'<em class="dl">D</em>':''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
+  return `<div class="chip ${active?'turn':''} ${open?'dmy':''}">${mini}<div class="tx"><span class="nm"><span class="n">${esc(v.names[i]||'Sen')}</span>${i===v.dealer?'<em class="dl">D</em>':''}${v.game==='tekli'?`<em class="sp">${v.scores[i]}</em>`:''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
 }
 function statusText(v){
   const n=i=>v.names[i];
@@ -648,15 +739,20 @@ function statusText(v){
 }
 function render(v){
   V=v;
-  const myTeam=v.me%2;
-  $('#sc-us b').textContent=v.scores[myTeam];$('#sc-them b').textContent=v.scores[1-myTeam];
+  const myTeam=v.me%2,tk=v.game==='tekli';
+  if(tk){const others=v.scores.filter((_,k)=>k!==v.me);
+    $('#sc-us small').textContent='SEN';$('#sc-us b').textContent=v.scores[v.me];
+    $('#sc-them small').textContent='RAKİP';$('#sc-them b').textContent=Math.max(...others)}
+  else{$('#sc-us small').textContent='BİZ';$('#sc-them small').textContent='ONLAR';
+    $('#sc-us b').textContent=v.scores[myTeam];$('#sc-them b').textContent=v.scores[1-myTeam]}
+  $('#wm b').textContent=gameName(v.game).toUpperCase();
   // HUD ortası
   let mid='';
   if(v.phase==='bid')mid=`<b>ARTIRIM</b><span>${v.highBid?'En yüksek: '+v.highBid+' · '+v.names[v.highBidder]:'Henüz teklif yok'}</span>`;
   else if(v.phase==='trump')mid=`<b>İHALE ${v.highBid}</b><span>${v.names[v.highBidder]} koz seçiyor</span>`;
   else if(v.highBidder>=0&&v.trump!=null){
-    const tc=v.tricksWon[v.highBidder%2]+v.tricksWon[v.highBidder%2+2];
-    mid=`<b>${v.highBid} · <span class="${isRed(v.trump)?'rd':''}">${SUIT[v.trump]}</span></b><span>${v.names[v.highBidder]} · takım ${tc}/${v.highBid}</span>`;
+    const tc=tk?v.tricksWon[v.highBidder]:v.tricksWon[v.highBidder%2]+v.tricksWon[v.highBidder%2+2];
+    mid=`<b>${v.highBid} · <span class="${isRed(v.trump)?'rd':''}">${SUIT[v.trump]}</span></b><span>${v.names[v.highBidder]} · ${tk?'':'takım '}${tc}/${v.highBid}</span>`;
   }
   $('#mid').innerHTML=mid;
   // KOZ rozeti: koz seçilince masada büyük ve renkli görünür
@@ -693,14 +789,14 @@ function render(v){
 function renderPanel(v){
   const p=$('#panel');
   if(v.phase==='bid'&&v.turn===v.me){
-    let nums='';for(let n=7;n<=13;n++)nums+=`<button data-n="${n}" ${n<=v.highBid?'disabled':''}>${n}</button>`;
-    p.innerHTML=`<h3>TEKLİFİN?</h3><div class="hint">${v.highBid?'En yüksek teklif: '+v.highBid+' ('+v.names[v.highBidder]+')':'İlk teklif sende. En az 7'}</div><div class="nums">${nums}</div><div class="acts"><button data-a="pass">Pas</button>${v.canRedeal?'<button class="red" data-a="redeal">Elden Dağıt</button>':''}</div>`;
+    const mb=v.minBid||7,cnt=14-mb;let nums='';for(let n=mb;n<=13;n++)nums+=`<button data-n="${n}" ${n<=v.highBid?'disabled':''}>${n}</button>`;
+    p.innerHTML=`<h3>KAÇ EL ALIRSIN?</h3><div class="hint">${v.highBid?'En yüksek teklif: '+v.highBid+' ('+v.names[v.highBidder]+')':'İlk teklif sende. En az '+mb}</div><div class="nums" style="grid-template-columns:repeat(${cnt>7?5:cnt},1fr)">${nums}</div><div class="acts"><button data-a="pass">Pas</button>${v.canRedeal?'<button class="red" data-a="redeal">Elden Dağıt</button>':''}</div>`;
     p.classList.add('on');
     $$('#panel .nums button').forEach(b=>b.onclick=()=>sendAct({a:'bid',v:+b.dataset.n}));
     $$('#panel .acts button').forEach(b=>b.onclick=()=>sendAct({a:b.dataset.a}));
   }else if(v.phase==='trump'&&v.turn===v.me){
     const cnt=[0,0,0,0];v.hand.forEach(c=>cnt[c.s]++);
-    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el${v.settings.open?' · ortağının eli koz seçildikten sonra açılır':''}</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
+    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el${v.settings.open&&v.game!=='tekli'?' · ortağının eli koz seçildikten sonra açılır':''}</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
     p.classList.add('on');
     $$('#panel .suits button').forEach(b=>b.onclick=()=>sendAct({a:'trump',v:+b.dataset.s}));
   }else{p.classList.remove('on');p.innerHTML=''}
@@ -733,15 +829,21 @@ function onCard(id,own){
   if(sel===id){sel=null;sendAct({a:'play',id})}else{sel=id;renderHand();renderDummy()}
 }
 function showEnd(v){
-  const m=$('#modal'),t=v.me%2,o=1-t,l=v.last;if(!l)return;
+  const m=$('#modal'),l=v.last;if(!l)return;
   m.dataset.end='1';
+  const tk=v.game==='tekli',t=v.me%2,o=1-t;
   const fmt=d=>`<span class="${d>=0?'pos':'neg'}">${d>0?'+':''}${d}</span>`;
   const row=(nm,k)=>`<tr><td>${nm}</td><td>${l.tricks[k]}</td><td>${fmt(l.delta[k])}</td><td><b>${v.scores[k]}</b></td></tr>`;
-  const head=`<p style="text-align:center">İhale: <b>${v.names[l.bidder]}</b> · ${l.bid} el · <span style="${isRed(l.trump)?'color:#ff8a7f':''}">${SUIT[l.trump]}</span><br>${l.ok?'<span class="pos">Başarılı</span>':'<span class="neg">Battı</span>'}</p>
+  const bid=`İhale: <b>${esc(v.names[l.bidder])}</b> · ${l.bid} el · <span style="${isRed(l.trump)?'color:#ff8a7f':''}">${SUIT[l.trump]}</span><br>${l.ok?'<span class="pos">Başarılı</span>':'<span class="neg">Battı</span>'}`;
+  let head;
+  if(tk){
+    const rows=[0,1,2,3].map(k=>(v.me+k)%4).map(k=>row(esc(k===v.me?'Sen':v.names[k])+(k===l.bidder?' ★':''),k)).join('');
+    head=`<p style="text-align:center">${bid}</p><table class="res"><tr><th></th><th>EL</th><th>PUAN</th><th>TOPLAM</th></tr>${rows}</table><p class="gl" style="text-align:center">★ ihaleyi alan</p>`;
+  }else head=`<p style="text-align:center">${bid}</p>
     <table class="res"><tr><th></th><th>EL</th><th>PUAN</th><th>TOPLAM</th></tr>${row('Biz',t)}${row('Onlar',o)}</table>`;
   if(v.phase==='gameEnd'){
-    const win=v.over.winner===t;
-    openModal(`<h2>OYUN BİTTİ</h2><div class="big">${win?'Kazandınız!':'Rakip kazandı'}</div>${head}${v.isHost?'<button class="mbtn" id="m-new">Yeni Oyun</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi yeni oyun başlatabilir.</p>'}<button class="mbtn sec" id="m-home">Ana Menü</button>`);
+    const w=v.over.winner,txt=tk?(w===v.me?'Kazandın!':esc(v.names[w])+' kazandı'):(w===t?'Kazandınız!':'Rakip kazandı');
+    openModal(`<h2>OYUN BİTTİ</h2><div class="big">${txt}</div>${head}${v.isHost?'<button class="mbtn" id="m-new">Yeni Oyun</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi yeni oyun başlatabilir.</p>'}<button class="mbtn sec" id="m-home">Ana Menü</button>`);
     $('#modal').dataset.end='1';
     const nb=$('#m-new');if(nb)nb.onclick=()=>sendAct({a:'newgame'});
     $('#m-home').onclick=leave;
@@ -753,8 +855,8 @@ function showEnd(v){
 }
 $('#b-menu').onclick=()=>{
   if(!V)return;
-  openModal(`<h2>MENÜ</h2><p style="text-align:center">Bitiş: ${endText(V.settings)}<br>Açık el: ${V.settings.open?'Açık':'Kapalı'}</p><button class="mbtn sec" id="m-rules">Kurallar</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
-  $('#m-rules').onclick=()=>{openModal(RULES.replace('onclick="closeModal()"','onclick="$(\'#b-menu\').click()"'))};
+  openModal(`<h2>MENÜ</h2><p style="text-align:center"><b>${gameName(V.game)}</b><br>Bitiş: ${endText(V.settings)}${V.game==='tekli'?'':'<br>Açık el: '+(V.settings.open?'Açık':'Kapalı')}</p><button class="mbtn sec" id="m-rules">Nasıl Oynanır</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
+  $('#m-rules').onclick=()=>showRules(V.game,()=>$('#b-menu').click());
   $('#m-leave').onclick=()=>{if(confirm('Oyundan çıkılsın mı?'))leave()};
   $('#m-close').onclick=closeModal;
 };
@@ -828,7 +930,7 @@ function inviteFriend(f){
   const send=()=>{
     let c;try{c=pp.connect(UID(f.code),{reliable:true})}catch(e){toast('Davet gönderilemedi');return}
     const to=setTimeout(()=>{toast(f.name+' çevrimiçi görünmüyor');try{c.close()}catch(e){}},6000);
-    c.on('open',()=>{clearTimeout(to);c.send({t:'invite',name:myName(),room:myCode,code:me});toast(f.name+' davet edildi');setTimeout(()=>{try{c.close()}catch(e){}},900)});
+    c.on('open',()=>{clearTimeout(to);c.send({t:'invite',name:myName(),room:myCode,code:me,game:(L&&L.settings&&L.settings.game)||cfg.game});toast(f.name+' davet edildi');setTimeout(()=>{try{c.close()}catch(e){}},900)});
   };
   if(mode==='host'&&myCode&&peer&&!G)send();else startHost(send);
 }
@@ -836,7 +938,7 @@ function onInvite(m){
   const nm=clean(m.name)||'Arkadaş',room=cleanCode(m.room);
   if(room.length<5)return;
   if(cur==='game'){toast(nm+' seni masaya çağırıyor (oyun bitince katılabilirsin)');return}
-  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni Eşli Batak masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
+  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni ${esc(gameName(m.game==='tekli'?'tekli':'esli'))} masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
   $('#m-yes').onclick=()=>{closeModal();if(m.code)addFriend(m.code,nm,false);if(mode!=='none')leave();joinOnline(room)};
   $('#m-no').onclick=closeModal;
 }
@@ -872,8 +974,8 @@ function onScreen(n){if(n==='home'||n==='lobby'){renderFriends();setTimeout(chec
 $('#b-flink').onclick=async()=>{
   if(!needName())return;
   const url=location.origin+location.pathname+'?ark='+me+'&ad='+encodeURIComponent(myName());
-  const text=myName()+' seni Eşli Batak oynamaya çağırıyor. Linke dokunup arkadaş ol:';
-  if(navigator.share){try{await navigator.share({title:'Eşli Batak · by uozdil',text,url});return}catch(e){}}
+  const text=myName()+' seni Batak oynamaya çağırıyor. Linke dokunup arkadaş ol:';
+  if(navigator.share){try{await navigator.share({title:'Batak · by uozdil',text,url});return}catch(e){}}
   try{await navigator.clipboard.writeText(url);toast('Link kopyalandı, arkadaşına gönder')}catch(e){toast('Kodun: '+me)}
 };
 $('#b-fadd').onclick=()=>addByCode($('#i-fcode').value);
@@ -895,6 +997,7 @@ renderFriends();startPresence();
   const q=new URLSearchParams(location.search).get('oda');
   if(q){$('#i-code').value=q.toUpperCase().slice(0,5);toast('Oda kodu girildi, adını yazıp Katıl’a bas')}
 })();
+if(deepLink)showScreen('home');
 </script>
 </body>
 </html>
