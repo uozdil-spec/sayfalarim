@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261102-2108">
+<meta name="surum" content="20261102-2115">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07070a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Satranç">
 <title>Satranç · by uozdil</title>
-<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2108">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2108">
-<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2108">
-<link rel="manifest" href="manifest.webmanifest?v=20261102-2108">
+<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2115">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2115">
+<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2115">
+<link rel="manifest" href="manifest.webmanifest?v=20261102-2115">
 <style>
 :root{--gold:#c9a45c;--gold2:#ead9ad;--txt:#ece6d8;--mut:#9a9486;--line:rgba(201,164,92,.3);--lt:#e8d3a8;--dk:#8a5a35;--f1:#52331d;--f2:#24150b;--grain:none;--bs:320px;--serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -188,6 +188,8 @@ input.fld:focus{border-color:var(--gold)}
 @-webkit-keyframes sp{to{-webkit-transform:rotate(360deg)}}
 @keyframes sp{to{transform:rotate(360deg)}}
 
+.addf{margin-left:10px;padding:2px 8px;border:1px solid var(--gold);border-radius:10px;color:var(--gold2);font-size:10.5px;letter-spacing:.06em;text-decoration:none;white-space:nowrap}
+
 </style>
 </head>
 <body>
@@ -287,6 +289,7 @@ input.fld:focus{border-color:var(--gold)}
 <div class="modal" id="m-over"><div class="sheet">
   <div class="big" id="ov-t"></div><div class="sub" id="ov-s"></div>
   <button class="go" id="ov-again" data-t="playAgain"></button>
+  <button class="go ghost" id="ov-add" style="display:none" data-t="addAsFriend"></button>
   <button class="go ghost" id="ov-home" data-t="home"></button>
 </div></div>
 
@@ -2231,7 +2234,7 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Adın', yourCode: 'Kodun', copy: 'Kopyala', copied: 'Kopyalandı', copiedLink: 'Link kopyalandı',
       inviteLink: 'Link ile davet et', inviteLinkS: 'Linki gönder, rakibin açınca oyun başlar',
       friends: 'Arkadaşlar', addFriend: 'Arkadaş ekle', noFriends: 'Henüz arkadaş yok. Linkini paylaş ya da kodla ekle.',
-      fName: 'Adı (isteğe bağlı)', namePh: 'Buraya dokun, adını yaz', nameHint: 'Arkadaşların seni bu adla görür', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu veya linki', linkJoinS: 'Arkadaşın oyunu açık tutmalı', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
+      fName: 'Adı (isteğe bağlı)', namePh: 'Buraya dokun, adını yaz', nameHint: 'Arkadaşların seni bu adla görür', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu veya linki', linkJoinS: 'Arkadaşın oyunu açık tutmalı', addAsFriend: 'Arkadaş olarak ekle', friendAdded: 'Arkadaşlarına eklendi', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
       invite: 'Davet gönder', sendLink: 'Link ile davet et', delFriend: 'Arkadaşı sil', confirmDel: 'Arkadaş silinsin mi?',
       waiting: 'Yanıt bekleniyor…', waitLink: 'Rakip bekleniyor…', waitLinkS: 'Linki arkadaşına gönder. Açtığında oyun başlar.', share: 'Linki paylaş',
       invFrom: '{n} seni oyuna davet ediyor', joinFrom: '{n} seninle oynamak istiyor', accept: 'Kabul et', decline: 'Reddet',
@@ -2247,7 +2250,7 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Your name', yourCode: 'Your code', copy: 'Copy', copied: 'Copied', copiedLink: 'Link copied',
       inviteLink: 'Invite with a link', inviteLinkS: 'Send the link; the game starts when they open it',
       friends: 'Friends', addFriend: 'Add friend', noFriends: 'No friends yet. Share your link or add by code.',
-      fName: 'Name (optional)', namePh: 'Tap here, type your name', nameHint: 'Friends will see you by this name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code or link", linkJoinS: 'Your friend must keep the game open', add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
+      fName: 'Name (optional)', namePh: 'Tap here, type your name', nameHint: 'Friends will see you by this name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code or link", linkJoinS: 'Your friend must keep the game open', addAsFriend: 'Add as friend', friendAdded: 'Added to your friends', add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
       invite: 'Send invite', sendLink: 'Invite with a link', delFriend: 'Remove friend', confirmDel: 'Remove this friend?',
       waiting: 'Waiting for reply…', waitLink: 'Waiting for opponent…', waitLinkS: 'Send the link to your friend. The game starts when they open it.', share: 'Share link',
       invFrom: '{n} invites you to a game', joinFrom: '{n} wants to play with you', accept: 'Accept', decline: 'Decline',
@@ -2353,7 +2356,7 @@ var AI = (function () {
 ;
 /* ===== Ağ katmanı: hesapsız P2P (PeerJS) — sunucu sadece "tanışma" için, oyun doğrudan cihazlar arasında ===== */
 var Net = (function () {
-  var PFX = 'uozsat-', peer = null, conn = null, rcT = null, rcEnd = 0, rtT = null;
+  var dialSeq = 0, PFX = 'uozsat-', peer = null, conn = null, rcT = null, rcEnd = 0, rtT = null;
   var N = { ready: false, err: '', st: {}, inGame: false, role: '', oppCode: '', watch: '', taken: 0, on: {} };
   function id(code) { return PFX + code; }
   function emit(ev, a, b) { if (N.on[ev]) N.on[ev](a, b); }
@@ -2443,7 +2446,7 @@ var Net = (function () {
       return;
     }
     c.on('open', function () {
-      if (N.busy() && conn && conn !== c && conn.open) { try { c.send({ t: 'busy' }); } catch (e) {} setTimeout(function () { try { c.close(); } catch (e) {} }, 300); return; }
+      if (conn && conn !== c && conn.open) { try { c.send({ t: 'busy' }); } catch (e) {} setTimeout(function () { try { c.close(); } catch (e) {} }, 300); return; }
       attach(c);
     });
   }
@@ -2475,8 +2478,11 @@ var Net = (function () {
   function dial(code, onOpen) {
     if (!peer || !N.ready) { emit('unavailable', code); return; }
     N.watch = code;
-    var c = peer.connect(id(code), { reliable: true, metadata: { k: 'game' } }), ok = false;
-    c.on('open', function () { ok = true; N.watch = ''; attach(c); onOpen(c); });
+    var my = ++dialSeq, c = peer.connect(id(code), { reliable: true, metadata: { k: 'game' } }), ok = false;
+    c.on('open', function () {
+      if (my !== dialSeq || (conn && conn.open && conn !== c)) { try { c.close(); } catch (e) {} return; }
+      ok = true; N.watch = ''; attach(c); onOpen(c);
+    });
     setTimeout(function () { if (!ok && N.watch === code) { N.watch = ''; try { c.close(); } catch (e) {} emit('failed', code); } }, 9000);
     N.out = c;
   }
@@ -2587,7 +2593,7 @@ function render() {
 }
 function oppName() {
   var o = G.opp || {}, f = o.c && typeof findF === 'function' ? findF(o.c) : null;
-  return esc(o.n && o.n !== T('player') ? o.n : (f && f.n) || o.n || T('player'));
+  return esc(o.n && o.n !== T('player') ? o.n : (f && f.n) || o.n || T('player')) + (f || !o.c ? '' : ' <u class="addf" data-addf="1">+ ' + T('addAsFriend') + '</u>');
 }
 function nameOf(c) { if (G.mode === 'online') return c === G.human ? (S.named ? esc(S.name) : T('you')) : oppName(); if (G.mode === 'cpu') return c === G.human ? T('you') : T('cpu'); return c === 'w' ? T('p1') : T('p2'); }
 function matDiff() {
@@ -2691,6 +2697,7 @@ function endBox(t, s, delay) {
   var gid = G.gid;
   setTimeout(function () { if (gid !== G.gid) return; $('ov-t').textContent = t; $('ov-s').textContent = s;
     $('ov-again').style.display = (G.mode === 'online' && OL.oppLeft) ? 'none' : ''; $('ov-again').textContent = T(G.mode === 'online' ? 'rematch' : 'playAgain');
+    $('ov-add').style.display = (G.mode === 'online' && G.opp && G.opp.c && !findF(G.opp.c)) ? '' : 'none';
     openM('m-over'); beep('chk'); }, delay);
 }
 function slide(from, to, piece, done) {
@@ -2832,6 +2839,15 @@ function parseCode(v) {
   return (m ? m[1] : v).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
 }
 function findF(c) { for (var i = 0; i < S.friends.length; i++) if (S.friends[i].c === c) return S.friends[i]; return null; }
+function updFriend(n, c) {
+  var f = findF(c);
+  if (f && n && f.a) { f.n = n.slice(0, 16); f.a = 0; saveS(); if (onlineVisible()) renderOnline(); }
+}
+function addOpp() {
+  var o = G.opp; if (!o || !o.c || findF(o.c)) return;
+  addFriendIfNew(o.n && o.n !== T('player') ? o.n : '', o.c);
+  toast(T('friendAdded')); if (G.mode === 'online') renderInfo(); $('ov-add').style.display = 'none';
+}
 function addFriendIfNew(n, c) {
   if (!c || c === S.code) return;
   var f = findF(c);
@@ -2919,6 +2935,8 @@ function startOnline(hc, role, opp) {
   G.mode = 'online'; G.lastMode = 'online'; G.game = new Chess(); G.over = false; G.busy = false; G.gid++; G.sel = null; G.moves = []; G.last = null; G.caps = { w: [], b: [] };
   G.hostColor = hc; G.role = role; G.human = role === 'host' ? hc : otherC(hc); G.flipped = G.human === 'b'; G.opp = opp; G.netMsg = '';
   show('s-game'); sizeBoard(); render(); beep('mv');
+  clearInterval(OL.hb); OL.mis = 0;
+  OL.hb = setInterval(function () { if (G.mode === 'online' && Net.inGame && G.game) Net.send({ t: 'hb', n: G.game.history().length }); }, 3000);
 }
 function setCtrls() {
   var on = G.mode === 'online';
@@ -2952,7 +2970,7 @@ Net.on = {
     if (Net.ready && OL.joinCode) { OL.joinCode = ''; tryJoin(); }
   },
   presence: function () { if (onlineVisible()) renderOnline(); },
-  name: function (code, n) { if (!n) return; addFriendIfNew(n, code); if (G.mode === 'online' && G.opp && G.opp.c === code && !G.over) { G.opp.n = n; renderInfo(); } },
+  name: function (code, n) { if (!n) return; updFriend(n, code); if (G.mode === 'online' && G.opp && G.opp.c === code && !G.over) { G.opp.n = n; renderInfo(); } },
   failed: function () {
     if (Net.inGame || !modalOn('m-wait')) return;
     if (retryJoin()) return;
@@ -2965,12 +2983,12 @@ Net.on = {
   },
   decline: function () { stopWait(); toast(T('declined')); },
   busy: function () { stopWait(); toast(T('busyOpp')); },
-  accept: function (d) { OL.jt = null; addFriendIfNew(d.n, d.c); hostStart(d.c, d.n, OL.sentCol); },
+  accept: function (d) { OL.jt = null; updFriend(d.n, d.c); hostStart(d.c, d.n, OL.sentCol); },
   join: function (d) {
-    if (OL.link && modalOn('m-wait')) { addFriendIfNew(d.n, d.c); hostStart(d.c, d.n, 'r'); } else showInvite(d, 'joinFrom');
+    if (OL.link && modalOn('m-wait')) { updFriend(d.n, d.c); hostStart(d.c, d.n, 'r'); } else showInvite(d, 'joinFrom');
   },
   invite: function (d) { showInvite(d, 'invFrom'); },
-  start: function (d) { OL.jt = null; clearTimeout(OL.jr); addFriendIfNew(d.n, d.c); Net.begin('guest', d.c); startOnline(d.hc, 'guest', { n: d.n, c: d.c }); },
+  start: function (d) { OL.jt = null; clearTimeout(OL.jr); updFriend(d.n, d.c); Net.begin('guest', d.c); startOnline(d.hc, 'guest', { n: d.n, c: d.c }); },
   closed: function () {
     if (modalOn('m-inv')) { closeM('m-inv'); Net.pending = false; }
     else if (modalOn('m-wait') && !OL.link) { stopWait(); toast(T('declined')); }
@@ -2990,6 +3008,14 @@ Net.on = {
   drawYes: function () { if (G.mode === 'online' && !G.over) endDraw(); },
   drawNo: function () { OL.drawOut = false; toast(T('drawNo')); },
   rematch: function () { OL.rm.opp = true; if (OL.rm.me) tryRematch(); else $('ov-s').textContent = T('rematchOpp'); },
+  hb: function (d) {
+    if (G.mode !== 'online' || G.over || !G.game || G.busy) return;
+    var mine = G.game.history().length;
+    if (d.n === mine) { OL.mis = 0; return; }
+    if (++OL.mis < 2) return;
+    OL.mis = 0;
+    if (d.n > mine) Net.send({ t: 'resync' }); else Net.send({ t: 'state', mv: G.game.history(), hc: G.hostColor });
+  },
   state: function (d) { applyState(d); },
   resync: function () { Net.send({ t: 'state', mv: G.game.history(), hc: G.hostColor }); },
   resume: function () { G.netMsg = ''; renderInfo(); Net.send({ t: 'state', mv: G.game.history(), hc: G.hostColor }); },
@@ -3032,11 +3058,14 @@ function initOnline() {
   on('fr-link', function () { closeM('m-fr'); linkRoom(); });
   on('fr-del', function () { var f = OL.friend; closeM('m-fr'); confirmBox(T('confirmDel'), function () { var i, a = []; for (i = 0; i < S.friends.length; i++) if (S.friends[i].c !== f.c) a.push(S.friends[i]); S.friends = a; saveS(); renderOnline(); }); });
   on('fr-no', function () { closeM('m-fr'); });
+  on('ov-add', addOpp);
+  function stripTap(e) { var t = e.target; if (t && t.getAttribute && t.getAttribute('data-addf')) addOpp(); }
+  $('strip-top').addEventListener('click', stripTap); $('strip-bot').addEventListener('click', stripTap);
   on('wt-share', shareLink);
   on('wt-no', stopWait);
   on('inv-y', function () {
     var d = OL.inv; closeM('m-inv'); if (!d) return;
-    addFriendIfNew(d.n, d.c);
+    updFriend(d.n, d.c);
     if (OL.invKind === 'joinFrom') hostStart(d.c, d.n, 'r'); else Net.send({ t: 'accept', n: S.named ? S.name : '', c: S.code });
   });
   on('inv-n', function () { closeM('m-inv'); Net.send({ t: 'decline' }); Net.cancel(); Net.pending = false; });
@@ -3052,7 +3081,7 @@ function initOnline() {
   if (j) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
     if (j.c !== S.code) {
-      ensureProfile(); addFriendIfNew(j.n, j.c); openOnline(); openWait(T('linkJoin'), T('linkJoinS'), false); Net.pending = true;
+      ensureProfile(); updFriend(j.n, j.c); openOnline(); openWait(T('linkJoin'), T('linkJoinS'), false); Net.pending = true;
       OL.jt = { code: j.c, end: Date.now() + 90000 }; OL.joinCode = j.c; if (Net.ready) { OL.joinCode = ''; tryJoin(); }
     }
   }
