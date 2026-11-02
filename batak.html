@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-1932">
+<meta name="surum" content="20261102-1940">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-1932" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-1932" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1932">
+<link rel="icon" href="batak-ikon.svg?v=20261102-1940" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-1940" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1940">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -103,10 +103,12 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
 .seat.l{left:8px;top:40%;transform:translateY(-50%)}
 .seat.r{right:8px;top:40%;transform:translateY(-50%)}
 .seat.m{bottom:8px;left:50%;transform:translateX(-50%)}
-.chip{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:14px;background:rgba(3,10,7,.78);border:1px solid rgba(201,168,90,.25);max-width:112px;transition:box-shadow .3s,border-color .3s}
+.chip{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:14px;background:rgba(3,10,7,.78);border:1px solid rgba(201,168,90,.25);max-width:124px;transition:box-shadow .3s,border-color .3s}
 .chip.turn{border-color:var(--gold2);box-shadow:0 0 14px rgba(232,208,138,.45)}
 .chip .tx{display:flex;flex-direction:column;min-width:0}
-.chip .nm{font-size:12.5px;font-weight:600;color:var(--ivory);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .nm{display:flex;align-items:center;font-size:12.5px;font-weight:600;color:var(--ivory);white-space:nowrap;min-width:0}
+.chip .nm .n{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.chip.dmy{border:1.5px dashed var(--gold2)}
 .chip .sb{font-size:10.5px;color:#a9a58f;white-space:nowrap}
 .chip .dl{font-style:normal;font-size:9px;font-weight:700;color:#1a1405;background:var(--gold);border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;margin-left:4px}
 .mini{position:relative;width:20px;height:27px;border-radius:4px;flex:none;background:repeating-linear-gradient(45deg,#5a1a28 0 3px,#6d1f2e 3px 6px);border:1.5px solid #d9c07a}
@@ -603,7 +605,8 @@ function renderDummy(){
   const W=(t.clientWidth||320)-20,cards=sortHand(V.dummyHand),n=cards.length;
   const cw=Math.max(26,Math.min(40,W/9)),step=n>1?Math.min(cw*.72,(W-cw)/(n-1)):0,off=(W-(cw+step*(n-1)))/2;
   box.style.display='block';
-  box.innerHTML=`<div class="dlb">${esc(V.names[V.dummy])} · açık el</div><div class="dh" style="height:${Math.round(cw*1.42)+10}px"></div>`;
+  const rel=(V.dummy-V.me+4)%4,dir=rel===1?'◀ Soldaki ':rel===3?'Sağdaki ':'Karşıdaki ',arr=rel===3?' ▶':'';
+  box.innerHTML=`<div class="dlb">${dir}${esc(V.names[V.dummy])} · açık el${arr}</div><div class="dh" style="height:${Math.round(cw*1.42)+10}px"></div>`;
   const dh=box.querySelector('.dh'),can=V.phase==='play'&&V.ctl===V.me&&V.turn===V.dummy;
   cards.forEach((c,i)=>{
     const id=cid(c),e=cardEl(c,cw);e.classList.add('dc');
@@ -623,7 +626,8 @@ function chip(i){
   else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(v.bids[i]===0?'Pas':'');
   else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'')+(i===v.dummy?' · açık el':'');
   const mini=rel===0?'':`<span class="mini"><i>${v.counts[i]}</i></span>`;
-  return `<div class="chip ${active?'turn':''}">${mini}<div class="tx"><span class="nm">${i===v.me?(v.names[i]||'Sen'):v.names[i]}${i===v.dealer?'<em class="dl">D</em>':''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
+  const open=(v.phase==='play'||v.phase==='trickEnd')&&i===v.dummy&&v.dummy!==v.me;
+  return `<div class="chip ${active?'turn':''} ${open?'dmy':''}">${mini}<div class="tx"><span class="nm"><span class="n">${esc(v.names[i]||'Sen')}</span>${i===v.dealer?'<em class="dl">D</em>':''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
 }
 function statusText(v){
   const n=i=>v.names[i];
@@ -700,7 +704,8 @@ function renderHand(){
   if(!V)return;
   const hd=$('#hand'),W=hd.clientWidth||320,cards=sortHand(V.hand),n=cards.length;
   const cw=Math.max(36,Math.min(84,W*.19,innerHeight*.3/1.42));
-  const step=n>1?Math.min(cw*.62,(W-cw)/(n-1)):0,off=(W-(cw+step*(n-1)))/2;
+  const pad=Math.round(cw*.22)+4; // dönen kartların köşeleri ekran kenarına taşmasın
+  const step=n>1?Math.min(cw*.62,(W-2*pad-cw)/(n-1)):0,off=(W-(cw+step*(n-1)))/2;
   hd.style.height=(cw*1.42+30)+'px';hd.innerHTML='';
   const mine=V.phase==='play'&&V.ctl===V.me&&V.turn===V.me;
   cards.forEach((c,i)=>{
