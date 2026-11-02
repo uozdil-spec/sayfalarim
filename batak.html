@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-1855">
+<meta name="surum" content="20261102-1930">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-1855" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-1855" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1855">
+<link rel="icon" href="batak-ikon.svg?v=20261102-1930" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-1930" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1930">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -272,7 +272,7 @@ function hcp(h){return h.reduce((a,c)=>a+(c.r>=11?c.r-10:0),0)}
 function beats(a,b,t){return a.s===b.s?a.r>b.r:(a.s===t&&b.s!==t)}
 function trickWinnerOf(trick,t){let w=trick[0];for(let i=1;i<trick.length;i++)if(beats(trick[i].card,w.card,t))w=trick[i];return w.seat}
 function legal(hand,trick,t,broken){
-  if(!trick.length){if(!broken){const nt=hand.filter(c=>c.s!==t);if(nt.length)return nt}return hand.slice()}
+  if(!trick.length)return hand.slice(); // koz dahil her kartla, ilk elde de serbestçe açılır
   const ls=trick[0].card.s;let w=trick[0].card;
   for(let i=1;i<trick.length;i++)if(beats(trick[i].card,w,t))w=trick[i].card;
   const f=hand.filter(c=>c.s===ls);
@@ -300,7 +300,7 @@ function viewFor(me){
   return {me,phase:g.phase,names:g.names,counts:g.hands.map(h=>h.length),hand:g.hands[me].slice(),
     legal:(g.phase==='play'&&ctl(g.turn)===me)?legal(g.hands[g.turn],g.trick,g.trump,g.broken).map(cid):[],
     dummy:g.dummy,ctl:ctl(g.turn),
-    dummyHand:(g.dummy>=0&&['trump','play','trickEnd'].includes(g.phase))?g.hands[g.dummy].slice():null,
+    dummyHand:(g.dummy>=0&&['play','trickEnd'].includes(g.phase))?g.hands[g.dummy].slice():null, // koz seçildikten sonra açılır
     turn:g.turn,dealer:g.dealer,bids:g.bids,highBid:g.highBid,highBidder:g.highBidder,trump:g.trump,
     trick:g.trick,tricksWon:g.tw,scores:g.scores,round:g.round,settings:g.settings,notice:g.notice,
     canRedeal:eligible(me),last:g.last,winner:g.trickWinner,over:g.over,isHost:me===0};
@@ -387,9 +387,9 @@ function bot(seat){
     const c=botPlay(seat);act(ctl(seat),{a:'play',id:cid(c)});
   }
 }
-/* Koz seçerken ihaleyi alan, açılan ortak elini de hesaba katar */
+/* Koz, ortağın eli açılmadan seçilir: bilgisayar yalnızca kendi eline bakar */
 function trumpFor(seat){
-  const hs=[G.hands[seat],G.hands[(seat+2)%4]];let best=0,bs=-1;
+  const hs=[G.hands[seat]];let best=0,bs=-1;
   for(let s=0;s<4;s++){let sc=0;hs.forEach(h=>h.filter(c=>c.s===s).forEach(c=>{sc+=2+(c.r===14?3:c.r===13?2:c.r===12?1:0)}));if(sc>bs){bs=sc;best=s}}
   return best;
 }
@@ -401,6 +401,8 @@ function botPlay(seat){
   if(!G.trick.length){
     const tops=lg.filter(c=>isTop(c,h)).sort((a,b)=>((a.s===t)-(b.s===t))||b.r-a.r);
     if(tops.length)return tops[0];
+    const trs=lg.filter(c=>c.s===t).sort((a,b)=>b.r-a.r);
+    if(mine&&trs.length>=5&&trs[0].r>=12)return trs[0]; // uzun kozla koz çek
     const nt=lg.filter(c=>c.s!==t);
     if(mine){return (nt.length?nt:lg).slice().sort((a,b)=>b.r-a.r)[0]}
     return low(nt.length?nt:lg);
@@ -453,8 +455,8 @@ const RULES=`<h2>NASIL OYNANIR</h2>
 <h4>Temel</h4><ul><li>4 kişi, 2 takım. Karşındaki ortağındır. 52 kart, herkese 13.</li><li>Sıralama: A en büyük, 2 en küçük.</li></ul>
 <h4>Artırım (tek el)</h4><ul><li>Dağıtanın solundan başlayarak herkes <b>bir kez</b> konuşur: <b>Pas</b> ya da öncekinden yüksek bir teklif.</li><li>En az 7, en çok 13 el teklif edilebilir.</li><li>Herkes pas derse dağıtan 7 almak zorundadır.</li></ul>
 <h4>Elden</h4><ul><li>Teklif sırası sana geldiğinde elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam 4 veya daha az) <b>Elden Dağıt</b> diyerek kartları yeniden dağıttırabilirsin.</li></ul>
-<h4>Açık el</h4><ul><li>İhale belli olunca ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Ortak oynamaz; ihaleyi alan hem kendi elini hem açık eli oynatır.</li><li>İhaleyi alan oyuna ilk o başlar. Açık el eli alırsa sonraki eli yine ihaleyi alan o kartlardan açar.</li></ul>
-<h4>Koz</h4><ul><li>İhaleyi alan kozu seçer ve ilk eli açar.</li><li>Koz atılmadan (kırılmadan) koz ile el açılmaz; elinde yalnızca koz kaldıysa açabilirsin.</li></ul>
+<h4>Açık el</h4><ul><li>Koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Koz, ortağın eli görülmeden seçilir. Ortak oynamaz; ihaleyi alan hem kendi elini hem açık eli oynatır.</li><li>İhaleyi alan oyuna ilk o başlar. Açık el eli alırsa sonraki eli yine ihaleyi alan o kartlardan açar.</li></ul>
+<h4>Koz</h4><ul><li>İhaleyi alan kozu seçer ve ilk eli açar.</li><li>Koz ile el açmak serbesttir; ilk elde de, istediğin her elde kozla çıkabilirsin.</li></ul>
 <h4>El oynama</h4><ul><li>Açılan renkten varsan atmak zorundasın; yukarıdan vurabiliyorsan büyüğünü atmalısın.</li><li>Rengin yoksa koz atmak zorundasın; el kozlanmışsa üstüne koz atabiliyorsan atmalısın.</li><li>Eli en büyük koz, yoksa açılan rengin en büyüğü alır; kazanan sonraki eli açar.</li></ul>
 <h4>Puan</h4><ul><li>İhale takımı toplam aldığı el sayısı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b> yazar.</li><li>Karşı takım aldığı el sayısı kadar puan yazar.</li><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>
 <h4>Kartı oynamak</h4><ul><li>Kartına bir kez dokun (yukarı kalkar), tekrar dokun, oynansın. Oynanamayan kartlar sönük görünür.</li></ul>
@@ -611,7 +613,7 @@ function chip(i){
   const v=V,rel=(i-v.me+4)%4,active=['bid','trump','play'].includes(v.phase)&&v.turn===i;
   let sub='';
   if(v.phase==='bid')sub=v.bids[i]===null?'…':(v.bids[i]===0?'Pas':'Teklif '+v.bids[i]);
-  else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(i===v.dummy?'Açık el':(v.bids[i]===0?'Pas':''));
+  else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(v.bids[i]===0?'Pas':'');
   else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'')+(i===v.dummy?' · açık el':'');
   const mini=rel===0?'':`<span class="mini"><i>${v.counts[i]}</i></span>`;
   return `<div class="chip ${active?'turn':''}">${mini}<div class="tx"><span class="nm">${i===v.me?(v.names[i]||'Sen'):v.names[i]}${i===v.dealer?'<em class="dl">D</em>':''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
@@ -676,7 +678,7 @@ function renderPanel(v){
     $$('#panel .acts button').forEach(b=>b.onclick=()=>sendAct({a:b.dataset.a}));
   }else if(v.phase==='trump'&&v.turn===v.me){
     const cnt=[0,0,0,0];v.hand.forEach(c=>cnt[c.s]++);
-    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
+    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el · ortağının eli koz seçildikten sonra açılır</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
     p.classList.add('on');
     $$('#panel .suits button').forEach(b=>b.onclick=()=>sendAct({a:'trump',v:+b.dataset.s}));
   }else{p.classList.remove('on');p.innerHTML=''}
