@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-2006">
+<meta name="surum" content="20261102-2014">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-2006" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-2006" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-2006">
+<link rel="icon" href="batak-ikon.svg?v=20261102-2014" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-2014" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-2014">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -49,6 +49,12 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
 .modal details[open] summary::after{content:'−'}
 .modal details>div{padding:0 14px 10px}
 .modal details ul{padding-left:16px}
+.ck{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ck button{padding:8px 8px;border-radius:11px;border:1px solid var(--gold);background:linear-gradient(180deg,#d6b86a,#a98a3e);color:#1a1405;cursor:pointer;display:flex;flex-direction:column;gap:1px;text-align:left}
+.ck button b{font-size:13.5px}.ck button span{font-size:10.5px;color:#3b2f10}
+.ck button:disabled{opacity:.25;background:#111;border-color:#333;color:#888}.ck button:disabled span{color:#777}
+.ck button.wide{grid-column:1/3}
+#b-back{width:36px;border-radius:12px;border:1px solid rgba(201,168,90,.28);background:#0a110e;color:var(--gold2);font-size:22px;cursor:pointer}
 .gl{font-size:12.5px;color:#a9a58f;margin:6px 0 0;line-height:1.5}
 .opt{width:100%;text-align:left;padding:15px 18px;border-radius:16px;border:1px solid rgba(201,168,90,.35);background:linear-gradient(180deg,#14201b,#0a110e);color:var(--ivory);display:flex;flex-direction:column;gap:3px;cursor:pointer}
 .opt b{font-size:16px;letter-spacing:.5px;color:var(--gold2);font-weight:600}
@@ -221,6 +227,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
     <div class="menu">
       <button class="opt big pri" id="p-esli"><b>Eşli Batak</b><span>2 takım · karşındaki ortağındır</span></button>
       <button class="opt big" id="p-tekli"><b>Batak</b><span>Standart · herkes kendi başına</span></button>
+      <button class="opt big" id="p-king"><b>King</b><span>Ceza ve kozlu oyunlar · 20 el · herkes kendi başına</span></button>
       <button class="opt" id="p-rules"><b>Nasıl Oynanır</b><span>Kısa ve kolay anlatım</span></button>
     </div>
     <div class="sign" style="margin-top:22px">by uozdil</div>
@@ -247,9 +254,12 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
       <div class="fempty" id="fr-me" style="margin-top:8px"></div>
     </div>
     <div class="set">
+      <div id="end-set">
       <div class="lbl">Oyun bitişi</div>
       <div class="seg" id="seg-mode"><button data-m="points">Puana göre</button><button data-m="hands">Tur sayısına göre</button></div>
       <div class="seg" id="seg-val" style="margin-top:6px"></div>
+      </div>
+      <div class="fempty" id="king-note" style="display:none">King 20 el sürer. Her oyuncu 3 ceza ve 2 kozlu oyun seçer. 20 el sonunda en yüksek puanlı kazanır.</div>
       <div id="open-set">
       <div class="lbl">Açık el</div>
       <div class="seg" id="seg-open"><button data-o="0">Kapalı (klasik)</button><button data-o="1">Açık</button></div>
@@ -257,7 +267,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
       </div>
       <div class="lbl">Adın</div>
       <input type="text" id="i-name" maxlength="12" placeholder="Oyuncu" autocomplete="off">
-      <label class="sw"><input type="checkbox" id="c-oled"> OLED koruma (kayma ve otomatik kısma)</label>
+      <label class="sw"><input type="checkbox" id="c-oled"> OLED yanık koruması (kayma ve otomatik kısma)</label>
     </div>
     <div class="sign" style="margin-top:18px">by uozdil</div>
   </div>
@@ -279,6 +289,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
 
 <section id="s-game" class="screen">
   <div id="hud">
+    <button id="b-back" aria-label="Geri">‹</button>
     <div class="sc" id="sc-us"><small>BİZ</small><b>0</b></div>
     <div id="mid"></div>
     <div class="sc" id="sc-them"><small>ONLAR</small><b>0</b></div>
@@ -316,6 +327,20 @@ const isRed=s=>s===1||s===2, cid=c=>c.s+'-'+c.r;
 function sortHand(h){return h.slice().sort((a,b)=>SORT.indexOf(a.s)-SORT.indexOf(b.s)||b.r-a.r)}
 function newDeck(){const d=[];for(let s=0;s<4;s++)for(let r=2;r<=14;r++)d.push({s,r});for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
 function hcp(h){return h.reduce((a,c)=>a+(c.r>=11?c.r-10:0),0)}
+/* ---- KING: 20 el, her elde sırayla bir oyuncu oyunu seçer ---- */
+const KINFO={koz:['Kozlu oyun','Her el +50 · kozu sen seçersin'],el:['El almaz','Her el −50'],kupa:['Kupa almaz','Her kupa −30'],erkek:['Erkek almaz','Her vale ve papaz −60'],kiz:['Kız almaz','Her kız −100'],rifki:['Rıfkı almaz','Kupa papazı −320'],son2:['Son iki almaz','Son 2 elin her biri −180']};
+const KORDER=['koz','el','kupa','erkek','kiz','rifki','son2'],KNEG=['el','kupa','erkek','kiz','rifki','son2'];
+const PEN=(c,x)=>c==='rifki'||c==='kupa'?x.s===1:c==='kiz'?x.r===12:c==='erkek'?(x.r===11||x.r===13):false;
+function legalK(hand,trick,c,t){
+  if(!trick.length){
+    if(c==='kupa'||c==='rifki'){const nh=hand.filter(x=>x.s!==1);if(nh.length)return nh} // kupa ile açılmaz (elde yalnız kupa varsa açılır)
+    return hand.slice();
+  }
+  const f=hand.filter(x=>x.s===trick[0].card.s);
+  if(f.length)return f;
+  if(c==='koz'){const tr=hand.filter(x=>x.s===t);return tr.length?tr:hand.slice()}
+  const pen=hand.filter(x=>PEN(c,x));return pen.length?pen:hand.slice();
+}
 function beats(a,b,t){return a.s===b.s?a.r>b.r:(a.s===t&&b.s!==t)}
 function trickWinnerOf(trick,t){let w=trick[0];for(let i=1;i<trick.length;i++)if(beats(trick[i].card,w.card,t))w=trick[i];return w.seat}
 function legal(hand,trick,t,broken){
@@ -331,14 +356,20 @@ function legal(hand,trick,t,broken){
 
 let G=null,pend=null;
 function mkGame(settings,names,humans){
-  G={settings,names:names.slice(),humans:humans.slice(),dealer:Math.floor(Math.random()*4),scores:settings.game==='tekli'?[0,0,0,0]:[0,0],round:0,last:null,over:null,notice:'',redeals:0};
-  deal();commit();
+  G={settings,names:names.slice(),humans:humans.slice(),dealer:Math.floor(Math.random()*4),scores:(settings.game==='tekli'||settings.game==='king')?[0,0,0,0]:[0,0],round:0,last:null,over:null,notice:'',redeals:0};
+  initK();deal();commit();
 }
 function deal(){
   const d=newDeck();G.hands=[0,1,2,3].map(i=>d.slice(i*13,i*13+13));
   G.phase='bid';G.bids=[null,null,null,null];G.highBid=0;G.highBidder=-1;G.bidCount=0;G.turn=(G.dealer+1)%4;
   G.trump=null;G.broken=false;G.trick=[];G.tw=[0,0,0,0];G.trickWinner=-1;G.played=new Set();G.dummy=-1;
+  G.contract=null;G.won=[[],[],[],[]];G.l2=[0,0,0,0];
+  if(KING()){G.phase='contract';G.turn=G.dealer} // King: dağıtan oyunu seçer ve ilk eli açar
 }
+const KING=()=>G.settings.game==='king';
+function initK(){G.negN=[0,0,0,0];G.kozN=[0,0,0,0];G.cc={el:0,kupa:0,erkek:0,kiz:0,rifki:0,son2:0}}
+function availK(seat){const a=[];if(G.kozN[seat]<2)a.push('koz');if(G.negN[seat]<3)for(const k of KNEG)if(G.cc[k]<2)a.push(k);return a}
+function LG(hand){return KING()?legalK(hand,G.trick,G.contract,G.trump):legal(hand,G.trick,G.trump,G.broken)}
 /* İki oyun: 'esli' (2 takım, ihale en az 7) ve 'tekli' (standart Batak: herkes kendi başına, ihale en az 5) */
 const SOLO=()=>G.settings.game==='tekli';
 const minBid=()=>SOLO()?5:7;
@@ -348,18 +379,19 @@ function eligible(seat){return !!G&&G.phase==='bid'&&G.turn===seat&&G.redeals<3&
 function viewFor(me){
   const g=G;
   return {me,phase:g.phase,names:g.names,counts:g.hands.map(h=>h.length),hand:g.hands[me].slice(),
-    legal:(g.phase==='play'&&ctl(g.turn)===me)?legal(g.hands[g.turn],g.trick,g.trump,g.broken).map(cid):[],
+    legal:(g.phase==='play'&&ctl(g.turn)===me)?LG(g.hands[g.turn]).map(cid):[],
     dummy:g.dummy,ctl:ctl(g.turn),
     dummyHand:(g.dummy>=0&&['play','trickEnd'].includes(g.phase))?g.hands[g.dummy].slice():null, // koz seçildikten sonra açılır
     turn:g.turn,dealer:g.dealer,bids:g.bids,highBid:g.highBid,highBidder:g.highBidder,trump:g.trump,
     trick:g.trick,tricksWon:g.tw,scores:g.scores,round:g.round,settings:g.settings,notice:g.notice,
-    game:SOLO()?'tekli':'esli',minBid:minBid(),
+    game:KING()?'king':SOLO()?'tekli':'esli',minBid:minBid(),
+    contract:g.contract,avail:(g.phase==='contract'&&g.turn===me)?availK(me):[],kinfo:KING()?{cc:g.cc,negN:g.negN,kozN:g.kozN}:null,
     canRedeal:eligible(me),last:g.last,winner:g.trickWinner,over:g.over,isHost:me===0};
 }
 function commit(){
   broadcast();clearTimeout(pend);
   if(!G)return;
-  if(['bid','trump','play'].includes(G.phase)&&!G.humans[ctl(G.turn)]){const s=G.turn,g=G;pend=setTimeout(()=>{if(G===g)bot(s)},G.phase==='play'?800:950)}
+  if(['bid','trump','play','contract'].includes(G.phase)&&!G.humans[ctl(G.turn)]){const s=G.turn,g=G;pend=setTimeout(()=>{if(G===g)bot(s)},G.phase==='play'?800:950)}
 }
 function nextBid(){
   G.bidCount++;
@@ -372,8 +404,15 @@ function nextBid(){
 function act(seat,a){
   if(!G||!a)return;
   if(a.a==='next'){if(seat===0&&G.phase==='handEnd'){G.dealer=(G.dealer+1)%4;G.redeals=0;G.notice='';deal();commit()}return}
-  if(a.a==='newgame'){if(seat===0&&G.phase==='gameEnd'){G.scores=G.scores.map(()=>0);G.round=0;G.over=null;G.last=null;G.redeals=0;G.notice='';deal();commit()}return}
+  if(a.a==='newgame'){if(seat===0&&G.phase==='gameEnd'){G.scores=G.scores.map(()=>0);G.round=0;G.over=null;G.last=null;G.redeals=0;G.notice='';initK();deal();commit()}return}
   if(ctl(G.turn)!==seat)return;
+  if(G.phase==='contract'){
+    if(a.a==='contract'&&availK(seat).includes(a.v)){
+      G.contract=a.v;if(a.v==='koz')G.kozN[seat]++;else{G.negN[seat]++;G.cc[a.v]++}
+      G.highBidder=seat;G.notice='';G.phase=a.v==='koz'?'trump':'play';G.turn=seat;commit();
+    }
+    return;
+  }
   if(G.phase==='bid'){
     if(a.a==='pass'){G.bids[seat]=0;G.notice='';nextBid()}
     else if(a.a==='bid'){const v=a.v|0;if(v>=minBid()&&v<=13&&v>G.highBid){G.bids[seat]=v;G.highBid=v;G.highBidder=seat;G.notice='';nextBid()}}
@@ -382,7 +421,7 @@ function act(seat,a){
     if(a.a==='trump'&&a.v>=0&&a.v<4){G.trump=a.v;G.phase='play';G.turn=G.highBidder;G.notice='';commit()}
   }else if(G.phase==='play'&&a.a==='play'){
     const ps=G.turn,h=G.hands[ps],i=h.findIndex(c=>cid(c)===a.id);if(i<0)return;
-    if(!legal(h,G.trick,G.trump,G.broken).some(c=>cid(c)===a.id))return;
+    if(!LG(h).some(c=>cid(c)===a.id))return;
     const c=h.splice(i,1)[0];G.trick.push({seat:ps,card:c});G.played.add(cid(c));
     if(c.s===G.trump)G.broken=true;
     if(G.trick.length===4){
@@ -392,10 +431,27 @@ function act(seat,a){
   }
 }
 function finishTrick(){
-  const w=G.trickWinner;G.tw[w]++;G.trick=[];G.turn=w;G.trickWinner=-1;
+  const w=G.trickWinner;G.tw[w]++;G.won[w].push(...G.trick.map(t=>t.card));if(G.tw.reduce((a,b)=>a+b,0)>=12)G.l2[w]++;G.trick=[];G.turn=w;G.trickWinner=-1;
   if(G.hands[0].length===0)endHand();else{G.phase='play';commit()}
 }
+function endHandK(){
+  const c=G.contract,d=[0,0,0,0];
+  for(let q=0;q<4;q++){const w=G.won[q];let v=0;
+    if(c==='koz')v=50*G.tw[q];else if(c==='el')v=-50*G.tw[q];
+    else if(c==='kupa')v=-30*w.filter(x=>x.s===1).length;
+    else if(c==='rifki')v=-320*w.filter(x=>x.s===1&&x.r===13).length;
+    else if(c==='kiz')v=-100*w.filter(x=>x.r===12).length;
+    else if(c==='erkek')v=-60*w.filter(x=>x.r===11||x.r===13).length;
+    else if(c==='son2')v=-180*G.l2[q];
+    d[q]=v;G.scores[q]+=v}
+  G.round++;
+  G.last={game:'king',contract:c,bidder:G.dealer,trump:G.trump,tricks:G.tw.slice(),delta:d,ok:true,ct:G.dealer};
+  const fin=G.round>=20,mx=Math.max(...G.scores);
+  G.phase=fin?'gameEnd':'handEnd';if(fin)G.over={winner:G.scores.indexOf(mx)};
+  commit();
+}
 function endHand(){
+  if(KING())return endHandK();
   const b=G.highBidder;let d,tr,ok,ct;
   if(SOLO()){ // standart Batak: herkes kendi başına
     tr=G.tw.slice();ok=tr[b]>=G.highBid;ct=b;
@@ -433,6 +489,7 @@ function isTop(c,hand){for(let r=c.r+1;r<=14;r++){if(!G.played.has(c.s+'-'+r)&&!
 function bot(seat){
   if(!G||G.turn!==seat||G.humans[ctl(seat)])return;
   const h=G.hands[seat];
+  if(G.phase==='contract'){act(seat,{a:'contract',v:botContract(seat)});return}
   if(G.phase==='bid'){
     if(eligible(seat)){act(seat,{a:'redeal'});return}
     const e=estimate(h,SOLO()?0:1);let want=Math.min(13,Math.floor(e.tricks+.2));
@@ -443,8 +500,60 @@ function bot(seat){
   }else if(G.phase==='trump'){
     act(seat,{a:'trump',v:trumpFor(seat)});
   }else if(G.phase==='play'){
-    const c=botPlay(seat);act(ctl(seat),{a:'play',id:cid(c)});
+    const c=KING()?botPlayK(seat):botPlay(seat);act(ctl(seat),{a:'play',id:cid(c)});
   }
+}
+/* King botu: elindeki kartlara göre en uygun oyunu seçer */
+function botContract(seat){
+  const h=G.hands[seat],av=availK(seat),t=Math.min(estimate(h,0).tricks,10);
+  const by=[[],[],[],[]];h.forEach(c=>by[c.s].push(c.r));
+  const prot=L=>L<=2?.85:L===3?.55:.3;
+  const sumHeld=f=>{let x=0;h.forEach(c=>{if(f(c))x+=prot(by[c.s].length)});return x};
+  const cost={
+    el:[165,50*t],son2:[90,360*t/13],
+    kupa:[94,30*(by[1].length*.75+by[1].filter(r=>r>=11).length*.9)],
+    rifki:[70,by[1].includes(13)?320*(by[1].length<=3?.75:by[1].length<=5?.4:.2):32],
+    kiz:[85,100*sumHeld(c=>c.r===12)+25],
+    erkek:[100,60*sumHeld(c=>c.r===11||c.r===13)+30]
+  };
+  let best=av[0],bs=-1e9;
+  for(const k of av){const sc=k==='koz'?50*t-165-15:cost[k][0]-cost[k][1];if(sc>bs){bs=sc;best=k}}
+  return best;
+}
+function botPlayK(seat){
+  const h=G.hands[seat],lg=LG(h),c=G.contract;
+  if(lg.length===1)return lg[0];
+  const asc=a=>a.slice().sort((x,y)=>x.r-y.r),desc=a=>a.slice().sort((x,y)=>y.r-x.r);
+  const t=G.trump;
+  if(c==='koz'){
+    const val=x=>x.r+(x.s===t?20:0);
+    if(!G.trick.length){
+      const tops=lg.filter(x=>isTop(x,h)).sort((a,b)=>((a.s===t)-(b.s===t))||b.r-a.r);
+      if(tops.length)return tops[0];
+      const nt=lg.filter(x=>x.s!==t);return asc(nt.length?nt:lg)[0];
+    }
+    let w=G.trick[0].card;for(let i=1;i<G.trick.length;i++)if(beats(G.trick[i].card,w,t))w=G.trick[i].card;
+    const wins=lg.filter(x=>beats(x,w,t));
+    if(wins.length)return wins.sort((a,b)=>val(a)-val(b))[0];
+    return lg.slice().sort((a,b)=>val(a)-val(b))[0];
+  }
+  const pv=x=>c==='rifki'?(x.s===1&&x.r===13?320:x.s===1?1:0):c==='kiz'?(x.r===12?100:0):c==='erkek'?(x.r===11||x.r===13?60:0):c==='kupa'?(x.s===1?30:0):0;
+  const done=G.tw.reduce((a,b)=>a+b,0);
+  const winPen=c==='el'||(c==='son2'&&done>=11),shed=c==='son2'&&done<11; // son2: ilk 11 elde yüksek kartları at
+  if(!G.trick.length)return shed?desc(lg)[0]:asc(lg)[0];
+  const ls=G.trick[0].card.s;
+  if(!lg.every(x=>x.s===ls)||!h.some(x=>x.s===ls)){ // rengi yok: ceza kartını (yoksa en büyüğünü) at
+    return lg.slice().sort((a,b)=>pv(b)-pv(a)||b.r-a.r)[0];
+  }
+  if(shed)return desc(lg)[0];
+  let w=G.trick[0].card;for(let i=1;i<G.trick.length;i++)if(beats(G.trick[i].card,w,null))w=G.trick[i].card;
+  const under=lg.filter(x=>x.r<w.r),last=G.trick.length===3;
+  const tp=winPen?1:G.trick.reduce((a,x)=>a+pv(x.card),0);
+  if(under.length){const dump=under.filter(x=>pv(x)>0).sort((a,b)=>pv(b)-pv(a));return dump.length?dump[0]:desc(under)[0]}
+  const np=lg.filter(x=>pv(x)===0);
+  if(last&&tp===0)return desc(np.length?np:lg)[0];
+  if(winPen&&last)return desc(lg)[0];
+  return asc(np.length?np:lg)[0];
 }
 /* Koz, ortağın eli açılmadan seçilir: bilgisayar yalnızca kendi eline bakar */
 function trumpFor(seat){
@@ -486,10 +595,10 @@ const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},se
 let mode='none',V=null,sel=null,cur='pick',peer=null,conn=null,conns={},L=null,myCode='',shown=new Set();
 let cfg;try{cfg=JSON.parse(store.get('batak_cfg')||'null')}catch(e){cfg=null}
 cfg=cfg||{mode:'points',value:61};cfg.open=!!cfg.open; // açık el: varsayılan kapalı (klasik)
-cfg.game=cfg.game==='tekli'?'tekli':'esli';
+cfg.game=['tekli','king'].includes(cfg.game)?cfg.game:'esli';
 const deepLink=/[?&](oda|ark)=/.test(location.search); // davet/arkadaş linkiyle gelen oyun seçmeden doğrudan ana menüye gider
-const OPTS={esli:{points:[41,61,101],hands:[4,6,10]},tekli:{points:[21,31,51],hands:[4,6,10]}};
-const gameName=g=>g==='tekli'?'Batak':'Eşli Batak';
+const OPTS={esli:{points:[41,61,101],hands:[4,6,10]},tekli:{points:[21,31,51],hands:[4,6,10]},king:{points:[21,31,51],hands:[4,6,10]}};
+const gameName=g=>g==='tekli'?'Batak':g==='king'?'King':'Eşli Batak';
 const OV=()=>OPTS[cfg.game];
 const clean=s=>String(s||'').replace(/[<>&"'`]/g,'').trim().slice(0,12);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -499,7 +608,7 @@ function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clea
 function showScreen(n){cur=n;$$('.screen').forEach(e=>e.classList.toggle('on',e.id==='s-'+n));if(n==='game')setTimeout(layout,30);try{onScreen(n)}catch(e){}}
 function openModal(h){$('#modal-in').innerHTML=h;$('#modal').classList.add('on')}
 function closeModal(){$('#modal').classList.remove('on')}
-const endText=s=>s.mode==='points'?s.value+' puana kadar':s.value+' tur';
+const endText=s=>s.game==='king'?'20 el':s.mode==='points'?s.value+' puana kadar':s.value+' tur';
 
 /* ====== HOME ====== */
 function renderSettings(){
@@ -518,32 +627,51 @@ renderSettings();
 
 /* ====== OYUN SEÇİMİ ====== */
 function applyGame(){
-  const t=cfg.game==='tekli';
-  $('#h-title').textContent=t?'BATAK':'EŞLİ BATAK';
-  $('#h-tag').textContent=t?'4 KİŞİLİK · HERKES KENDİ BAŞINA':'4 KİŞİLİK · 2 TAKIM';
-  $('#solo-d').textContent=t?'Üç rakip de bilgisayar':'Ortağın ve rakipler bilgisayar';
-  $('#open-set').style.display=t?'none':'';
-  $('#wm b').textContent=gameName(cfg.game).toUpperCase();
-  $('#p-esli').classList.toggle('pri',!t);$('#p-tekli').classList.toggle('pri',t);
-  document.title=gameName(cfg.game)+' · by uozdil';
+  const g=cfg.game,t=g==='tekli',k=g==='king';
+  $('#h-title').textContent=k?'KING':t?'BATAK':'EŞLİ BATAK';
+  $('#h-tag').textContent=k?'4 KİŞİLİK · 20 EL · HERKES KENDİ BAŞINA':t?'4 KİŞİLİK · HERKES KENDİ BAŞINA':'4 KİŞİLİK · 2 TAKIM';
+  $('#solo-d').textContent=g==='esli'?'Ortağın ve rakipler bilgisayar':'Üç rakip de bilgisayar';
+  $('#open-set').style.display=g==='esli'?'':'none';
+  $('#end-set').style.display=k?'none':'';$('#king-note').style.display=k?'':'none';
+  $('#wm b').textContent=gameName(g).toUpperCase();
+  $('#p-esli').classList.toggle('pri',g==='esli');$('#p-tekli').classList.toggle('pri',t);$('#p-king').classList.toggle('pri',k);
+  document.title=gameName(g)+' · by uozdil';
   renderSettings();
 }
 function pickGame(g){cfg.game=g;applyGame();showScreen('home')}
 $('#p-esli').onclick=()=>pickGame('esli');
 $('#p-tekli').onclick=()=>pickGame('tekli');
+$('#p-king').onclick=()=>pickGame('king');
 $('#b-pickback').onclick=()=>showScreen('pick');
 applyGame();
 
 /* ====== KILAVUZ ====== */
 const SUMMARY={
+ king:['4 kişi oynarsınız, <b>herkes kendi başına</b>. Oyun <b>20 el</b> sürer. Herkese 13 kart dağıtılır.','Her elde sırayla bir oyuncu <b>ne oynanacağını seçer</b>: 6 ceza oyunundan biri ya da kozlu oyun. Herkes 3 ceza ve 2 kozlu oyun seçer.','<b>Ceza oyunlarında</b> belirli kartları ya da elleri <b>almamaya</b> çalışırsın. <b>Kozlu oyunda</b> çok el almaya çalışırsın.','Açılan renkten atmak zorundasın. Rengin yoksa: kozlu oyunda koz, ceza oyununda ceza kartı at.','20 el sonunda puanlar toplanır, <b>en yüksek puan kazanır</b>.'],
  esli:['4 kişi oynarsınız. <b>Karşındaki ortağındır</b> (2 takım). Herkese 13 kart dağıtılır.','Herkes <b>bir kez</b> teklif verir: “Bu turda kaç el alırım?” (en az <b>7</b>) ya da <b>Pas</b> der. En yüksek teklifi veren <b>ihaleyi alır</b>.','İhaleyi alan <b>kozu seçer</b> ve oyunu o başlatır.','Her elde 4 kart atılır. Açılan renkten at; en büyük kart (ya da koz) eli alır.','İhaleyi alan takım teklifini tutturursa <b>+teklif</b>, tutturamazsa <b>−teklif</b> yazar. Karşı takım aldığı el kadar puan yazar.'],
  tekli:['4 kişi oynarsınız, <b>herkes kendi başına</b>. Herkese 13 kart dağıtılır.','Herkes <b>bir kez</b> teklif verir: “Bu turda kaç el alırım?” (en az <b>5</b>) ya da <b>Pas</b> der. En yüksek teklifi veren <b>ihaleyi alır</b>.','İhaleyi alan <b>kozu seçer</b> ve oyunu o başlatır.','Her elde 4 kart atılır. Açılan renkten at; en büyük kart (ya da koz) eli alır.','İhaleyi alan teklifini tutturursa <b>+teklif</b>, tutturamazsa <b>−teklif</b> yazar. Diğer üç oyuncu kendi aldığı el kadar puan yazar.']
 };
+const TABS=g=>`<div class="tabs"><button data-t="esli" class="${g==='esli'?'on':''}">Eşli Batak</button><button data-t="tekli" class="${g==='tekli'?'on':''}">Batak</button><button data-t="king" class="${g==='king'?'on':''}">King</button></div>`;
+function kingRules(){
+  const D=(h,b,o)=>`<details${o?' open':''}><summary>${h}</summary><div>${b}</div></details>`;
+  return `<h2>NASIL OYNANIR</h2>${TABS('king')}
+<div class="box"><h4>30 saniyede özet</h4><ol>${SUMMARY.king.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+<p class="gl"><b>El</b> = 4 kartın masaya atıldığı bir hamle. <b>Oyun (deal)</b> = dağıtılan 13 elin hepsi. Toplam 20 oyun oynanır.</p>
+${D('Oyun seçimi',`<ul><li>Her oyunda sırayla bir oyuncu <b>ne oynanacağını seçer</b> ve ilk eli o açar.</li><li>Seçenekler: 6 ceza oyunu ve 1 kozlu oyun.</li><li>Her oyuncu <b>3 ceza + 2 kozlu</b> oyun seçer. Her ceza oyunu tüm oyunda 2 kez oynanır.</li><li>Kalan haklarını seçim ekranında görürsün; hakkı bitenler sönük görünür.</li></ul>`)}
+${D('Ceza oyunları ve puanları',`<ul><li><b>El almaz:</b> aldığın her el −50.</li><li><b>Kupa almaz:</b> aldığın her kupa −30.</li><li><b>Erkek almaz:</b> aldığın her vale ve papaz −60.</li><li><b>Kız almaz:</b> aldığın her kız −100.</li><li><b>Rıfkı almaz:</b> kupa papazını alırsan −320.</li><li><b>Son iki almaz:</b> son 2 elin her birini alırsan −180.</li><li>Kupa almaz ve Rıfkı’da ilk eli kupayla açamazsın (elinde yalnız kupa varsa açabilirsin).</li></ul>`)}
+${D('Kozlu oyun',`<ul><li>Seçen oyuncu kozu belirler.</li><li>Aldığın her el <b>+50</b>.</li><li>Rengin yoksa koz atmak zorundasın.</li></ul>`)}
+${D('Kart atma kuralları',`<ul><li>Açılan renkten varsa <b>atmak zorundasın</b> (büyük atma zorunluluğu yok).</li><li>Rengin yoksa: kozlu oyunda koz at (kozun da yoksa istediğin kart); ceza oyununda ceza kartını at (yoksa istediğin kart).</li><li>Eli açılan renkte en büyük kart alır (kozlu oyunda en büyük koz). <b>Eli alan sonraki eli açar.</b></li></ul>`)}
+${D('Oyunun bitişi',`<ul><li>20 oyun sonunda tüm puanlar toplanır; toplam her zaman 0 eder.</li><li><b>En yüksek puan kazanır.</b> Artıda olanlar kazanmış, eksideler kaybetmiş sayılır.</li></ul>`)}
+${D('Online oynama',`<ul><li>Ana menüde <b>Online Oda Kur</b>’a bas, kodu ya da linki arkadaşına gönder.</li><li>Ya da <b>Arkadaşlarım</b> listesinden çevrimiçi arkadaşına tek dokunuşla davet gönder.</li><li>Boş kalan koltuklara bilgisayar oturur.</li></ul>`)}
+${D('Kartı nasıl oynarım?',`<ul><li>Kartına <b>bir kez dokun</b> (yukarı kalkar), <b>tekrar dokun</b>, oynansın.</li></ul>`)}
+<button class="mbtn" id="r-ok">Tamam</button>`;
+}
 function rulesBody(g){
+  if(g==='king')return kingRules();
   const t=g==='tekli',mb=t?5:7;
   const D=(h,b,o)=>`<details${o?' open':''}><summary>${h}</summary><div>${b}</div></details>`;
   return `<h2>NASIL OYNANIR</h2>
-<div class="tabs"><button data-t="esli" class="${t?'':'on'}">Eşli Batak</button><button data-t="tekli" class="${t?'on':''}">Batak</button></div>
+${TABS(g)}
 <div class="box"><h4>30 saniyede özet</h4><ol>${SUMMARY[g].map(x=>`<li>${x}</li>`).join('')}</ol></div>
 <p class="gl"><b>El</b> = 4 kartın masaya atıldığı bir hamle. <b>Tur</b> = dağıtılan 13 elin hepsi. <b>Koz</b> = o turda her rengi yenen renk.</p>
 ${D('Teklif (ihale)',`<ul><li>Dağıtanın solundan başlayarak herkes <b>sadece bir kez</b> konuşur.</li><li><b>Pas</b> dersen bu turda teklif veremezsin. Teklif verirsen öncekinden <b>yüksek</b> bir sayı söylemelisin.</li><li>En az <b>${mb}</b>, en çok <b>13</b> el teklif edilir.</li><li>Herkes pas derse dağıtan <b>${mb}</b> almak zorundadır.</li></ul>`)}
@@ -615,8 +743,8 @@ function renderLobby(){
   $('#lb-code').textContent=myCode||'-----';
   const isHost=mode==='host',you=isHost?0:L.you;
   const row=s=>`<div class="sr ${L.humans[s]?'hu':''}"><span>${L.names[s]}${s===you?' (sen)':''}</span><em>${L.humans[s]?(s===0?'Oda sahibi':'Bağlı'):'Boş · bilgisayar oynar'}</em></div>`;
-  const tk=L.settings.game==='tekli';
-  $('#lb-title').textContent='ODA · '+gameName(tk?'tekli':'esli').toUpperCase();
+  const tk=L.settings.game!=='esli';
+  $('#lb-title').textContent='ODA · '+gameName(L.settings.game).toUpperCase();
   $('#lb-seats').innerHTML=tk?`<div class="tm">OYUNCULAR</div>${row(0)}${row(1)}${row(2)}${row(3)}`:`<div class="tm">TAKIM 1</div>${row(0)}${row(2)}<div class="tm">TAKIM 2</div>${row(1)}${row(3)}`;
   $('#b-start').style.display=isHost?'block':'none';
   $('#b-share').style.display=isHost?'inline-block':'none';
@@ -716,17 +844,19 @@ function renderDummy(){
 addEventListener('resize',layout);addEventListener('orientationchange',()=>setTimeout(layout,200));
 
 function chip(i){
-  const v=V,rel=(i-v.me+4)%4,active=['bid','trump','play'].includes(v.phase)&&v.turn===i;
+  const v=V,rel=(i-v.me+4)%4,active=['bid','trump','play','contract'].includes(v.phase)&&v.turn===i;
   let sub='';
-  if(v.phase==='bid')sub=v.bids[i]===null?'…':(v.bids[i]===0?'Pas':'Teklif '+v.bids[i]);
+  if(v.game==='king')sub=v.phase==='contract'?(i===v.turn?'seçiyor':''):v.phase==='trump'?(i===v.turn?'koz seçiyor':''):v.tricksWon[i]+' el'+(i===v.highBidder?' · seçen':'');
+  else if(v.phase==='bid')sub=v.bids[i]===null?'…':(v.bids[i]===0?'Pas':'Teklif '+v.bids[i]);
   else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(v.bids[i]===0?'Pas':'');
   else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'')+(i===v.dummy?' · açık el':'');
   const mini=rel===0?'':`<span class="mini"><i>${v.counts[i]}</i></span>`;
   const open=(v.phase==='play'||v.phase==='trickEnd')&&i===v.dummy&&v.dummy!==v.me;
-  return `<div class="chip ${active?'turn':''} ${open?'dmy':''}">${mini}<div class="tx"><span class="nm"><span class="n">${esc(v.names[i]||'Sen')}</span>${i===v.dealer?'<em class="dl">D</em>':''}${v.game==='tekli'?`<em class="sp">${v.scores[i]}</em>`:''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
+  return `<div class="chip ${active?'turn':''} ${open?'dmy':''}">${mini}<div class="tx"><span class="nm"><span class="n">${esc(v.names[i]||'Sen')}</span>${i===v.dealer?'<em class="dl">D</em>':''}${v.game!=='esli'?`<em class="sp">${v.scores[i]}</em>`:''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
 }
 function statusText(v){
   const n=i=>v.names[i];
+  if(v.phase==='contract')return v.turn===v.me?'Oyunu sen seç':n(v.turn)+' oyun seçiyor…';
   if(v.phase==='bid')return v.turn===v.me?'Teklif sırası sende':n(v.turn)+' teklif veriyor…';
   if(v.phase==='trump')return v.turn===v.me?'Kozu sen seç':n(v.turn)+' koz seçiyor…';
   if(v.phase==='play'){
@@ -739,7 +869,7 @@ function statusText(v){
 }
 function render(v){
   V=v;
-  const myTeam=v.me%2,tk=v.game==='tekli';
+  const myTeam=v.me%2,tk=v.game!=='esli',kg=v.game==='king';
   if(tk){const others=v.scores.filter((_,k)=>k!==v.me);
     $('#sc-us small').textContent='SEN';$('#sc-us b').textContent=v.scores[v.me];
     $('#sc-them small').textContent='RAKİP';$('#sc-them b').textContent=Math.max(...others)}
@@ -748,7 +878,12 @@ function render(v){
   $('#wm b').textContent=gameName(v.game).toUpperCase();
   // HUD ortası
   let mid='';
-  if(v.phase==='bid')mid=`<b>ARTIRIM</b><span>${v.highBid?'En yüksek: '+v.highBid+' · '+v.names[v.highBidder]:'Henüz teklif yok'}</span>`;
+  if(kg){
+    if(v.phase==='contract')mid=`<b>OYUN SEÇİMİ</b><span>${esc(v.names[v.turn])}</span>`;
+    else if(v.phase==='trump')mid=`<b>KOZ</b><span>${esc(v.names[v.turn])} seçiyor</span>`;
+    else mid=`<b>${KINFO[v.contract][0]}${v.trump!=null?` · <span class="${isRed(v.trump)?'rd':''}">${SUIT[v.trump]}</span>`:''}</b><span>El ${Math.min(v.round+1,20)}/20 · ${esc(v.names[v.dealer])} seçti</span>`;
+  }
+  else if(v.phase==='bid')mid=`<b>ARTIRIM</b><span>${v.highBid?'En yüksek: '+v.highBid+' · '+v.names[v.highBidder]:'Henüz teklif yok'}</span>`;
   else if(v.phase==='trump')mid=`<b>İHALE ${v.highBid}</b><span>${v.names[v.highBidder]} koz seçiyor</span>`;
   else if(v.highBidder>=0&&v.trump!=null){
     const tc=tk?v.tricksWon[v.highBidder]:v.tricksWon[v.highBidder%2]+v.tricksWon[v.highBidder%2+2];
@@ -757,7 +892,10 @@ function render(v){
   $('#mid').innerHTML=mid;
   // KOZ rozeti: koz seçilince masada büyük ve renkli görünür
   const kz=$('#koz');
-  if(v.trump!=null&&(v.phase==='play'||v.phase==='trickEnd')){
+  if(kg&&v.contract&&v.trump==null&&(v.phase==='play'||v.phase==='trickEnd')){
+    kz.style.display='flex';kz.className='';
+    kz.innerHTML=`<span class="kt">OYUN<b>${KINFO[v.contract][0]}</b></span>`;
+  }else if(v.trump!=null&&(v.phase==='play'||v.phase==='trickEnd')){
     kz.style.display='flex';kz.className=isRed(v.trump)?'red':'';
     kz.innerHTML=`<span class="ks">${SUIT[v.trump]}</span><span class="kt">KOZ<b>${SNAME[v.trump]}</b></span>`;
   }else{kz.style.display='none';kz.innerHTML=''}
@@ -774,7 +912,7 @@ function render(v){
     d.appendChild(e);tr.appendChild(d);
   });
   // durum
-  const st=$('#status'),mineTurn=['bid','trump','play'].includes(v.phase)&&v.ctl===v.me;
+  const st=$('#status'),mineTurn=['bid','trump','play','contract'].includes(v.phase)&&v.ctl===v.me;
   st.textContent=v.notice&&v.phase==='bid'?v.notice:statusText(v);
   st.classList.toggle('me',mineTurn);st.style.display=(v.phase==='handEnd'||v.phase==='gameEnd')?'none':'block';
   // panel
@@ -788,7 +926,12 @@ function render(v){
 }
 function renderPanel(v){
   const p=$('#panel');
-  if(v.phase==='bid'&&v.turn===v.me){
+  if(v.phase==='contract'&&v.turn===v.me){
+    const ki=v.kinfo;
+    p.innerHTML=`<h3>OYUNU SEÇ</h3><div class="hint">Kalan hakların: ceza ${3-ki.negN[v.me]} · koz ${2-ki.kozN[v.me]}</div><div class="ck">${KORDER.map(k=>`<button data-k="${k}" class="${k==='koz'?'wide':''}" ${v.avail.includes(k)?'':'disabled'}><b>${KINFO[k][0]}</b><span>${KINFO[k][1]}${k==='koz'?'':' · '+(2-ki.cc[k])+' kaldı'}</span></button>`).join('')}</div>`;
+    p.classList.add('on');
+    $$('#panel .ck button').forEach(b=>b.onclick=()=>sendAct({a:'contract',v:b.dataset.k}));
+  }else if(v.phase==='bid'&&v.turn===v.me){
     const mb=v.minBid||7,cnt=14-mb;let nums='';for(let n=mb;n<=13;n++)nums+=`<button data-n="${n}" ${n<=v.highBid?'disabled':''}>${n}</button>`;
     p.innerHTML=`<h3>KAÇ EL ALIRSIN?</h3><div class="hint">${v.highBid?'En yüksek teklif: '+v.highBid+' ('+v.names[v.highBidder]+')':'İlk teklif sende. En az '+mb}</div><div class="nums" style="grid-template-columns:repeat(${cnt>7?5:cnt},1fr)">${nums}</div><div class="acts"><button data-a="pass">Pas</button>${v.canRedeal?'<button class="red" data-a="redeal">Elden Dağıt</button>':''}</div>`;
     p.classList.add('on');
@@ -796,7 +939,7 @@ function renderPanel(v){
     $$('#panel .acts button').forEach(b=>b.onclick=()=>sendAct({a:b.dataset.a}));
   }else if(v.phase==='trump'&&v.turn===v.me){
     const cnt=[0,0,0,0];v.hand.forEach(c=>cnt[c.s]++);
-    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el${v.settings.open&&v.game!=='tekli'?' · ortağının eli koz seçildikten sonra açılır':''}</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
+    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">${v.game==='king'?'Kozlu oyun · her el +50':'İhale: '+v.highBid+' el'}${v.settings.open&&v.game==='esli'?' · ortağının eli koz seçildikten sonra açılır':''}</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
     p.classList.add('on');
     $$('#panel .suits button').forEach(b=>b.onclick=()=>sendAct({a:'trump',v:+b.dataset.s}));
   }else{p.classList.remove('on');p.innerHTML=''}
@@ -831,31 +974,45 @@ function onCard(id,own){
 function showEnd(v){
   const m=$('#modal'),l=v.last;if(!l)return;
   m.dataset.end='1';
-  const tk=v.game==='tekli',t=v.me%2,o=1-t;
+  const tk=v.game==='tekli',kg=v.game==='king',t=v.me%2,o=1-t;
   const fmt=d=>`<span class="${d>=0?'pos':'neg'}">${d>0?'+':''}${d}</span>`;
   const row=(nm,k)=>`<tr><td>${nm}</td><td>${l.tricks[k]}</td><td>${fmt(l.delta[k])}</td><td><b>${v.scores[k]}</b></td></tr>`;
   const bid=`İhale: <b>${esc(v.names[l.bidder])}</b> · ${l.bid} el · <span style="${isRed(l.trump)?'color:#ff8a7f':''}">${SUIT[l.trump]}</span><br>${l.ok?'<span class="pos">Başarılı</span>':'<span class="neg">Battı</span>'}`;
   let head;
-  if(tk){
+  if(kg){
+    const rows=[0,1,2,3].map(k=>(v.me+k)%4).map(k=>row(esc(k===v.me?'Sen':v.names[k]),k)).join('');
+    head=`<p style="text-align:center">Oyun: <b>${KINFO[l.contract][0]}</b>${l.trump!=null?' · <span style="'+(isRed(l.trump)?'color:#ff8a7f':'')+'">'+SUIT[l.trump]+'</span>':''}<br>Seçen: <b>${esc(v.names[l.bidder])}</b></p><table class="res"><tr><th></th><th>EL</th><th>PUAN</th><th>TOPLAM</th></tr>${rows}</table>`;
+  }else if(tk){
     const rows=[0,1,2,3].map(k=>(v.me+k)%4).map(k=>row(esc(k===v.me?'Sen':v.names[k])+(k===l.bidder?' ★':''),k)).join('');
     head=`<p style="text-align:center">${bid}</p><table class="res"><tr><th></th><th>EL</th><th>PUAN</th><th>TOPLAM</th></tr>${rows}</table><p class="gl" style="text-align:center">★ ihaleyi alan</p>`;
   }else head=`<p style="text-align:center">${bid}</p>
     <table class="res"><tr><th></th><th>EL</th><th>PUAN</th><th>TOPLAM</th></tr>${row('Biz',t)}${row('Onlar',o)}</table>`;
   if(v.phase==='gameEnd'){
-    const w=v.over.winner,txt=tk?(w===v.me?'Kazandın!':esc(v.names[w])+' kazandı'):(w===t?'Kazandınız!':'Rakip kazandı');
+    const w=v.over.winner,txt=(tk||kg)?(w===v.me?'Kazandın!':esc(v.names[w])+' kazandı'):(w===t?'Kazandınız!':'Rakip kazandı');
     openModal(`<h2>OYUN BİTTİ</h2><div class="big">${txt}</div>${head}${v.isHost?'<button class="mbtn" id="m-new">Yeni Oyun</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi yeni oyun başlatabilir.</p>'}<button class="mbtn sec" id="m-home">Ana Menü</button>`);
     $('#modal').dataset.end='1';
     const nb=$('#m-new');if(nb)nb.onclick=()=>sendAct({a:'newgame'});
     $('#m-home').onclick=leave;
   }else{
-    openModal(`<h2>TUR ${v.round} SONU</h2>${head}${v.isHost?'<button class="mbtn" id="m-next">Sonraki Tur</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi sonraki turu başlatacak…</p>'}`);
+    openModal(`<h2>${kg?'EL '+v.round+'/20 SONU':'TUR '+v.round+' SONU'}</h2>${head}${v.isHost?'<button class="mbtn" id="m-next">Sonraki Tur</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi sonraki turu başlatacak…</p>'}`);
     $('#modal').dataset.end='1';
     const nb=$('#m-next');if(nb)nb.onclick=()=>sendAct({a:'next'});
   }
 }
+function kingTable(v){
+  const ki=v.kinfo,rows=[0,1,2,3].map(k=>(v.me+k)%4).map(k=>`<tr><td>${esc(k===v.me?'Sen':v.names[k])}</td><td>${ki.negN[k]}/3 · ${ki.kozN[k]}/2</td><td><b>${v.scores[k]}</b></td></tr>`).join('');
+  return `<table class="res"><tr><th></th><th>CEZA · KOZ</th><th>PUAN</th></tr>${rows}</table>`;
+}
+function askLeave(){
+  if(cur!=='game'||!V)return;
+  const host=mode==='host',online=mode==='host'||mode==='guest';
+  openModal(`<h2>OYUNDAN ÇIK?</h2><p style="text-align:center">${host?'Oda sahibi çıkarsa oyun herkes için biter.':online?'Çıkarsan yerine bilgisayar oynar.':'Oyun kaydedilmez.'}</p><button class="mbtn" id="x-stay">Oyuna Dön</button><button class="mbtn sec" id="x-go">Ana Menüye Çık</button>`);
+  $('#x-stay').onclick=closeModal;$('#x-go').onclick=leave;
+}
+$('#b-back').onclick=askLeave;
 $('#b-menu').onclick=()=>{
   if(!V)return;
-  openModal(`<h2>MENÜ</h2><p style="text-align:center"><b>${gameName(V.game)}</b><br>Bitiş: ${endText(V.settings)}${V.game==='tekli'?'':'<br>Açık el: '+(V.settings.open?'Açık':'Kapalı')}</p><button class="mbtn sec" id="m-rules">Nasıl Oynanır</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
+  openModal(`<h2>MENÜ</h2><p style="text-align:center"><b>${gameName(V.game)}</b><br>Bitiş: ${endText(V.settings)}${V.game==='esli'?'<br>Açık el: '+(V.settings.open?'Açık':'Kapalı'):''}</p>${V.game==='king'?kingTable(V):''}<button class="mbtn sec" id="m-rules">Nasıl Oynanır</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
   $('#m-rules').onclick=()=>showRules(V.game,()=>$('#b-menu').click());
   $('#m-leave').onclick=()=>{if(confirm('Oyundan çıkılsın mı?'))leave()};
   $('#m-close').onclick=closeModal;
@@ -865,10 +1022,12 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&$('#modal').d
 /* ====== OLED KORUMA ====== */
 const oledOn=()=>store.get('batak_oled')!=='0';
 $('#c-oled').checked=oledOn();
-$('#c-oled').onchange=e=>{store.set('batak_oled',e.target.checked?'1':'0');if(!e.target.checked){$('#app').style.transform='';$('#dim').style.opacity=0}};
-setInterval(()=>{if(!oledOn())return;const x=Math.round(Math.random()*4-2),y=Math.round(Math.random()*4-2);$('#app').style.transform=`translate(${x}px,${y}px)`},45000);
-let idleT=null;
-function idleReset(){$('#dim').style.opacity=0;clearTimeout(idleT);if(oledOn())idleT=setTimeout(()=>{$('#dim').style.opacity=.6},90000)}
+$('#c-oled').onchange=e=>{store.set('batak_oled',e.target.checked?'1':'0');if(!e.target.checked){$('#app').style.transform='';$('#modal-in').style.transform='';$('#toast').style.marginLeft='';$('#dim').style.opacity=0}};
+/* Yanık koruması: tüm ekranlar (seçim, menü, oda, oyun, pencereler) 30 sn'de bir birkaç piksel kayar */
+setInterval(()=>{if(!oledOn())return;const r=()=>Math.round(Math.random()*6-3),x=r(),y=r();
+  $('#app').style.transform=`translate(${x}px,${y}px)`;$('#modal-in').style.transform=`translate(${-x}px,${-y}px)`;$('#toast').style.marginLeft=x+'px'},30000);
+let idleT=null,idle2=null;
+function idleReset(){$('#dim').style.opacity=0;clearTimeout(idleT);clearTimeout(idle2);if(oledOn()){idleT=setTimeout(()=>{$('#dim').style.opacity=.55},60000);idle2=setTimeout(()=>{$('#dim').style.opacity=.88},180000)}}
 ['touchstart','pointerdown','keydown','mousemove'].forEach(ev=>addEventListener(ev,idleReset,{passive:true}));
 idleReset();
 
@@ -938,7 +1097,7 @@ function onInvite(m){
   const nm=clean(m.name)||'Arkadaş',room=cleanCode(m.room);
   if(room.length<5)return;
   if(cur==='game'){toast(nm+' seni masaya çağırıyor (oyun bitince katılabilirsin)');return}
-  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni ${esc(gameName(m.game==='tekli'?'tekli':'esli'))} masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
+  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni ${esc(gameName(m.game))} masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
   $('#m-yes').onclick=()=>{closeModal();if(m.code)addFriend(m.code,nm,false);if(mode!=='none')leave();joinOnline(room)};
   $('#m-no').onclick=closeModal;
 }
@@ -991,6 +1150,14 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkPrese
   }
 })();
 renderFriends();startPresence();
+/* Telefonun geri tuşu: oyundayken çıkış sorar, menülerde bir üst ekrana döner, oyun seçiminde sayfadan çıkar */
+try{history.replaceState({b:0},'');history.pushState({b:1},'')}catch(e){}
+addEventListener('popstate',()=>{
+  if($('#modal').classList.contains('on')&&$('#modal').dataset.end!=='1'){closeModal();try{history.pushState({b:1},'')}catch(e){}return}
+  if(cur==='pick'&&!$('#modal').classList.contains('on')){try{history.back()}catch(e){}return}
+  if(cur==='game')askLeave();else if(cur==='lobby')leave();else if(cur==='home')showScreen('pick');
+  try{history.pushState({b:1},'')}catch(e){}
+});
 
 /* ====== DAVET LİNKİ ====== */
 (function(){
