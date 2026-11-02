@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261102-1918">
+<meta name="surum" content="20261102-2051">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07070a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Satranç">
 <title>Satranç · by uozdil</title>
-<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-1918">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-1918">
-<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-1918">
-<link rel="manifest" href="manifest.webmanifest?v=20261102-1918">
+<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2051">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2051">
+<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2051">
+<link rel="manifest" href="manifest.webmanifest?v=20261102-2051">
 <style>
 :root{--gold:#c9a45c;--gold2:#ead9ad;--txt:#ece6d8;--mut:#9a9486;--line:rgba(201,164,92,.3);--lt:#e8d3a8;--dk:#8a5a35;--f1:#52331d;--f2:#24150b;--grain:none;--bs:320px;--serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -168,6 +168,14 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;paddin
 .sub .dot{margin-right:7px}
 input.fld{display:block;width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--txt);font-size:16px;margin-bottom:10px;outline:none;font-family:inherit;-webkit-user-select:text;user-select:text}
 input.fld:focus{border-color:var(--gold)}
+.who{display:flex;flex-direction:column;align-items:center;margin:-14px 0 18px;width:100%}
+.who label{font-size:10px;letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:var(--mut)}
+.who input{width:200px;max-width:70%;text-align:center;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--gold2);font-family:var(--serif);font-size:20px;letter-spacing:.08em;padding:6px 4px;outline:none;border-radius:0;-webkit-user-select:text;user-select:text}
+.who input:focus{border-bottom-color:var(--gold)}
+.who input::-webkit-input-placeholder{color:#5b5446}
+.who input::placeholder{color:#5b5446}
+#m-add{align-items:flex-start}
+#m-add .sheet{margin-top:6vh}
 #toast{position:fixed;left:50%;bottom:28px;bottom:calc(env(safe-area-inset-bottom) + 28px);-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:86%;z-index:120;padding:11px 18px;border-radius:24px;background:rgba(28,27,34,.96);border:1px solid var(--line);color:var(--gold2);font-size:13.5px;text-align:center;opacity:0;pointer-events:none;-webkit-transition:opacity .25s;transition:opacity .25s}
 #toast.on{opacity:1}
 .go.mini{margin-top:12px;padding:12px;font-size:12px}
@@ -186,6 +194,7 @@ input.fld:focus{border-color:var(--gold)}
   <div class="emblem"><svg viewBox="0 0 100 100"><defs><linearGradient id="ge" x1=".2" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#fff3cf"/><stop offset=".5" stop-color="#c9a45c"/><stop offset="1" stop-color="#7d5f22"/></linearGradient></defs><path id="embp" fill="url(#ge)" stroke="#6b5120" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
   <h1 class="ttl" data-t="title"></h1>
   <div class="tag" data-t="tagline"></div>
+  <div class="who"><label for="h-name" data-t="yourName"></label><input id="h-name" maxlength="16" autocomplete="off" autocapitalize="words" spellcheck="false" data-ph="namePh"></div>
   <div class="menu">
     <button class="btn gold" id="b-cpu"><span class="ib" data-ic="cpu"></span><span class="tx"><div class="t" data-t="vsCpu"></div><div class="s" data-t="vsCpuS"></div></span></button>
     <button class="btn" id="b-local"><span class="ib" data-ic="two"></span><span class="tx"><div class="t" data-t="local"></div><div class="s" data-t="localS"></div></span></button>
@@ -2216,12 +2225,12 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Adın', yourCode: 'Kodun', copy: 'Kopyala', copied: 'Kopyalandı', copiedLink: 'Link kopyalandı',
       inviteLink: 'Link ile davet et', inviteLinkS: 'Linki gönder, rakibin açınca oyun başlar',
       friends: 'Arkadaşlar', addFriend: 'Arkadaş ekle', noFriends: 'Henüz arkadaş yok. Linkini paylaş ya da kodla ekle.',
-      fName: 'Adı', fCode: 'Arkadaşının kodu', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
+      fName: 'Adı (isteğe bağlı)', namePh: 'Adını yaz', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
       invite: 'Davet gönder', sendLink: 'Link ile davet et', delFriend: 'Arkadaşı sil', confirmDel: 'Arkadaş silinsin mi?',
       waiting: 'Yanıt bekleniyor…', waitLink: 'Rakip bekleniyor…', waitLinkS: 'Linki arkadaşına gönder. Açtığında oyun başlar.', share: 'Linki paylaş',
       invFrom: '{n} seni oyuna davet ediyor', joinFrom: '{n} seninle oynamak istiyor', accept: 'Kabul et', decline: 'Reddet',
       declined: 'Davet reddedildi', busyOpp: 'Rakip şu an başka bir oyunda', unavail: 'Çevrimdışı görünüyor. Link ile davet edebilirsin.',
-      netConn: 'Bağlanıyor…', netReady: 'Bağlantı hazır', netErr: 'Bağlantı kurulamadı, tekrar deneniyor', netTaken: 'Bu kod başka bir pencerede açık',
+      netConn: 'Bağlanıyor…', netReady: 'Bağlantı hazır', netErr: 'Bağlantı kurulamadı, tekrar deneniyor', netTaken: 'Kod başka sekmede açık görünüyor; diğer sekmeyi kapat',
       noRtc: 'Bu cihaz online oyunu desteklemiyor', reconnecting: 'Bağlantı koptu, yeniden bağlanılıyor…', oppGone: 'Rakip geri dönmedi',
       offerDraw: 'Beraberlik', drawSent: 'Beraberlik teklifi gönderildi', drawAsk: 'Rakip beraberlik teklif ediyor. Kabul ediyor musun?',
       drawNo: 'Teklif reddedildi', drawAgreed: 'Beraberlik kabul edildi', oppResigned: 'Rakip çekildi, kazandın!',
@@ -2232,12 +2241,12 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Your name', yourCode: 'Your code', copy: 'Copy', copied: 'Copied', copiedLink: 'Link copied',
       inviteLink: 'Invite with a link', inviteLinkS: 'Send the link; the game starts when they open it',
       friends: 'Friends', addFriend: 'Add friend', noFriends: 'No friends yet. Share your link or add by code.',
-      fName: 'Name', fCode: "Friend's code", add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
+      fName: 'Name (optional)', namePh: 'Type your name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code", add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
       invite: 'Send invite', sendLink: 'Invite with a link', delFriend: 'Remove friend', confirmDel: 'Remove this friend?',
       waiting: 'Waiting for reply…', waitLink: 'Waiting for opponent…', waitLinkS: 'Send the link to your friend. The game starts when they open it.', share: 'Share link',
       invFrom: '{n} invites you to a game', joinFrom: '{n} wants to play with you', accept: 'Accept', decline: 'Decline',
       declined: 'Invite declined', busyOpp: 'Opponent is in another game', unavail: 'Looks offline. You can invite with a link.',
-      netConn: 'Connecting…', netReady: 'Connection ready', netErr: 'Connection failed, retrying', netTaken: 'This code is open in another window',
+      netConn: 'Connecting…', netReady: 'Connection ready', netErr: 'Connection failed, retrying', netTaken: 'Code seems open in another tab; close it',
       noRtc: 'This device does not support online play', reconnecting: 'Connection lost, reconnecting…', oppGone: 'Opponent did not return',
       offerDraw: 'Draw', drawSent: 'Draw offer sent', drawAsk: 'Your opponent offers a draw. Accept?',
       drawNo: 'Offer declined', drawAgreed: 'Draw agreed', oppResigned: 'Opponent resigned, you win!',
@@ -2338,8 +2347,8 @@ var AI = (function () {
 ;
 /* ===== Ağ katmanı: hesapsız P2P (PeerJS) — sunucu sadece "tanışma" için, oyun doğrudan cihazlar arasında ===== */
 var Net = (function () {
-  var PFX = 'uozsat-', peer = null, conn = null, rcT = null, rcEnd = 0;
-  var N = { ready: false, err: '', st: {}, inGame: false, role: '', oppCode: '', watch: '', on: {} };
+  var PFX = 'uozsat-', peer = null, conn = null, rcT = null, rcEnd = 0, rtT = null;
+  var N = { ready: false, err: '', st: {}, inGame: false, role: '', oppCode: '', watch: '', taken: 0, on: {} };
   function id(code) { return PFX + code; }
   function emit(ev, a, b) { if (N.on[ev]) N.on[ev](a, b); }
   N.supported = function () { return !!(window.Peer && window.RTCPeerConnection); };
@@ -2348,7 +2357,7 @@ var Net = (function () {
     for (i = 0; i < 6; i++) s += a.charAt(Math.floor(Math.random() * a.length));
     return s;
   };
-  N.link = function () { return location.href.split('#')[0] + '#j=' + S.code + '&n=' + encodeURIComponent(S.name || ''); };
+  N.link = function () { return location.href.split('#')[0] + '#j=' + S.code + '&n=' + encodeURIComponent(S.named ? S.name : ''); };
   N.parseHash = function () {
     var m = /[#&]j=([A-Z0-9]{4,10})/.exec(location.hash || ''), n = /[#&]n=([^&]*)/.exec(location.hash || '');
     if (!m) return null;
@@ -2360,13 +2369,23 @@ var Net = (function () {
   N.send = function (o) { try { if (conn && conn.open) { conn.send(o); return true; } } catch (e) {} return false; };
   N.busy = function () { return N.inGame || !!N.pending; };
 
+  function restart(ms) {
+    clearTimeout(rtT);
+    rtT = setTimeout(function () { try { if (peer) peer.destroy(); } catch (e) {} peer = null; N.ready = false; N.start(); }, ms);
+  }
+  N.stop = function () { clearTimeout(rtT); try { if (peer) peer.destroy(); } catch (e) {} peer = null; N.ready = false; };
+  N.wake = function () {
+    if (!S.code || !N.supported()) return;
+    if (!peer || peer.destroyed) { peer = null; N.start(); }
+    else if (peer.disconnected) { try { peer.reconnect(); } catch (e) {} }
+  };
   N.start = function () {
     if (peer || !N.supported() || !S.code) return;
     var o = window.__SIGNAL || {}, k;
     var opts = { debug: 0, config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }] } };
     for (k in o) opts[k] = o[k];
     try { peer = new Peer(id(S.code), opts); } catch (e) { N.err = 'net'; emit('status'); return; }
-    peer.on('open', function () { N.ready = true; N.err = ''; emit('status'); });
+    peer.on('open', function () { N.ready = true; N.err = ''; N.taken = 0; clearTimeout(rtT); emit('status'); });
     peer.on('connection', onIncoming);
     peer.on('disconnected', function () {
       N.ready = false; emit('status');
@@ -2381,10 +2400,11 @@ var Net = (function () {
       m = /peer\s+(\S+)/.exec(err.message || ''); code = m ? m[1].replace(PFX, '') : '';
       if (code) { N.st[code] = 'off'; emit('presence', code, 'off'); }
       if (code && code === N.watch) emit('unavailable', code);
-    } else if (t === 'unavailable-id') { N.err = 'taken'; emit('status'); }
-    else if (t === 'network' || t === 'server-error' || t === 'socket-error' || t === 'socket-closed') {
-      N.err = 'net'; N.ready = false; emit('status');
-      setTimeout(function () { try { if (peer) peer.destroy(); } catch (e) {} peer = null; N.start(); }, 6000);
+    } else if (t === 'unavailable-id') {
+      N.taken++; N.err = N.taken > 20 ? 'taken' : ''; N.ready = false; emit('status'); restart(N.taken > 20 ? 10000 : 3500);
+    } else if (t === 'network' || t === 'server-error' || t === 'socket-error' || t === 'socket-closed') {
+      if (N.inGame) { try { if (peer) peer.reconnect(); } catch (e) {} return; }
+      N.err = 'net'; N.ready = false; emit('status'); restart(6000);
     }
   }
   function attach(c) {
@@ -2395,7 +2415,13 @@ var Net = (function () {
   }
   function onIncoming(c) {
     var m = c.metadata || {};
-    if (m.k === 'ping') { c.on('open', function () { setTimeout(function () { try { c.close(); } catch (e) {} }, 400); }); return; }
+    if (m.k === 'ping') {
+      c.on('open', function () {
+        try { c.send({ t: 'me', n: S.named ? S.name : '' }); } catch (e) {}
+        setTimeout(function () { try { c.close(); } catch (e) {} }, 900);
+      });
+      return;
+    }
     if (m.resume) {
       c.on('data', function (d) {
         if (d && d.t === 'resume' && N.inGame && d.c === N.oppCode) {
@@ -2440,11 +2466,11 @@ var Net = (function () {
     N.watch = code;
     var c = peer.connect(id(code), { reliable: true, metadata: { k: 'game' } }), ok = false;
     c.on('open', function () { ok = true; N.watch = ''; attach(c); onOpen(c); });
-    setTimeout(function () { if (!ok && N.watch === code) { N.watch = ''; try { c.close(); } catch (e) {} emit('unavailable', code); } }, 9000);
+    setTimeout(function () { if (!ok && N.watch === code) { N.watch = ''; try { c.close(); } catch (e) {} emit('failed', code); } }, 9000);
     N.out = c;
   }
-  N.invite = function (f, color) { dial(f.c, function (c) { c.send({ t: 'invite', n: S.name, c: S.code, col: color }); }); };
-  N.join = function (code) { dial(code, function (c) { c.send({ t: 'join', n: S.name, c: S.code }); }); };
+  N.invite = function (f, color) { dial(f.c, function (c) { c.send({ t: 'invite', n: S.named ? S.name : '', c: S.code, col: color }); }); };
+  N.join = function (code) { dial(code, function (c) { c.send({ t: 'join', n: S.named ? S.name : '', c: S.code }); }); };
   N.cancel = function () {
     N.watch = '';
     if (N.out) { try { N.out.close(); } catch (e) {} N.out = null; }
@@ -2461,7 +2487,8 @@ var Net = (function () {
     for (i = 0; i < codes.length; i++) (function (code) {
       var c = peer.connect(id(code), { metadata: { k: 'ping' }, reliable: true }), done = false;
       N.st[code] = N.st[code] || 'chk';
-      c.on('open', function () { done = true; N.st[code] = 'on'; emit('presence', code, 'on'); setTimeout(function () { try { c.close(); } catch (e) {} }, 300); });
+      c.on('data', function (d) { if (d && d.t === 'me') emit('name', code, d.n); });
+      c.on('open', function () { done = true; N.st[code] = 'on'; emit('presence', code, 'on'); setTimeout(function () { try { c.close(); } catch (e) {} }, 700); });
       setTimeout(function () { if (!done) { N.st[code] = 'off'; emit('presence', code, 'off'); try { c.close(); } catch (e) {} } }, 7000);
     })(codes[i]);
   };
@@ -2472,7 +2499,7 @@ var Net = (function () {
 /* ===== durum, ayarlar, çizim ===== */
 var $ = function (id) { return document.getElementById(id); };
 var KEY = 'uozdil-satranc-v1';
-var S = { lang: '', board: 'walnut', piece: 'ivory', sound: true, hints: true, oled: true, name: '', code: '', friends: [] };
+var S = { lang: '', board: 'walnut', piece: 'ivory', sound: true, hints: true, oled: true, name: '', named: false, code: '', friends: [] };
 var BOARDS = {
   walnut: { lt: '#ecd7ad', dk: '#8d5b36', f1: '#5e3b22', f2: '#26160b', grain: 'repeating-linear-gradient(96deg,rgba(70,35,10,.08) 0,rgba(70,35,10,.08) 2px,rgba(0,0,0,0) 2px,rgba(0,0,0,0) 8px),linear-gradient(135deg,rgba(255,255,255,.16),rgba(0,0,0,.1))' },
   marble: { lt: '#e9e8e6', dk: '#7c8590', f1: '#3a3d44', f2: '#17181c', grain: 'radial-gradient(ellipse at 25% 15%,rgba(255,255,255,.3),rgba(255,255,255,0) 60%),repeating-linear-gradient(58deg,rgba(40,50,60,.07) 0,rgba(40,50,60,.07) 1px,rgba(0,0,0,0) 1px,rgba(0,0,0,0) 11px),linear-gradient(135deg,rgba(255,255,255,.12),rgba(0,0,0,.12))' },
@@ -2787,8 +2814,22 @@ function ensureProfile() {
 }
 function findF(c) { for (var i = 0; i < S.friends.length; i++) if (S.friends[i].c === c) return S.friends[i]; return null; }
 function addFriendIfNew(n, c) {
-  if (!c || c === S.code || findF(c)) return;
-  S.friends.push({ n: (n || T('player')).slice(0, 16), c: c }); saveS(); if (onlineVisible()) renderOnline();
+  if (!c || c === S.code) return;
+  var f = findF(c);
+  if (f) { if (n && f.a) { f.n = n.slice(0, 16); f.a = 0; saveS(); if (onlineVisible()) renderOnline(); } return; }
+  S.friends.push({ n: (n || T('player')).slice(0, 16), c: c, a: n ? 0 : 1 }); saveS(); if (onlineVisible()) renderOnline();
+}
+function setName(v, from) {
+  v = (v || '').slice(0, 16); S.name = v; S.named = !!v.replace(/\s/g, '');
+  if (!S.named) { /* boşken oynarken "Oyuncu" görünür */ }
+  saveS();
+  if (from !== 'h' && $('h-name').value !== v) $('h-name').value = v;
+  if (from !== 'm' && $('me-name').value !== v) $('me-name').value = v;
+  $('me-av').textContent = initial(S.named ? v : '');
+}
+function fixName() {
+  if (!S.named) S.name = T('player');
+  saveS(); $('me-name').value = S.name; $('h-name').value = S.named ? S.name : ''; $('me-av').textContent = initial(S.name);
 }
 function renderOnline() {
   $('me-name').value = S.name; $('me-code').textContent = S.code; $('me-av').textContent = initial(S.name);
@@ -2842,7 +2883,7 @@ function showInvite(d, key) {
 }
 function hostStart(code, name, col) {
   var hc = (col === 'w' || col === 'b') ? col : (Math.random() < 0.5 ? 'w' : 'b');
-  Net.begin('host', code); Net.send({ t: 'start', hc: hc, n: nm(), c: S.code });
+  Net.begin('host', code); Net.send({ t: 'start', hc: hc, n: S.named ? S.name : '', c: S.code });
   startOnline(hc, 'host', { n: name, c: code });
 }
 function startOnline(hc, role, opp) {
@@ -2870,7 +2911,7 @@ function rematch() {
 }
 function tryRematch() {
   if (OL.rm.me && OL.rm.opp && G.role === 'host') {
-    var hc = otherC(G.hostColor); Net.send({ t: 'start', hc: hc, n: nm(), c: S.code }); startOnline(hc, 'host', G.opp);
+    var hc = otherC(G.hostColor); Net.send({ t: 'start', hc: hc, n: S.named ? S.name : '', c: S.code }); startOnline(hc, 'host', G.opp);
   }
 }
 function leaveOnline() {
@@ -2885,6 +2926,11 @@ Net.on = {
     if (Net.ready && OL.joinCode) { var c = OL.joinCode; OL.joinCode = ''; Net.join(c); }
   },
   presence: function () { if (onlineVisible()) renderOnline(); },
+  name: function (code, n) { if (n) addFriendIfNew(n, code); },
+  failed: function () {
+    if (Net.inGame || !modalOn('m-wait')) return;
+    stopWait(); toast(T('connFail'));
+  },
   unavailable: function (code) {
     if (Net.inGame || !modalOn('m-wait')) return;
     stopWait(); toast(T('unavail')); if (findF(code)) openFriend(code);
@@ -2935,14 +2981,22 @@ function initOnline() {
   on('o-link', linkRoom);
   on('o-add', function () { $('add-n').value = ''; $('add-c').value = ''; openM('m-add'); });
   on('me-copy', function () { copyText(S.code); toast(T('copied')); });
-  $('me-name').addEventListener('input', function () { S.name = this.value.slice(0, 16); saveS(); $('me-av').textContent = initial(S.name); });
-  $('me-name').addEventListener('blur', function () { if (!S.name.replace(/\s/g, '')) { S.name = T('player'); saveS(); renderOnline(); } });
+  $('h-name').value = S.named ? S.name : '';
+  $('h-name').addEventListener('input', function () { setName(this.value, 'h'); });
+  $('h-name').addEventListener('blur', fixName);
+  $('me-name').addEventListener('input', function () { setName(this.value, 'm'); });
+  $('me-name').addEventListener('blur', fixName);
+  function onEnter(e) { if (e.keyCode === 13) { $('add-ok').click(); } }
+  $('add-n').addEventListener('keydown', onEnter); $('add-c').addEventListener('keydown', onEnter);
+  window.addEventListener('pagehide', function () { Net.stop(); });
+  window.addEventListener('pageshow', function () { if (S.code) Net.wake(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && S.code) Net.wake(); });
   $('flist').addEventListener('click', function (e) { var r = up(e.target, 'fr'); if (r) openFriend(r.getAttribute('data-c')); });
   on('add-no', function () { closeM('m-add'); });
   on('add-ok', function () {
     var n = $('add-n').value.replace(/^\s+|\s+$/g, ''), c = $('add-c').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (c.length < 4 || c === S.code) { toast(T('fCode')); return; }
-    if (!findF(c)) { S.friends.push({ n: (n || T('player')).slice(0, 16), c: c }); saveS(); }
+    if (!findF(c)) { S.friends.push({ n: (n || T('player')).slice(0, 16), c: c, a: n ? 0 : 1 }); saveS(); }
     closeM('m-add'); renderOnline(); Net.ping([c]);
   });
   $('m-fr').querySelector('.seg').addEventListener('click', function (e) { var v = e.target.getAttribute && e.target.getAttribute('data-v'); if (v) { OL.icol = v; syncIcol(); } });
@@ -2955,7 +3009,7 @@ function initOnline() {
   on('inv-y', function () {
     var d = OL.inv; closeM('m-inv'); if (!d) return;
     addFriendIfNew(d.n, d.c);
-    if (OL.invKind === 'joinFrom') hostStart(d.c, d.n, 'r'); else Net.send({ t: 'accept', n: nm(), c: S.code });
+    if (OL.invKind === 'joinFrom') hostStart(d.c, d.n, 'r'); else Net.send({ t: 'accept', n: S.named ? S.name : '', c: S.code });
   });
   on('inv-n', function () { closeM('m-inv'); Net.send({ t: 'decline' }); Net.cancel(); Net.pending = false; });
   on('c-draw', function () {
