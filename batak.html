@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-1940">
-<meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-1940" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-1940" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1940">
+<meta name="surum" content="20261102-1955">
+<meta name="apple-mobile-web-app-title" content="Eşli Batak">
+<link rel="icon" href="batak-ikon.svg?v=20261102-1955" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-1955" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1955">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Batak · by uozdil</title>
+<title>Eşli Batak · by uozdil</title>
 <style>
 :root{--gold:#c9a85a;--gold2:#e8d08a;--ivory:#f4eee0;--felt:#0e3f31;--burg:#6d1f2e;--red:#b3261e;--ink:#15171a;--tcw:48px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
@@ -29,7 +29,7 @@ button,input{font-family:inherit}
 .home{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:8px 2px 10px;-webkit-overflow-scrolling:touch}
 .mark{font-size:22px;letter-spacing:10px;color:var(--gold);margin-top:6px}
 .mark span.r{color:#b3453c}
-h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spacing:12px;margin:6px 0 0 12px;color:var(--gold2);text-shadow:0 2px 18px rgba(201,168,90,.25)}
+h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,40px);letter-spacing:.12em;margin:6px 0 0 .12em;white-space:nowrap;color:var(--gold2);text-shadow:0 2px 18px rgba(201,168,90,.25)}
 .tag{font-size:11px;letter-spacing:5px;color:#9b8a5e;margin:4px 0 20px}
 .menu{width:100%;display:flex;flex-direction:column;gap:10px}
 .opt{width:100%;text-align:left;padding:15px 18px;border-radius:16px;border:1px solid rgba(201,168,90,.35);background:linear-gradient(180deg,#14201b,#0a110e);color:var(--ivory);display:flex;flex-direction:column;gap:3px;cursor:pointer}
@@ -97,7 +97,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
 #table{position:relative;flex:1;min-height:0;margin:10px 0;border-radius:30px;border:1px solid rgba(201,168,90,.3);
   background:radial-gradient(ellipse at 50% 42%,#14513f 0%,#0d3b2d 52%,#04130e 100%);box-shadow:inset 0 0 40px rgba(0,0,0,.65),0 0 0 4px #000,0 0 0 5px rgba(201,168,90,.12);overflow:hidden}
 #wm{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;color:rgba(232,208,138,.1);font-family:'Cinzel',Georgia,serif;letter-spacing:6px;line-height:1.6}
-#wm b{display:block;font-size:30px}#wm i{font-style:normal;font-size:11px;letter-spacing:4px}
+#wm b{display:block;font-size:22px}#wm i{font-style:normal;font-size:11px;letter-spacing:4px}
 .seat{position:absolute;z-index:3}
 .seat.t{top:10px;left:50%;transform:translateX(-50%)}
 .seat.l{left:8px;top:40%;transform:translateY(-50%)}
@@ -185,7 +185,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
 #toast.on{opacity:1}
 #dim{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity 3s;z-index:90}
 @media (orientation:landscape) and (max-height:520px){
-  h1{font-size:34px}.tag{margin-bottom:10px}
+  h1{font-size:26px}.tag{margin-bottom:10px}
   #hud{height:42px}.sc b{font-size:17px}
   #table{margin:6px 0;border-radius:22px}
   .chip{padding:4px 8px}.chip .sb{display:none}
@@ -198,8 +198,8 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
 <section id="s-home" class="screen on">
   <div class="home">
     <div class="mark">♠ <span class="r">♥</span> <span class="r">♦</span> ♣</div>
-    <h1>BATAK</h1>
-    <div class="tag">EŞLİ · 4 KİŞİLİK</div>
+    <h1>EŞLİ BATAK</h1>
+    <div class="tag">4 KİŞİLİK · 2 TAKIM</div>
     <div class="menu">
       <button class="opt pri" id="b-solo"><b>Bilgisayara Karşı Oyna</b><span>Ortağın ve rakipler bilgisayar</span></button>
       <button class="opt" id="b-host"><b>Online Oda Kur</b><span>Kodu paylaş, arkadaşlarını masaya çağır</span></button>
@@ -217,6 +217,9 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
       <div class="lbl">Oyun bitişi</div>
       <div class="seg" id="seg-mode"><button data-m="points">Puana göre</button><button data-m="hands">Tur sayısına göre</button></div>
       <div class="seg" id="seg-val" style="margin-top:6px"></div>
+      <div class="lbl">Açık el</div>
+      <div class="seg" id="seg-open"><button data-o="0">Kapalı (klasik)</button><button data-o="1">Açık</button></div>
+      <div class="fempty" style="margin-top:6px">Açıksa: koz seçilince ihaleyi alanın ortağının eli herkese açılır, ortak oynamaz, ihaleyi alan iki eli birden oynatır. Kapalıysa herkes kendi elini oynar.</div>
       <div class="lbl">Adın</div>
       <input type="text" id="i-name" maxlength="12" placeholder="Oyuncu" autocomplete="off">
       <label class="sw"><input type="checkbox" id="c-oled"> OLED koruma (kayma ve otomatik kısma)</label>
@@ -247,7 +250,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
     <button id="b-menu" aria-label="Menü">☰</button>
   </div>
   <div id="table">
-    <div id="wm"><b>BATAK</b><i>by uozdil</i></div>
+    <div id="wm"><b>EŞLİ BATAK</b><i>by uozdil</i></div>
     <div class="seat t" id="seat-2"></div>
     <div class="seat l" id="seat-1"></div>
     <div class="seat r" id="seat-3"></div>
@@ -323,7 +326,7 @@ function nextBid(){
   G.bidCount++;
   if(G.bidCount>=4){
     if(G.highBidder<0){G.highBidder=G.dealer;G.highBid=7;G.bids[G.dealer]=7;G.notice=G.names[G.dealer]+' herkes pas geçince 7 almak zorunda'}
-    G.phase='trump';G.turn=G.highBidder;G.dummy=(G.highBidder+2)%4;
+    G.phase='trump';G.turn=G.highBidder;G.dummy=G.settings.open?(G.highBidder+2)%4:-1; // açık el yalnızca ayar açıksa
   }else G.turn=(G.turn+1)%4;
   commit();
 }
@@ -435,7 +438,7 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let mode='none',V=null,sel=null,cur='home',peer=null,conn=null,conns={},L=null,myCode='',shown=new Set();
 let cfg;try{cfg=JSON.parse(store.get('batak_cfg')||'null')}catch(e){cfg=null}
-cfg=cfg||{mode:'points',value:61};
+cfg=cfg||{mode:'points',value:61};cfg.open=!!cfg.open; // açık el: varsayılan kapalı (klasik)
 const OPTS={points:[41,61,101],hands:[4,6,10]};
 const clean=s=>String(s||'').replace(/[<>&"'`]/g,'').trim().slice(0,12);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -453,9 +456,11 @@ function renderSettings(){
   if(!OPTS[cfg.mode].includes(cfg.value))cfg.value=OPTS[cfg.mode][1];
   $('#seg-val').innerHTML=OPTS[cfg.mode].map(v=>`<button data-v="${v}" class="${v===cfg.value?'on':''}">${v}${cfg.mode==='points'?' puan':' tur'}</button>`).join('');
   $$('#seg-val button').forEach(b=>b.onclick=()=>{cfg.value=+b.dataset.v;store.set('batak_cfg',JSON.stringify(cfg));renderSettings()});
+  $$('#seg-open button').forEach(b=>b.classList.toggle('on',(b.dataset.o==='1')===!!cfg.open));
   store.set('batak_cfg',JSON.stringify(cfg));
 }
 $$('#seg-mode button').forEach(b=>b.onclick=()=>{cfg.mode=b.dataset.m;cfg.value=OPTS[cfg.mode][1];renderSettings()});
+$$('#seg-open button').forEach(b=>b.onclick=()=>{cfg.open=b.dataset.o==='1';renderSettings()});
 $('#i-name').value=store.get('batak_name')||'';
 $('#i-name').onchange=()=>store.set('batak_name',$('#i-name').value.trim());
 renderSettings();
@@ -464,7 +469,7 @@ const RULES=`<h2>NASIL OYNANIR</h2>
 <h4>Temel</h4><ul><li>4 kişi, 2 takım. Karşındaki ortağındır. 52 kart, herkese 13.</li><li>Sıralama: A en büyük, 2 en küçük.</li></ul>
 <h4>Artırım (tek el)</h4><ul><li>Dağıtanın solundan başlayarak herkes <b>bir kez</b> konuşur: <b>Pas</b> ya da öncekinden yüksek bir teklif.</li><li>En az 7, en çok 13 el teklif edilebilir.</li><li>Herkes pas derse dağıtan 7 almak zorundadır.</li></ul>
 <h4>Elden</h4><ul><li>Teklif sırası sana geldiğinde elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam 4 veya daha az) <b>Elden Dağıt</b> diyerek kartları yeniden dağıttırabilirsin.</li></ul>
-<h4>Açık el</h4><ul><li>Koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Koz, ortağın eli görülmeden seçilir. Ortak oynamaz; ihaleyi alan hem kendi elini hem açık eli oynatır.</li><li>İhaleyi alan oyuna ilk o başlar. Açık el eli alırsa sonraki eli yine ihaleyi alan o kartlardan açar.</li></ul>
+<h4>Açık el (isteğe bağlı ayar)</h4><ul><li>Ana menüdeki <b>Açık el</b> ayarı kapalıysa (klasik) herkes kendi elini oynar, kimsenin eli görünmez.</li><li>Ayar açıksa: koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Koz, ortağın eli görülmeden seçilir. Ortak oynamaz; ihaleyi alan hem kendi elini hem açık eli oynatır.</li><li>İhaleyi alan oyuna ilk o başlar. Açık el eli alırsa sonraki eli yine ihaleyi alan o kartlardan açar.</li></ul>
 <h4>Koz</h4><ul><li>İhaleyi alan kozu seçer ve ilk eli açar.</li><li>Koz ile el açmak serbesttir; ilk elde de, istediğin her elde kozla çıkabilirsin.</li></ul>
 <h4>El oynama</h4><ul><li>Açılan renkten varsan atmak zorundasın; yukarıdan vurabiliyorsan büyüğünü atmalısın.</li><li>Rengin yoksa koz atmak zorundasın; el kozlanmışsa üstüne koz atabiliyorsan atmalısın.</li><li>Eli en büyük koz, yoksa açılan rengin en büyüğü alır; kazanan sonraki eli açar.</li></ul>
 <h4>Puan</h4><ul><li>İhale takımı toplam aldığı el sayısı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b> yazar.</li><li>Karşı takım aldığı el sayısı kadar puan yazar.</li><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>
@@ -524,13 +529,13 @@ function renderLobby(){
   $('#lb-seats').innerHTML=`<div class="tm">TAKIM 1</div>${row(0)}${row(2)}<div class="tm">TAKIM 2</div>${row(1)}${row(3)}`;
   $('#b-start').style.display=isHost?'block':'none';
   $('#b-share').style.display=isHost?'inline-block':'none';
-  $('#lb-info').textContent=(isHost?'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. ':'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings);
+  $('#lb-info').textContent=(isHost?'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. ':'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings)+' · Açık el: '+(L.settings.open?'Açık':'Kapalı');
   renderFriends();
 }
 $('#b-share').onclick=async()=>{
   const url=location.origin+location.pathname+'?oda='+myCode;
-  const text='Batak oynayalım! Oda kodu: '+myCode;
-  if(navigator.share){try{await navigator.share({title:'Batak · by uozdil',text,url});return}catch(e){}}
+  const text='Eşli Batak oynayalım! Oda kodu: '+myCode;
+  if(navigator.share){try{await navigator.share({title:'Eşli Batak · by uozdil',text,url});return}catch(e){}}
   try{await navigator.clipboard.writeText(url);toast('Link kopyalandı')}catch(e){toast('Kod: '+myCode)}
 };
 $('#b-start').onclick=()=>{mkGame(L.settings,L.names,L.humans)};
@@ -695,7 +700,7 @@ function renderPanel(v){
     $$('#panel .acts button').forEach(b=>b.onclick=()=>sendAct({a:b.dataset.a}));
   }else if(v.phase==='trump'&&v.turn===v.me){
     const cnt=[0,0,0,0];v.hand.forEach(c=>cnt[c.s]++);
-    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el · ortağının eli koz seçildikten sonra açılır</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
+    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el${v.settings.open?' · ortağının eli koz seçildikten sonra açılır':''}</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
     p.classList.add('on');
     $$('#panel .suits button').forEach(b=>b.onclick=()=>sendAct({a:'trump',v:+b.dataset.s}));
   }else{p.classList.remove('on');p.innerHTML=''}
@@ -748,7 +753,7 @@ function showEnd(v){
 }
 $('#b-menu').onclick=()=>{
   if(!V)return;
-  openModal(`<h2>MENÜ</h2><p style="text-align:center">Bitiş: ${endText(V.settings)}</p><button class="mbtn sec" id="m-rules">Kurallar</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
+  openModal(`<h2>MENÜ</h2><p style="text-align:center">Bitiş: ${endText(V.settings)}<br>Açık el: ${V.settings.open?'Açık':'Kapalı'}</p><button class="mbtn sec" id="m-rules">Kurallar</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
   $('#m-rules').onclick=()=>{openModal(RULES.replace('onclick="closeModal()"','onclick="$(\'#b-menu\').click()"'))};
   $('#m-leave').onclick=()=>{if(confirm('Oyundan çıkılsın mı?'))leave()};
   $('#m-close').onclick=closeModal;
@@ -831,7 +836,7 @@ function onInvite(m){
   const nm=clean(m.name)||'Arkadaş',room=cleanCode(m.room);
   if(room.length<5)return;
   if(cur==='game'){toast(nm+' seni masaya çağırıyor (oyun bitince katılabilirsin)');return}
-  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni Batak masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
+  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni Eşli Batak masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
   $('#m-yes').onclick=()=>{closeModal();if(m.code)addFriend(m.code,nm,false);if(mode!=='none')leave();joinOnline(room)};
   $('#m-no').onclick=closeModal;
 }
@@ -867,8 +872,8 @@ function onScreen(n){if(n==='home'||n==='lobby'){renderFriends();setTimeout(chec
 $('#b-flink').onclick=async()=>{
   if(!needName())return;
   const url=location.origin+location.pathname+'?ark='+me+'&ad='+encodeURIComponent(myName());
-  const text=myName()+' seni Batak oynamaya çağırıyor. Linke dokunup arkadaş ol:';
-  if(navigator.share){try{await navigator.share({title:'Batak · by uozdil',text,url});return}catch(e){}}
+  const text=myName()+' seni Eşli Batak oynamaya çağırıyor. Linke dokunup arkadaş ol:';
+  if(navigator.share){try{await navigator.share({title:'Eşli Batak · by uozdil',text,url});return}catch(e){}}
   try{await navigator.clipboard.writeText(url);toast('Link kopyalandı, arkadaşına gönder')}catch(e){toast('Kodun: '+me)}
 };
 $('#b-fadd').onclick=()=>addByCode($('#i-fcode').value);
