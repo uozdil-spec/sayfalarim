@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261102-2103">
+<meta name="surum" content="20261102-2108">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07070a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Satranç">
 <title>Satranç · by uozdil</title>
-<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2103">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2103">
-<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2103">
-<link rel="manifest" href="manifest.webmanifest?v=20261102-2103">
+<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2108">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2108">
+<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2108">
+<link rel="manifest" href="manifest.webmanifest?v=20261102-2108">
 <style>
 :root{--gold:#c9a45c;--gold2:#ead9ad;--txt:#ece6d8;--mut:#9a9486;--line:rgba(201,164,92,.3);--lt:#e8d3a8;--dk:#8a5a35;--f1:#52331d;--f2:#24150b;--grain:none;--bs:320px;--serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -2385,6 +2385,11 @@ var Net = (function () {
     if (!peer || peer.destroyed) { peer = null; N.start(); }
     else if (peer.disconnected) { try { peer.reconnect(); } catch (e) {} }
   };
+  N.resume = function () {
+    if (!N.inGame || N.open()) return;
+    if (N.role === 'guest') { rcEnd = 0; reconnect(); }
+    if (peer && peer.disconnected) { try { peer.reconnect(); } catch (e) {} }
+  };
   N.start = function () {
     if (peer || !N.supported() || !S.code) return;
     var o = window.__SIGNAL || {}, k;
@@ -2456,7 +2461,7 @@ var Net = (function () {
   }
   function reconnect() {
     clearTimeout(rcT);
-    if (!rcEnd) rcEnd = Date.now() + 60000;
+    if (!rcEnd) rcEnd = Date.now() + 180000;
     if (!N.inGame) { rcEnd = 0; return; }
     if (Date.now() > rcEnd) { rcEnd = 0; emit('gone'); return; }
     if (conn && conn.open) { rcEnd = 0; return; }
@@ -2580,7 +2585,11 @@ function render() {
   $('board').innerHTML = h;
   renderInfo();
 }
-function nameOf(c) { if (G.mode === 'online') return c === G.human ? T('you') : ((G.opp && G.opp.n) || T('player')); if (G.mode === 'cpu') return c === G.human ? T('you') : T('cpu'); return c === 'w' ? T('p1') : T('p2'); }
+function oppName() {
+  var o = G.opp || {}, f = o.c && typeof findF === 'function' ? findF(o.c) : null;
+  return esc(o.n && o.n !== T('player') ? o.n : (f && f.n) || o.n || T('player'));
+}
+function nameOf(c) { if (G.mode === 'online') return c === G.human ? (S.named ? esc(S.name) : T('you')) : oppName(); if (G.mode === 'cpu') return c === G.human ? T('you') : T('cpu'); return c === 'w' ? T('p1') : T('p2'); }
 function matDiff() {
   var d = 0, i;
   for (i = 0; i < G.caps.w.length; i++) d += VALS[G.caps.w[i]];
@@ -2859,7 +2868,7 @@ function pingFriends() { var c = [], i; for (i = 0; i < S.friends.length; i++) c
 function openOnline() {
   ensureProfile(); Net.start(); show('s-online'); renderOnline(); pingFriends();
   clearInterval(OL.pt); OL.pt = setInterval(function () { if (onlineVisible()) pingFriends(); }, 15000);
-  if (!Net.supported()) toast(T('noRtc'));
+  if (!Net.supported()) toast(T('noRtc')); else if (!S.named) toast(T('nameHint'));
 }
 function syncIcol() {
   var b = $('m-fr').querySelector('.seg').children, i;
@@ -2943,7 +2952,7 @@ Net.on = {
     if (Net.ready && OL.joinCode) { OL.joinCode = ''; tryJoin(); }
   },
   presence: function () { if (onlineVisible()) renderOnline(); },
-  name: function (code, n) { if (n) addFriendIfNew(n, code); },
+  name: function (code, n) { if (!n) return; addFriendIfNew(n, code); if (G.mode === 'online' && G.opp && G.opp.c === code && !G.over) { G.opp.n = n; renderInfo(); } },
   failed: function () {
     if (Net.inGame || !modalOn('m-wait')) return;
     if (retryJoin()) return;
@@ -3007,9 +3016,9 @@ function initOnline() {
   $('me-name').addEventListener('blur', fixName);
   function onEnter(e) { if (e.keyCode === 13) { $('add-ok').click(); } }
   $('add-n').addEventListener('keydown', onEnter); $('add-c').addEventListener('keydown', onEnter);
-  window.addEventListener('pagehide', function () { Net.stop(); });
-  window.addEventListener('pageshow', function () { if (S.code) Net.wake(); });
-  document.addEventListener('visibilitychange', function () { if (!document.hidden && S.code) Net.wake(); });
+  window.addEventListener('pagehide', function (e) { if (!Net.inGame && !(e && e.persisted)) Net.stop(); });
+  window.addEventListener('pageshow', function () { if (S.code) { Net.wake(); Net.resume(); } });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && S.code) { Net.wake(); Net.resume(); } });
   $('flist').addEventListener('click', function (e) { var r = up(e.target, 'fr'); if (r) openFriend(r.getAttribute('data-c')); });
   on('add-no', function () { closeM('m-add'); });
   on('add-ok', function () {
