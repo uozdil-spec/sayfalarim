@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261102-2057">
+<meta name="surum" content="20261102-2103">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07070a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Satranç">
 <title>Satranç · by uozdil</title>
-<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2057">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2057">
-<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2057">
-<link rel="manifest" href="manifest.webmanifest?v=20261102-2057">
+<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2103">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2103">
+<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2103">
+<link rel="manifest" href="manifest.webmanifest?v=20261102-2103">
 <style>
 :root{--gold:#c9a45c;--gold2:#ead9ad;--txt:#ece6d8;--mut:#9a9486;--line:rgba(201,164,92,.3);--lt:#e8d3a8;--dk:#8a5a35;--f1:#52331d;--f2:#24150b;--grain:none;--bs:320px;--serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -299,7 +299,7 @@ input.fld:focus{border-color:var(--gold)}
 <div class="modal" id="m-add"><div class="sheet">
   <h2 data-t="addFriend"></h2>
   <input class="fld" id="add-n" maxlength="16" autocomplete="off" spellcheck="false" data-ph="fName">
-  <input class="fld" id="add-c" maxlength="10" autocomplete="off" autocapitalize="characters" spellcheck="false" data-ph="fCode" style="text-transform:uppercase;letter-spacing:.2em">
+  <input class="fld" id="add-c" autocomplete="off" autocapitalize="characters" spellcheck="false" data-ph="fCode">
   <button class="go" id="add-ok" data-t="add"></button>
   <button class="go ghost" id="add-no" data-t="no"></button>
 </div></div>
@@ -2231,7 +2231,7 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Adın', yourCode: 'Kodun', copy: 'Kopyala', copied: 'Kopyalandı', copiedLink: 'Link kopyalandı',
       inviteLink: 'Link ile davet et', inviteLinkS: 'Linki gönder, rakibin açınca oyun başlar',
       friends: 'Arkadaşlar', addFriend: 'Arkadaş ekle', noFriends: 'Henüz arkadaş yok. Linkini paylaş ya da kodla ekle.',
-      fName: 'Adı (isteğe bağlı)', namePh: 'Buraya dokun, adını yaz', nameHint: 'Arkadaşların seni bu adla görür', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
+      fName: 'Adı (isteğe bağlı)', namePh: 'Buraya dokun, adını yaz', nameHint: 'Arkadaşların seni bu adla görür', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu veya linki', linkJoinS: 'Arkadaşın oyunu açık tutmalı', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
       invite: 'Davet gönder', sendLink: 'Link ile davet et', delFriend: 'Arkadaşı sil', confirmDel: 'Arkadaş silinsin mi?',
       waiting: 'Yanıt bekleniyor…', waitLink: 'Rakip bekleniyor…', waitLinkS: 'Linki arkadaşına gönder. Açtığında oyun başlar.', share: 'Linki paylaş',
       invFrom: '{n} seni oyuna davet ediyor', joinFrom: '{n} seninle oynamak istiyor', accept: 'Kabul et', decline: 'Reddet',
@@ -2247,7 +2247,7 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Your name', yourCode: 'Your code', copy: 'Copy', copied: 'Copied', copiedLink: 'Link copied',
       inviteLink: 'Invite with a link', inviteLinkS: 'Send the link; the game starts when they open it',
       friends: 'Friends', addFriend: 'Add friend', noFriends: 'No friends yet. Share your link or add by code.',
-      fName: 'Name (optional)', namePh: 'Tap here, type your name', nameHint: 'Friends will see you by this name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code", add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
+      fName: 'Name (optional)', namePh: 'Tap here, type your name', nameHint: 'Friends will see you by this name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code or link", linkJoinS: 'Your friend must keep the game open', add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
       invite: 'Send invite', sendLink: 'Invite with a link', delFriend: 'Remove friend', confirmDel: 'Remove this friend?',
       waiting: 'Waiting for reply…', waitLink: 'Waiting for opponent…', waitLinkS: 'Send the link to your friend. The game starts when they open it.', share: 'Share link',
       invFrom: '{n} invites you to a game', joinFrom: '{n} wants to play with you', accept: 'Accept', decline: 'Decline',
@@ -2795,7 +2795,7 @@ function bindInput() {
 
 ;
 /* ===== Online: ekran, arkadaşlar, davet akışı, oyun içi mesajlar ===== */
-var OL = { friend: null, inv: null, invKind: '', link: false, rm: { me: false, opp: false }, drawOut: false, joinCode: '', icol: 'r', sentCol: 'r', tt: null, pt: null, tok: 0, oppLeft: false };
+var OL = { friend: null, inv: null, invKind: '', link: false, rm: { me: false, opp: false }, drawOut: false, joinCode: '', icol: 'r', sentCol: 'r', tt: null, pt: null, tok: 0, oppLeft: false, jt: null, jr: null };
 function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function nm() { return ((S.name || '') + '').replace(/^\s+|\s+$/g, '') || T('player'); }
 function initial(n) { n = ((n || '') + '').replace(/^\s+/, ''); return n ? n.charAt(0).toUpperCase() : '?'; }
@@ -2817,6 +2817,10 @@ function ensureProfile() {
   if (!S.code) { S.code = Net.newCode(); ch = true; }
   if (!S.name) { S.name = T('player'); ch = true; }
   if (ch) saveS();
+}
+function parseCode(v) {
+  v = (v || '') + ''; var m = /[#&?]j=([A-Za-z0-9]{4,10})/.exec(v);
+  return (m ? m[1] : v).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
 }
 function findF(c) { for (var i = 0; i < S.friends.length; i++) if (S.friends[i].c === c) return S.friends[i]; return null; }
 function addFriendIfNew(n, c) {
@@ -2870,7 +2874,14 @@ function openFriend(code) {
 function openWait(title, sub, share) {
   $('wt-t').textContent = title; $('wt-s').textContent = sub || ''; $('wt-share').style.display = share ? '' : 'none'; openM('m-wait');
 }
-function stopWait() { closeM('m-wait'); Net.cancel(); Net.pending = false; OL.link = false; OL.joinCode = ''; }
+function stopWait() { OL.jt = null; clearTimeout(OL.jr); closeM('m-wait'); Net.cancel(); Net.pending = false; OL.link = false; OL.joinCode = ''; }
+function tryJoin() {
+  clearTimeout(OL.jr);
+  if (!OL.jt) return;
+  if (Date.now() > OL.jt.end) { stopWait(); toast(T('connFail')); return; }
+  if (Net.ready) Net.join(OL.jt.code); else OL.jr = setTimeout(tryJoin, 1500);
+}
+function retryJoin() { if (OL.jt) { clearTimeout(OL.jr); OL.jr = setTimeout(tryJoin, 3000); return true; } return false; }
 function sendInvite() {
   var f = OL.friend; if (!f) return; closeM('m-fr');
   if (!Net.ready) { toast(T('netConn')); return; }
@@ -2929,26 +2940,28 @@ function leaveOnline() {
 Net.on = {
   status: function () {
     if (onlineVisible()) { renderOnline(); if (Net.ready) pingFriends(); }
-    if (Net.ready && OL.joinCode) { var c = OL.joinCode; OL.joinCode = ''; Net.join(c); }
+    if (Net.ready && OL.joinCode) { OL.joinCode = ''; tryJoin(); }
   },
   presence: function () { if (onlineVisible()) renderOnline(); },
   name: function (code, n) { if (n) addFriendIfNew(n, code); },
   failed: function () {
     if (Net.inGame || !modalOn('m-wait')) return;
+    if (retryJoin()) return;
     stopWait(); toast(T('connFail'));
   },
   unavailable: function (code) {
     if (Net.inGame || !modalOn('m-wait')) return;
+    if (retryJoin()) return;
     stopWait(); toast(T('unavail')); if (findF(code)) openFriend(code);
   },
   decline: function () { stopWait(); toast(T('declined')); },
   busy: function () { stopWait(); toast(T('busyOpp')); },
-  accept: function (d) { addFriendIfNew(d.n, d.c); hostStart(d.c, d.n, OL.sentCol); },
+  accept: function (d) { OL.jt = null; addFriendIfNew(d.n, d.c); hostStart(d.c, d.n, OL.sentCol); },
   join: function (d) {
     if (OL.link && modalOn('m-wait')) { addFriendIfNew(d.n, d.c); hostStart(d.c, d.n, 'r'); } else showInvite(d, 'joinFrom');
   },
   invite: function (d) { showInvite(d, 'invFrom'); },
-  start: function (d) { addFriendIfNew(d.n, d.c); Net.begin('guest', d.c); startOnline(d.hc, 'guest', { n: d.n, c: d.c }); },
+  start: function (d) { OL.jt = null; clearTimeout(OL.jr); addFriendIfNew(d.n, d.c); Net.begin('guest', d.c); startOnline(d.hc, 'guest', { n: d.n, c: d.c }); },
   closed: function () {
     if (modalOn('m-inv')) { closeM('m-inv'); Net.pending = false; }
     else if (modalOn('m-wait') && !OL.link) { stopWait(); toast(T('declined')); }
@@ -3000,7 +3013,7 @@ function initOnline() {
   $('flist').addEventListener('click', function (e) { var r = up(e.target, 'fr'); if (r) openFriend(r.getAttribute('data-c')); });
   on('add-no', function () { closeM('m-add'); });
   on('add-ok', function () {
-    var n = $('add-n').value.replace(/^\s+|\s+$/g, ''), c = $('add-c').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    var n = $('add-n').value.replace(/^\s+|\s+$/g, ''), c = parseCode($('add-c').value);
     if (c.length < 4 || c === S.code) { toast(T('fCode')); return; }
     if (!findF(c)) { S.friends.push({ n: (n || T('player')).slice(0, 16), c: c, a: n ? 0 : 1 }); saveS(); }
     closeM('m-add'); renderOnline(); Net.ping([c]);
@@ -3030,8 +3043,8 @@ function initOnline() {
   if (j) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
     if (j.c !== S.code) {
-      ensureProfile(); addFriendIfNew(j.n, j.c); openOnline(); openWait(T('linkJoin'), '', false); Net.pending = true;
-      OL.joinCode = j.c; if (Net.ready) { OL.joinCode = ''; Net.join(j.c); }
+      ensureProfile(); addFriendIfNew(j.n, j.c); openOnline(); openWait(T('linkJoin'), T('linkJoinS'), false); Net.pending = true;
+      OL.jt = { code: j.c, end: Date.now() + 90000 }; OL.joinCode = j.c; if (Net.ready) { OL.joinCode = ''; tryJoin(); }
     }
   }
 }
