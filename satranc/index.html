@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261102-2051">
+<meta name="surum" content="20261102-2057">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07070a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Satranç">
 <title>Satranç · by uozdil</title>
-<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2051">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2051">
-<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2051">
-<link rel="manifest" href="manifest.webmanifest?v=20261102-2051">
+<link rel="icon" type="image/png" href="ikon-32.png?v=20261102-2057">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261102-2057">
+<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261102-2057">
+<link rel="manifest" href="manifest.webmanifest?v=20261102-2057">
 <style>
 :root{--gold:#c9a45c;--gold2:#ead9ad;--txt:#ece6d8;--mut:#9a9486;--line:rgba(201,164,92,.3);--lt:#e8d3a8;--dk:#8a5a35;--f1:#52331d;--f2:#24150b;--grain:none;--bs:320px;--serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -168,12 +168,16 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;paddin
 .sub .dot{margin-right:7px}
 input.fld{display:block;width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--txt);font-size:16px;margin-bottom:10px;outline:none;font-family:inherit;-webkit-user-select:text;user-select:text}
 input.fld:focus{border-color:var(--gold)}
-.who{display:flex;flex-direction:column;align-items:center;margin:-14px 0 18px;width:100%}
-.who label{font-size:10px;letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:var(--mut)}
-.who input{width:200px;max-width:70%;text-align:center;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--gold2);font-family:var(--serif);font-size:20px;letter-spacing:.08em;padding:6px 4px;outline:none;border-radius:0;-webkit-user-select:text;user-select:text}
-.who input:focus{border-bottom-color:var(--gold)}
-.who input::-webkit-input-placeholder{color:#5b5446}
-.who input::placeholder{color:#5b5446}
+.who{text-align:left;display:flex;align-items:center;width:100%;max-width:360px;margin:-10px 0 4px;padding:9px 16px 9px 12px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);-webkit-transition:border-color .2s;transition:border-color .2s}
+.who:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,164,92,.14)}
+.who .av{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-family:var(--serif);font-size:18px;color:var(--gold2);background:rgba(0,0,0,.3);margin-right:12px;flex:none}
+.who .wi{flex:1;min-width:0;display:flex;flex-direction:column}
+.who small{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
+.who input{width:100%;background:transparent;border:0;color:var(--txt);font-family:var(--serif);font-size:19px;letter-spacing:.05em;padding:2px 0 0;outline:none;border-radius:0;-webkit-user-select:text;user-select:text}
+.who input::-webkit-input-placeholder{color:#7a705b;font-style:italic}
+.who input::placeholder{color:#7a705b;font-style:italic}
+.who .pen{width:18px;height:18px;color:var(--gold);flex:none;margin-left:8px;opacity:.85}
+.whs{font-size:11px;color:var(--mut);letter-spacing:.04em;margin:0 0 20px;text-align:center}
 #m-add{align-items:flex-start}
 #m-add .sheet{margin-top:6vh}
 #toast{position:fixed;left:50%;bottom:28px;bottom:calc(env(safe-area-inset-bottom) + 28px);-webkit-transform:translateX(-50%);transform:translateX(-50%);max-width:86%;z-index:120;padding:11px 18px;border-radius:24px;background:rgba(28,27,34,.96);border:1px solid var(--line);color:var(--gold2);font-size:13.5px;text-align:center;opacity:0;pointer-events:none;-webkit-transition:opacity .25s;transition:opacity .25s}
@@ -194,7 +198,8 @@ input.fld:focus{border-color:var(--gold)}
   <div class="emblem"><svg viewBox="0 0 100 100"><defs><linearGradient id="ge" x1=".2" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#fff3cf"/><stop offset=".5" stop-color="#c9a45c"/><stop offset="1" stop-color="#7d5f22"/></linearGradient></defs><path id="embp" fill="url(#ge)" stroke="#6b5120" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
   <h1 class="ttl" data-t="title"></h1>
   <div class="tag" data-t="tagline"></div>
-  <div class="who"><label for="h-name" data-t="yourName"></label><input id="h-name" maxlength="16" autocomplete="off" autocapitalize="words" spellcheck="false" data-ph="namePh"></div>
+  <label class="who" for="h-name"><i class="av" id="h-av">?</i><span class="wi"><small data-t="yourName"></small><input id="h-name" maxlength="16" autocomplete="off" autocapitalize="words" spellcheck="false" data-ph="namePh"></span><span class="pen" data-ic="pen"></span></label>
+  <div class="whs" data-t="nameHint"></div>
   <div class="menu">
     <button class="btn gold" id="b-cpu"><span class="ib" data-ic="cpu"></span><span class="tx"><div class="t" data-t="vsCpu"></div><div class="s" data-t="vsCpuS"></div></span></button>
     <button class="btn" id="b-local"><span class="ib" data-ic="two"></span><span class="tx"><div class="t" data-t="local"></div><div class="s" data-t="localS"></div></span></button>
@@ -2138,6 +2143,7 @@ var DEFS_SVG = '<svg width="0" height="0" style="position:absolute" aria-hidden=
 ;
 /* Özgün çizgi ikon seti (24x24, 1.6 çizgi) — tek sprite, <use> ile çağrılır */
 var ICON_SPRITE = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>' +
+ '<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4.2L16.3 4.5a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L8.2 19z"/><path d="M14.5 6.5l3 3"/></symbol>' +
  '<symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>' +
  '<symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7L4.5 11.5L9 16"/><path d="M5 11.5h8.5a5 5 0 0 1 0 10H11"/></symbol>' +
  '<symbol id="i-flip" viewBox="0 0 24 24"><path d="M7 4v14"/><path d="M3.5 7.5L7 4l3.5 3.5"/><path d="M17 20V6"/><path d="M13.5 16.5L17 20l3.5-3.5"/></symbol>' +
@@ -2225,7 +2231,7 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Adın', yourCode: 'Kodun', copy: 'Kopyala', copied: 'Kopyalandı', copiedLink: 'Link kopyalandı',
       inviteLink: 'Link ile davet et', inviteLinkS: 'Linki gönder, rakibin açınca oyun başlar',
       friends: 'Arkadaşlar', addFriend: 'Arkadaş ekle', noFriends: 'Henüz arkadaş yok. Linkini paylaş ya da kodla ekle.',
-      fName: 'Adı (isteğe bağlı)', namePh: 'Adını yaz', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
+      fName: 'Adı (isteğe bağlı)', namePh: 'Buraya dokun, adını yaz', nameHint: 'Arkadaşların seni bu adla görür', connFail: 'Bağlantı kurulamadı. İkiniz de oyunu açık tutun; olmazsa aynı Wi-Fi\'yi deneyin.', fCode: 'Arkadaşının kodu', add: 'Ekle', on: 'Çevrimiçi', off: 'Çevrimdışı', chk: 'Kontrol ediliyor…',
       invite: 'Davet gönder', sendLink: 'Link ile davet et', delFriend: 'Arkadaşı sil', confirmDel: 'Arkadaş silinsin mi?',
       waiting: 'Yanıt bekleniyor…', waitLink: 'Rakip bekleniyor…', waitLinkS: 'Linki arkadaşına gönder. Açtığında oyun başlar.', share: 'Linki paylaş',
       invFrom: '{n} seni oyuna davet ediyor', joinFrom: '{n} seninle oynamak istiyor', accept: 'Kabul et', decline: 'Reddet',
@@ -2241,7 +2247,7 @@ function T(k) { return (I18N[LANG] && I18N[LANG][k]) || I18N.tr[k] || k; }
       onTitle: 'Online', yourName: 'Your name', yourCode: 'Your code', copy: 'Copy', copied: 'Copied', copiedLink: 'Link copied',
       inviteLink: 'Invite with a link', inviteLinkS: 'Send the link; the game starts when they open it',
       friends: 'Friends', addFriend: 'Add friend', noFriends: 'No friends yet. Share your link or add by code.',
-      fName: 'Name (optional)', namePh: 'Type your name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code", add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
+      fName: 'Name (optional)', namePh: 'Tap here, type your name', nameHint: 'Friends will see you by this name', connFail: 'Could not connect. Keep the game open on both phones; if it fails, try the same Wi-Fi.', fCode: "Friend's code", add: 'Add', on: 'Online', off: 'Offline', chk: 'Checking…',
       invite: 'Send invite', sendLink: 'Invite with a link', delFriend: 'Remove friend', confirmDel: 'Remove this friend?',
       waiting: 'Waiting for reply…', waitLink: 'Waiting for opponent…', waitLinkS: 'Send the link to your friend. The game starts when they open it.', share: 'Share link',
       invFrom: '{n} invites you to a game', joinFrom: '{n} wants to play with you', accept: 'Accept', decline: 'Decline',
@@ -2829,7 +2835,7 @@ function setName(v, from) {
 }
 function fixName() {
   if (!S.named) S.name = T('player');
-  saveS(); $('me-name').value = S.name; $('h-name').value = S.named ? S.name : ''; $('me-av').textContent = initial(S.name);
+  saveS(); $('me-name').value = S.name; $('h-name').value = S.named ? S.name : ''; $('h-av').textContent = initial($('h-name').value); $('me-av').textContent = initial(S.name);
 }
 function renderOnline() {
   $('me-name').value = S.name; $('me-code').textContent = S.code; $('me-av').textContent = initial(S.name);
@@ -2981,8 +2987,8 @@ function initOnline() {
   on('o-link', linkRoom);
   on('o-add', function () { $('add-n').value = ''; $('add-c').value = ''; openM('m-add'); });
   on('me-copy', function () { copyText(S.code); toast(T('copied')); });
-  $('h-name').value = S.named ? S.name : '';
-  $('h-name').addEventListener('input', function () { setName(this.value, 'h'); });
+  $('h-name').value = S.named ? S.name : ''; $('h-av').textContent = initial($('h-name').value);
+  $('h-name').addEventListener('input', function () { setName(this.value, 'h'); $('h-av').textContent = initial(this.value); });
   $('h-name').addEventListener('blur', fixName);
   $('me-name').addEventListener('input', function () { setName(this.value, 'm'); });
   $('me-name').addEventListener('blur', fixName);
