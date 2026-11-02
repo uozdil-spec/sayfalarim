@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261102-1622">
+<meta name="surum" content="20261102-1626">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261102-1622" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261102-1622" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1622">
+<link rel="icon" href="batak-ikon.svg?v=20261102-1626" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-1626" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1626">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -51,6 +51,19 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
 .sw{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;color:#bdb79f}
 .sw input{width:18px;height:18px;accent-color:#c9a85a}
 .sign{text-align:center;font-family:'Cinzel',Georgia,serif;font-size:12px;letter-spacing:4px;color:#7d7150;padding-top:6px}
+.fr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(201,168,90,.12)}
+.fr:last-child{border-bottom:none}
+.fr .dot{width:10px;height:10px;border-radius:50%;background:#3a3a3a;flex:none}
+.fr .dot.on{background:#4ade80;box-shadow:0 0 8px rgba(74,222,128,.6)}
+.fr .nm{flex:1;min-width:0;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr .nm small{display:block;font-size:11px;color:#8f8a76}
+.fr button{padding:9px 14px;border-radius:10px;border:1px solid var(--gold);background:transparent;color:var(--gold2);font-size:13px;font-weight:600;cursor:pointer}
+.fr button.go{background:linear-gradient(180deg,#d6b86a,#a98a3e);color:#1a1405}
+.fr button:disabled{opacity:.3}
+.fr button.x{border-color:transparent;color:#7d7150;padding:9px 6px}
+.fempty{font-size:12.5px;color:#8f8a76;line-height:1.5;padding:4px 2px}
+.frow{display:flex;gap:8px;margin-top:10px}
+.set .frow input[type=text]{flex:1;min-width:0;letter-spacing:4px;text-transform:uppercase}
 
 /* GAME */
 #hud{display:flex;align-items:stretch;gap:8px;height:50px;flex:none}
@@ -171,6 +184,13 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
       <div class="opt join"><b>Odaya Katıl</b><div class="row"><input id="i-code" maxlength="5" placeholder="KOD" autocapitalize="characters" autocomplete="off"><button class="mini-btn" id="b-join">Katıl</button></div></div>
       <button class="opt" id="b-rules"><b>Nasıl Oynanır</b><span>Kurallar ve puanlama</span></button>
     </div>
+    <div class="set" id="friends">
+      <div class="lbl">Arkadaşlarım</div>
+      <div id="fr-list"></div>
+      <div class="frow"><button class="mini-btn" id="b-flink" style="flex:1;padding:11px">Arkadaş Ekle (link paylaş)</button></div>
+      <div class="frow"><input type="text" id="i-fcode" maxlength="6" placeholder="Arkadaş kodu" autocapitalize="characters" autocomplete="off"><button class="mini-btn" id="b-fadd">Ekle</button></div>
+      <div class="fempty" id="fr-me" style="margin-top:8px"></div>
+    </div>
     <div class="set">
       <div class="lbl">Oyun bitişi</div>
       <div class="seg" id="seg-mode"><button data-m="points">Puana göre</button><button data-m="hands">Tur sayısına göre</button></div>
@@ -189,6 +209,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spac
     <div class="code" id="lb-code">-----</div>
     <button class="mini-btn" id="b-share" style="padding:10px 20px">Davet Linkini Paylaş</button>
     <div class="seatrow" id="lb-seats"></div>
+    <div class="seatrow" id="lb-friends"></div>
     <div id="lb-info" style="font-size:12.5px;color:#a9a58f;text-align:center"></div>
     <button class="mbtn" id="b-start" style="max-width:380px">Oyunu Başlat</button>
     <button class="back-btn" id="b-lback">‹ Ana menü</button>
@@ -380,10 +401,12 @@ let mode='none',V=null,sel=null,cur='home',peer=null,conn=null,conns={},L=null,m
 let cfg;try{cfg=JSON.parse(store.get('batak_cfg')||'null')}catch(e){cfg=null}
 cfg=cfg||{mode:'points',value:61};
 const OPTS={points:[41,61,101],hands:[4,6,10]};
-const myName=()=>($('#i-name').value||'').trim().slice(0,12)||'Oyuncu';
+const clean=s=>String(s||'').replace(/[<>&"'`]/g,'').trim().slice(0,12);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const myName=()=>clean($('#i-name').value)||'Oyuncu';
 let tt=null;
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
-function showScreen(n){cur=n;$$('.screen').forEach(e=>e.classList.toggle('on',e.id==='s-'+n));if(n==='game')setTimeout(layout,30)}
+function showScreen(n){cur=n;$$('.screen').forEach(e=>e.classList.toggle('on',e.id==='s-'+n));if(n==='game')setTimeout(layout,30);try{onScreen(n)}catch(e){}}
 function openModal(h){$('#modal-in').innerHTML=h;$('#modal').classList.add('on')}
 function closeModal(){$('#modal').classList.remove('on')}
 const endText=s=>s.mode==='points'?s.value+' puana kadar':s.value+' tur';
@@ -421,16 +444,17 @@ $('#b-solo').onclick=()=>{
 const PFX='uozdil-batak-';
 const genCode=()=>{const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=a[Math.floor(Math.random()*a.length)];return s};
 function needPeer(){if(typeof Peer==='undefined'){toast('Online için internet bağlantısı gerekli');return false}return true}
-$('#b-host').onclick=()=>{
+function startHost(cb){
   if(!needPeer())return;store.set('batak_name',myName());
   mode='host';L={settings:Object.assign({},cfg),names:[myName(),'Kemal','Ayşe','Mehmet'],humans:[true,false,false,false]};conns={};
-  toast('Oda hazırlanıyor…');openPeer(0);
-};
+  afterRoom=cb||null;toast('Oda hazırlanıyor…');openPeer(0);
+}
+$('#b-host').onclick=()=>startHost(null);
 function openPeer(tries){
   const code=genCode();
   try{peer&&peer.destroy()}catch(e){}
   peer=new Peer(PFX+code);
-  peer.on('open',()=>{myCode=code;showScreen('lobby');renderLobby()});
+  peer.on('open',()=>{myCode=code;showScreen('lobby');renderLobby();if(afterRoom){const f=afterRoom;afterRoom=null;f()}});
   peer.on('error',e=>{if(e.type==='unavailable-id'&&tries<6)openPeer(tries+1);else{toast('Bağlantı hatası ('+e.type+')');if(cur!=='game'&&cur!=='lobby'){mode='none'}}});
   peer.on('connection',c=>{
     c.on('data',m=>onHostMsg(c,m));
@@ -443,7 +467,7 @@ function onHostMsg(c,m){
   if(m.t==='join'){
     if(G||!L){c.send({t:'full'});return}
     const s=freeSeat();if(s<0){c.send({t:'full'});return}
-    L.humans[s]=true;L.names[s]=String(m.name||'Oyuncu').slice(0,12);c.seat=s;conns[s]=c;lobbyBroadcast();
+    L.humans[s]=true;L.names[s]=clean(m.name)||'Oyuncu';c.seat=s;conns[s]=c;lobbyBroadcast();
   }else if(m.t==='act'&&c.seat!=null){act(c.seat,m.act)}
 }
 function onGuestLeave(c){
@@ -464,6 +488,7 @@ function renderLobby(){
   $('#b-start').style.display=isHost?'block':'none';
   $('#b-share').style.display=isHost?'inline-block':'none';
   $('#lb-info').textContent=(isHost?'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. ':'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings);
+  renderFriends();
 }
 $('#b-share').onclick=async()=>{
   const url=location.origin+location.pathname+'?oda='+myCode;
@@ -659,6 +684,126 @@ let idleT=null;
 function idleReset(){$('#dim').style.opacity=0;clearTimeout(idleT);if(oledOn())idleT=setTimeout(()=>{$('#dim').style.opacity=.6},90000)}
 ['touchstart','pointerdown','keydown','mousemove'].forEach(ev=>addEventListener(ev,idleReset,{passive:true}));
 idleReset();
+
+/* ====== ARKADAŞLAR: çevrimiçi liste ve tek dokunuşla davet ====== */
+let afterRoom=null,pp=null,ppOk=false,fOn={},checking=false;
+let me=store.get('batak_me');
+if(!me||me.length!==6){me=genCode()+genCode().charAt(0);store.set('batak_me',me)}
+let friends=[];try{friends=JSON.parse(store.get('batak_friends')||'[]')}catch(e){friends=[]}
+const saveF=()=>store.set('batak_friends',JSON.stringify(friends));
+const UID=c=>PFX+'u-'+c;
+const cleanCode=c=>String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+function needName(){if(!$('#i-name').value.trim()){toast('Önce aşağıdaki "Adın" kutusuna adını yaz');return false}store.set('batak_name',myName());return true}
+function addFriend(code,name,pending){
+  code=cleanCode(code);
+  if(code.length!==6||code===me)return false;
+  name=clean(name)||'Arkadaş';
+  const f=friends.find(x=>x.code===code);
+  if(f){if(name!=='Arkadaş')f.name=name;if(pending===false)f.pending=false}
+  else friends.push({code,name,pending:!!pending});
+  saveF();renderFriends();setTimeout(checkPresence,300);return true;
+}
+function startPresence(){
+  if(typeof Peer==='undefined'||pp)return;
+  try{pp=new Peer(UID(me))}catch(e){return}
+  pp.on('open',()=>{ppOk=true;checkPresence()});
+  pp.on('disconnected',()=>{try{pp.reconnect()}catch(e){}});
+  pp.on('error',e=>{
+    if(e.type==='unavailable-id'){ppOk=false;try{pp.destroy()}catch(x){}pp=null;setTimeout(startPresence,8000)}
+  });
+  pp.on('connection',c=>{
+    c.on('data',m=>{
+      if(!m)return;
+      if(m.t==='friend'){if(addFriend(m.code,m.name,false))toast((clean(m.name)||'Arkadaş')+' arkadaş listene eklendi');try{c.send({t:'friend-ok',name:myName()})}catch(e){}}
+      else if(m.t==='invite')onInvite(m);
+    });
+  });
+}
+function probe(f){
+  return new Promise(res=>{
+    let done=false,c=null;
+    const fin=v=>{if(done)return;done=true;fOn[f.code]=v;const cc=c;setTimeout(()=>{try{cc&&cc.close()}catch(e){}},v?900:0);res()};
+    try{c=pp.connect(UID(f.code),{reliable:true})}catch(e){return fin(false)}
+    const to=setTimeout(()=>fin(false),5000);
+    c.on('open',()=>{clearTimeout(to);
+      if(f.pending){try{c.send({t:'friend',name:myName(),code:me});f.pending=false;saveF()}catch(e){}}
+      fin(true)});
+    c.on('error',()=>{clearTimeout(to);fin(false)});
+  });
+}
+async function checkPresence(){
+  if(checking||!pp||!ppOk||!friends.length||document.hidden||(cur!=='home'&&cur!=='lobby'))return;
+  checking=true;
+  try{await Promise.all(friends.map(probe))}catch(e){}
+  checking=false;renderFriends();
+}
+function inviteFriend(f){
+  if(!needName())return;
+  if(!pp||!ppOk){toast('Bağlantı hazırlanıyor, birkaç saniye sonra tekrar dene');return}
+  const send=()=>{
+    let c;try{c=pp.connect(UID(f.code),{reliable:true})}catch(e){toast('Davet gönderilemedi');return}
+    const to=setTimeout(()=>{toast(f.name+' çevrimiçi görünmüyor');try{c.close()}catch(e){}},6000);
+    c.on('open',()=>{clearTimeout(to);c.send({t:'invite',name:myName(),room:myCode,code:me});toast(f.name+' davet edildi');setTimeout(()=>{try{c.close()}catch(e){}},900)});
+  };
+  if(mode==='host'&&myCode&&peer&&!G)send();else startHost(send);
+}
+function onInvite(m){
+  const nm=clean(m.name)||'Arkadaş',room=cleanCode(m.room);
+  if(room.length<5)return;
+  if(cur==='game'){toast(nm+' seni masaya çağırıyor (oyun bitince katılabilirsin)');return}
+  openModal(`<h2>DAVET</h2><div class="big">${esc(nm)}</div><p style="text-align:center">seni Batak masasına çağırıyor.</p><button class="mbtn" id="m-yes">Katıl</button><button class="mbtn sec" id="m-no">Şimdi Değil</button>`);
+  $('#m-yes').onclick=()=>{closeModal();if(m.code)addFriend(m.code,nm,false);if(mode!=='none')leave();joinOnline(room)};
+  $('#m-no').onclick=closeModal;
+}
+function addByCode(code){
+  code=cleanCode(code);
+  if(!needName())return;
+  if(code.length!==6){toast('6 haneli arkadaş kodunu yaz');return}
+  if(code===me){toast('Bu senin kendi kodun');return}
+  if(!pp||!ppOk){toast('Bağlantı hazırlanıyor, birkaç saniye sonra tekrar dene');return}
+  let c;try{c=pp.connect(UID(code),{reliable:true})}catch(e){return}
+  const to=setTimeout(()=>{toast('Arkadaşın şu an çevrimiçi değil. Bunun yerine link paylaşarak ekleyebilirsin');try{c.close()}catch(e){}},6000);
+  c.on('open',()=>c.send({t:'friend',name:myName(),code:me}));
+  c.on('data',m=>{if(m&&m.t==='friend-ok'){clearTimeout(to);addFriend(code,m.name,false);toast((clean(m.name)||'Arkadaş')+' eklendi');$('#i-fcode').value='';setTimeout(()=>{try{c.close()}catch(e){}},500)}});
+}
+function renderFriends(){
+  const box=$('#fr-list'),lb=$('#lb-friends');if(!box)return;
+  const sorted=friends.slice().sort((a,b)=>(!!fOn[b.code])-(!!fOn[a.code]));
+  const row=(f,lobby)=>`<div class="fr"><span class="dot ${fOn[f.code]?'on':''}"></span><span class="nm">${esc(f.name)}<small>${fOn[f.code]?'çevrimiçi':'çevrimdışı'}</small></span><button class="go" data-i="${f.code}" ${fOn[f.code]?'':'disabled'}>${lobby?'Çağır':'Davet Et'}</button>${lobby?'':`<button class="x" data-x="${f.code}" aria-label="Sil">✕</button>`}</div>`;
+  const bind=el=>{
+    el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const f=friends.find(x=>x.code===b.dataset.i);if(f)inviteFriend(f)});
+    el.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const f=friends.find(x=>x.code===b.dataset.x);if(f&&confirm(f.name+' listeden silinsin mi?')){friends=friends.filter(x=>x!==f);saveF();renderFriends()}});
+  };
+  box.innerHTML=sorted.length?sorted.map(f=>row(f,false)).join(''):'<div class="fempty">Henüz arkadaş yok. "Arkadaş Ekle" ile linki gönder. Bir kez eklenince ikinizin listesinde de görünürsünüz ve oda kodu yazmadan tek dokunuşla masaya çağırırsınız.</div>';
+  bind(box);
+  $('#fr-me').textContent='Arkadaş kodun: '+me;
+  if(lb){
+    const on=sorted.filter(f=>fOn[f.code]);
+    lb.innerHTML=mode==='host'?'<div class="tm">ARKADAŞLARINI ÇAĞIR</div>'+(on.length?on.map(f=>row(f,true)).join(''):'<div class="fempty">Şu an çevrimiçi arkadaşın yok.</div>'):'';
+    bind(lb);
+  }
+}
+function onScreen(n){if(n==='home'||n==='lobby'){renderFriends();setTimeout(checkPresence,100)}}
+$('#b-flink').onclick=async()=>{
+  if(!needName())return;
+  const url=location.origin+location.pathname+'?ark='+me+'&ad='+encodeURIComponent(myName());
+  const text=myName()+' seni Batak oynamaya çağırıyor. Linke dokunup arkadaş ol:';
+  if(navigator.share){try{await navigator.share({title:'Batak · by uozdil',text,url});return}catch(e){}}
+  try{await navigator.clipboard.writeText(url);toast('Link kopyalandı, arkadaşına gönder')}catch(e){toast('Kodun: '+me)}
+};
+$('#b-fadd').onclick=()=>addByCode($('#i-fcode').value);
+setInterval(()=>checkPresence(),20000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkPresence()});
+(function(){
+  const p=new URLSearchParams(location.search),a=p.get('ark');
+  if(a){
+    const nm=clean(p.get('ad'))||'Arkadaş';
+    if(addFriend(a,nm,true))toast(nm+' arkadaş olarak eklendi');
+    p.delete('ark');p.delete('ad');
+    try{history.replaceState(null,'',location.pathname+(p.toString()?'?'+p.toString():''))}catch(e){}
+  }
+})();
+renderFriends();startPresence();
 
 /* ====== DAVET LİNKİ ====== */
 (function(){
