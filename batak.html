@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="surum" content="20261102-1622">
+<meta name="apple-mobile-web-app-title" content="Batak">
+<link rel="icon" href="batak-ikon.svg?v=20261102-1622" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261102-1622" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261102-1622">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Batak · by uozdil</title>
+<style>
+:root{--gold:#c9a85a;--gold2:#e8d08a;--ivory:#f4eee0;--felt:#0e3f31;--burg:#6d1f2e;--red:#b3261e;--ink:#15171a;--tcw:48px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavior:none}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ivory)}
+button,input{font-family:inherit}
+#app{position:fixed;inset:0;display:flex;justify-content:center;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) calc(env(safe-area-inset-right,0px) + 14px) calc(env(safe-area-inset-bottom,0px) + 14px) calc(env(safe-area-inset-left,0px) + 14px);
+  transition:transform 4s linear}
+.screen{display:none;flex:1;min-height:0;min-width:0;flex-direction:column;width:100%;max-width:640px}
+.screen.on{display:flex}
+.serif{font-family:'Cinzel','Cormorant Garamond',Georgia,'Times New Roman',serif}
+
+/* HOME */
+.home{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:8px 2px 10px;-webkit-overflow-scrolling:touch}
+.mark{font-size:22px;letter-spacing:10px;color:var(--gold);margin-top:6px}
+.mark span.r{color:#b3453c}
+h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:48px;letter-spacing:12px;margin:6px 0 0 12px;color:var(--gold2);text-shadow:0 2px 18px rgba(201,168,90,.25)}
+.tag{font-size:11px;letter-spacing:5px;color:#9b8a5e;margin:4px 0 20px}
+.menu{width:100%;display:flex;flex-direction:column;gap:10px}
+.opt{width:100%;text-align:left;padding:15px 18px;border-radius:16px;border:1px solid rgba(201,168,90,.35);background:linear-gradient(180deg,#14201b,#0a110e);color:var(--ivory);display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.opt b{font-size:16px;letter-spacing:.5px;color:var(--gold2);font-weight:600}
+.opt span{font-size:12.5px;color:#a9a58f}
+.opt:active{transform:scale(.985)}
+.opt.pri{background:linear-gradient(180deg,#d6b86a,#a98a3e);border-color:#e8d08a}
+.opt.pri b{color:#1a1405}.opt.pri span{color:#3b2f10}
+.opt.join .row{display:flex;gap:10px;margin-top:6px}
+.opt.join input{flex:1;min-width:0;padding:11px 14px;border-radius:12px;border:1px solid rgba(201,168,90,.35);background:#050807;color:var(--gold2);font-size:20px;letter-spacing:8px;text-align:center;text-transform:uppercase;outline:none;-webkit-user-select:text;user-select:text}
+.mini-btn{padding:0 20px;border-radius:12px;border:1px solid var(--gold);background:transparent;color:var(--gold2);font-size:14px;font-weight:600;cursor:pointer}
+.set{width:100%;margin-top:18px;padding:14px 16px;border-radius:16px;border:1px solid rgba(201,168,90,.18);background:#070b09}
+.lbl{font-size:10.5px;letter-spacing:3px;color:#8b7e57;margin:10px 0 7px;text-transform:uppercase}
+.lbl:first-child{margin-top:0}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:64px;padding:9px 8px;border-radius:10px;border:1px solid rgba(201,168,90,.25);background:#0b130f;color:#bdb79f;font-size:13px;cursor:pointer}
+.seg button.on{background:rgba(201,168,90,.16);border-color:var(--gold);color:var(--gold2);font-weight:600}
+.set input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(201,168,90,.25);background:#050807;color:var(--ivory);font-size:15px;outline:none;-webkit-user-select:text;user-select:text}
+.sw{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13.5px;color:#bdb79f}
+.sw input{width:18px;height:18px;accent-color:#c9a85a}
+.sign{text-align:center;font-family:'Cinzel',Georgia,serif;font-size:12px;letter-spacing:4px;color:#7d7150;padding-top:6px}
+
+/* GAME */
+#hud{display:flex;align-items:stretch;gap:8px;height:50px;flex:none}
+.sc{min-width:62px;padding:5px 10px;border-radius:12px;border:1px solid rgba(201,168,90,.28);background:#0a110e;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.sc small{font-size:9px;letter-spacing:2px;color:#8b7e57}
+.sc b{font-family:'Cinzel',Georgia,serif;font-size:21px;color:var(--gold2);line-height:1.1}
+#mid{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:12px;color:#c9c2a8;line-height:1.35}
+#mid b{font-size:15px;color:var(--ivory);font-weight:600}
+#mid .rd{color:#ff8a7f}
+#b-menu{width:46px;border-radius:12px;border:1px solid rgba(201,168,90,.28);background:#0a110e;color:var(--gold2);font-size:20px;cursor:pointer}
+#table{position:relative;flex:1;min-height:0;margin:10px 0;border-radius:30px;border:1px solid rgba(201,168,90,.3);
+  background:radial-gradient(ellipse at 50% 42%,#14513f 0%,#0d3b2d 52%,#04130e 100%);box-shadow:inset 0 0 40px rgba(0,0,0,.65),0 0 0 4px #000,0 0 0 5px rgba(201,168,90,.12);overflow:hidden}
+#wm{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;color:rgba(232,208,138,.1);font-family:'Cinzel',Georgia,serif;letter-spacing:6px;line-height:1.6}
+#wm b{display:block;font-size:30px}#wm i{font-style:normal;font-size:11px;letter-spacing:4px}
+.seat{position:absolute;z-index:3}
+.seat.t{top:10px;left:50%;transform:translateX(-50%)}
+.seat.l{left:8px;top:40%;transform:translateY(-50%)}
+.seat.r{right:8px;top:40%;transform:translateY(-50%)}
+.seat.m{bottom:8px;left:50%;transform:translateX(-50%)}
+.chip{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:14px;background:rgba(3,10,7,.78);border:1px solid rgba(201,168,90,.25);max-width:112px;transition:box-shadow .3s,border-color .3s}
+.chip.turn{border-color:var(--gold2);box-shadow:0 0 14px rgba(232,208,138,.45)}
+.chip .tx{display:flex;flex-direction:column;min-width:0}
+.chip .nm{font-size:12.5px;font-weight:600;color:var(--ivory);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .sb{font-size:10.5px;color:#a9a58f;white-space:nowrap}
+.chip .dl{font-style:normal;font-size:9px;font-weight:700;color:#1a1405;background:var(--gold);border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;margin-left:4px}
+.mini{position:relative;width:20px;height:27px;border-radius:4px;flex:none;background:repeating-linear-gradient(45deg,#5a1a28 0 3px,#6d1f2e 3px 6px);border:1.5px solid #d9c07a}
+.mini i{position:absolute;right:-6px;bottom:-6px;font-style:normal;font-size:9.5px;background:#000;border:1px solid var(--gold);color:var(--gold2);border-radius:9px;min-width:16px;text-align:center;padding:0 3px}
+#trick{position:absolute;inset:0;pointer-events:none}
+.slot{position:absolute;transform:translate(-50%,-50%)}
+.slot.s0{left:50%;top:66%;--fx:0px;--fy:60px}.slot.s1{left:35%;top:47%;--fx:-60px;--fy:0px}
+.slot.s2{left:50%;top:29%;--fx:0px;--fy:-60px}.slot.s3{left:65%;top:47%;--fx:60px;--fy:0px}
+.slot .card.new{animation:drop .3s ease-out}
+.slot .card.win{box-shadow:0 0 0 2px var(--gold2),0 0 18px rgba(232,208,138,.7)}
+@keyframes drop{from{transform:translate(var(--fx),var(--fy)) scale(.85);opacity:0}}
+#status{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);padding:6px 14px;border-radius:20px;background:rgba(3,10,7,.8);border:1px solid rgba(201,168,90,.2);font-size:12.5px;color:#cfc8ac;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis;z-index:2}
+#status.me{color:#1a1405;background:linear-gradient(180deg,#e6cf88,#b99a49);border-color:#e8d08a;font-weight:600}
+#panel{position:absolute;left:10px;right:10px;bottom:8px;z-index:5;display:none;padding:12px;border-radius:20px;background:rgba(2,8,5,.94);border:1px solid rgba(201,168,90,.4);box-shadow:0 8px 30px rgba(0,0,0,.7)}
+#panel.on{display:block}
+#panel h3{margin:0 0 8px;font-family:'Cinzel',Georgia,serif;font-size:14px;letter-spacing:2px;color:var(--gold2);text-align:center;font-weight:600}
+#panel .hint{font-size:11.5px;color:#a9a58f;text-align:center;margin-bottom:9px}
+.nums{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.nums button{padding:11px 0;border-radius:11px;border:1px solid var(--gold);background:linear-gradient(180deg,#d6b86a,#a98a3e);color:#1a1405;font-weight:700;font-size:16px;cursor:pointer}
+.nums button:disabled{opacity:.22;background:#111;color:#777;border-color:#333}
+.acts{display:flex;gap:8px;margin-top:9px}
+.acts button{flex:1;padding:11px 6px;border-radius:11px;border:1px solid rgba(201,168,90,.5);background:transparent;color:var(--gold2);font-size:14px;font-weight:600;cursor:pointer}
+.acts button.red{border-color:#8a3a33;color:#ff9a90}
+.suits{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.suits button{padding:10px 0 7px;border-radius:13px;border:1px solid rgba(201,168,90,.5);background:#f1ead8;color:#15171a;font-size:30px;line-height:1;cursor:pointer}
+.suits button small{display:block;font-size:10.5px;margin-top:3px;font-family:system-ui;color:#555}
+.suits button.rd{color:var(--red)}
+#handwrap{flex:none;padding-top:2px}
+#hand{position:relative;width:100%}
+#hand .card{position:absolute;top:26px;transform-origin:50% 140%;transition:top .15s,filter .2s}
+#hand .card.sel{top:6px;box-shadow:0 0 0 2px var(--gold2),0 6px 16px rgba(0,0,0,.7)}
+#hand .card.dim{filter:brightness(.42)}
+
+/* CARD */
+.card{position:relative;flex:none;width:var(--cw);height:calc(var(--cw)*1.42);border-radius:calc(var(--cw)*.11);background:linear-gradient(160deg,#fbf7ec,#e9e0ca);color:var(--ink);font-family:Georgia,'Times New Roman',serif;font-size:calc(var(--cw)*.27);line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.65),inset 0 0 0 1px rgba(0,0,0,.12)}
+.card.red{color:var(--red)}
+.card .tl,.card .br{position:absolute;text-align:center;font-weight:700}
+.card .tl{left:.3em;top:.22em}
+.card .br{right:.3em;bottom:.22em;transform:rotate(180deg)}
+.card .tl i,.card .br i{display:block;font-style:normal;font-size:.82em;margin-top:.04em}
+.card .md{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.15em;padding-top:.1em}
+.card.fc::after{content:'';position:absolute;inset:calc(var(--cw)*.09);border:1px solid rgba(160,125,40,.55);border-radius:calc(var(--cw)*.06);pointer-events:none}
+.card.fc .md{font-size:1.9em}
+
+/* LOBBY */
+.lob{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:10px 2px}
+.lob h2,.modal h2{font-family:'Cinzel',Georgia,serif;color:var(--gold2);letter-spacing:3px;margin:6px 0 0;font-weight:600;text-align:center}
+.code{font-family:'Cinzel',Georgia,serif;font-size:44px;letter-spacing:12px;margin-left:12px;color:var(--gold2);border:1px dashed rgba(201,168,90,.5);padding:8px 14px;border-radius:14px}
+.seatrow{width:100%;display:flex;flex-direction:column;gap:8px}
+.seatrow .tm{font-size:10.5px;letter-spacing:3px;color:#8b7e57;margin-top:6px}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:13px;border:1px solid rgba(201,168,90,.2);background:#0a110e;font-size:14px}
+.sr em{font-style:normal;font-size:12px;color:#8f8a76}
+.sr.hu{border-color:rgba(201,168,90,.55)}
+.sr.hu em{color:var(--gold2)}
+.back-btn{background:none;border:none;color:#9b8a5e;font-size:14px;padding:10px;cursor:pointer}
+
+/* MODAL */
+#modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.78);
+  padding:calc(env(safe-area-inset-top,0px) + 18px) calc(env(safe-area-inset-right,0px) + 18px) calc(env(safe-area-inset-bottom,0px) + 18px) calc(env(safe-area-inset-left,0px) + 18px)}
+#modal.on{display:flex}
+.modal{width:100%;max-width:440px;max-height:100%;overflow-y:auto;padding:20px 18px;border-radius:22px;background:linear-gradient(180deg,#101a15,#070c09);border:1px solid rgba(201,168,90,.45);box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.modal p{font-size:14px;line-height:1.55;color:#d8d2bb;margin:10px 0}
+.modal h4{margin:16px 0 4px;color:var(--gold2);font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.modal ul{margin:4px 0;padding-left:18px;font-size:13.5px;line-height:1.55;color:#d8d2bb}
+.res{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+.res td,.res th{padding:8px 6px;text-align:center;border-bottom:1px solid rgba(201,168,90,.15)}
+.res th{font-size:10.5px;letter-spacing:2px;color:#8b7e57;font-weight:500}
+.res td:first-child{text-align:left;font-weight:600}
+.pos{color:#8fe3a2}.neg{color:#ff8a7f}
+.mbtn{display:block;width:100%;margin-top:10px;padding:14px;border-radius:13px;border:1px solid var(--gold);background:linear-gradient(180deg,#d6b86a,#a98a3e);color:#1a1405;font-weight:700;font-size:15px;cursor:pointer}
+.mbtn.sec{background:transparent;color:var(--gold2)}
+.big{font-family:'Cinzel',Georgia,serif;font-size:26px;text-align:center;margin:8px 0;color:var(--gold2)}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);transform:translateX(-50%);z-index:80;background:#000;border:1px solid var(--gold);color:var(--gold2);padding:10px 18px;border-radius:20px;font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .25s;max-width:88vw;text-align:center}
+#toast.on{opacity:1}
+#dim{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity 3s;z-index:90}
+@media (orientation:landscape) and (max-height:520px){
+  h1{font-size:34px}.tag{margin-bottom:10px}
+  #hud{height:42px}.sc b{font-size:17px}
+  #table{margin:6px 0;border-radius:22px}
+  .chip{padding:4px 8px}.chip .sb{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<section id="s-home" class="screen on">
+  <div class="home">
+    <div class="mark">♠ <span class="r">♥</span> <span class="r">♦</span> ♣</div>
+    <h1>BATAK</h1>
+    <div class="tag">EŞLİ · 4 KİŞİLİK</div>
+    <div class="menu">
+      <button class="opt pri" id="b-solo"><b>Bilgisayara Karşı Oyna</b><span>Ortağın ve rakipler bilgisayar</span></button>
+      <button class="opt" id="b-host"><b>Online Oda Kur</b><span>Kodu paylaş, arkadaşlarını masaya çağır</span></button>
+      <div class="opt join"><b>Odaya Katıl</b><div class="row"><input id="i-code" maxlength="5" placeholder="KOD" autocapitalize="characters" autocomplete="off"><button class="mini-btn" id="b-join">Katıl</button></div></div>
+      <button class="opt" id="b-rules"><b>Nasıl Oynanır</b><span>Kurallar ve puanlama</span></button>
+    </div>
+    <div class="set">
+      <div class="lbl">Oyun bitişi</div>
+      <div class="seg" id="seg-mode"><button data-m="points">Puana göre</button><button data-m="hands">Tur sayısına göre</button></div>
+      <div class="seg" id="seg-val" style="margin-top:6px"></div>
+      <div class="lbl">Adın</div>
+      <input type="text" id="i-name" maxlength="12" placeholder="Oyuncu" autocomplete="off">
+      <label class="sw"><input type="checkbox" id="c-oled"> OLED koruma (kayma ve otomatik kısma)</label>
+    </div>
+    <div class="sign" style="margin-top:18px">by uozdil</div>
+  </div>
+</section>
+
+<section id="s-lobby" class="screen">
+  <div class="lob">
+    <h2>ODA</h2>
+    <div class="code" id="lb-code">-----</div>
+    <button class="mini-btn" id="b-share" style="padding:10px 20px">Davet Linkini Paylaş</button>
+    <div class="seatrow" id="lb-seats"></div>
+    <div id="lb-info" style="font-size:12.5px;color:#a9a58f;text-align:center"></div>
+    <button class="mbtn" id="b-start" style="max-width:380px">Oyunu Başlat</button>
+    <button class="back-btn" id="b-lback">‹ Ana menü</button>
+    <div class="sign">by uozdil</div>
+  </div>
+</section>
+
+<section id="s-game" class="screen">
+  <div id="hud">
+    <div class="sc" id="sc-us"><small>BİZ</small><b>0</b></div>
+    <div id="mid"></div>
+    <div class="sc" id="sc-them"><small>ONLAR</small><b>0</b></div>
+    <button id="b-menu" aria-label="Menü">☰</button>
+  </div>
+  <div id="table">
+    <div id="wm"><b>BATAK</b><i>by uozdil</i></div>
+    <div class="seat t" id="seat-2"></div>
+    <div class="seat l" id="seat-1"></div>
+    <div class="seat r" id="seat-3"></div>
+    <div class="seat m" id="seat-0"></div>
+    <div id="trick"></div>
+    <div id="status"></div>
+    <div id="panel"></div>
+  </div>
+  <div id="handwrap"><div id="hand"></div></div>
+</section>
+
+</div>
+<div id="modal"><div class="modal" id="modal-in"></div></div>
+<div id="toast"></div>
+<div id="dim"></div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<script id="engine">
+'use strict';
+/* ====== KURAL MOTORU ====== */
+const SUIT=['♠','♥','♦','♣'],SNAME=['Maça','Kupa','Karo','Sinek'],SORT=[0,1,3,2];
+const DEF=['Sen','Kemal','Ayşe','Mehmet'];
+const rl=r=>({11:'J',12:'Q',13:'K',14:'A'})[r]||String(r);
+const isRed=s=>s===1||s===2, cid=c=>c.s+'-'+c.r;
+function sortHand(h){return h.slice().sort((a,b)=>SORT.indexOf(a.s)-SORT.indexOf(b.s)||b.r-a.r)}
+function newDeck(){const d=[];for(let s=0;s<4;s++)for(let r=2;r<=14;r++)d.push({s,r});for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
+function hcp(h){return h.reduce((a,c)=>a+(c.r>=11?c.r-10:0),0)}
+function beats(a,b,t){return a.s===b.s?a.r>b.r:(a.s===t&&b.s!==t)}
+function trickWinnerOf(trick,t){let w=trick[0];for(let i=1;i<trick.length;i++)if(beats(trick[i].card,w.card,t))w=trick[i];return w.seat}
+function legal(hand,trick,t,broken){
+  if(!trick.length){if(!broken){const nt=hand.filter(c=>c.s!==t);if(nt.length)return nt}return hand.slice()}
+  const ls=trick[0].card.s;let w=trick[0].card;
+  for(let i=1;i<trick.length;i++)if(beats(trick[i].card,w,t))w=trick[i].card;
+  const f=hand.filter(c=>c.s===ls);
+  if(f.length){const hi=f.filter(c=>beats(c,w,t));return hi.length?hi:f}
+  const tr=hand.filter(c=>c.s===t);
+  if(tr.length){const hi=tr.filter(c=>beats(c,w,t));if(hi.length)return hi;if(w.s===t)return hand.slice();return tr}
+  return hand.slice();
+}
+
+let G=null,pend=null;
+function mkGame(settings,names,humans){
+  G={settings,names:names.slice(),humans:humans.slice(),dealer:Math.floor(Math.random()*4),scores:[0,0],round:0,last:null,over:null,notice:'',redeals:0};
+  deal();commit();
+}
+function deal(){
+  const d=newDeck();G.hands=[0,1,2,3].map(i=>d.slice(i*13,i*13+13));
+  G.phase='bid';G.bids=[null,null,null,null];G.highBid=0;G.highBidder=-1;G.bidCount=0;G.turn=(G.dealer+1)%4;
+  G.trump=null;G.broken=false;G.trick=[];G.tw=[0,0,0,0];G.trickWinner=-1;G.played=new Set();
+}
+function eligible(seat){return !!G&&G.phase==='bid'&&G.turn===seat&&G.redeals<3&&hcp(G.hands[seat])<=4}
+function viewFor(me){
+  const g=G;
+  return {me,phase:g.phase,names:g.names,counts:g.hands.map(h=>h.length),hand:g.hands[me].slice(),
+    legal:(g.phase==='play'&&g.turn===me)?legal(g.hands[me],g.trick,g.trump,g.broken).map(cid):[],
+    turn:g.turn,dealer:g.dealer,bids:g.bids,highBid:g.highBid,highBidder:g.highBidder,trump:g.trump,
+    trick:g.trick,tricksWon:g.tw,scores:g.scores,round:g.round,settings:g.settings,notice:g.notice,
+    canRedeal:eligible(me),last:g.last,winner:g.trickWinner,over:g.over,isHost:me===0};
+}
+function commit(){
+  broadcast();clearTimeout(pend);
+  if(!G)return;
+  if(['bid','trump','play'].includes(G.phase)&&!G.humans[G.turn]){const s=G.turn,g=G;pend=setTimeout(()=>{if(G===g)bot(s)},G.phase==='play'?800:950)}
+}
+function nextBid(){
+  G.bidCount++;
+  if(G.bidCount>=4){
+    if(G.highBidder<0){G.highBidder=G.dealer;G.highBid=7;G.bids[G.dealer]=7;G.notice=G.names[G.dealer]+' herkes pas geçince 7 almak zorunda'}
+    G.phase='trump';G.turn=G.highBidder;
+  }else G.turn=(G.turn+1)%4;
+  commit();
+}
+function act(seat,a){
+  if(!G||!a)return;
+  if(a.a==='next'){if(seat===0&&G.phase==='handEnd'){G.dealer=(G.dealer+1)%4;G.redeals=0;G.notice='';deal();commit()}return}
+  if(a.a==='newgame'){if(seat===0&&G.phase==='gameEnd'){G.scores=[0,0];G.round=0;G.over=null;G.last=null;G.redeals=0;G.notice='';deal();commit()}return}
+  if(G.turn!==seat)return;
+  if(G.phase==='bid'){
+    if(a.a==='pass'){G.bids[seat]=0;G.notice='';nextBid()}
+    else if(a.a==='bid'){const v=a.v|0;if(v>=7&&v<=13&&v>G.highBid){G.bids[seat]=v;G.highBid=v;G.highBidder=seat;G.notice='';nextBid()}}
+    else if(a.a==='redeal'&&eligible(seat)){G.redeals++;G.notice=G.names[seat]+' elden dağıttı';deal();commit()}
+  }else if(G.phase==='trump'){
+    if(a.a==='trump'&&a.v>=0&&a.v<4){G.trump=a.v;G.phase='play';G.turn=G.highBidder;G.notice='';commit()}
+  }else if(G.phase==='play'&&a.a==='play'){
+    const h=G.hands[seat],i=h.findIndex(c=>cid(c)===a.id);if(i<0)return;
+    if(!legal(h,G.trick,G.trump,G.broken).some(c=>cid(c)===a.id))return;
+    const c=h.splice(i,1)[0];G.trick.push({seat,card:c});G.played.add(cid(c));
+    if(c.s===G.trump)G.broken=true;
+    if(G.trick.length===4){
+      G.phase='trickEnd';G.trickWinner=trickWinnerOf(G.trick,G.trump);commit();
+      const g=G;setTimeout(()=>{if(G===g&&G.phase==='trickEnd')finishTrick()},1400);
+    }else{G.turn=(G.turn+1)%4;commit()}
+  }
+}
+function finishTrick(){
+  const w=G.trickWinner;G.tw[w]++;G.trick=[];G.turn=w;G.trickWinner=-1;
+  if(G.hands[0].length===0)endHand();else{G.phase='play';commit()}
+}
+function endHand(){
+  const tA=G.tw[0]+G.tw[2],tB=G.tw[1]+G.tw[3],ct=G.highBidder%2,tc=ct===0?tA:tB,ok=tc>=G.highBid;
+  const d=[0,0];d[ct]=ok?G.highBid:-G.highBid;d[1-ct]=ct===0?tB:tA;
+  G.scores[0]+=d[0];G.scores[1]+=d[1];G.round++;
+  G.last={bidder:G.highBidder,bid:G.highBid,trump:G.trump,tricks:[tA,tB],delta:d,ok,ct};
+  const s=G.settings,sc=G.scores;
+  const fin=(s.mode==='points'?Math.max(sc[0],sc[1])>=s.value:G.round>=s.value)&&sc[0]!==sc[1];
+  G.phase=fin?'gameEnd':'handEnd';
+  if(fin)G.over={winner:sc[0]>sc[1]?0:1};
+  commit();
+}
+
+/* ====== BİLGİSAYAR OYUNCU ====== */
+function estimate(h){
+  const by=[[],[],[],[]];h.forEach(c=>by[c.s].push(c.r));
+  let bs=0,bsc=-1;
+  by.forEach((a,s)=>{const sc=a.length*2+a.reduce((x,r)=>x+(r===14?3:r===13?2:r===12?1:0),0);if(sc>bsc){bsc=sc;bs=s}});
+  let t=0;
+  by.forEach((a,s)=>{if(s===bs)return;const L=a.length;
+    if(a.includes(14))t+=1;if(a.includes(13))t+=L>=2?.8:.3;if(a.includes(12)&&L>=3)t+=.4;
+    if(L<=2&&by[bs].length>=4)t+=(3-L)*.5;});
+  const tr=by[bs];
+  if(tr.includes(14))t+=1;if(tr.includes(13))t+=.9;if(tr.includes(12))t+=.6;if(tr.includes(11))t+=.4;
+  t+=Math.max(0,tr.length-3);
+  return {tricks:t+1,trump:bs};
+}
+function isTop(c,hand){for(let r=c.r+1;r<=14;r++){if(!G.played.has(c.s+'-'+r)&&!hand.some(x=>x.s===c.s&&x.r===r))return false}return true}
+function bot(seat){
+  if(!G||G.turn!==seat||G.humans[seat])return;
+  const h=G.hands[seat];
+  if(G.phase==='bid'){
+    if(eligible(seat)){act(seat,{a:'redeal'});return}
+    const e=estimate(h);let want=Math.min(13,Math.floor(e.tricks+.2));
+    const partner=(seat+2)%4;
+    if(G.highBidder===partner&&want<G.highBid+3){act(seat,{a:'pass'});return}
+    const b=Math.max(7,G.highBid+1);
+    if(want>=b)act(seat,{a:'bid',v:b});else act(seat,{a:'pass'});
+  }else if(G.phase==='trump'){
+    act(seat,{a:'trump',v:estimate(h).trump});
+  }else if(G.phase==='play'){
+    const c=botPlay(seat);act(seat,{a:'play',id:cid(c)});
+  }
+}
+function botPlay(seat){
+  const h=G.hands[seat],lg=legal(h,G.trick,G.trump,G.broken),t=G.trump,team=seat%2,mine=team===G.highBidder%2;
+  const val=c=>c.r+(c.s===t?20:0);
+  const low=a=>a.slice().sort((x,y)=>val(x)-val(y))[0];
+  if(lg.length===1)return lg[0];
+  if(!G.trick.length){
+    const tops=lg.filter(c=>isTop(c,h)).sort((a,b)=>((a.s===t)-(b.s===t))||b.r-a.r);
+    if(tops.length)return tops[0];
+    const nt=lg.filter(c=>c.s!==t);
+    if(mine){return (nt.length?nt:lg).slice().sort((a,b)=>b.r-a.r)[0]}
+    return low(nt.length?nt:lg);
+  }
+  let w=G.trick[0];for(let i=1;i<G.trick.length;i++)if(beats(G.trick[i].card,w.card,t))w=G.trick[i];
+  const wins=lg.filter(c=>beats(c,w.card,t));
+  const partnerWin=w.seat%2===team,last=G.trick.length===3;
+  if(partnerWin){
+    if(!last&&w.card.s!==t&&w.card.r<12&&wins.length)return low(wins);
+    return low(lg);
+  }
+  if(wins.length)return low(wins);
+  return low(lg);
+}
+</script>
+
+<script id="ui">
+'use strict';
+/* ====== YARDIMCILAR ====== */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let mode='none',V=null,sel=null,cur='home',peer=null,conn=null,conns={},L=null,myCode='',shown=new Set();
+let cfg;try{cfg=JSON.parse(store.get('batak_cfg')||'null')}catch(e){cfg=null}
+cfg=cfg||{mode:'points',value:61};
+const OPTS={points:[41,61,101],hands:[4,6,10]};
+const myName=()=>($('#i-name').value||'').trim().slice(0,12)||'Oyuncu';
+let tt=null;
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
+function showScreen(n){cur=n;$$('.screen').forEach(e=>e.classList.toggle('on',e.id==='s-'+n));if(n==='game')setTimeout(layout,30)}
+function openModal(h){$('#modal-in').innerHTML=h;$('#modal').classList.add('on')}
+function closeModal(){$('#modal').classList.remove('on')}
+const endText=s=>s.mode==='points'?s.value+' puana kadar':s.value+' tur';
+
+/* ====== HOME ====== */
+function renderSettings(){
+  $$('#seg-mode button').forEach(b=>b.classList.toggle('on',b.dataset.m===cfg.mode));
+  if(!OPTS[cfg.mode].includes(cfg.value))cfg.value=OPTS[cfg.mode][1];
+  $('#seg-val').innerHTML=OPTS[cfg.mode].map(v=>`<button data-v="${v}" class="${v===cfg.value?'on':''}">${v}${cfg.mode==='points'?' puan':' tur'}</button>`).join('');
+  $$('#seg-val button').forEach(b=>b.onclick=()=>{cfg.value=+b.dataset.v;store.set('batak_cfg',JSON.stringify(cfg));renderSettings()});
+  store.set('batak_cfg',JSON.stringify(cfg));
+}
+$$('#seg-mode button').forEach(b=>b.onclick=()=>{cfg.mode=b.dataset.m;cfg.value=OPTS[cfg.mode][1];renderSettings()});
+$('#i-name').value=store.get('batak_name')||'';
+$('#i-name').onchange=()=>store.set('batak_name',$('#i-name').value.trim());
+renderSettings();
+
+const RULES=`<h2>NASIL OYNANIR</h2>
+<h4>Temel</h4><ul><li>4 kişi, 2 takım. Karşındaki ortağındır. 52 kart, herkese 13.</li><li>Sıralama: A en büyük, 2 en küçük.</li></ul>
+<h4>Artırım (tek el)</h4><ul><li>Dağıtanın solundan başlayarak herkes <b>bir kez</b> konuşur: <b>Pas</b> ya da öncekinden yüksek bir teklif.</li><li>En az 7, en çok 13 el teklif edilebilir.</li><li>Herkes pas derse dağıtan 7 almak zorundadır.</li></ul>
+<h4>Elden</h4><ul><li>Teklif sırası sana geldiğinde elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam 4 veya daha az) <b>Elden Dağıt</b> diyerek kartları yeniden dağıttırabilirsin.</li></ul>
+<h4>Koz</h4><ul><li>İhaleyi alan kozu seçer ve ilk eli açar.</li><li>Koz atılmadan (kırılmadan) koz ile el açılmaz; elinde yalnızca koz kaldıysa açabilirsin.</li></ul>
+<h4>El oynama</h4><ul><li>Açılan renkten varsan atmak zorundasın; yukarıdan vurabiliyorsan büyüğünü atmalısın.</li><li>Rengin yoksa koz atmak zorundasın; el kozlanmışsa üstüne koz atabiliyorsan atmalısın.</li><li>Eli en büyük koz, yoksa açılan rengin en büyüğü alır; kazanan sonraki eli açar.</li></ul>
+<h4>Puan</h4><ul><li>İhale takımı toplam aldığı el sayısı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b> yazar.</li><li>Karşı takım aldığı el sayısı kadar puan yazar.</li><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>
+<h4>Kartı oynamak</h4><ul><li>Kartına bir kez dokun (yukarı kalkar), tekrar dokun, oynansın. Oynanamayan kartlar sönük görünür.</li></ul>
+<button class="mbtn" onclick="closeModal()">Tamam</button>`;
+$('#b-rules').onclick=()=>openModal(RULES);
+
+$('#b-solo').onclick=()=>{
+  store.set('batak_name',myName());mode='solo';
+  mkGame(cfg,[myName(),'Kemal','Ayşe','Mehmet'],[true,false,false,false]);
+};
+
+/* ====== ONLİNE ====== */
+const PFX='uozdil-batak-';
+const genCode=()=>{const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=a[Math.floor(Math.random()*a.length)];return s};
+function needPeer(){if(typeof Peer==='undefined'){toast('Online için internet bağlantısı gerekli');return false}return true}
+$('#b-host').onclick=()=>{
+  if(!needPeer())return;store.set('batak_name',myName());
+  mode='host';L={settings:Object.assign({},cfg),names:[myName(),'Kemal','Ayşe','Mehmet'],humans:[true,false,false,false]};conns={};
+  toast('Oda hazırlanıyor…');openPeer(0);
+};
+function openPeer(tries){
+  const code=genCode();
+  try{peer&&peer.destroy()}catch(e){}
+  peer=new Peer(PFX+code);
+  peer.on('open',()=>{myCode=code;showScreen('lobby');renderLobby()});
+  peer.on('error',e=>{if(e.type==='unavailable-id'&&tries<6)openPeer(tries+1);else{toast('Bağlantı hatası ('+e.type+')');if(cur!=='game'&&cur!=='lobby'){mode='none'}}});
+  peer.on('connection',c=>{
+    c.on('data',m=>onHostMsg(c,m));
+    c.on('close',()=>onGuestLeave(c));
+  });
+}
+function freeSeat(){for(const s of [2,1,3])if(!L.humans[s])return s;return -1}
+function onHostMsg(c,m){
+  if(!m)return;
+  if(m.t==='join'){
+    if(G||!L){c.send({t:'full'});return}
+    const s=freeSeat();if(s<0){c.send({t:'full'});return}
+    L.humans[s]=true;L.names[s]=String(m.name||'Oyuncu').slice(0,12);c.seat=s;conns[s]=c;lobbyBroadcast();
+  }else if(m.t==='act'&&c.seat!=null){act(c.seat,m.act)}
+}
+function onGuestLeave(c){
+  const s=c.seat;if(s==null)return;delete conns[s];
+  if(G){G.humans[s]=false;G.names[s]=G.names[s]+' (Bot)';toast(G.names[s]+' ayrıldı');commit()}
+  else if(L){L.humans[s]=false;L.names[s]=DEF[s];lobbyBroadcast()}
+}
+function lobbyBroadcast(){
+  renderLobby();
+  for(const s in conns){try{conns[s].send({t:'lobby',names:L.names,humans:L.humans,settings:L.settings,you:+s,code:myCode})}catch(e){}}
+}
+function renderLobby(){
+  if(!L)return;
+  $('#lb-code').textContent=myCode||'-----';
+  const isHost=mode==='host',you=isHost?0:L.you;
+  const row=s=>`<div class="sr ${L.humans[s]?'hu':''}"><span>${L.names[s]}${s===you?' (sen)':''}</span><em>${L.humans[s]?(s===0?'Oda sahibi':'Bağlı'):'Boş · bilgisayar oynar'}</em></div>`;
+  $('#lb-seats').innerHTML=`<div class="tm">TAKIM 1</div>${row(0)}${row(2)}<div class="tm">TAKIM 2</div>${row(1)}${row(3)}`;
+  $('#b-start').style.display=isHost?'block':'none';
+  $('#b-share').style.display=isHost?'inline-block':'none';
+  $('#lb-info').textContent=(isHost?'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. ':'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings);
+}
+$('#b-share').onclick=async()=>{
+  const url=location.origin+location.pathname+'?oda='+myCode;
+  const text='Batak oynayalım! Oda kodu: '+myCode;
+  if(navigator.share){try{await navigator.share({title:'Batak · by uozdil',text,url});return}catch(e){}}
+  try{await navigator.clipboard.writeText(url);toast('Link kopyalandı')}catch(e){toast('Kod: '+myCode)}
+};
+$('#b-start').onclick=()=>{mkGame(L.settings,L.names,L.humans)};
+$('#b-lback').onclick=leave;
+$('#b-join').onclick=()=>joinOnline($('#i-code').value);
+$('#i-code').addEventListener('keydown',e=>{if(e.key==='Enter')joinOnline($('#i-code').value)});
+function joinOnline(code){
+  code=(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(code.length<5){toast('5 haneli oda kodunu gir');return}
+  if(!needPeer())return;store.set('batak_name',myName());
+  mode='guest';myCode=code;toast('Bağlanılıyor…');
+  let ok=false;
+  const to=setTimeout(()=>{if(!ok){toast('Bağlanılamadı, kodu kontrol et');leave()}},13000);
+  try{peer&&peer.destroy()}catch(e){}
+  peer=new Peer();
+  peer.on('open',()=>{
+    conn=peer.connect(PFX+code,{reliable:true});
+    conn.on('open',()=>conn.send({t:'join',name:myName()}));
+    conn.on('data',m=>{ok=true;clearTimeout(to);onGuestMsg(m)});
+    conn.on('close',()=>{if(mode==='guest'){toast('Bağlantı koptu');leave()}});
+  });
+  peer.on('error',e=>{clearTimeout(to);toast(e.type==='peer-unavailable'?'Oda bulunamadı':'Bağlantı hatası ('+e.type+')');if(!ok)leave()});
+}
+function onGuestMsg(m){
+  if(m.t==='lobby'){L=m;myCode=m.code||myCode;if(cur!=='lobby')showScreen('lobby');renderLobby()}
+  else if(m.t==='state'){if(cur!=='game'){closeModal();showScreen('game')}render(m.v)}
+  else if(m.t==='full'){toast('Oda dolu ya da oyun başlamış');leave()}
+}
+function sendAct(a){if(mode==='guest'){try{conn.send({t:'act',act:a})}catch(e){}}else act(0,a)}
+function broadcast(){
+  if(!G)return;
+  for(let s=0;s<4;s++){
+    if(!G.humans[s])continue;
+    if(s===0){if(cur!=='game'){showScreen('game')}render(viewFor(0))}
+    else if(conns[s]){try{conns[s].send({t:'state',v:viewFor(s)})}catch(e){}}
+  }
+}
+function leave(){
+  try{conn&&conn.close()}catch(e){}try{peer&&peer.destroy()}catch(e){}
+  peer=null;conn=null;conns={};L=null;G=null;clearTimeout(pend);mode='none';V=null;sel=null;shown=new Set();
+  closeModal();showScreen('home');
+}
+
+/* ====== KART ÇİZİMİ ====== */
+function cardEl(c,cw){
+  const e=document.createElement('div');
+  e.className='card'+(isRed(c.s)?' red':'')+(c.r>=11?' fc':'');
+  if(cw)e.style.setProperty('--cw',cw+'px');
+  const r=rl(c.r),s=SUIT[c.s];
+  e.innerHTML=`<div class="tl">${r}<i>${s}</i></div><div class="md">${s}</div><div class="br">${r}<i>${s}</i></div>`;
+  return e;
+}
+
+/* ====== OYUN EKRANI ====== */
+function layout(){
+  const t=$('#table');if(!t||!t.clientWidth)return;
+  t.style.setProperty('--tcw',Math.max(34,Math.min(64,t.clientWidth*.15,t.clientHeight*.15))+'px');
+  if(V)renderHand();
+}
+addEventListener('resize',layout);addEventListener('orientationchange',()=>setTimeout(layout,200));
+
+function chip(i){
+  const v=V,rel=(i-v.me+4)%4,active=['bid','trump','play'].includes(v.phase)&&v.turn===i;
+  let sub='';
+  if(v.phase==='bid')sub=v.bids[i]===null?'…':(v.bids[i]===0?'Pas':'Teklif '+v.bids[i]);
+  else if(v.phase==='trump')sub=i===v.highBidder?'İhale '+v.highBid:(v.bids[i]===0?'Pas':'');
+  else sub=v.tricksWon[i]+' el'+(i===v.highBidder?' · İhale '+v.highBid:'');
+  const mini=rel===0?'':`<span class="mini"><i>${v.counts[i]}</i></span>`;
+  return `<div class="chip ${active?'turn':''}">${mini}<div class="tx"><span class="nm">${i===v.me?(v.names[i]||'Sen'):v.names[i]}${i===v.dealer?'<em class="dl">D</em>':''}</span><span class="sb">${sub||'&nbsp;'}</span></div></div>`;
+}
+function statusText(v){
+  const n=i=>v.names[i];
+  if(v.phase==='bid')return v.turn===v.me?'Teklif sırası sende':n(v.turn)+' teklif veriyor…';
+  if(v.phase==='trump')return v.turn===v.me?'Kozu sen seç':n(v.turn)+' koz seçiyor…';
+  if(v.phase==='play')return v.turn===v.me?'Sıra sende · kartına dokun':n(v.turn)+' oynuyor…';
+  if(v.phase==='trickEnd')return n(v.winner)+' eli aldı';
+  return '';
+}
+function render(v){
+  V=v;
+  const myTeam=v.me%2;
+  $('#sc-us b').textContent=v.scores[myTeam];$('#sc-them b').textContent=v.scores[1-myTeam];
+  // HUD ortası
+  let mid='';
+  if(v.phase==='bid')mid=`<b>ARTIRIM</b><span>${v.highBid?'En yüksek: '+v.highBid+' · '+v.names[v.highBidder]:'Henüz teklif yok'}</span>`;
+  else if(v.phase==='trump')mid=`<b>İHALE ${v.highBid}</b><span>${v.names[v.highBidder]} koz seçiyor</span>`;
+  else if(v.highBidder>=0&&v.trump!=null){
+    const tc=v.tricksWon[v.highBidder%2]+v.tricksWon[v.highBidder%2+2];
+    mid=`<b>${v.highBid} · <span class="${isRed(v.trump)?'rd':''}">${SUIT[v.trump]}</span></b><span>${v.names[v.highBidder]} · takım ${tc}/${v.highBid}</span>`;
+  }
+  $('#mid').innerHTML=mid;
+  for(let rel=0;rel<4;rel++){const i=(v.me+rel)%4;const el=$('#seat-'+rel);el.innerHTML=chip(i)}
+  // orta masa
+  const tr=$('#trick');
+  if(!v.trick.length)shown=new Set();
+  tr.innerHTML='';
+  v.trick.forEach(t=>{
+    const rel=(t.seat-v.me+4)%4,d=document.createElement('div');d.className='slot s'+rel;
+    const e=cardEl(t.card,null);e.style.setProperty('--cw','var(--tcw)');
+    const id=cid(t.card);if(!shown.has(id)){e.classList.add('new');shown.add(id)}
+    if(v.phase==='trickEnd'&&t.seat===v.winner)e.classList.add('win');
+    d.appendChild(e);tr.appendChild(d);
+  });
+  // durum
+  const st=$('#status'),mineTurn=['bid','trump','play'].includes(v.phase)&&v.turn===v.me;
+  st.textContent=v.notice&&v.phase==='bid'?v.notice:statusText(v);
+  st.classList.toggle('me',mineTurn);st.style.display=(v.phase==='handEnd'||v.phase==='gameEnd')?'none':'block';
+  // panel
+  renderPanel(v);
+  if(!(v.phase==='play'&&v.turn===v.me))sel=null;
+  renderHand();
+  // modal sonu
+  if(v.phase==='handEnd'||v.phase==='gameEnd')showEnd(v);
+  else if($('#modal').dataset.end==='1'){closeModal();$('#modal').dataset.end=''}
+}
+function renderPanel(v){
+  const p=$('#panel');
+  if(v.phase==='bid'&&v.turn===v.me){
+    let nums='';for(let n=7;n<=13;n++)nums+=`<button data-n="${n}" ${n<=v.highBid?'disabled':''}>${n}</button>`;
+    p.innerHTML=`<h3>TEKLİFİN?</h3><div class="hint">${v.highBid?'En yüksek teklif: '+v.highBid+' ('+v.names[v.highBidder]+')':'İlk teklif sende. En az 7'}</div><div class="nums">${nums}</div><div class="acts"><button data-a="pass">Pas</button>${v.canRedeal?'<button class="red" data-a="redeal">Elden Dağıt</button>':''}</div>`;
+    p.classList.add('on');
+    $$('#panel .nums button').forEach(b=>b.onclick=()=>sendAct({a:'bid',v:+b.dataset.n}));
+    $$('#panel .acts button').forEach(b=>b.onclick=()=>sendAct({a:b.dataset.a}));
+  }else if(v.phase==='trump'&&v.turn===v.me){
+    const cnt=[0,0,0,0];v.hand.forEach(c=>cnt[c.s]++);
+    p.innerHTML=`<h3>KOZU SEÇ</h3><div class="hint">İhale: ${v.highBid} el</div><div class="suits">${[0,1,3,2].map(s=>`<button class="${isRed(s)?'rd':''}" data-s="${s}">${SUIT[s]}<small>${SNAME[s]} · ${cnt[s]}</small></button>`).join('')}</div>`;
+    p.classList.add('on');
+    $$('#panel .suits button').forEach(b=>b.onclick=()=>sendAct({a:'trump',v:+b.dataset.s}));
+  }else{p.classList.remove('on');p.innerHTML=''}
+}
+function renderHand(){
+  if(!V)return;
+  const hd=$('#hand'),W=hd.clientWidth||320,cards=sortHand(V.hand),n=cards.length;
+  const cw=Math.max(36,Math.min(84,W*.19,innerHeight*.3/1.42));
+  const step=n>1?Math.min(cw*.62,(W-cw)/(n-1)):0,off=(W-(cw+step*(n-1)))/2;
+  hd.style.height=(cw*1.42+30)+'px';hd.innerHTML='';
+  const mine=V.phase==='play'&&V.turn===V.me;
+  cards.forEach((c,i)=>{
+    const id=cid(c),e=cardEl(c,cw),mid=(n-1)/2;
+    e.style.left=(off+i*step)+'px';e.style.zIndex=i;
+    const arc=Math.pow(Math.abs(i-mid),2)*.22,rot=(i-mid)*1.1;
+    e.style.transform=`translateY(${arc}px) rotate(${rot}deg)`;
+    if(mine&&!V.legal.includes(id))e.classList.add('dim');
+    if(sel===id)e.classList.add('sel');
+    e.onclick=()=>onCard(id);
+    hd.appendChild(e);
+  });
+}
+function onCard(id){
+  if(!V||V.phase!=='play'||V.turn!==V.me){return}
+  if(!V.legal.includes(id)){toast('Bu kartı şu an oynayamazsın');return}
+  if(sel===id){sel=null;sendAct({a:'play',id})}else{sel=id;renderHand()}
+}
+function showEnd(v){
+  const m=$('#modal'),t=v.me%2,o=1-t,l=v.last;if(!l)return;
+  m.dataset.end='1';
+  const fmt=d=>`<span class="${d>=0?'pos':'neg'}">${d>0?'+':''}${d}</span>`;
+  const row=(nm,k)=>`<tr><td>${nm}</td><td>${l.tricks[k]}</td><td>${fmt(l.delta[k])}</td><td><b>${v.scores[k]}</b></td></tr>`;
+  const head=`<p style="text-align:center">İhale: <b>${v.names[l.bidder]}</b> · ${l.bid} el · <span style="${isRed(l.trump)?'color:#ff8a7f':''}">${SUIT[l.trump]}</span><br>${l.ok?'<span class="pos">Başarılı</span>':'<span class="neg">Battı</span>'}</p>
+    <table class="res"><tr><th></th><th>EL</th><th>PUAN</th><th>TOPLAM</th></tr>${row('Biz',t)}${row('Onlar',o)}</table>`;
+  if(v.phase==='gameEnd'){
+    const win=v.over.winner===t;
+    openModal(`<h2>OYUN BİTTİ</h2><div class="big">${win?'Kazandınız!':'Rakip kazandı'}</div>${head}${v.isHost?'<button class="mbtn" id="m-new">Yeni Oyun</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi yeni oyun başlatabilir.</p>'}<button class="mbtn sec" id="m-home">Ana Menü</button>`);
+    $('#modal').dataset.end='1';
+    const nb=$('#m-new');if(nb)nb.onclick=()=>sendAct({a:'newgame'});
+    $('#m-home').onclick=leave;
+  }else{
+    openModal(`<h2>TUR ${v.round} SONU</h2>${head}${v.isHost?'<button class="mbtn" id="m-next">Sonraki Tur</button>':'<p style="text-align:center;color:#a9a58f">Oda sahibi sonraki turu başlatacak…</p>'}`);
+    $('#modal').dataset.end='1';
+    const nb=$('#m-next');if(nb)nb.onclick=()=>sendAct({a:'next'});
+  }
+}
+$('#b-menu').onclick=()=>{
+  if(!V)return;
+  openModal(`<h2>MENÜ</h2><p style="text-align:center">Bitiş: ${endText(V.settings)}</p><button class="mbtn sec" id="m-rules">Kurallar</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
+  $('#m-rules').onclick=()=>{openModal(RULES.replace('onclick="closeModal()"','onclick="$(\'#b-menu\').click()"'))};
+  $('#m-leave').onclick=()=>{if(confirm('Oyundan çıkılsın mı?'))leave()};
+  $('#m-close').onclick=closeModal;
+};
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&$('#modal').dataset.end!=='1')closeModal()});
+
+/* ====== OLED KORUMA ====== */
+const oledOn=()=>store.get('batak_oled')!=='0';
+$('#c-oled').checked=oledOn();
+$('#c-oled').onchange=e=>{store.set('batak_oled',e.target.checked?'1':'0');if(!e.target.checked){$('#app').style.transform='';$('#dim').style.opacity=0}};
+setInterval(()=>{if(!oledOn())return;const x=Math.round(Math.random()*4-2),y=Math.round(Math.random()*4-2);$('#app').style.transform=`translate(${x}px,${y}px)`},45000);
+let idleT=null;
+function idleReset(){$('#dim').style.opacity=0;clearTimeout(idleT);if(oledOn())idleT=setTimeout(()=>{$('#dim').style.opacity=.6},90000)}
+['touchstart','pointerdown','keydown','mousemove'].forEach(ev=>addEventListener(ev,idleReset,{passive:true}));
+idleReset();
+
+/* ====== DAVET LİNKİ ====== */
+(function(){
+  const q=new URLSearchParams(location.search).get('oda');
+  if(q){$('#i-code').value=q.toUpperCase().slice(0,5);toast('Oda kodu girildi, adını yazıp Katıl’a bas')}
+})();
+</script>
+</body>
+</html>
