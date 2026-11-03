@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261103-1029">
+<meta name="surum" content="20261103-1323">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261103-1029" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261103-1029" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261103-1029">
+<link rel="icon" href="batak-ikon.svg?v=20261103-1323" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261103-1323" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261103-1323">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -571,9 +571,22 @@ function botPlay(seat){
   const val=c=>c.r+(c.s===t?20:0);
   const low=a=>a.slice().sort((x,y)=>val(x)-val(y))[0];
   if(lg.length===1)return lg[0];
+  /* Açık el: yerdeki (açık) eli herkes görür. Açık elin oynamasına sıra varsa, kartını ona göre seçerler. */
+  const dAhead=G.dummy>=0&&G.dummy!==seat&&!G.trick.some(x=>x.seat===G.dummy);
+  const dh=dAhead?G.hands[G.dummy]:null;
+  const trWith=c=>G.trick.concat([{seat,card:c}]);
+  const canDummyBeat=c=>{const tr=trWith(c);let wc=tr[0].card;for(const x of tr)if(beats(x.card,wc,t))wc=x.card;return legal(dh,tr,t,G.broken).some(x=>beats(x,wc,t))};
+  const safe=()=>lg.filter(c=>{const tr=trWith(c),ws=trickWinnerOf(tr,t);return mine?(ws%2===team||canDummyBeat(c)):(ws%2===team&&!canDummyBeat(c))});
+  if(dAhead&&G.trick.length){ // açık el, sırası gelecek: eli güvenle alabilecek en küçük kartı at; alamıyorsan büyük kartı harcama
+    const sf=safe();return sf.length?low(sf):low(lg);
+  }
   if(!G.trick.length){
     const tops=lg.filter(c=>isTop(c,h)).sort((a,b)=>((a.s===t)-(b.s===t))||b.r-a.r);
     if(tops.length)return tops[0];
+    if(dAhead&&!mine){ // rakip el açarken: açık elin geçemeyeceği bir kartla açmayı dene
+      const sl=lg.filter(c=>c.s!==t&&!canDummyBeat(c)).sort((a,b)=>b.r-a.r);
+      if(sl.length)return sl[0];
+    }
     const trs=lg.filter(c=>c.s===t).sort((a,b)=>b.r-a.r);
     if(mine&&trs.length>=5&&trs[0].r>=12)return trs[0]; // uzun kozla koz çek
     const nt=lg.filter(c=>c.s!==t);
