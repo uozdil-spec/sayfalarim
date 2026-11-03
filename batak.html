@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261103-1323">
+<meta name="surum" content="20261103-1346">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261103-1323" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261103-1323" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261103-1323">
+<link rel="icon" href="batak-ikon.svg?v=20261103-1346" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261103-1346" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261103-1346">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -267,7 +267,7 @@ body.idle #app,body.idle #modal-in{animation:oledDrift 50s ease-in-out infinite,
       <div class="fempty" id="king-note" style="display:none">King 20 el sürer. Her oyuncu 3 ceza ve 2 kozlu oyun seçer. 20 el sonunda en yüksek puanlı kazanır.</div>
       <div id="open-set">
       <div class="lbl">Açık el</div>
-      <div class="seg" id="seg-open"><button data-o="0">Kapalı (klasik)</button><button data-o="1">Açık</button></div>
+      <div class="seg" id="seg-open"><button data-o="0">Kapalı (klasik)</button><button data-o="1">Açık (önerilen)</button></div>
       <div class="fempty" style="margin-top:6px">Açıksa: koz seçilince ihaleyi alanın ortağının eli herkese açılır, ortak oynamaz, ihaleyi alan iki eli birden oynatır. Kapalıysa herkes kendi elini oynar.</div>
       </div>
       <div class="lbl">Adın</div>
@@ -612,7 +612,7 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 let mode='none',V=null,sel=null,cur='pick',peer=null,conn=null,conns={},L=null,myCode='',shown=new Set();
 let cfg;try{cfg=JSON.parse(store.get('batak_cfg')||'null')}catch(e){cfg=null}
-cfg=cfg||{mode:'points',value:61};cfg.open=!!cfg.open; // açık el: varsayılan kapalı (klasik)
+cfg=cfg||{mode:'points',value:61};if(cfg.openV!==2){cfg.open=true;cfg.openV=2}else cfg.open=!!cfg.open; // açık el: varsayılan AÇIK (ihaleyi alanın ortağının eli herkese görünür); istenirse kapatılır
 cfg.game=['tekli','king'].includes(cfg.game)?cfg.game:'esli';
 const deepLink=/[?&](oda|ark)=/.test(location.search); // davet/arkadaş linkiyle gelen oyun seçmeden doğrudan ana menüye gider
 const OPTS={esli:{points:[41,61,101],hands:[4,6,10]},tekli:{points:[21,31,51],hands:[4,6,10]},king:{points:[21,31,51],hands:[4,6,10]}};
@@ -697,7 +697,7 @@ ${D('Elden dağıt',`<ul><li>Elin çok zayıfsa (A=4, K=3, Q=2, J=1 puan; toplam
 ${D('Koz',`<ul><li>İhaleyi alan kozu seçer ve <b>ilk eli o açar</b>.</li><li>Koz masada renkli bir rozetle görünür.</li><li>Kozla el açmak serbesttir; ilk elde bile açabilirsin.</li></ul>`)}
 ${D('Kart atma kuralları',`<ul><li>Açılan renkten varsa <b>atmak zorundasın</b>. Büyük atabiliyorsan büyüğünü at.</li><li>O renkten yoksa <b>koz atmak zorundasın</b>. Elde koz varsa üstüne daha büyük koz atmalısın.</li><li>Koz da yoksa istediğin kartı at.</li><li>Eli en büyük koz alır; koz yoksa açılan rengin en büyüğü alır. <b>Eli alan sonraki eli açar.</b></li><li>Atamayacağın kartlar sönük görünür.</li></ul>`)}
 ${D('Puan hesabı',t?`<ul><li><b>İhaleyi alan:</b> teklifini tutturursa <b>+teklif</b>, tutturamazsa <b>−teklif</b>.</li><li><b>Diğer üç oyuncu:</b> her biri kendi aldığı el sayısı kadar puan yazar.</li></ul><p>Örnek: Ali 6 teklif verdi ve 7 el aldı → <b>+6</b>. Diğerleri 3, 2 ve 1 el aldı → <b>+3, +2, +1</b>.<br>Ali 6 dedi ama 5 el aldı → <b>−6</b>.</p><ul><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>`:`<ul><li><b>İhale takımı:</b> iki oyuncunun aldığı eller toplamı tekliften az değilse <b>+teklif</b>, aksi halde <b>−teklif</b>.</li><li><b>Karşı takım:</b> aldığı el sayısı kadar puan yazar.</li></ul><p>Örnek: Biz 8 teklif verdik, toplam 9 el aldık → <b>+8</b>. Onlar 4 el aldı → <b>+4</b>.<br>8 dedik ama 7 el aldık → <b>−8</b>.</p><ul><li>Oyunun bitişi ana menüdeki ayara göre: hedef puan ya da tur sayısı. Beraberlikte bir tur daha oynanır.</li></ul>`)}
-${t?'':D('Açık el (isteğe bağlı)',`<ul><li>Ana menüdeki <b>Açık el</b> ayarı <b>Kapalı</b>ysa (klasik) herkes kendi elini oynar, kimsenin eli görünmez.</li><li><b>Açık</b>sa: koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Ortak oynamaz, ihaleyi alan iki eli birden oynatır.</li><li>Koz, ortağın eli görülmeden seçilir.</li></ul>`)}
+${t?'':D('Açık el (isteğe bağlı)',`<ul><li>Ana menüdeki <b>Açık el</b> ayarı <b>Açık</b> gelir. <b>Kapalı</b> yaparsan (klasik) herkes kendi elini oynar, kimsenin eli görünmez.</li><li><b>Açık</b>sa: koz seçildikten sonra ihaleyi alanın <b>ortağının kartları herkese açılır</b>. Ortak oynamaz, ihaleyi alan iki eli birden oynatır.</li><li>Koz, ortağın eli görülmeden seçilir.</li></ul>`)}
 ${D('Online oynama',`<ul><li>Ana menüde <b>Online Oda Kur</b>’a bas, kodu ya da linki arkadaşına gönder.</li><li>Ya da <b>Arkadaşlarım</b> listesinden çevrimiçi arkadaşına tek dokunuşla davet gönder.</li><li>Boş kalan koltuklara bilgisayar oturur.</li></ul>`)}
 ${D('Kartı nasıl oynarım?',`<ul><li>Kartına <b>bir kez dokun</b> (yukarı kalkar), <b>tekrar dokun</b>, oynansın.</li></ul>`)}
 <button class="mbtn" id="r-ok">Tamam</button>`;
