@@ -90,7 +90,7 @@ Session.prototype.botDelay = function (seat) {
   var ev = this.lastEv, dealt = false, i;
   for (i = 0; i < ev.length; i++) if (ev[i].t === 'deal' || ev[i].t === 'newHand') dealt = true;
   if (dealt) base += 1100;
-  for (i = 0; i < ev.length; i++) if (ev[i].t === 'capture' || ev[i].t === 'give') { base += 450; break; }
+  for (i = 0; i < ev.length; i++) { if (ev[i].t === 'capture') { base += 1000; break; } if (ev[i].t === 'give') { base += 450; break; } } // Pişti'de alınan kart görünsün diye biraz daha bekler
   return base * (KS.botMul || 1);
 };
 

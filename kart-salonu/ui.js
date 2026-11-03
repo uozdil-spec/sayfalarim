@@ -191,7 +191,8 @@ GameUI.prototype.render = function (ev, kind) {
   var X = { G: this.G, me: me, ev: ev, names: this.names(), sel: this.sel, fresh: kind === 'start' && !this.o.noDeal };
   this.v = v;
   if (v.phase === 'handEnd' || v.phase === 'gameEnd') X.sel = null;
-  var sc = KS.scenes[this.game](v, X);
+  var sc = KS.scenes[this.game](v, X), prevScene = this.scene;
+  this.holdPile(sc, prevScene, ev, kind, v);
   this.scene = sc;
   this.stage.render(sc.items, { exit: sc.exit });
   this.renderOverlay(sc, v);
@@ -200,6 +201,37 @@ GameUI.prototype.render = function (ev, kind) {
   if (v.turn === me && v.phase === 'play' && this.lastTurn !== me && kind !== 'start' && kind !== 'resync' && kind !== 'layout') { KS.sfx('turn', 0.25); KS.vib(25); }
   if (kind !== 'layout' && kind !== 'sync') this.lastTurn = v.phase === 'play' ? v.turn : -1;
   this.checkEnd(v, ev, kind);
+};
+
+/* Pişti: eli alan kart (Vale mi, aynı kart mı) görülsün diye alınan kartlar bir an masada bekler, sonra desteye gider */
+GameUI.prototype.holdPile = function (sc, prev, ev, kind, v) {
+  var self = this, cp = null, pl = null, i;
+  if (this.holdT) {
+    clearTimeout(this.holdT); this.holdT = null;
+    if (!sc.exit && this.holdSeat != null && sc.L[this.holdSeat]) sc.exit = { x: sc.L[this.holdSeat].px, y: sc.L[this.holdSeat].py, rot: 0, sc: 0.5, delay: 0 };
+  }
+  if (this.game !== 'pisti' || !prev || kind === 'layout' || v.phase !== 'play') return;
+  for (i = 0; i < ev.length; i++) { if (ev[i].t === 'capture' && !ev[i].release) cp = ev[i]; if (ev[i].t === 'play') pl = ev[i]; }
+  if (!cp || !pl) return;
+  var have = {}, k;
+  for (i = 0; i < sc.items.length; i++) have[sc.items[i].k] = 1;
+  for (i = 0; i < prev.items.length; i++) {
+    var it = prev.items[i];
+    if ((it.k.charAt(0) === 'c' || it.k.indexOf('tp') === 0) && it.handIndex === undefined && !have[it.k] && it.k !== 'c' + pl.c) { sc.items.push(Object.assign({}, it, { spawn: undefined, delay: 0, cls: '' })); }
+  }
+  var fl = this.G.cw;
+  var top = { k: 'c' + pl.c, c: pl.c, x: sc.cx + fl * 0.14, y: sc.cy - fl * 0.06, rot: 4, sc: 1, z: 200 };
+  if (pl.seat !== this.ctrl.seat) top.spawn = { x: sc.L[pl.seat].x, y: sc.L[pl.seat].y, rot: sc.L[pl.seat].side === 'top' ? 180 : (sc.L[pl.seat].side === 'left' ? 90 : -90), sc: sc.L[pl.seat].sc, down: true };
+  sc.items.push(top);
+  var who = this.names()[pl.seat] || '';
+  sc.badges.push({ x: sc.cx, y: sc.cy - sc.ch * 0.82, text: who + ': ' + (KS.rank(pl.c) === 11 ? 'Vale ile aldı' : 'Aynı kartla aldı') });
+  sc.exit = null;
+  this.holdSeat = cp.seat;
+  this.holdT = setTimeout(function () {
+    self.holdT = null;
+    if (self.dead) return;
+    self.render([{ t: 'capture', seat: cp.seat, release: true, cards: cp.cards }], 'layout');
+  }, 1250 * (KS.speedMul || 1));
 };
 
 GameUI.prototype.renderOverlay = function (sc, v) {
