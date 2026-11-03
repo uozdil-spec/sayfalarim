@@ -47,7 +47,7 @@ function previewCards() {
   return box;
 }
 
-KS.settingsSheet = function () {
+KS.settingsSheet = function (tab) {
   var S = KS.S;
   var tabs = [
     { n: 'Görünüm', f: function () {
@@ -154,7 +154,7 @@ KS.settingsSheet = function () {
       return d;
     } }
   ];
-  return KS.sheet('Ayarlar', null, { tabs: tabs, wide: true, tab: 0 });
+  return KS.sheet('Ayarlar', null, { tabs: tabs, wide: true, tab: tab || 0 });
 };
 
 /* ---------- Kullanım kılavuzu ---------- */

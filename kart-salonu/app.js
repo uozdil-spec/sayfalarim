@@ -247,7 +247,7 @@ App.showGame = function (c, afterShow, o) {
     ctrl: c, noDeal: o.noDeal,
     onExit: function (where) { App.exitGame(where); },
     onHelp: function (g) { KS.helpSheet(g); },
-    onSettings: function () { KS.settingsSheet(); }
+    onSettings: function () { KS.settingsSheet(1); }
   });
   if (afterShow) setTimeout(afterShow, 350);
 };
