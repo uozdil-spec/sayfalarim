@@ -348,7 +348,7 @@ html.land .mini .ib{width:32px;height:32px}#hFsBtn{position:absolute;z-index:5;t
   <div class="pane" data-pane="oyun">
    <div class="srow"><div class="t"><b>Zarı otomatik at</b><small>Sıra sana gelince zar kendiliğinden atılır</small></div><input type="checkbox" class="sw" data-k="autoRoll"></div>
    <div class="srow"><div class="t"><b>Tek hamleyi otomatik oyna</b><small>Zorunlu (tek seçenek) hamleyi kendisi yapar</small></div><input type="checkbox" class="sw" data-k="autoMove"></div>
-   <div class="srow"><div class="t"><b>Akıllı dokunuş</b><small>Pulun tek hamlesi varsa dokununca oynar · Çift dokunuş, tek zorunlu hamleyi otomatik oynar</small></div><input type="checkbox" class="sw" data-k="tap1"></div>
+   <div class="srow"><div class="t"><b>Akıllı dokunuş</b><small>Pulun tek hamlesi varsa dokununca oynar · Oynanacak pula çift dokunmak, onun tek hamlesini oynar</small></div><input type="checkbox" class="sw" data-k="tap1"></div>
    <span class="lbl">Animasyon hızı</span><div class="seg" data-k="speed" data-t="n"><button data-v="0">Kapalı</button><button data-v="0.6">Hızlı</button><button data-v="1">Normal</button><button data-v="1.5">Yavaş</button></div>
   </div>
   <div class="pane" data-pane="ses">
@@ -1030,17 +1030,16 @@ function tryMove(src,dest){
  const c=G.legal.filter(m=>m.from===src&&m.to===dest).sort((a,b)=>a.die-b.die);
  if(!c.length)return false;const m=c[0];submit({k:'move',f:m.from,t:m.to,d:m.die});return true;
 }
-let lastTap=0;
+let lastTap=0,lastLoc=null;
 function onTap(loc){
  Snd.unlock();
  if(loc==='dice'){requestRoll();return;}
  if(!canAct())return;
  G.hint=null;
- const now=performance.now(),dbl=now-lastTap<380;lastTap=now;
- if(dbl&&G.legal.length){
+ const now=performance.now(),dbl=now-lastTap<380&&loc===lastLoc;lastTap=now;lastLoc=loc;
+ if(dbl){
   const s0=srcOf(loc),own=s0!==null?G.legal.filter(m=>m.from===s0):[];
-  const pl=own.length&&onlyOne(own)?own:(onlyOne(G.legal)?G.legal:null);
-  if(pl){lastTap=0;G.sel=null;tryMove(pl[0].from,pl[0].to);return;}
+  if(own.length&&onlyOne(own)){lastTap=0;G.sel=null;tryMove(own[0].from,own[0].to);return;}
  }
  const src=srcOf(loc);
  if(G.sel!==null&&G.sel!==undefined){
