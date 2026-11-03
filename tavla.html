@@ -195,7 +195,15 @@ html.dim #hud,html.dim #controls{opacity:.55;transition:opacity 2s}
 #chatLog{display:flex;flex-direction:column;gap:6px;padding:6px 16px}.cm{max-width:82%;padding:8px 12px;border-radius:14px;font-size:15px;line-height:1.35;word-break:break-word;white-space:pre-wrap}.cm.me{align-self:flex-end;background:linear-gradient(#3a3320,#2a2616);border:1px solid rgba(216,180,106,.4);color:var(--gold2);border-bottom-right-radius:4px}.cm.op{align-self:flex-start;background:#1c2232;border:1px solid var(--line);border-bottom-left-radius:4px}
 #chatQuick{display:flex;gap:6px;padding:6px 16px;overflow-x:auto;flex:none;scrollbar-width:none}#chatQuick::-webkit-scrollbar{display:none}#chatQuick button{flex:none;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--tx);font-size:14px;cursor:pointer}
 #chatForm{display:flex;gap:8px;padding:6px 16px 14px;flex:none}#chatIn{flex:1;min-width:0;min-height:48px;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:#0c1019;color:var(--tx);font-size:16px}#chatForm .btn{min-height:48px;padding:0 16px}
-html.land .mini .ib{width:32px;height:32px}#hFsBtn{position:absolute;z-index:5;top:calc(var(--padT) + 8px);right:calc(var(--padR) + 10px);width:44px;height:44px;background:rgba(14,17,26,.7)}.sig{padding:16px 0 12px;gap:14px}.sig-name{font-size:36px;line-height:1.5;padding:.1em .45em .35em .3em;margin:-.1em 0 -.2em;overflow:visible;letter-spacing:.03em;background:linear-gradient(180deg,#fff3c4 0%,#f3d58f 28%,#c9a152 55%,#8a6526 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:none;filter:drop-shadow(0 1px 0 #7a5a22) drop-shadow(0 2px 0 #5e4418) drop-shadow(0 3px 0 #46320f) drop-shadow(0 7px 7px rgba(0,0,0,.65)) drop-shadow(0 0 14px rgba(216,180,106,.22))}.sig-by{font-size:15px;color:#a58c58;text-shadow:0 1px 0 #000,0 2px 4px rgba(0,0,0,.6)}.sig-line{height:2px;border-radius:2px;box-shadow:0 1px 0 rgba(0,0,0,.7),0 0 8px rgba(216,180,106,.3);background:linear-gradient(90deg,transparent,#e9c982)}</style>
+html.land .mini .ib{width:32px;height:32px}#hFsBtn{position:absolute;z-index:5;top:calc(var(--padT) + 8px);right:calc(var(--padR) + 10px);width:44px;height:44px;background:rgba(14,17,26,.7)}.sig{padding:16px 0 12px;gap:14px}.sig-name{font-size:36px;line-height:1.5;padding:.1em .45em .35em .3em;margin:-.1em 0 -.2em;overflow:visible;letter-spacing:.03em;background:linear-gradient(180deg,#fff3c4 0%,#f3d58f 28%,#c9a152 55%,#8a6526 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:none;filter:drop-shadow(0 1px 0 #7a5a22) drop-shadow(0 2px 0 #5e4418) drop-shadow(0 3px 0 #46320f) drop-shadow(0 7px 7px rgba(0,0,0,.65)) drop-shadow(0 0 14px rgba(216,180,106,.22))}.sig-by{font-size:15px;color:#a58c58;text-shadow:0 1px 0 #000,0 2px 4px rgba(0,0,0,.6)}.sig-line{height:2px;border-radius:2px;box-shadow:0 1px 0 rgba(0,0,0,.7),0 0 8px rgba(216,180,106,.3);background:linear-gradient(90deg,transparent,#e9c982)}.fhead{display:flex;align-items:center;justify-content:space-between}#fCount{color:var(--gold2);font-weight:700;margin-left:4px;text-transform:none;letter-spacing:0}
+#friendList .fr{padding:11px 12px;gap:12px}#friendList .fr .fn b{font-size:16px}#friendList .fr .fn small{font-size:12.5px}
+#status{min-height:46px;display:flex;flex-direction:column;justify-content:center}#ping{min-height:14px}
+.mini{flex-wrap:nowrap;gap:4px}.mini .ib{width:36px;height:36px}
+#otSeg{margin-bottom:10px}.fr .fn small{display:block;white-space:nowrap}
+html.land #statusrow{flex-direction:column;align-items:stretch;gap:6px;min-height:0;flex-wrap:nowrap}
+html.land #status{flex:none;text-align:center;align-items:center;min-height:62px;font-size:13.5px}
+html.land .mini{justify-content:space-between;gap:4px}html.land .mini .ib{flex:1;min-width:0;width:auto;height:38px}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -308,16 +316,16 @@ html.land .mini .ib{width:32px;height:32px}#hFsBtn{position:absolute;z-index:5;t
 
 <div class="modal" id="m-online"><div class="sheet"><div class="sh"><h2>Online</h2><span class="badge" id="netBadge">Bağlanıyor…</span><button class="ib" data-close aria-label="Kapat"><svg class="i"><use href="#i-close"/></svg></button></div>
  <div class="sb">
+  <div class="fhead"><span class="lbl" style="margin:2px 0 8px">Arkadaşlarım <b id="fCount"></b></span></div>
+  <div id="friendList"></div>
+  <div style="display:flex;gap:8px;margin-top:4px"><input class="inp" id="friendIn" maxlength="6" placeholder="Arkadaş kodu yaz" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.15em"><button class="btn" data-act="addFriend" style="min-width:64px;padding:0 14px;gap:6px"><svg class="i"><use href="#i-plus"/></svg>Ekle</button></div>
+  <div class="hr"></div>
+  <button class="btn gold" style="width:100%" data-act="quick"><svg class="i"><use href="#i-bolt"/></svg>Hızlı eşleşme (rastgele rakip)</button>
+  <div class="hr"></div>
   <span class="lbl" style="margin-top:4px">Senin arkadaş kodun</span>
   <div class="code" id="myCode">------</div>
   <div style="display:flex;gap:8px;margin-top:8px"><button class="btn sm" style="flex:1" data-act="copyCode"><svg class="i"><use href="#i-copy"/></svg>Kodu kopyala</button><button class="btn sm" style="flex:1" data-act="shareLink"><svg class="i"><use href="#i-share"/></svg>Davet bağlantısı</button></div>
-  <p class="hintx">Bu sayfa açıkken arkadaşların seni koduyla bulup oyuna davet edebilir.</p>
-  <div class="hr"></div>
-  <button class="btn gold" style="width:100%" data-act="quick"><svg class="i"><use href="#i-bolt"/></svg>Hızlı eşleşme (rastgele rakip)</button>
-  <span class="lbl">Koda göre oyna / arkadaş ekle</span>
-  <div style="display:flex;gap:8px"><input class="inp" id="friendIn" maxlength="6" placeholder="Arkadaş kodu" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.15em"><button class="btn" data-act="addFriend" style="width:56px;padding:0"><svg class="i"><use href="#i-plus"/></svg></button></div>
-  <span class="lbl">Arkadaşlarım</span>
-  <div id="friendList"></div>
+  <p class="hintx">Arkadaşın bu kodu girerek seni ekler. Davet için ikinizin de sayfası açık olmalı.</p>
  </div></div></div>
 
 <div class="modal" id="m-wait"><div class="sheet" style="max-width:380px"><div class="sb" style="text-align:center;padding:24px 16px"><div class="spin"></div><h3 id="waitT" style="margin:14px 0 4px;font-family:Georgia,serif;color:var(--gold2)">Bekleniyor…</h3><p id="waitS" class="hintx"></p><button class="btn" data-act="cancelWait" style="width:100%;margin-top:8px">Vazgeç</button></div></div></div>
@@ -1347,7 +1355,7 @@ const Net={
  },
  setStatus(s){
   this.status=s;const b=$('#netBadge');if(!b)return;
-  const m={off:['Kapalı',''],conn:['Bağlanıyor…',''],ok:['Çevrimiçi','ok'],lib:['Bağlantı kurulamadı','bad'],dup:['Kod başka yerde açık','bad']}[s]||['',''];
+  const m={off:['Kapalı',''],conn:['Bağlanıyor…',''],ok:['Çevrimiçi','ok'],lib:['Bağlantı kurulamadı','bad'],dup:['Kod başka sekmede açık','bad']}[s]||['',''];
   b.textContent=m[0];b.className='badge '+m[1];
  },
  mkPeer(id){return new Peer(id,{debug:0,config:{iceServers:ICE}});},
@@ -1690,12 +1698,12 @@ const Friends={
  del(id){LS.set('friends',this.all().filter(f=>f.id!==id));}
 };
 function renderFriends(){
- const el=$('#friendList');if(!el)return;const l=Friends.all();
- if(!l.length){el.innerHTML='<p class="hintx">Henüz arkadaşın yok. Yukarıya bir kod yazıp + ile ekle.</p>';return;}
+ const el=$('#friendList');if(!el)return;const rk=f=>{const s=Net.fst[f.id];return !s?2:(s.on?(s.busy?1:0):3);};const l=Friends.all().map((f,i)=>({f,i})).sort((a,b)=>rk(a.f)-rk(b.f)||a.i-b.i).map(x=>x.f);const oc=l.filter(f=>rk(f)<=1).length,fc=$('#fCount');if(fc)fc.textContent=l.length?'('+oc+' çevrimiçi / '+l.length+')':'';
+ if(!l.length){el.innerHTML='<p class="hintx">Henüz arkadaşın yok. Aşağıya arkadaşının kodunu yazıp Ekle düğmesine bas.</p>';return;}
  el.innerHTML=l.map(f=>{
   const st=Net.fst[f.id],cls=!st?'':(st.on?(st.busy?'busy':'on'):''),txt=!st?'Kontrol ediliyor…':(st.on?(st.busy?'Oyunda':'Çevrimiçi'):'Çevrimdışı');
   const h=f.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%AVC.length;
-  return `<div class="fr"><span class="pav" style="background:${AVC[h]}">${esc(f.name.charAt(0).toUpperCase())}</span><div class="fn"><b>${esc(f.name)}</b><small><i class="st ${cls}"></i>${txt} · ${esc(f.id)}</small></div><button class="btn sm gold" style="min-height:38px" data-act="inviteF" data-id="${esc(f.id)}" ${st&&st.on&&!st.busy?'':'disabled'}>Davet</button><button class="ib" data-act="delF" data-id="${esc(f.id)}" aria-label="Sil">${ico('trash')}</button></div>`;
+  return `<div class="fr"><span class="pav" style="background:${AVC[h]}">${esc(f.name.charAt(0).toUpperCase())}</span><div class="fn"><b>${esc(f.name)}</b><small><i class="st ${cls}"></i>${txt} · ${esc(f.id)}</small></div><button class="btn sm gold" style="min-height:46px;min-width:88px;font-size:15px" data-act="inviteF" data-id="${esc(f.id)}" ${st&&st.on&&!st.busy?'':'disabled'}>Davet</button><button class="ib" data-act="delF" data-id="${esc(f.id)}" aria-label="Sil">${ico('trash')}</button></div>`;
  }).join('');
 }
 function openOnline(){
