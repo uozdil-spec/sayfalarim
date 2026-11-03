@@ -195,7 +195,7 @@ html.dim #hud,html.dim #controls{opacity:.55;transition:opacity 2s}
 #chatLog{display:flex;flex-direction:column;gap:6px;padding:6px 16px}.cm{max-width:82%;padding:8px 12px;border-radius:14px;font-size:15px;line-height:1.35;word-break:break-word;white-space:pre-wrap}.cm.me{align-self:flex-end;background:linear-gradient(#3a3320,#2a2616);border:1px solid rgba(216,180,106,.4);color:var(--gold2);border-bottom-right-radius:4px}.cm.op{align-self:flex-start;background:#1c2232;border:1px solid var(--line);border-bottom-left-radius:4px}
 #chatQuick{display:flex;gap:6px;padding:6px 16px;overflow-x:auto;flex:none;scrollbar-width:none}#chatQuick::-webkit-scrollbar{display:none}#chatQuick button{flex:none;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--tx);font-size:14px;cursor:pointer}
 #chatForm{display:flex;gap:8px;padding:6px 16px 14px;flex:none}#chatIn{flex:1;min-width:0;min-height:48px;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:#0c1019;color:var(--tx);font-size:16px}#chatForm .btn{min-height:48px;padding:0 16px}
-html.land .mini .ib{width:32px;height:32px}</style>
+html.land .mini .ib{width:32px;height:32px}#hFsBtn{position:absolute;z-index:5;top:calc(var(--padT) + 8px);right:calc(var(--padR) + 10px);width:44px;height:44px;background:rgba(14,17,26,.7)}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -231,7 +231,7 @@ html.land .mini .ib{width:32px;height:32px}</style>
 
 <div id="app">
  <!-- ============ ANA SAYFA ============ -->
- <section id="home" class="screen on">
+ <section id="home" class="screen on"><button class="ib" id="hFsBtn" data-act="fs" aria-label="Tam ekran" title="Tam ekran"><svg class="i"><use href="#i-expand"/></svg></button>
   <div class="home-bg"><i></i><i></i><i></i><i></i><i></i></div>
   <div class="home-scroll">
    <div class="home-in">
@@ -348,7 +348,7 @@ html.land .mini .ib{width:32px;height:32px}</style>
   <div class="pane" data-pane="oyun">
    <div class="srow"><div class="t"><b>Zarı otomatik at</b><small>Sıra sana gelince zar kendiliğinden atılır</small></div><input type="checkbox" class="sw" data-k="autoRoll"></div>
    <div class="srow"><div class="t"><b>Tek hamleyi otomatik oyna</b><small>Zorunlu (tek seçenek) hamleyi kendisi yapar</small></div><input type="checkbox" class="sw" data-k="autoMove"></div>
-   <div class="srow"><div class="t"><b>Akıllı dokunuş</b><small>Pulun tek hamlesi varsa dokununca oynar</small></div><input type="checkbox" class="sw" data-k="tap1"></div>
+   <div class="srow"><div class="t"><b>Akıllı dokunuş</b><small>Pulun tek hamlesi varsa dokununca oynar · Çift dokunuş, tek zorunlu hamleyi otomatik oynar</small></div><input type="checkbox" class="sw" data-k="tap1"></div>
    <span class="lbl">Animasyon hızı</span><div class="seg" data-k="speed" data-t="n"><button data-v="0">Kapalı</button><button data-v="0.6">Hızlı</button><button data-v="1">Normal</button><button data-v="1.5">Yavaş</button></div>
   </div>
   <div class="pane" data-pane="ses">
@@ -1030,11 +1030,18 @@ function tryMove(src,dest){
  const c=G.legal.filter(m=>m.from===src&&m.to===dest).sort((a,b)=>a.die-b.die);
  if(!c.length)return false;const m=c[0];submit({k:'move',f:m.from,t:m.to,d:m.die});return true;
 }
+let lastTap=0;
 function onTap(loc){
  Snd.unlock();
  if(loc==='dice'){requestRoll();return;}
  if(!canAct())return;
  G.hint=null;
+ const now=performance.now(),dbl=now-lastTap<380;lastTap=now;
+ if(dbl&&G.legal.length){
+  const s0=srcOf(loc),own=s0!==null?G.legal.filter(m=>m.from===s0):[];
+  const pl=own.length&&onlyOne(own)?own:(onlyOne(G.legal)?G.legal:null);
+  if(pl){lastTap=0;G.sel=null;tryMove(pl[0].from,pl[0].to);return;}
+ }
  const src=srcOf(loc);
  if(G.sel!==null&&G.sel!==undefined){
   if((loc==='off'||typeof loc==='number')&&G.legal.some(m=>m.from===G.sel&&m.to===loc)){tryMove(G.sel,loc);return;}
@@ -1269,7 +1276,7 @@ function toggleFS(){
  if(f){try{const p=f.call(d);if(p&&p.catch)p.catch(()=>{});}catch(e){}}
  else toast('Bu tarayıcı tam ekranı desteklemiyor. "Ana Ekrana Ekle" ile tam ekran açabilirsin.',3200);
 }
-function updFS(){$('#fsBtn').innerHTML=ico(fsEl()?'compress':'expand');}
+function updFS(){const h=ico(fsEl()?'compress':'expand'),t=fsEl()?'Tam ekrandan çık':'Tam ekran';['#fsBtn','#hFsBtn'].forEach(q=>{const b=$(q);if(b){b.innerHTML=h;b.setAttribute('aria-label',t);b.title=t;}});}
 document.addEventListener('fullscreenchange',()=>{updFS();layout();});
 document.addEventListener('webkitfullscreenchange',()=>{updFS();layout();});
 let wl=null;
