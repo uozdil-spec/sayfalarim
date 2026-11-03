@@ -52,6 +52,7 @@ App.size = function () {
   var app = KS.$('#app'), vh = root.innerHeight;
   document.documentElement.style.setProperty('--vh', vh + 'px');
   document.body.classList.toggle('land', root.innerWidth > vh * 1.05);
+  KS.applySafe();
   if (KS.onLayout) KS.onLayout();
 };
 

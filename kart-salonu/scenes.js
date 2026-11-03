@@ -18,7 +18,7 @@ function common(v, X) {
     cx: G.w / 2, cy: G.h * (G.land ? 0.45 : 0.41), ev: X.ev || [],
     dealing: hasEv(X.ev, 'deal') || hasEv(X.ev, 'newHand') || X.fresh
   };
-  c.deckPos = { x: c.cx - c.cw * (G.land ? 2.05 : 1.85), y: c.cy };
+  c.deckPos = { x: c.cx - c.cw * (G.land ? 2.05 : (n >= 4 ? 1.1 : 1.85)), y: c.cy }; // 4 kişide dikey portrede deste soldaki oyuncunun elinin üstüne binmesin
   return c;
 }
 function deckStack(c, count, per) {

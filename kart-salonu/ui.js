@@ -154,7 +154,8 @@ GameUI.prototype.layout = function () {
   document.body.classList.toggle('land', land);
   var fs = 16 * (S.uiscale / 100);
   var rw = Math.round(2.6 * fs + 0.55 * fs * 2), rh = Math.round(2.6 * fs + 0.9 * fs);
-  var x = S.safeL, y = S.safeT, w = W - S.safeL - S.safeR, hh = H - S.safeT - S.safeB;
+  var sf = KS.applySafe();
+  var x = sf.l, y = sf.t, w = W - sf.l - sf.r, hh = H - sf.t - sf.b;
   if (land) { w -= rw; if (S.railpos !== 'right') x += rw; }
   else { y += rh; hh -= rh; }
   var st = this.stageEl.style;

@@ -98,8 +98,7 @@ KS.applySettings = function () {
   b.classList.toggle('lshadow', S.shadows !== 'full');
   b.classList.toggle('railr', S.railpos === 'right');
   b.classList.toggle('oled', !!S.oled);
-  r.style.setProperty('--sl', S.safeL + 'px'); r.style.setProperty('--sr', S.safeR + 'px');
-  r.style.setProperty('--st', S.safeT + 'px'); r.style.setProperty('--sb', S.safeB + 'px');
+  KS.applySafe();
   r.style.setProperty('--ui', String(S.uiscale / 100));
   var sp = { fast: 0.65, normal: 1, slow: 1.5 }[S.speed] || 1;
   r.style.setProperty('--spd', String(sp));
@@ -210,9 +209,30 @@ KS.toggleFs = function () {
     else { var d = document.documentElement; (d.requestFullscreen || d.webkitRequestFullscreen).call(d); }
   } catch (e) {}
 };
+/* Güvenli alan: elle verilen boşluk, cihazın çentik/kamera adası bilgisi (env) ve tam ekranda en az bir üst boşluk. Hangisi büyükse o kullanılır. */
+KS.safe = function () {
+  var S = KS.S, e = { t: 0, r: 0, b: 0, l: 0 };
+  try {
+    var p = document.createElement('div');
+    p.style.cssText = 'position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+    document.body.appendChild(p);
+    var cs = getComputedStyle(p);
+    e = { t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0, l: parseFloat(cs.paddingLeft) || 0 };
+    document.body.removeChild(p);
+  } catch (x) {}
+  var portrait = root.innerWidth <= root.innerHeight * 1.05;
+  var gap = (portrait && (KS.isFs() || KS.isStandalone())) ? 38 : 0; // ön kamera adası (ör. Honor Magic) düğmelerin üstüne gelmesin
+  return { t: Math.max(S.safeT, e.t, gap), r: Math.max(S.safeR, e.r), b: Math.max(S.safeB, e.b), l: Math.max(S.safeL, e.l) };
+};
+KS.applySafe = function () {
+  var f = KS.safe(), r = document.documentElement;
+  r.style.setProperty('--sl', f.l + 'px'); r.style.setProperty('--sr', f.r + 'px');
+  r.style.setProperty('--st', f.t + 'px'); r.style.setProperty('--sb', f.b + 'px');
+  return f;
+};
 function fsChange() {
   KS.$$('[data-fs]').forEach(function (b) { b.innerHTML = KS.cards.icon(KS.isFs() ? 'shrink' : 'expand'); });
-  setTimeout(function () { if (KS.onLayout) KS.onLayout(); }, 120);
+  setTimeout(function () { KS.applySafe(); if (KS.onLayout) KS.onLayout(); }, 120);
 }
 document.addEventListener('fullscreenchange', fsChange);
 document.addEventListener('webkitfullscreenchange', fsChange);
