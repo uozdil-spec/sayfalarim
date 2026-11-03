@@ -736,6 +736,14 @@ function hlMarkup(ctx){
     if(m.hit){const q=slotXY(m.to,0,1),v=V(ctx,q[0],q[1]);s+=ring(v,R+3,'#ff6f78',3.5,'pulse');}
     else{const q=slotXY(m.to,n,n+1),v=V(ctx,q[0],q[1]);s+=ring(v,12,'#f3d58f',3,'pulse','rgba(243,213,143,.55)');}
    });
+   const cb=comboPaths(G.sel);
+   Object.keys(cb).forEach(k=>{
+    const to=k==='off'?'off':+k,sum=cb[k].p.reduce((a,m)=>a+m.die,0);
+    if(to==='off'){const c=G.turn,y0=c===1?330:44,y1=c===1?616:330;const pts=[[882,y0],[958,y0],[958,y1],[882,y1]].map(q=>V(ctx,q[0],q[1]).join(',')).join(' ');s+=`<polygon points="${pts}" fill="#9fd8ff" fill-opacity=".2" class="pulse"/>`;return;}
+    s+=triPoly(ctx,to,'pulse','#9fd8ff',.2);
+    const n=cnt(G.state,to),last=cb[k].p[cb[k].p.length-1],q=slotXY(to,last.hit?0:n,last.hit?1:n+1),v=V(ctx,q[0],q[1]);
+    s+=ring(v,15,last.hit?'#ff6f78':'#9fd8ff',3,'pulse','rgba(159,216,255,.6)')+`<text x="${v[0]}" y="${v[1]}" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="800" fill="#06141c">${sum}</text>`;
+   });
   }
  }
  if(G.hint&&G.phase==='move'){
@@ -1034,15 +1042,44 @@ function srcOf(loc){
  if(typeof loc==='number')return G.legal.some(m=>m.from===loc)?loc:null;
  return null;
 }
+function comboPaths(src){
+ const out={};if(src===null||src===undefined||!G.rem||G.rem.length<2||!G.legal.length)return out;
+ const c=G.turn;
+ const walk=(st,rem,path)=>{
+  const lm=path.length===0?G.legal.filter(m=>m.from===src):legalMoves(st,c,rem).filter(m=>m.from===path[path.length-1].to);
+  for(const m of lm){
+   const np=path.concat([m]);
+   if(np.length>=2){const k=String(m.to),h=np.slice(0,-1).filter(x=>x.hit).length,cur=out[k];
+    if(!cur||h<cur.h||(h===cur.h&&np.length<cur.p.length))out[k]={p:np,h};}
+   if(m.to!=='off'&&rem.length>1)walk(applyMove(st,c,m),removeOne(rem,m.die),np);
+  }
+ };
+ walk(G.state,G.rem,[]);
+ Object.keys(out).forEach(k=>{if(G.legal.some(m=>m.from===src&&String(m.to)===k))delete out[k];});
+ return out;
+}
+let comboBusy=false;
+async function runCombo(path){
+ comboBusy=true;
+ try{
+  for(let i=0;i<path.length;i++){
+   const m=path[i];
+   if(i>0&&!G.legal.some(x=>x.from===m.from&&x.to===m.to&&x.die===m.die))break;
+   await submit({k:'move',f:m.from,t:m.to,d:m.die});
+   if(!G.active||G.over||G.phase!=='move')break;
+  }
+ }finally{comboBusy=false;}
+}
 function tryMove(src,dest){
  const c=G.legal.filter(m=>m.from===src&&m.to===dest).sort((a,b)=>a.die-b.die);
- if(!c.length)return false;const m=c[0];submit({k:'move',f:m.from,t:m.to,d:m.die});return true;
+ if(!c.length){const cp=comboPaths(src)[String(dest)];if(cp){runCombo(cp.p);return true;}return false;}
+ const m=c[0];submit({k:'move',f:m.from,t:m.to,d:m.die});return true;
 }
 let lastTap=0,lastLoc=null;
 function onTap(loc){
  Snd.unlock();
  if(loc==='dice'){requestRoll();return;}
- if(!canAct())return;
+ if(!canAct()||comboBusy)return;
  G.hint=null;
  const now=performance.now(),dbl=now-lastTap<380&&loc===lastLoc;lastTap=now;lastLoc=loc;
  if(dbl){
@@ -1051,7 +1088,7 @@ function onTap(loc){
  }
  const src=srcOf(loc);
  if(G.sel!==null&&G.sel!==undefined){
-  if((loc==='off'||typeof loc==='number')&&G.legal.some(m=>m.from===G.sel&&m.to===loc)){tryMove(G.sel,loc);return;}
+  if((loc==='off'||typeof loc==='number')&&(G.legal.some(m=>m.from===G.sel&&m.to===loc)||comboPaths(G.sel)[String(loc)])){tryMove(G.sel,loc);return;}
   if(src!==null&&src!==G.sel){G.sel=src;drawDyn();Snd.click();return;}
   G.sel=null;drawDyn();return;
  }
@@ -1259,6 +1296,7 @@ function buildHelp(){
  <h3>Nasıl oynarım?</h3><ul>
  <li><b>Dokun:</b> pula/noktaya dokun, parlayan hedefe dokun.</li>
  <li><b>Sürükle:</b> pulu tutup hedefe bırak.</li>
+ <li><b>Zarları toplama:</b> pula dokununca mavi işaretli noktalar çıkar (üstünde toplam yazar). Oraya dokunursan pul, iki zarı da kullanarak ilerler; yalnızca aradaki nokta açıksa (rakibin kapalı noktası değilse) gösterilir.</li>
  <li><b>Geri al:</b> turun son hamlesine kadar hamleleri geri alır.</li>
  <li><b>İpucu:</b> önerilen hamleyi mavi ile gösterir.</li>
  <li><b>Menü:</b> ana sayfaya dönüş. Cihaz içi oyunlar otomatik kaydedilir.</li>
