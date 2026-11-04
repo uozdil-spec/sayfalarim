@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261103-1346">
+<meta name="surum" content="20261104-1434">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261103-1346" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261103-1346" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261103-1346">
+<link rel="icon" href="batak-ikon.svg?v=20261104-1434" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261104-1434" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261104-1434">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -19,7 +19,7 @@ html,body{margin:0;height:100%;background:#000;overflow:hidden;overscroll-behavi
 body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ivory)}
 button,input{font-family:inherit}
 #app{position:fixed;inset:0;display:flex;justify-content:center;
-  padding:calc(env(safe-area-inset-top,0px) + 14px) calc(env(safe-area-inset-right,0px) + 14px) calc(env(safe-area-inset-bottom,0px) + 14px) calc(env(safe-area-inset-left,0px) + 14px);
+  padding:calc(max(env(safe-area-inset-top,0px),var(--sat,0px)) + 14px) calc(env(safe-area-inset-right,0px) + 14px) calc(env(safe-area-inset-bottom,0px) + 14px) calc(env(safe-area-inset-left,0px) + 14px);
   transition:transform 4s linear}
 .screen{display:none;flex:1;min-height:0;min-width:0;flex-direction:column;width:100%;max-width:640px}
 .screen.on{display:flex}
@@ -35,7 +35,7 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
 .opt.big{padding:20px 20px}.opt.big b{font-size:20px;font-family:'Cinzel',Georgia,serif;letter-spacing:1.5px}
 .opt.big span{font-size:13px}
 .opt.pri.big b{color:#1a1405}
-.chip .sp{flex:none;font-style:normal;font-size:10px;font-weight:700;margin-left:5px;padding:0 6px;border-radius:8px;background:rgba(201,168,90,.2);color:var(--gold2)}
+.chip .sp{flex:none;font-style:normal;font-size:10px;font-weight:700;border-radius:9px}
 .tabs{display:flex;gap:6px;margin:10px 0 4px}
 .tabs button{flex:1;padding:10px 6px;border-radius:11px;border:1px solid rgba(201,168,90,.3);background:#0b130f;color:#bdb79f;font-size:13.5px;cursor:pointer}
 .tabs button.on{background:rgba(201,168,90,.18);border-color:var(--gold);color:var(--gold2);font-weight:700}
@@ -212,6 +212,42 @@ h1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(26px,9vw,4
 @keyframes oledFade{0%,100%{filter:brightness(.9) saturate(.95)}50%{filter:brightness(.5) saturate(.35)}}
 body.idle #app,body.idle #modal-in{animation:oledDrift 50s ease-in-out infinite,oledFade 9s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){body.idle #app,body.idle #modal-in{animation:oledFade 9s ease-in-out infinite}}
+/* Rıfkı animasyonu */
+#fx{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.78);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;overflow:hidden;animation:fxin .25s ease-out;padding:env(safe-area-inset-top,0px) 16px env(safe-area-inset-bottom,0px)}
+@keyframes fxin{from{opacity:0}}
+#fx .hs{position:absolute;inset:0;pointer-events:none}
+#fx .hs i{position:absolute;top:-40px;font-style:normal;color:#d2463b;opacity:.9;animation:fall 2.8s linear infinite}
+@keyframes fall{to{transform:translateY(115vh) rotate(260deg)}}
+#fx .kc{position:relative;height:calc(var(--kh,154px));display:flex;justify-content:center;animation:kdrop .9s cubic-bezier(.3,1.4,.5,1) both,kshake .5s .9s ease-in-out 3}
+#fx .kc .card{position:relative!important;left:0!important;top:0!important}
+@keyframes kdrop{0%{transform:translateY(-70vh) rotate(-40deg) scale(.5);opacity:0}70%{opacity:1}100%{transform:none}}
+@keyframes kshake{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg) scale(1.05)}75%{transform:rotate(7deg) scale(1.05)}}
+#fx .t1{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(40px,14vw,64px);letter-spacing:.1em;color:#ff6a5c;text-shadow:0 0 24px rgba(255,90,70,.6);animation:pop .5s .5s cubic-bezier(.3,1.6,.5,1) both}
+#fx .t2{font-size:clamp(17px,5.4vw,24px);font-weight:600;color:#f4eedc;text-align:center;animation:rise .5s 1.1s ease-out both}
+#fx .t3{font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:clamp(34px,11vw,52px);color:#ff8a7f;animation:pop .45s 1.6s cubic-bezier(.3,1.7,.5,1) both}
+#fx .t4{font-size:12px;letter-spacing:2px;color:#8b7e57;margin-top:8px;opacity:0;animation:rise .4s 2.4s ease-out both}
+@keyframes pop{from{transform:scale(.2);opacity:0}}
+@keyframes rise{from{transform:translateY(16px);opacity:0}}
+.chip{position:relative}
+.chip .sp{position:absolute;right:-6px;top:-9px;margin:0;z-index:2;box-shadow:0 0 0 2px #000;background:var(--gold);color:#1a1405;padding:1px 7px;font-size:10.5px}
+#table.solo .seat.l,#table.solo .seat.r{top:24%}
+/* Sohbet */
+#b-chat{position:absolute;right:10px;top:10px;z-index:6;width:42px;height:42px;border-radius:50%;border:1px solid rgba(201,168,90,.45);background:rgba(3,10,7,.88);color:var(--gold2);font-size:19px;display:none;align-items:center;justify-content:center;cursor:pointer;padding:0}
+#b-chat i{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;background:#d2463b;color:#fff;font-size:11px;font-weight:700;font-style:normal;display:none;align-items:center;justify-content:center;padding:0 4px;box-shadow:0 0 0 2px #000}
+#chat{position:fixed;left:0;right:0;bottom:0;z-index:65;display:none;flex-direction:column;max-height:62vh;background:rgba(2,8,5,.98);border-top:1px solid rgba(201,168,90,.5);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.8);padding:10px calc(env(safe-area-inset-right,0px) + 14px) calc(env(safe-area-inset-bottom,0px) + 12px) calc(env(safe-area-inset-left,0px) + 14px)}
+#chat.on{display:flex}
+#chat .ch-h{display:flex;justify-content:space-between;align-items:center;font-family:'Cinzel',Georgia,serif;letter-spacing:3px;color:var(--gold2);font-size:13px;padding:2px 2px 8px}
+#chat .ch-h button{background:none;border:none;color:#9b8a5e;font-size:20px;padding:4px 8px;cursor:pointer}
+#ch-list{flex:1;min-height:90px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;-webkit-overflow-scrolling:touch}
+#ch-list .m{max-width:86%;padding:7px 11px;border-radius:14px;background:#0f1a15;border:1px solid rgba(201,168,90,.18);font-size:14px;line-height:1.35;color:#e6e0c8;word-break:break-word;align-self:flex-start}
+#ch-list .m b{display:block;font-size:11px;letter-spacing:.5px;color:#9b8a5e;font-weight:600}
+#ch-list .m.me{align-self:flex-end;background:rgba(201,168,90,.16);border-color:rgba(201,168,90,.45)}
+#ch-list .e{color:#8f8a76;font-size:12.5px;text-align:center;padding:14px 4px}
+#ch-q{display:flex;gap:6px;overflow-x:auto;padding:8px 0 6px;-webkit-overflow-scrolling:touch}
+#ch-q button{flex:none;padding:7px 12px;border-radius:16px;border:1px solid rgba(201,168,90,.35);background:#0b130f;color:var(--gold2);font-size:13px;cursor:pointer;white-space:nowrap}
+#chat .ch-in{display:flex;gap:8px}
+#chat .ch-in input{flex:1;min-width:0;padding:11px 13px;border-radius:12px;border:1px solid rgba(201,168,90,.35);background:#050807;color:var(--ivory);font-size:16px;outline:none;-webkit-user-select:text;user-select:text}
+#chat .ch-in button{padding:0 16px;border-radius:12px;border:1px solid var(--gold);background:linear-gradient(180deg,#d6b86a,#a98a3e);color:#1a1405;font-weight:700;font-size:14px;cursor:pointer}
 #dim{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity 3s;z-index:90}
 @media (orientation:landscape) and (max-height:520px){
   h1{font-size:26px}.tag{margin-bottom:10px}
@@ -283,6 +319,7 @@ body.idle #app,body.idle #modal-in{animation:oledDrift 50s ease-in-out infinite,
     <h2 id="lb-title">ODA</h2>
     <div class="code" id="lb-code">-----</div>
     <button class="mini-btn" id="b-share" style="padding:10px 20px">Davet Linkini Paylaş</button>
+    <button class="mini-btn" id="b-lchat" style="padding:10px 20px;display:none">💬 Sohbet</button>
     <div class="seatrow" id="lb-seats"></div>
     <div class="seatrow" id="lb-friends"></div>
     <div id="lb-info" style="font-size:12.5px;color:#a9a58f;text-align:center"></div>
@@ -301,6 +338,7 @@ body.idle #app,body.idle #modal-in{animation:oledDrift 50s ease-in-out infinite,
     <button id="b-menu" aria-label="Menü">☰</button>
   </div>
   <div id="table">
+    <button id="b-chat" aria-label="Sohbet">💬<i id="chat-n"></i></button>
     <div id="wm"><b>EŞLİ BATAK</b><i>by uozdil</i></div>
     <div class="seat t" id="seat-2"></div>
     <div class="seat l" id="seat-1"></div>
@@ -316,6 +354,7 @@ body.idle #app,body.idle #modal-in{animation:oledDrift 50s ease-in-out infinite,
 </section>
 
 </div>
+<div id="chat"><div class="ch-h"><span>SOHBET</span><button id="ch-x" aria-label="Kapat">✕</button></div><div id="ch-list"></div><div id="ch-q"></div><div class="ch-in"><input id="ch-i" maxlength="120" placeholder="Mesaj yaz…" autocomplete="off" enterkeyhint="send"><button id="ch-s">Gönder</button></div></div>
 <div id="modal"><div class="modal" id="modal-in"></div></div>
 <div id="toast"></div>
 <div id="dim"></div>
@@ -368,7 +407,7 @@ function deal(){
   const d=newDeck();G.hands=[0,1,2,3].map(i=>d.slice(i*13,i*13+13));
   G.phase='bid';G.bids=[null,null,null,null];G.highBid=0;G.highBidder=-1;G.bidCount=0;G.turn=(G.dealer+1)%4;
   G.trump=null;G.broken=false;G.trick=[];G.tw=[0,0,0,0];G.trickWinner=-1;G.played=new Set();G.dummy=-1;
-  G.contract=null;G.won=[[],[],[],[]];G.l2=[0,0,0,0];
+  G.contract=null;G.won=[[],[],[],[]];G.l2=[0,0,0,0];G.rifkiBy=-1;
   if(KING()){G.phase='contract';G.turn=G.dealer} // King: dağıtan oyunu seçer ve ilk eli açar
 }
 const KING=()=>G.settings.game==='king';
@@ -436,8 +475,9 @@ function act(seat,a){
   }
 }
 function finishTrick(){
-  const w=G.trickWinner;G.tw[w]++;G.won[w].push(...G.trick.map(t=>t.card));if(G.tw.reduce((a,b)=>a+b,0)>=12)G.l2[w]++;G.trick=[];G.turn=w;G.trickWinner=-1;
-  if(G.hands[0].length===0)endHand();else{G.phase='play';commit()}
+  const w=G.trickWinner,rk=KING()&&G.contract==='rifki'&&G.trick.some(t=>t.card.s===1&&t.card.r===13); // Rıfkı almaz: kupa papazı alınınca el biter
+  G.tw[w]++;G.won[w].push(...G.trick.map(t=>t.card));if(G.tw.reduce((a,b)=>a+b,0)>=12)G.l2[w]++;G.trick=[];G.turn=w;G.trickWinner=-1;
+  if(rk){G.rifkiBy=w;endHand()}else if(G.hands[0].length===0)endHand();else{G.phase='play';commit()}
 }
 function endHandK(){
   const c=G.contract,d=[0,0,0,0];
@@ -450,7 +490,7 @@ function endHandK(){
     else if(c==='son2')v=-180*G.l2[q];
     d[q]=v;G.scores[q]+=v}
   G.round++;
-  G.last={game:'king',contract:c,bidder:G.dealer,trump:G.trump,tricks:G.tw.slice(),delta:d,ok:true,ct:G.dealer};
+  G.last={game:'king',contract:c,bidder:G.dealer,trump:G.trump,tricks:G.tw.slice(),delta:d,ok:true,ct:G.dealer,rifkiBy:G.rifkiBy};
   const fin=G.round>=20,mx=Math.max(...G.scores);
   G.phase=fin?'gameEnd':'handEnd';if(fin)G.over={winner:G.scores.indexOf(mx)};
   commit();
@@ -723,7 +763,7 @@ const genCode=()=>{const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i
 function needPeer(){if(typeof Peer==='undefined'){toast('Online için internet bağlantısı gerekli');return false}return true}
 function startHost(cb){
   if(!needPeer())return;store.set('batak_name',myName());
-  mode='host';L={settings:Object.assign({},cfg),names:[myName(),'Kemal','Ayşe','Mehmet'],humans:[true,false,false,false]};conns={};
+  chatReset();mode='host';L={settings:Object.assign({},cfg),names:[myName(),'Kemal','Ayşe','Mehmet'],humans:[true,false,false,false]};conns={};
   afterRoom=cb||null;toast('Oda hazırlanıyor…');openPeer(0);
 }
 $('#b-host').onclick=()=>startHost(null);
@@ -731,6 +771,7 @@ function openPeer(tries){
   const code=genCode();
   try{peer&&peer.destroy()}catch(e){}
   peer=new Peer(PFX+code);
+  peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});
   peer.on('open',()=>{myCode=code;showScreen('lobby');renderLobby();if(afterRoom){const f=afterRoom;afterRoom=null;f()}});
   peer.on('error',e=>{if(e.type==='unavailable-id'&&tries<6)openPeer(tries+1);else{toast('Bağlantı hatası ('+e.type+')');if(cur!=='game'&&cur!=='lobby'){mode='none'}}});
   peer.on('connection',c=>{
@@ -742,14 +783,20 @@ function freeSeat(){for(const s of [2,1,3])if(!L.humans[s])return s;return -1}
 function onHostMsg(c,m){
   if(!m)return;
   if(m.t==='join'){
-    if(G||!L){c.send({t:'full'});return}
+    if(G){ // oyun başlamış: bağlantısı kopan oyuncu aynı adla koltuğuna geri dönebilir
+      const nm=clean(m.name)||'Oyuncu',rs=[1,2,3].find(x=>G.left&&G.left[x]===nm&&!G.humans[x]);
+      if(rs==null){c.send({t:'full'});return}
+      G.humans[rs]=true;G.names[rs]=nm;delete G.left[rs];c.seat=rs;conns[rs]=c;toast(nm+' geri döndü');commit();return;
+    }
+    if(!L){c.send({t:'full'});return}
     const s=freeSeat();if(s<0){c.send({t:'full'});return}
     L.humans[s]=true;L.names[s]=clean(m.name)||'Oyuncu';c.seat=s;conns[s]=c;lobbyBroadcast();
   }else if(m.t==='act'&&c.seat!=null){act(c.seat,m.act)}
+  else if(m.t==='chat'&&c.seat!=null&&typeof m.text==='string')hostChat(c.seat,m.text);
 }
 function onGuestLeave(c){
-  const s=c.seat;if(s==null)return;delete conns[s];
-  if(G){G.humans[s]=false;G.names[s]=G.names[s]+' (Bot)';toast(G.names[s]+' ayrıldı');commit()}
+  const s=c.seat;if(s==null||conns[s]!==c)return;delete conns[s];
+  if(G){G.left=G.left||{};G.left[s]=G.names[s];G.humans[s]=false;G.names[s]=G.names[s]+' (Bot)';toast(G.left[s]+' ayrıldı (geri dönebilir)');commit()}
   else if(L){L.humans[s]=false;L.names[s]=DEF[s];lobbyBroadcast()}
 }
 function lobbyBroadcast(){
@@ -766,6 +813,7 @@ function renderLobby(){
   $('#lb-seats').innerHTML=tk?`<div class="tm">OYUNCULAR</div>${row(0)}${row(1)}${row(2)}${row(3)}`:`<div class="tm">TAKIM 1</div>${row(0)}${row(2)}<div class="tm">TAKIM 2</div>${row(1)}${row(3)}`;
   $('#b-start').style.display=isHost?'block':'none';
   $('#b-share').style.display=isHost?'inline-block':'none';
+  $('#b-lchat').style.display='inline-block';
   $('#lb-info').textContent=(isHost?(tk?'Arkadaşların boş koltuklara oturur, kalanlara bilgisayar oturur. ':'İlk gelen arkadaşın ortağın olur. Boş koltuklara bilgisayar oturur. '):'Oda sahibinin oyunu başlatması bekleniyor. ')+'Bitiş: '+endText(L.settings)+(tk?'':' · Açık el: '+(L.settings.open?'Açık':'Kapalı'));
   renderFriends();
 }
@@ -779,27 +827,34 @@ $('#b-start').onclick=()=>{mkGame(L.settings,L.names,L.humans)};
 $('#b-lback').onclick=leave;
 $('#b-join').onclick=()=>joinOnline($('#i-code').value);
 $('#i-code').addEventListener('keydown',e=>{if(e.key==='Enter')joinOnline($('#i-code').value)});
-function joinOnline(code){
+let rejoinTries=0;
+function joinOnline(code,re){
   code=(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(code.length<5){toast('5 haneli oda kodunu gir');return}
   if(!needPeer())return;store.set('batak_name',myName());
-  mode='guest';myCode=code;toast('Bağlanılıyor…');
+  mode='guest';myCode=code;if(!re){toast('Bağlanılıyor…');chatReset()}
   let ok=false;
-  const to=setTimeout(()=>{if(!ok){toast('Bağlanılamadı, kodu kontrol et');leave()}},13000);
+  const fail=msg=>{ if(re&&rejoinTries<5&&mode==='guest'){rejoinTries++;toast('Yeniden bağlanılıyor…');setTimeout(()=>{if(mode==='guest')joinOnline(code,true)},2000)}else{toast(msg);leave()} };
+  const to=setTimeout(()=>{if(!ok)fail('Bağlanılamadı, kodu kontrol et')},13000);
   try{peer&&peer.destroy()}catch(e){}
   peer=new Peer();
   peer.on('open',()=>{
-    conn=peer.connect(PFX+code,{reliable:true});
-    conn.on('open',()=>conn.send({t:'join',name:myName()}));
-    conn.on('data',m=>{ok=true;clearTimeout(to);onGuestMsg(m)});
-    conn.on('close',()=>{if(mode==='guest'){toast('Bağlantı koptu');leave()}});
+    const cn=conn=peer.connect(PFX+code,{reliable:true});
+    cn.on('open',()=>cn.send({t:'join',name:myName()}));
+    cn.on('data',m=>{ok=true;clearTimeout(to);onGuestMsg(m)});
+    cn.on('close',()=>{
+      if(conn!==cn||mode!=='guest')return;
+      if(cur==='game'&&rejoinTries<5){rejoinTries++;toast('Bağlantı koptu, yeniden bağlanılıyor…');setTimeout(()=>{if(mode==='guest')joinOnline(code,true)},1500)}
+      else{toast('Bağlantı koptu');leave()}
+    });
   });
-  peer.on('error',e=>{clearTimeout(to);toast(e.type==='peer-unavailable'?'Oda bulunamadı':'Bağlantı hatası ('+e.type+')');if(!ok)leave()});
+  peer.on('error',e=>{clearTimeout(to);if(!ok)fail(e.type==='peer-unavailable'?'Oda bulunamadı':'Bağlantı hatası ('+e.type+')')});
 }
 function onGuestMsg(m){
   if(m.t==='lobby'){L=m;myCode=m.code||myCode;if(cur!=='lobby')showScreen('lobby');renderLobby()}
-  else if(m.t==='state'){if(cur!=='game'){closeModal();showScreen('game')}render(m.v)}
-  else if(m.t==='full'){toast('Oda dolu ya da oyun başlamış');leave()}
+  else if(m.t==='state'){rejoinTries=0;if(cur!=='game'){closeModal();showScreen('game')}render(m.v)}
+  else if(m.t==='chat'&&m.m&&typeof m.m.x==='string')chatAdd({s:m.m.s|0,n:clean(m.m.n)||'Oyuncu',x:String(m.m.x).slice(0,120)});
+  else if(m.t==='full'){toast(rejoinTries?'Odaya geri dönülemedi':'Oda dolu ya da oyun başlamış');leave()}
 }
 function sendAct(a){if(mode==='guest'){try{conn.send({t:'act',act:a})}catch(e){}}else act(0,a)}
 function broadcast(){
@@ -812,6 +867,7 @@ function broadcast(){
 }
 function leave(){
   try{conn&&conn.close()}catch(e){}try{peer&&peer.destroy()}catch(e){}
+  {const f=$('#fx');if(f)f.remove();clearTimeout(fxT);fxOn=false;fxDone=false;rejoinTries=0;chatReset()}
   peer=null;conn=null;conns={};L=null;G=null;clearTimeout(pend);mode='none';V=null;sel=null;shown=new Set();
   closeModal();showScreen('home');
 }
@@ -888,6 +944,8 @@ function statusText(v){
 function render(v){
   V=v;
   const myTeam=v.me%2,tk=v.game!=='esli',kg=v.game==='king';
+  $('#table').classList.toggle('solo',tk);
+  $('#b-chat').style.display=(mode==='host'||mode==='guest')?'flex':'none';
   if(tk){const others=v.scores.filter((_,k)=>k!==v.me);
     $('#sc-us small').textContent='SEN';$('#sc-us b').textContent=v.scores[v.me];
     $('#sc-them small').textContent='RAKİP';$('#sc-them b').textContent=Math.max(...others)}
@@ -939,6 +997,7 @@ function render(v){
   renderDummy();setTcw();
   renderHand();
   // modal sonu
+  if(v.phase!=='handEnd'&&v.phase!=='gameEnd')fxDone=false;
   if(v.phase==='handEnd'||v.phase==='gameEnd')showEnd(v);
   else if($('#modal').dataset.end==='1'){closeModal();$('#modal').dataset.end=''}
 }
@@ -989,7 +1048,26 @@ function onCard(id,own){
   if(!V.legal.includes(id)){toast('Bu kartı şu an oynayamazsın');return}
   if(sel===id){sel=null;sendAct({a:'play',id})}else{sel=id;renderHand();renderDummy()}
 }
+let fxOn=false,fxDone=false,fxT=null;
+/* Rıfkı almaz: kupa papazını yiyen herkesin önünde eğlenceli bir animasyonla gösterilir (yaklaşık 4 sn, dokununca geçilir) */
+function rifkiFx(v,done){
+  const l=v.last,me=l.rifkiBy===v.me,nm=esc(v.names[l.rifkiBy]||'');
+  let hs='';for(let i=0;i<28;i++)hs+=`<i style="left:${Math.round(Math.random()*96)}%;animation-delay:${(Math.random()*2.2).toFixed(2)}s;animation-duration:${(2.2+Math.random()*1.4).toFixed(2)}s;font-size:${14+Math.round(Math.random()*22)}px">♥</i>`;
+  const el=document.createElement('div');el.id='fx';
+  const kh=Math.round(Math.min(120,innerWidth*.3)*1.42);el.style.setProperty('--kh',kh+'px');
+  el.innerHTML=`<div class="hs">${hs}</div><div class="kc"></div><div class="t1">RIFKI!</div><div class="t2">${me?'Rıfkı’yı <b>sen</b> yedin!':'<b>'+nm+'</b> Rıfkı’yı yedi!'}</div><div class="t3">−320</div><div class="t4">devam etmek için dokun</div>`;
+  el.querySelector('.kc').appendChild(cardEl({s:1,r:13},Math.min(120,innerWidth*.3)));
+  document.body.appendChild(el);
+  let ended=false,t0=Date.now();
+  const end=()=>{if(ended)return;ended=true;clearTimeout(fxT);el.style.transition='opacity .3s';el.style.opacity=0;setTimeout(()=>{el.remove();done()},300)};
+  el.onclick=()=>{if(Date.now()-t0>1400)end()};
+  fxT=setTimeout(end,4200);
+}
 function showEnd(v){
+  if(v.game==='king'&&v.last&&v.last.rifkiBy>=0&&!fxDone){
+    if(!fxOn){fxOn=true;rifkiFx(v,()=>{fxOn=false;fxDone=true;if(V&&(V.phase==='handEnd'||V.phase==='gameEnd'))showEnd(V)})}
+    return;
+  }
   const m=$('#modal'),l=v.last;if(!l)return;
   m.dataset.end='1';
   const tk=v.game==='tekli',kg=v.game==='king',t=v.me%2,o=1-t;
@@ -1036,6 +1114,47 @@ $('#b-menu').onclick=()=>{
   $('#m-close').onclick=closeModal;
 };
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&$('#modal').dataset.end!=='1')closeModal()});
+
+/* ====== SOHBET (yalnızca online oyunlarda; üç oyunda da aynı) ====== */
+let chatLog=[],chatUnread=0,chatLast={};
+const chatSeat=()=>mode==='host'?0:(V?V.me:(L?L.you:-1));
+function chatBadge(){const b=$('#chat-n');b.textContent=chatUnread>9?'9+':chatUnread;b.style.display=chatUnread?'flex':'none'}
+function chatRender(){
+  const l=$('#ch-list'),me=chatSeat();
+  l.innerHTML=chatLog.length?chatLog.map(m=>`<div class="m ${m.s===me?'me':''}"><b>${esc(m.s===me?'Sen':m.n)}</b>${esc(m.x)}</div>`).join(''):'<div class="e">Henüz mesaj yok. Masadakilere bir şey yaz.</div>';
+  l.scrollTop=l.scrollHeight;
+}
+function chatOpen(){$('#chat').classList.add('on');chatUnread=0;chatBadge();chatRender()}
+function chatClose(){$('#chat').classList.remove('on');const i=$('#ch-i');if(i)i.blur()}
+function chatReset(){chatLog=[];chatUnread=0;chatLast={};chatClose();chatBadge()}
+function chatAdd(m){
+  chatLog.push(m);if(chatLog.length>80)chatLog.shift();
+  if($('#chat').classList.contains('on')){chatRender();return}
+  if(m.s!==chatSeat()){chatUnread++;chatBadge();toast('💬 '+m.n+': '+m.x)}
+}
+function hostChat(seat,text){
+  text=String(text||'').replace(/\s+/g,' ').trim().slice(0,120);if(!text)return;
+  const now=Date.now();if(now-(chatLast[seat]||0)<500)return;chatLast[seat]=now; // art arda gönderimi sınırla
+  const nm=String((G?G.names[seat]:(L&&L.names[seat]))||'Oyuncu').replace(/ \(Bot\)$/,'');
+  const m={s:seat,n:nm,x:text};chatAdd(m);
+  for(const k in conns){try{conns[k].send({t:'chat',m})}catch(e){}}
+}
+function chatSend(text){
+  text=String(text||'').replace(/\s+/g,' ').trim().slice(0,120);if(!text)return;
+  if(mode==='guest'){try{conn.send({t:'chat',text})}catch(e){}}else if(mode==='host')hostChat(0,text);
+}
+$('#ch-q').innerHTML=['👏 Aferin','😂','😮 Vay be','🙏 Pardon','⏩ Hızlı oyna','🤝 İyi oyunlar'].map(t=>`<button>${t}</button>`).join('');
+$$('#ch-q button').forEach(b=>b.onclick=()=>chatSend(b.textContent));
+$('#b-chat').onclick=chatOpen;$('#b-lchat').onclick=chatOpen;$('#ch-x').onclick=chatClose;
+$('#ch-s').onclick=()=>{const i=$('#ch-i');chatSend(i.value);i.value=''};
+$('#ch-i').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#ch-s').click()}});
+
+/* Tam ekran / ana ekrana eklenmiş uygulamada ön kamera adası içeriğin üstüne gelmesin */
+function satUpdate(){
+  let st=false;try{st=(matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches||navigator.standalone||!!document.fullscreenElement)}catch(e){}
+  document.documentElement.style.setProperty('--sat',(st&&innerWidth<=innerHeight*1.05)?'30px':'0px');
+}
+satUpdate();addEventListener('resize',satUpdate);document.addEventListener('fullscreenchange',satUpdate);
 
 /* ====== OLED KORUMA ====== */
 const oledOn=()=>store.get('batak_oled')!=='0';
