@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<title>Kafes Dövüşü</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Oswald:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <div class="fc" id="fcMe">
+      <div class="av" id="mAv">🙂</div>
+      <div class="fi">
+        <div class="nm" id="mNm">SEN</div>
+        <div class="hp"><b id="mHpG"></b><i id="mHp"></i></div>
+        <div class="sp"><i id="mSp"></i></div>
+      </div>
+    </div>
+    <div class="ctr"><div id="rnd">MAÇ 1/3</div><div id="tmr">60</div><div id="pips"></div></div>
+    <div class="fc rt" id="fcOp">
+      <div class="av" id="oAv">🥊</div>
+      <div class="fi">
+        <div class="nm" id="oNm">RAKİP</div>
+        <div class="hp"><b id="oHpG"></b><i id="oHp"></i></div>
+        <div class="sp"><i id="oSp"></i></div>
+      </div>
+    </div>
+  </header>
+  <main id="stage">
+    <canvas id="cv" width="400" height="300" aria-label="Kafes dövüşü sahnesi"></canvas>
+    <div id="callout"></div>
+    <div id="coach"></div>
+  </main>
+  <div id="tick"><span id="ticker">Belediye Personeli Turnuvası başlıyor.</span><button id="menuBtn" type="button" aria-label="Menü"></button></div>
+  <div id="ctl">
+    <button class="act blk" id="bBlock" type="button"><span class="ic"></span><span class="lb">SAVUN</span><span class="ht">basılı tut</span><span class="stam"><i id="stb"></i></span></button>
+    <button class="act spc" id="bSpecial" type="button"><span class="ic"></span><span class="lb">DİLEKÇE</span><span class="ht">dolunca</span></button>
+    <button class="act pun" id="bPunch" type="button"><span class="ic"></span><span class="lb">VUR</span><span class="ht">dokun</span></button>
+  </div>
+  <div id="ov"></div>
+</div>
+<div id="sheet" hidden><div class="shbg"></div><div class="shp" role="dialog" aria-modal="true"><div class="shh"><h3 id="shT"></h3><button id="shX" type="button" aria-label="Kapat"></button></div><div class="shtabs" id="shTabs"></div><div class="shb" id="shB"></div></div></div>
+<div id="toast"></div>
+<div id="dim"></div>
+<script src="../kart-salonu/vendor/mqtt.min.js"></script>
+<script src="gfx.js?v=1"></script>
+<script src="net.js?v=1"></script>
+<script src="game.js?v=1"></script>
+<script src="ui.js?v=1"></script>
+</body>
+</html>
