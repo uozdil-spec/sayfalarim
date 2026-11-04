@@ -19,13 +19,13 @@ function common(v, X) {
     n4p: !X.G.land && v.n === 4,
     dealing: hasEv(X.ev, 'deal') || hasEv(X.ev, 'newHand') || X.fresh
   };
-  c.deckPos = { x: c.cx - c.cw * (G.land ? 2.05 : (n >= 4 ? 1.1 : 1.85)), y: c.cy }; // 4 kişide dikey portrede deste soldaki oyuncunun elinin üstüne binmesin
+  c.deckPos = { x: c.cx - c.cw * (G.land ? 2.05 : 1.85), y: !G.land && v.n >= 4 ? Math.min(c.cy + c.ch * 0.5, G.h - 1.43 * c.ch - 52) : c.cy }; // 4 kişide deste sol altta, oyuncu ellerine ve yer kartlarına binmez
   return c;
 }
 function deckStack(c, count, per) {
   var k = Math.min(5, Math.max(count > 0 ? 1 : 0, Math.ceil(count / (per || 10)))), j;
   for (j = 0; j < k; j++) c.items.push({ k: 'dk' + j, c: -1, x: c.deckPos.x - j * 0.9, y: c.deckPos.y - j * 1.1, rot: 0, sc: 0.86, z: 3 + j });
-  if (count > 0) c.badges.push(c.n4p ? { x: c.deckPos.x, y: c.deckPos.y - c.ch * 0.52 - 8, text: String(count) } : { x: c.deckPos.x, y: c.deckPos.y + c.ch * 0.52 + 6, text: String(count) });
+  if (count > 0) c.badges.push(c.n4p ? { x: c.deckPos.x + c.cw * 0.6 + 12, y: c.deckPos.y, text: String(count) } : { x: c.deckPos.x, y: c.deckPos.y + c.ch * 0.52 + 6, text: String(count) });
 }
 function myHand(c, v, X, playable, glowFn) {
   var cards = KS.sortHand(v.hand, KS.S.sort);
