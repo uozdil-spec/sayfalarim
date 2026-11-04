@@ -213,25 +213,32 @@ GameUI.prototype.holdPile = function (sc, prev, ev, kind, v) {
   if (this.game !== 'pisti' || !prev || kind === 'layout' || v.phase !== 'play') return;
   for (i = 0; i < ev.length; i++) { if (ev[i].t === 'capture' && !ev[i].release) cp = ev[i]; if (ev[i].t === 'play') pl = ev[i]; }
   if (!cp || !pl) return;
-  var have = {}, k;
+  var have = {}, k, peek = [];
   for (i = 0; i < sc.items.length; i++) have[sc.items[i].k] = 1;
   for (i = 0; i < prev.items.length; i++) {
     var it = prev.items[i];
-    if ((it.k.charAt(0) === 'c' || it.k.indexOf('tp') === 0) && it.handIndex === undefined && !have[it.k] && it.k !== 'c' + pl.c) { sc.items.push(Object.assign({}, it, { spawn: undefined, delay: 0, cls: '' })); }
+    if ((it.k.charAt(0) === 'c' || it.k.indexOf('tp') === 0) && it.handIndex === undefined && !have[it.k] && it.k !== 'c' + pl.c) {
+      if (it.k.indexOf('tp') === 0 && cp.seat === this.ctrl.seat && cp.cards && cp.cards[+it.k.slice(2)] >= 0) { // ilk elde alan, kapalı kartlara bakabilir
+        peek.push(cp.cards[+it.k.slice(2)]);
+      } else sc.items.push(Object.assign({}, it, { spawn: undefined, delay: 0, cls: '' }));
+    }
   }
+  var cwp = this.G.cw;
+  for (i = 0; i < peek.length; i++) sc.items.push({ k: 'c' + peek[i], c: peek[i], x: sc.cx + (i - (peek.length - 1) / 2) * cwp * 1.0, y: sc.cy + sc.ch * 1.0, rot: 0, sc: 0.92, z: 150 + i, delay: i * 90 });
   var fl = this.G.cw;
   var top = { k: 'c' + pl.c, c: pl.c, x: sc.cx + fl * 0.14, y: sc.cy - fl * 0.06, rot: 4, sc: 1, z: 200 };
   if (pl.seat !== this.ctrl.seat) top.spawn = { x: sc.L[pl.seat].x, y: sc.L[pl.seat].y, rot: sc.L[pl.seat].side === 'top' ? 180 : (sc.L[pl.seat].side === 'left' ? 90 : -90), sc: sc.L[pl.seat].sc, down: true };
   sc.items.push(top);
   var who = this.names()[pl.seat] || '';
   sc.badges.push({ x: sc.cx, y: sc.cy - sc.ch * 0.82, text: who + ': ' + (KS.rank(pl.c) === 11 ? 'Vale ile aldı' : 'Aynı kartla aldı') });
+  if (peek.length) sc.badges.push({ x: sc.cx, y: sc.cy + sc.ch * 1.72, text: 'Kapalı kartlara bak' });
   sc.exit = null;
   this.holdSeat = cp.seat;
   this.holdT = setTimeout(function () {
     self.holdT = null;
     if (self.dead) return;
     self.render([{ t: 'capture', seat: cp.seat, release: true, cards: cp.cards }], 'layout');
-  }, 1250 * (KS.speedMul || 1));
+  }, (peek.length ? 3000 : 1250) * (KS.speedMul || 1));
 };
 
 GameUI.prototype.renderOverlay = function (sc, v) {
