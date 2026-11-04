@@ -151,8 +151,9 @@ KS.seatLayout = function (n, me, G) {
   var cwo = cw * sc, cho = cwo * 1.4;
   var topY = 8 + cho / 2;
   function top(xc, maxLen) { return { side: 'top', x: xc, y: topY, sc: sc, maxLen: maxLen, bx: xc, by: topY + cho / 2 + 22, px: xc + Math.min(maxLen, cwo * 3) / 2 + cwo * 0.65, py: topY + 8 } }
-  function left() { var yc = h * (land ? 0.46 : 0.42); var len = Math.min(h * 0.34, cwo * 4.4); return { side: 'left', x: 6 + cho / 2, y: yc, sc: sc, maxLen: len, bx: 6 + cho + 52, by: yc - len / 2 - 14 + 0, px: 6 + cho / 2, py: yc + len / 2 + cwo * 0.8 }; }
-  function right() { var yc = h * (land ? 0.46 : 0.42); var len = Math.min(h * 0.34, cwo * 4.4); return { side: 'right', x: w - 6 - cho / 2, y: yc, sc: sc, maxLen: len, bx: w - 6 - cho - 52, by: yc - len / 2 - 14, px: w - 6 - cho / 2, py: yc + len / 2 + cwo * 0.8 }; }
+  var sideY = h * (land ? 0.46 : (n === 4 ? 0.40 : 0.42));
+  function left() { var yc = sideY; var len = Math.min(h * 0.34, cwo * 4.4); return { side: 'left', x: 6 + cho / 2, y: yc, sc: sc, maxLen: len, bx: 6 + cho + 52, by: yc - len / 2 - 14 + 0, px: 6 + cho / 2, py: yc + len / 2 + cwo * 0.8 }; }
+  function right() { var yc = sideY; var len = Math.min(h * 0.34, cwo * 4.4); return { side: 'right', x: w - 6 - cho / 2, y: yc, sc: sc, maxLen: len, bx: w - 6 - cho - 52, by: yc - len / 2 - 14, px: w - 6 - cho / 2, py: yc + len / 2 + cwo * 0.8 }; }
   var order;
   if (n === 2) order = [null, top(w / 2, Math.min(w * 0.5, cwo * 6))];
   else if (n === 3) order = land ? [null, left(), right()] : [null, top(w * 0.27, w * 0.34), top(w * 0.73, w * 0.34)];

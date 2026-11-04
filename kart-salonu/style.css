@@ -292,3 +292,11 @@ body.land .rail .ibtn { width: 2.6rem; height: 2.6rem; }
 #game .stage .card { touch-action: none; }
 
 .seat .sc, .seat .nm { white-space: nowrap; }
+
+/* arkadaş listesi: isimler kesilmesin, işlem düğmeleri sağda toplu */
+.li .tx b { white-space: normal; overflow: visible; text-overflow: clip; word-break: break-word; line-height: 1.2; }
+.li .tx span { display: block; margin-top: .1rem; }
+.li .tx span.on { color: #7fe0a2; } .li .tx span.busy { color: #f0b45a; }
+.li .acts { display: flex; align-items: center; gap: .35rem; flex: none; }
+.li.off { opacity: .72; }
+.li .acts .btn.sm { min-height: 2.2rem; }

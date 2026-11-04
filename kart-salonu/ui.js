@@ -300,7 +300,7 @@ GameUI.prototype.renderOverlay = function (sc, v) {
     }
     if (v.phase === 'play') {
       this.dirl.textContent = v.dir > 0 ? '↻ saat yönü' : '↺ ters yön';
-      this.dirl.style.left = sc.cx + 'px'; this.dirl.style.top = (sc.cy + sc.ch * 1.1) + 'px'; this.dirl.style.display = '';
+      this.dirl.style.left = sc.cx + 'px'; this.dirl.style.top = Math.min(sc.cy + sc.ch * 1.1, G.h - sc.ch * 1.4 - 70) + 'px'; this.dirl.style.display = '';
     }
   }
 };

@@ -322,7 +322,7 @@ App.lobbyHost = function (hst, cfg) {
       ids.forEach(function (fid) {
         var p = net.presence[fid], f = fr[fid];
         fl.appendChild(h('div', { class: 'li' }, h('div', { class: 'av' }, f.a, h('i', { class: 'st ' + (p ? (p.st === 'busy' ? 'busy' : 'on') : '') })), h('div', { class: 'tx' }, h('b', { text: f.n }), h('span', { text: p ? (p.st === 'busy' ? 'Oyunda' : 'Çevrimiçi') : 'Çevrimdışı' })),
-          h('button', { class: 'btn sm', text: 'Davet et', onclick: function (e) { net.invite(fid, code, hst.game); e.target.textContent = 'Gönderildi'; KS.sfx('pop'); } })));
+          h('div', { class: 'acts' }, h('button', { class: 'btn sm', text: p ? 'Davet et' : 'Davet gönder', onclick: function (e) { net.invite(fid, code, hst.game); e.target.textContent = 'Gönderildi'; KS.sfx('pop'); } }))));
       });
       body.appendChild(fl);
     }
@@ -415,11 +415,57 @@ App.hub = function (tab) {
     function build() {
       KS.clear(d);
       var n = getNet();
-      d.appendChild(h('div', { class: 'grp', text: 'Arkadaş kodum' }));
-      d.appendChild(h('div', { class: 'code', text: KS.S.id }));
-      d.appendChild(h('div', { style: { display: 'flex', gap: '.5rem' } },
-        h('button', { class: 'btn sm block', onclick: function () { KS.copy(KS.S.id); KS.toast('Kod kopyalandı'); } }, KS.ic('copy'), 'Kopyala'),
-        h('button', { class: 'btn sm block', onclick: function () { KS.share('Kart Salonu', 'Beni Kart Salonu\'nda arkadaş ekle: ' + KS.S.id, location.href.split('#')[0].split('?')[0] + '#f=' + KS.S.id); } }, KS.ic('share'), 'Paylaş')));
+      // gelen istekler
+      var rq = Object.keys(n.reqs);
+      if (rq.length) {
+        d.appendChild(h('div', { class: 'grp', text: 'Gelen istekler (' + rq.length + ')' }));
+        var rl = h('div', { class: 'list' });
+        rq.forEach(function (id) {
+          var r = n.reqs[id];
+          rl.appendChild(h('div', { class: 'li' }, h('div', { class: 'av', text: r.a }), h('div', { class: 'tx' }, h('b', { text: r.n }), h('span', { text: 'Arkadaş olmak istiyor' })),
+            h('div', { class: 'acts' }, h('button', { class: 'btn sm gold', text: 'Kabul', onclick: function () { n.accept(id); build(); } }),
+              h('button', { class: 'btn sm', 'aria-label': 'Reddet', onclick: function () { n.decline(id); build(); } }, KS.ic('close')))));
+        });
+        d.appendChild(rl);
+      }
+      // arkadaşlar: çevrimiçi olanlar üstte
+      var fr = n.friends(), ids = Object.keys(fr);
+      ids.sort(function (x, y) {
+        var px = n.presence[x] ? 1 : 0, py = n.presence[y] ? 1 : 0;
+        if (px !== py) return py - px;
+        return String(fr[x].n).localeCompare(String(fr[y].n), 'tr');
+      });
+      var onl = ids.filter(function (i) { return n.presence[i]; }).length;
+      d.appendChild(h('div', { class: 'grp', text: 'Arkadaşlarım' + (ids.length ? ' · ' + onl + ' çevrimiçi' : '') }));
+      if (!ids.length) d.appendChild(h('div', { class: 'empty', text: 'Henüz kimse yok. Aşağıdan arkadaşının kodunu yazarak ekleyebilirsin.' }));
+      else {
+        var fl = h('div', { class: 'list' });
+        ids.forEach(function (id) {
+          var p = n.presence[id], f = fr[id];
+          var status = p ? (p.st === 'busy' ? 'Oyunda' : (p.room ? 'Odasında seni bekliyor' : 'Çevrimiçi')) : 'Çevrimdışı';
+          var item = h('div', { class: 'li' + (p ? '' : ' off') },
+            h('div', { class: 'av' }, (p && p.a) || f.a, h('i', { class: 'st ' + (p ? (p.st === 'busy' ? 'busy' : 'on') : '') })),
+            h('div', { class: 'tx' }, h('b', { text: (p && p.n) || f.n || 'Oyuncu' }), h('span', { class: p ? (p.st === 'busy' ? 'busy' : 'on') : '', text: status })));
+          var acts = h('div', { class: 'acts' });
+          if (p && p.room && p.st !== 'busy') acts.appendChild(h('button', { class: 'btn sm gold', text: 'Katıl', onclick: function () { App.join(p.room); } }));
+          acts.appendChild(h('button', { class: 'btn sm', 'aria-label': 'Arkadaşı sil', onclick: function () { KS.sheet('Arkadaşı sil?', h('p', { class: 'note', text: ((p && p.n) || f.n) + ' listenden çıkarılsın mı?' }), { buttons: [{ text: 'Vazgeç' }, { text: 'Sil', cls: 'red', fn: function () { n.removeFriend(id); build(); } }] }); } }, KS.ic('trash')));
+          item.appendChild(acts);
+          fl.appendChild(item);
+        });
+        d.appendChild(fl);
+      }
+      // bekleyen istekler
+      var sent = Object.keys(n.sent || {}).filter(function (i) { return !n.friends()[i]; });
+      if (sent.length) {
+        d.appendChild(h('div', { class: 'grp', text: 'Yanıt bekleyenler' }));
+        var sl = h('div', { class: 'list' });
+        sent.forEach(function (id) {
+          var p = n.presence[id];
+          sl.appendChild(h('div', { class: 'li off' }, h('div', { class: 'av', text: p ? p.a : '⏳' }), h('div', { class: 'tx' }, h('b', { text: p ? p.n : 'Kod: ' + id }), h('span', { text: 'İstek gönderildi, kabul etmesi bekleniyor' })),
+            h('div', { class: 'acts' }, h('button', { class: 'btn sm', 'aria-label': 'İsteği geri çek', onclick: function () { delete n.sent[id]; KS.lsSet('sent', n.sent); n.pub('ksl1/in/' + id + '/' + KS.S.id + '/req', '', { qos: 1, retain: true }); build(); } }, KS.ic('close')))));
+        });
+        d.appendChild(sl);
+      }
       d.appendChild(h('div', { class: 'grp', text: 'Arkadaş ekle' }));
       var inp = h('input', { class: 'input', placeholder: 'Arkadaşının 8 harflik kodu', maxlength: 8, style: { textTransform: 'uppercase' }, autocapitalize: 'characters', autocomplete: 'off' });
       d.appendChild(h('div', { style: { display: 'flex', gap: '.5rem' } }, inp, h('button', { class: 'btn gold', text: 'Gönder', onclick: function () {
@@ -429,34 +475,12 @@ App.hub = function (tab) {
           else KS.toast(r === 'self' ? 'Bu senin kodun' : r === 'have' ? 'Zaten arkadaşsınız' : 'Kod 8 karakter olmalı', 'bad');
         });
       } })));
-      var rq = Object.keys(n.reqs);
-      if (rq.length) {
-        d.appendChild(h('div', { class: 'grp', text: 'Gelen istekler' }));
-        var rl = h('div', { class: 'list' });
-        rq.forEach(function (id) {
-          var r = n.reqs[id];
-          rl.appendChild(h('div', { class: 'li' }, h('div', { class: 'av', text: r.a }), h('div', { class: 'tx' }, h('b', { text: r.n }), h('span', { text: 'Arkadaş olmak istiyor' })),
-            h('button', { class: 'btn sm gold', text: 'Kabul', onclick: function () { n.accept(id); build(); } }),
-            h('button', { class: 'btn sm', 'aria-label': 'Reddet', onclick: function () { n.decline(id); build(); } }, KS.ic('close'))));
-        });
-        d.appendChild(rl);
-      }
-      var fr = n.friends(), ids = Object.keys(fr);
-      d.appendChild(h('div', { class: 'grp', text: 'Arkadaşlarım' }));
-      if (!ids.length) d.appendChild(h('div', { class: 'empty', text: 'Henüz kimse yok. Kodunu paylaş ya da onların kodunu yaz.' }));
-      else {
-        var fl = h('div', { class: 'list' });
-        ids.forEach(function (id) {
-          var p = n.presence[id], f = fr[id];
-          var status = p ? (p.st === 'busy' ? 'Oyunda' : (p.room ? 'Odada' : 'Çevrimiçi')) : 'Çevrimdışı';
-          var item = h('div', { class: 'li' }, h('div', { class: 'av' }, (p && p.a) || f.a, h('i', { class: 'st ' + (p ? (p.st === 'busy' ? 'busy' : 'on') : '') })), h('div', { class: 'tx' }, h('b', { text: (p && p.n) || f.n }), h('span', { text: status })));
-          if (p && p.room && p.st !== 'busy') item.appendChild(h('button', { class: 'btn sm gold', text: 'Katıl', onclick: function () { App.join(p.room); } }));
-          item.appendChild(h('button', { class: 'btn sm', 'aria-label': 'Sil', onclick: function () { KS.sheet('Arkadaşı sil?', h('p', { class: 'note', text: f.n + ' listenden çıkarılsın mı?' }), { buttons: [{ text: 'Vazgeç' }, { text: 'Sil', cls: 'red', fn: function () { n.removeFriend(id); build(); } }] }); } }, KS.ic('trash')));
-          fl.appendChild(item);
-        });
-        d.appendChild(fl);
-      }
-      d.appendChild(h('p', { class: 'note', text: 'Arkadaşların çevrimiçi görünmesi için bağlantı gerekir; bu sayfa açılınca otomatik bağlanır.' }));
+      d.appendChild(h('div', { class: 'grp', text: 'Benim arkadaş kodum' }));
+      d.appendChild(h('div', { class: 'code', style: { fontSize: '1.5rem' }, text: KS.S.id }));
+      d.appendChild(h('div', { style: { display: 'flex', gap: '.5rem' } },
+        h('button', { class: 'btn sm block', onclick: function () { KS.copy(KS.S.id); KS.toast('Kod kopyalandı'); } }, KS.ic('copy'), 'Kopyala'),
+        h('button', { class: 'btn sm block', onclick: function () { KS.share('Kart Salonu', 'Beni Kart Salonu\'nda arkadaş ekle: ' + KS.S.id, location.href.split('#')[0].split('?')[0] + '#f=' + KS.S.id); } }, KS.ic('share'), 'Paylaş')));
+      d.appendChild(h('p', { class: 'note', text: 'Arkadaşlarının çevrimiçi görünmesi için bağlantı gerekir; bu sayfa açılınca otomatik bağlanır.' }));
     }
     App.refreshFriends = build;
     build();
