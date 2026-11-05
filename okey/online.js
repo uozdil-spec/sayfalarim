@@ -18,12 +18,25 @@ function friendState(id) {
   var p = net && net.presence && net.presence[id];
   return p ? p.s : 'off';
 }
+function lastCfg() {
+  var g = OK.menuGame === '101' ? '101' : 'classic';
+  var def = g === '101' ? { cfg: { game: '101', type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' } : { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' };
+  var last = OK.lsGet(g === '101' ? 'lastonline101' : 'lastonline', def);
+  if (g === '101') { last.cfg.game = '101'; last.cfg.partner = false; if (last.cfg.type !== 'single' && last.cfg.type !== 'hands') { last.cfg.type = 'single'; last.cfg.value = 0; } }
+  else if (last.cfg.game) delete last.cfg.game;
+  return last;
+}
+function cfgOut(cfg) {
+  var out = { type: cfg.type, value: cfg.type === 'single' ? 0 : cfg.value, partner: !!cfg.partner };
+  if (cfg.game === '101') { out.game = '101'; out.partner = false; }
+  return out;
+}
 function inviteFriend(id, nm) {
   if (!net || net.status !== 'online') { OK.toast(t('connFail')); return; }
   if (room && kind === 'host') { room.invite(id); OK.toast(t('inviteSent', nm)); return; }
   if (room) { OK.toast(t('onlyHostInvite')); return; }
-  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
-  makeRoom({ type: last.cfg.type, value: last.cfg.type === 'single' ? 0 : last.cfg.value, partner: !!last.cfg.partner }, false, last.turn, last.level);
+  var last = lastCfg();
+  makeRoom(cfgOut(last.cfg), false, last.turn, last.level);
   setTimeout(function () { if (room && kind === 'host') { room.invite(id); OK.toast(t('inviteSent', nm)); } }, 400);
 }
 
@@ -145,7 +158,7 @@ function editProfile() {
 /* ---------- lobi ---------- */
 function modeText(c) {
   if (!c) return '';
-  return (c.p ? t('partnerShort') + ' · ' : '') + OK.modeName(c.ty, c.v);
+  return (c.g === '101' ? '101 · ' : '') + (c.p ? t('partnerShort') + ' · ' : '') + OK.modeName(c.ty, c.v);
 }
 function renderLobby() {
   if (room) return renderRoom();
@@ -292,7 +305,7 @@ function onInvite(inv) {
 
 /* ---------- oda kurma ---------- */
 function createRoomDialog(pubDefault) {
-  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
+  var last = lastCfg(), game = OK.menuGame === '101' ? '101' : 'classic';
   var cfg = last.cfg, pub = !!pubDefault, turn = last.turn, level = last.level, adv = false;
   var body = h('div');
   function seg(opts, cur, cb) { var s = h('div', { class: 'seg full' }); opts.forEach(function (o) { s.appendChild(h('button', { class: cur === o[0] ? 'on' : '', onclick: function () { cb(o[0]); draw(); } }, o[1])); }); return s; }
@@ -302,7 +315,7 @@ function createRoomDialog(pubDefault) {
     body.appendChild(h('div', { class: 'choice' },
       h('button', { class: !pub ? 'on' : '', onclick: function () { pub = false; draw(); } }, h('b', null, '🔑 ' + t('privateShort')), h('span', null, t('privChoiceH'))),
       h('button', { class: pub ? 'on' : '', onclick: function () { pub = true; draw(); } }, h('b', null, '🌐 ' + t('publicShort')), h('span', null, t('pubChoiceH')))));
-    body.appendChild(h('div', { class: 'sumline' }, OK.modeName(cfg.type, cfg.value) + (cfg.partner ? ' · ' + t('partnerShort') : '') + ' · ' + (turn ? turn + ' ' + t('sec') : t('unlimited'))));
+    body.appendChild(h('div', { class: 'sumline' }, (cfg.game === '101' ? '101 · ' : '') + OK.modeName(cfg.type, cfg.value) + (cfg.partner ? ' · ' + t('partnerShort') : '') + ' · ' + (turn ? turn + ' ' + t('sec') : t('unlimited'))));
     body.appendChild(h('button', { class: 'btn sm', style: 'margin:6px auto 4px;display:flex', onclick: function () { adv = !adv; draw(); } }, t(adv ? 'hideAdv' : 'showAdv')));
     if (adv) {
       body.appendChild(OK.cfgControls(cfg, draw));
@@ -314,17 +327,18 @@ function createRoomDialog(pubDefault) {
   OK.modal({ title: t('createTable'), body: body, buttons: [
     { label: t('cancel') },
     { label: t('create'), cls: 'gold', onclick: function () {
-      OK.lsSet('lastonline', { cfg: cfg, turn: turn, level: level });
-      makeRoom({ type: cfg.type, value: cfg.type === 'single' ? 0 : cfg.value, partner: !!cfg.partner }, pub, turn, level);
+      OK.lsSet(game === '101' ? 'lastonline101' : 'lastonline', { cfg: cfg, turn: turn, level: level });
+      makeRoom(cfgOut(cfg), pub, turn, level);
     } }] });
 }
 function quickPlay() {
   if (!net || net.status !== 'online') { OK.toast(t('connFail')); return; }
-  var tl = net.tableList().filter(function (x) { return x.hid !== net.id && x.f < 4; });
+  var qg = OK.menuGame === '101' ? '101' : 'classic';
+  var tl = net.tableList().filter(function (x) { return x.hid !== net.id && x.f < 4 && ((x.c && x.c.g) || 'classic') === qg; });
   if (tl.length) { OK.toast(t('quickFound')); joinRoom(tl[0].code); return; }
   OK.toast(t('quickNone'), 3200);
-  var last = OK.lsGet('lastonline', { cfg: { type: 'single', value: 0, partner: false }, turn: 45, level: 'medium' });
-  makeRoom({ type: last.cfg.type, value: last.cfg.type === 'single' ? 0 : last.cfg.value, partner: !!last.cfg.partner }, true, last.turn, last.level);
+  var last = lastCfg();
+  makeRoom(cfgOut(last.cfg), true, last.turn, last.level);
 }
 O.help = function () { OK.openHelp('hg_online'); };
 function makeRoom(cfg, pub, turn, level) {
@@ -351,6 +365,7 @@ function joinRoom(code) {
   OK.toast(t('joining'));
   rc.cb.lobby = function (inf) { roomInfo = inf; if (OK.cur === 'online') renderRoom(); };
   rc.cb.chat = function (m) { O.onRoomChat(m); };
+  rc.cb.err = function (e) { if (OK.hasKey('e_' + e)) OK.toast(t('e_' + e)); };
   rc.cb.game = function (view, ev, meta, seat) { enterGame(view, ev, meta, seat); };
   rc.cb.closed = function (why) {
     var wasGame = OK.cur === 'game';
@@ -403,7 +418,7 @@ function renderRoom() {
   var left = h('div', { style: 'display:flex;flex-direction:column;gap:10px;min-width:0' });
   left.appendChild(h('div', { class: 'codebox' }, inf.code));
   left.appendChild(h('div', { class: 'chips', style: 'justify-content:center' },
-    h('span', { class: 'chip' }, (c.partner ? '♥ ' + t('partnerShort') + ' · ' : '') + OK.modeName(c.type, c.value)),
+    h('span', { class: 'chip' }, (c.game === '101' ? '101 · ' : '') + (c.partner ? '♥ ' + t('partnerShort') + ' · ' : '') + OK.modeName(c.type, c.value)),
     h('span', { class: 'chip' }, inf.turnTime ? inf.turnTime + ' ' + t('sec') : t('unlimited')),
     h('span', { class: 'chip' }, inf.pub ? t('publicShort') : t('privateShort'))));
   var seats = h('div', { class: 'list' });

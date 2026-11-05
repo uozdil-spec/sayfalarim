@@ -53,6 +53,7 @@ OK.t = function (k) {
   for (var i = 1; i < arguments.length; i++) s = s.replace('{' + (i - 1) + '}', arguments[i]);
   return s;
 };
+OK.hasKey = function (k) { return !!(window.I18N && window.I18N[k]); };
 var t = OK.t;
 
 OK.apply = function () {
@@ -136,6 +137,7 @@ var P = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   send: '<path d="M4 12l16-8-6 16-3-7z"/>',
   link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  table: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 10v9"/>',
   check: '<path d="M5 13l4 4 10-10"/>'
 };
 OK.icon = function (n) { return h('span', { class: 'ico', html: '<svg viewBox="0 0 24 24">' + (P[n] || '') + '</svg>' }); };
@@ -308,9 +310,21 @@ OK.renderMenu = function () {
     }
   }
   var saved = lsGet('save', null);
+  var game = OK.menuGame || (OK.menuGame = lsGet('lastgame', 'classic'));
+  function pickGame(g) { OK.menuGame = g; lsSet('lastgame', g); OK.renderMenu(); }
+  function gcard(g, art) {
+    return h('button', { class: 'gcard' + (game === g ? ' on' : ''), onclick: function () { pickGame(g); }, 'aria-pressed': game === g ? 'true' : 'false' },
+      h('div', { class: 'art' }, art),
+      h('div', { class: 'gn' }, t('g_' + g)),
+      h('div', { class: 'gd' }, t('g_' + g + '_d')));
+  }
+  var cards = h('div', { class: 'gcards' },
+    gcard('classic', [makeTile(7, 1), makeTile(8, 1), makeTile(9, 1)]),
+    gcard('101', [letterTile('1', 3), letterTile('0', 0), letterTile('1', 2)]));
   var btns = h('div', { class: 'menubtns' },
+    cards,
     saved ? h('button', { class: 'btn gold', onclick: function () { OK.game.resume(); } }, OK.icon('play'), h('span', null, t('resume'), h('span', { class: 'sub' }, OK.game.saveInfo(saved)))) : null,
-    h('button', { class: 'btn ' + (saved ? '' : 'gold'), onclick: OK.openSetup }, OK.icon('cpu'), t('vsComputer')),
+    h('button', { class: 'btn ' + (saved ? '' : 'gold'), onclick: function () { OK.openSetup(game); } }, OK.icon('cpu'), t('vsComputer')),
     h('button', { class: 'btn', onclick: function () { OK.online.open(); } }, OK.icon('globe'), t('playOnline')),
     h('div', { class: 'row2' },
       h('button', { class: 'btn sm', onclick: function () { OK.openHelp(); } }, OK.icon('bulb'), t('helpShort')),
@@ -344,8 +358,28 @@ OK.modeName = function (type, value) {
   return t('mTarget') + ' ' + value;
 };
 /* ayar denetimleri (çevrimdışı kurulum ve online masa için ortak) */
+OK.MODES101 = { single: { vals: [], def: 0 }, hands: { vals: [3, 5, 7], def: 3 } };
 OK.cfgControls = function (cfg, onchange) {
   var box = h('div');
+  if (cfg.game === '101') {
+    var seg1 = function (opts, cur, cb) {
+      var sg = h('div', { class: 'seg full' });
+      opts.forEach(function (o) { sg.appendChild(h('button', { class: cur === o.v ? 'on' : '', onclick: function () { cb(o.v); } }, o.l)); });
+      return sg;
+    };
+    var draw1 = function () {
+      clear(box);
+      box.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('gameMode')),
+        seg1([{ v: 'single', l: t('mSingle') }, { v: 'hands', l: t('mHandsN') }], cfg.type, function (v) { cfg.type = v; cfg.value = OK.MODES101[v].def; draw1(); onchange && onchange(); })));
+      var md1 = OK.MODES101[cfg.type];
+      if (md1.vals.length) box.appendChild(h('div', { class: 'sec' }, h('div', { class: 'lbl' }, t('handCount')),
+        seg1(md1.vals.map(function (v) { return { v: v, l: String(v) }; }), cfg.value, function (v) { cfg.value = v; draw1(); onchange && onchange(); }),
+        h('div', { class: 'hint', style: 'margin-top:6px' }, t('mode101_hands'))));
+      else box.appendChild(h('div', { class: 'hint', style: 'margin:-6px 0 14px' }, t('mode101_single')));
+    };
+    draw1();
+    return box;
+  }
   function seg(opts, cur, cb, full) {
     var s = h('div', { class: 'seg' + (full ? ' full' : '') });
     opts.forEach(function (o) { s.appendChild(h('button', { class: cur === o.v ? 'on' : '', onclick: function () { cb(o.v); } }, o.l)); });
@@ -369,9 +403,12 @@ OK.cfgControls = function (cfg, onchange) {
   draw();
   return box;
 };
-OK.openSetup = function () {
-  var last = lsGet('lastcfg', { type: 'single', value: 0, partner: false });
-  var cfg = { type: last.type, value: last.value, partner: !!last.partner };
+OK.openSetup = function (game) {
+  game = game === '101' ? '101' : 'classic';
+  var last = lsGet(game === '101' ? 'lastcfg101' : 'lastcfg', { type: 'single', value: 0, partner: false });
+  if (game === '101' && last.type !== 'single' && last.type !== 'hands') last = { type: 'single', value: 0 };
+  var cfg = { type: last.type, value: last.value, partner: game === '101' ? false : !!last.partner };
+  if (game === '101') cfg.game = '101';
   var level = OK.S.level;
   var lvBox = h('div', { class: 'sec' });
   function drawLv() {
@@ -385,11 +422,13 @@ OK.openSetup = function () {
   }
   drawLv();
   var body = h('div', null, OK.cfgControls(cfg), lvBox);
-  OK.modal({ title: t('newGame'), body: body, buttons: [
+  OK.modal({ title: t(game === '101' ? 'g_101' : 'newGame'), body: body, buttons: [
     { label: t('cancel') },
     { label: t('start'), cls: 'gold', onclick: function () {
-      OK.S.level = level; OK.save(); lsSet('lastcfg', cfg);
-      OK.game.startOffline({ type: cfg.type, value: cfg.type === 'single' ? 0 : cfg.value, partner: cfg.partner }, level);
+      OK.S.level = level; OK.save(); lsSet(game === '101' ? 'lastcfg101' : 'lastcfg', cfg);
+      var out = { type: cfg.type, value: cfg.type === 'single' ? 0 : cfg.value, partner: cfg.partner };
+      if (game === '101') out.game = '101';
+      OK.game.startOffline(out, level);
     } }] });
 };
 
@@ -401,6 +440,7 @@ OK.HELP = [
   ['hg_tiles', ['hg_tiles1', 'hg_tiles2', 'hg_tiles3', 'hg_tiles4']],
   ['hg_btns', ['hg_btn_sort', 'hg_btn_hint', 'hg_btn_undo', 'hg_btn_fin']],
   ['hg_win', ['hg_win1', 'hg_win2']],
+  ['hg_101', ['hg1_1', 'hg1_2', 'hg1_3', 'hg1_4', 'hg1_5']],
   ['hg_online', ['hp1', 'hp2', 'hp4']],
   ['hg_friends', ['hg_fr1', 'hg_fr2', 'hg_fr3']],
   ['hg_chat', ['hg_chat1', 'hg_chat2']],
@@ -423,6 +463,19 @@ OK.openHelp = function (open) {
 /* ---------- Kurallar ---------- */
 OK.openRules = function () {
   var s = function (k) { return h('p', null, t(k)); };
+  var gv = OK.game && OK.game.st && OK.game.st.view, in101 = OK.cur === 'game' ? !!(gv && gv.cfg.game === '101') : OK.menuGame === '101';
+  if (in101) {
+    var body1 = h('div', { class: 'rules' },
+      h('h3', null, t('r1_goal_h')), s('r1_goal'),
+      h('h3', null, t('r1_deal_h')), s('r1_deal'),
+      h('h3', null, t('r1_open_h')), s('r1_open'), s('r1_pairs'),
+      h('h3', null, t('r1_add_h')), s('r1_add'), s('r1_joker'),
+      h('h3', null, t('r1_take_h')), s('r1_take'),
+      h('h3', null, t('r1_score_h')), h('ul', null, h('li', null, t('r1_s1')), h('li', null, t('r1_s2')), h('li', null, t('r1_s3')), h('li', null, t('r1_s4'))),
+      h('h3', null, t('r1_mult_h')), s('r1_mult'),
+      h('h3', null, t('r1_not_h')), s('r1_not'));
+    return OK.modal({ title: t('rules') + ' · 101', body: body1, wide: true, buttons: [{ label: t('helpBtn'), onclick: function () { setTimeout(OK.openHelp, 30); } }, { label: t('ok'), cls: 'gold' }] });
+  }
   var body = h('div', { class: 'rules' },
     h('h3', null, t('r_goal_h')), s('r_goal'),
     h('h3', null, t('r_set_h')), h('ul', null, h('li', null, t('r_run')), h('li', null, t('r_group')), h('li', null, t('r_wrap'))),

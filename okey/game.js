@@ -2,6 +2,7 @@
 (function () {
 'use strict';
 var OK = window.OK, E = window.OkeyEngine, AI = window.OkeyAI, Table = window.OkeyTable;
+var E1 = window.OkeyEngine101, AI1 = window.OkeyAI101;
 var h = OK.h, $ = OK.$, clear = OK.clear, t = OK.t;
 var G = OK.game = {};
 var SLOTS = 30;
@@ -13,6 +14,7 @@ var st = {
   msgs: [], unread: 0, tick: 0, lastTurn: -1, pendingSlots: null, cols: 0, sortMode: '', level: 'medium', cfg: null, table: null
 };
 G.st = st;
+function is101() { var c = (st.view && st.view.cfg) || st.cfg; return !!(c && c.game === '101'); }
 for (var i0 = 0; i0 < SLOTS; i0++) st.slots.push(-1);
 
 /* ================= Taş çizimi ================= */
@@ -83,7 +85,8 @@ function build() {
   for (var i = 0; i < SLOTS; i++) rack.appendChild(h('div', { class: 'slot', 'data-i': i }));
   var left = h('div', { class: 'tools', id: 'toolsL' },
     h('button', { class: 'btn', id: 'bSort', onclick: toggleSortPop }, OK.icon('sort'), h('span', null, t('sort'))),
-    h('button', { class: 'btn', id: 'bHint', onclick: showHint }, OK.icon('bulb'), h('span', null, t('hint'))));
+    h('button', { class: 'btn', id: 'bHint', onclick: showHint }, OK.icon('bulb'), h('span', null, t('hint'))),
+    h('button', { class: 'btn', id: 'bTable', style: 'display:none', onclick: function () { G.openTable(); } }, OK.icon('table'), h('span', null, t('tableBtn'))));
   var right = h('div', { class: 'tools', id: 'toolsR' },
     h('button', { class: 'btn', id: 'bUndo', onclick: doUndo }, OK.icon('undo'), h('span', null, t('undo'))),
     h('button', { class: 'btn gold fin', id: 'bFin', onclick: onFinishBtn }, OK.icon('flag'), h('span', null, t('finish'))));
@@ -424,7 +427,11 @@ function send(a) {
   clearTimeout(st.busyTimer);
   st.busyTimer = setTimeout(function () { st.busy = false; if (st.ctrl && st.ctrl.sync) st.ctrl.sync(); }, 3500);
   var r = st.ctrl.act(a);
-  if (r && r.ok === false) { st.busy = false; OK.sfx('err'); return false; }
+  if (r && r.ok === false) {
+    st.busy = false; OK.sfx('err');
+    if (r.err && OK.hasKey('e_' + r.err)) OK.toast(t('e_' + r.err));
+    return false;
+  }
   return true;
 }
 function doDraw(from) {
@@ -441,6 +448,7 @@ function doDiscard(id) {
   if (!send({ t: 'discard', tile: id })) st.flyFrom = null;
 }
 function doFinish(id) {
+  if (is101()) return doDiscard(id);
   var el = st.tiles[id];
   st.flyFrom = el ? { id: id, rect: el.getBoundingClientRect() } : null;
   var v = st.view;
@@ -453,6 +461,7 @@ function doFinish(id) {
   send({ t: 'finish', tile: id });
 }
 function onFinishBtn() {
+  if (is101()) return G.openHand();
   if (!canDiscard()) { OK.toast(t('notYourTurn')); OK.sfx('err'); return; }
   var v = st.view, fin = AI.bestFinish(v.hand, v.ok, v.moves === 0 && v.starter === st.me);
   if (!fin) { OK.toast(t('notYet')); OK.sfx('err'); return; }
@@ -478,7 +487,9 @@ function showHint() {
   var v = st.view; if (!v || v.status !== 'playing') return;
   if (v.turn !== st.me) { OK.toast(t('notYourTurn')); return; }
   clearHint();
-  var a = AI.chooseAction(v, st.me, 'hard', Math.random, []);
+  var a = is101() ? AI1.chooseAction(v, st.me, 'hard', Math.random) : AI.chooseAction(v, st.me, 'hard', Math.random, []);
+  if (a.t === 'open' || a.t === 'pairs') { OK.toast(t('hintOpen')); st.hintTimer = setTimeout(function () { clearHint(); renderTools(); }, 4000); return; }
+  if (a.t === 'add') { OK.toast(t('hintAdd')); st.sel = a.tile; var e3 = st.tiles[a.tile]; if (e3) e3.classList.add('pulse'); st.hintTimer = setTimeout(function () { clearHint(); renderTools(); }, 4000); return; }
   if (a.t === 'draw') {
     if (a.from === 'discard') { var dp = $('#dp3'); if (dp && dp.lastChild) dp.lastChild.classList.add('pulse'); OK.toast(t('hintTake')); }
     else { var pl = $('#pile'); if (pl) pl.classList.add('can'); OK.toast(t('hintPile')); }
@@ -515,7 +526,7 @@ function infoText() {
   else if (c.type === 'countdown') base = t('mCountdown') + ' ' + c.value + ' · ' + t('handN', v.handNo);
   else if (c.type === 'hands') base = t('handOf', v.handNo, c.value);
   else base = t('mTarget') + ' ' + c.value + ' · ' + t('handN', v.handNo);
-  return (c.partner ? '♥ ' : '') + base;
+  return (c.game === '101' ? '101 · ' : '') + (c.partner ? '♥ ' : '') + base;
 }
 function renderHud() { var i = $('#info'); if (i) i.textContent = infoText(); }
 function plateFill(plate, seat) {
@@ -528,6 +539,10 @@ function plateFill(plate, seat) {
   var sc = v.scores[side];
   ct.textContent = [seat === st.me ? '' : v.counts[seat] + ' ' + t('tilesShort'), v.cfg.type === 'single' ? '' : sc + ' ' + t('ptsShort')].filter(Boolean).join(' · ');
   if (seat === st.me && v.cfg.type === 'single') ct.textContent = v.cfg.partner ? '♥ ' + nameOf((seat + 2) % 4) : '';
+  if (v.cfg.game === '101' && v.opened) {
+    var op = v.opened[seat], mc = v.melds.filter(function (x) { return x.owner === seat; }).length;
+    if (op) ct.textContent = (ct.textContent ? ct.textContent + ' · ' : '') + '✓ ' + (op === 'pairs' ? t('openedPairs') : t('openedSets')) + ' ' + mc;
+  }
   var turn = v.status === 'playing' && v.turn === seat;
   plate.classList.toggle('turn', turn);
   plate.classList.toggle('partner', !!(v.cfg.partner && seat !== st.me && seat % 2 === st.me % 2));
@@ -583,6 +598,18 @@ function renderCenter() {
 function renderTools() {
   var v = st.view; if (!v) return;
   st.fin = null;
+  if (is101()) {
+    var fb1 = $('#bFin'), tb = $('#bTable');
+    var lab = fb1.querySelector('span:not(.ico)'); if (lab) lab.textContent = t('openHand');
+    fb1.classList.toggle('dis', !canDiscard()); fb1.classList.remove('ready');
+    tb.style.display = ''; $('#bHint').style.display = OK.S.hints ? '' : 'none';
+    var u1 = $('#bUndo'); u1.style.display = st.kind === 'off' ? '' : 'none'; u1.classList.toggle('dis', !(st.table && st.table.canUndo(st.me)));
+    $('#bChat').style.display = st.kind === 'off' ? 'none' : '';
+    $('#indic').classList.remove('can');
+    var fits = canDiscard() && st.sel >= 0 && v.opened[st.me] === 'sets' && v.melds.some(function (md) { return md.kind !== 'pair' && E1.addOptions(md, st.sel, v.ok).length; });
+    tb.classList.toggle('ready', !!fits);
+    return;
+  }
   if (canDiscard() && v.hand.length === 15) st.fin = AI.bestFinish(v.hand, v.ok, v.moves === 0 && v.starter === st.me);
   var fb = $('#bFin');
   fb.classList.toggle('ready', !!st.fin && OK.S.hints);
@@ -601,10 +628,12 @@ function renderStatus() {
     if (v.turn === st.me) {
       me = true;
       if (v.phase === 'draw') txt = t('stDraw');
+      else if (v.cfg.game === '101') txt = v.mustOpen ? t('stMustOpen') : (v.swapPending && v.swapPending.length ? t('stSwap') : (st.sel >= 0 ? t('stDiscardSel') : t('stDiscard101')));
       else txt = v.moves === 0 && v.starter === st.me ? t('stFirst') : (st.sel >= 0 ? t('stDiscardSel') : t('stDiscard'));
     } else txt = t('stWait', nameOf(v.turn));
   }
   s.textContent = txt; s.className = me ? 'me' : '';
+  if (is101()) renderTools();
   s.style.display = txt ? '' : 'none';
 }
 function startTimerLoop() {
@@ -724,6 +753,14 @@ G.onUpdate = function (view, ev, meta, seat) {
   if (ev && !isNew) {
     if (ev.t === 'draw' && ev.seat !== st.me) OK.sfx('tile');
     if ((ev.t === 'discard') && ev.seat !== st.me) OK.sfx('put');
+    if ((ev.t === 'open' || ev.t === 'add') && view.cfg.game === '101') {
+      OK.sfx('put');
+      if (ev.seat !== st.me) {
+        if (ev.t === 'open' && ev.first) OK.toast(t('xOpened', nameOf(ev.seat), ev.kind === 'pairs' ? ev.melds.length + ' ' + t('pairsWord') : ev.total));
+        else if (ev.t === 'add' && ev.got >= 0) OK.toast(t('xSwapped', nameOf(ev.seat)));
+      }
+      var tw = document.getElementById('tbl101'); if (tw && st.tblRefresh) st.tblRefresh();
+    }
   }
   if (view.status === 'playing' && view.turn === st.me && st.lastTurn !== view.turn + ':' + view.moves + ':' + view.phase && view.phase === 'draw') {
     OK.sfx('turn'); OK.vib([30]);
@@ -735,7 +772,7 @@ G.onUpdate = function (view, ev, meta, seat) {
     if (st.resultKey !== rk) {
       st.resultKey = rk;
       clearTimeout(st.resultTimer);
-      var delay = ev && (ev.t === 'finish' || ev.drawGame) ? (animDur() ? 1300 : 300) : 0;
+      var delay = ev && (ev.t === 'finish' || ev.finish || ev.drawGame) ? (animDur() ? 1300 : 300) : 0;
       st.resultTimer = setTimeout(function () { showResult(st.view); }, delay);
     }
   }
@@ -819,6 +856,7 @@ function showResult(view) {
   if (!view || view.status === 'playing') return;
   if (st.resultModal) { st.resultModal.close(); st.resultModal = null; }
   updateStats(view);
+  if (view.cfg.game === '101') return showResult101(view);
   var r = view.result, info = r.info, body = h('div', { class: 'result' });
   var mineWin = r.winner !== null && E.sideOf({ cfg: view.cfg }, r.winner) === E.sideOf({ cfg: view.cfg }, st.me);
   var title;
@@ -888,6 +926,144 @@ function confetti() {
     ps.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.a += .12; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); ctx.restore(); });
     if (dt < 2600) requestAnimationFrame(step); else ctx.clearRect(0, 0, W, H);
   })();
+}
+
+
+/* ================= 101 Okey: el aç, masa, sonuç ================= */
+function rackGroups() {
+  var C = cols(), out = [], cur = [];
+  for (var i = 0; i < SLOTS; i++) {
+    if (i % C === 0 && cur.length) { out.push(cur); cur = []; }
+    var id = st.slots[i];
+    if (id >= 0) cur.push(id); else if (cur.length) { out.push(cur); cur = []; }
+  }
+  if (cur.length) out.push(cur);
+  return out;
+}
+function planOpen(v) {
+  var ok = v.ok, hand = v.hand, op = v.opened[st.me], groups = rackGroups(), man = [], mt = 0, mp = [];
+  groups.forEach(function (g) {
+    if (g.length >= 3) { var c = E1.classify(g, ok); if (c) { man.push(g); mt += c.value; } }
+    else if (g.length === 2 && E1.classifyPair(g, ok)) mp.push(g);
+  });
+  var auto = E1.arrange(hand, ok, 60000), autoSets = auto.sets.map(function (x) { return x.ids; });
+  if (op === 'pairs') {
+    if (mp.length) return { kind: 'pairs', list: mp };
+    var p0 = E1.pairsOf(hand, ok).pairs; return p0.length ? { kind: 'pairs', list: p0 } : null;
+  }
+  if (op === 'sets') {
+    if (man.length) return { kind: 'sets', list: man, total: mt };
+    return autoSets.length ? { kind: 'sets', list: autoSets, total: auto.total } : null;
+  }
+  if (mt >= E1.OPEN_MIN) return { kind: 'sets', list: man, total: mt, first: true };
+  if (auto.total >= E1.OPEN_MIN) return { kind: 'sets', list: autoSets, total: auto.total, first: true };
+  if (mp.length >= E1.PAIRS_MIN) return { kind: 'pairs', list: mp, first: true };
+  var ap = E1.pairsOf(hand, ok).pairs;
+  if (ap.length >= E1.PAIRS_MIN) return { kind: 'pairs', list: ap, first: true };
+  return { fail: true, total: Math.max(mt, auto.total), pairs: Math.max(mp.length, ap.length) };
+}
+function miniRow(ids, ok) {
+  var d = h('div', { class: 'g' });
+  ids.forEach(function (id) { d.appendChild(mkTile(id, ok, 'mini')); });
+  return d;
+}
+G.openHand = function () {
+  var v = st.view; if (!v || v.status !== 'playing') return;
+  if (!canDiscard()) { OK.toast(t('notYourTurn')); OK.sfx('err'); return; }
+  var pl = planOpen(v);
+  if (!pl) { OK.toast(t(v.opened[st.me] === 'pairs' ? 'noMorePairs' : 'noMoreSets')); OK.sfx('err'); return; }
+  if (pl.fail) { OK.toast(t('cantOpen', pl.total, pl.pairs)); OK.sfx('err'); return; }
+  var body = h('div', { class: 'openbox' });
+  var sets = h('div', { class: 'sets' });
+  pl.list.forEach(function (g) { sets.appendChild(miniRow(g, v.ok)); });
+  body.appendChild(sets);
+  if (pl.kind === 'sets') body.appendChild(h('div', { class: 'hint', style: 'text-align:center' }, t('openTotal', pl.total) + (pl.first ? ' · ' + t('openNeed', E1.OPEN_MIN) : '')));
+  else body.appendChild(h('div', { class: 'hint', style: 'text-align:center' }, t('openPairsN', pl.list.length)));
+  OK.modal({ title: t('openHand'), body: body, buttons: [
+    { label: t('cancel') },
+    { label: t('openGo'), cls: 'gold', onclick: function () {
+      st.sel = -1;
+      send(pl.kind === 'sets' ? { t: 'open', sets: pl.list } : { t: 'pairs', pairs: pl.list });
+    } }] });
+};
+G.openTable = function () {
+  var v0 = st.view; if (!v0) return;
+  var box = h('div', { id: 'tbl101', class: 'tbl101' });
+  function draw() {
+    var v = st.view; clear(box);
+    var sel = canDiscard() && v.opened[st.me] === 'sets' ? st.sel : -1;
+    box.appendChild(h('div', { class: 'hint', style: 'margin-bottom:8px' }, sel >= 0 ? t('tblPlace') : (v.opened[st.me] === 'sets' ? t('tblPick') : t('tblView'))));
+    var any = false;
+    [0, 1, 2, 3].forEach(function (k) {
+      var seat = (st.me + k) % 4, list = v.melds.filter(function (x) { return x.owner === seat; });
+      if (!list.length) return;
+      any = true;
+      box.appendChild(h('div', { class: 'who' }, nameOf(seat) + (seat === st.me ? '' : ''), h('span', { class: 'chip' }, v.opened[seat] === 'pairs' ? t('openedPairs') : t('openedSets'))));
+      var row = h('div', { class: 'melds' });
+      list.forEach(function (md) {
+        var opts = sel >= 0 && md.kind !== 'pair' ? E1.addOptions(md, sel, v.ok) : [];
+        var m = h('div', { class: 'meld' + (opts.length ? ' fit' : '') });
+        var send1 = function (mode) { var tile = sel; st.sel = -1; mod.close(); send({ t: 'add', tile: tile, meld: md.id, mode: mode }); };
+        opts.forEach(function (o) { if (o.mode === 'lo') m.appendChild(h('button', { class: 'plus', onclick: function () { send1('lo'); } }, '+')); });
+        md.tiles.forEach(function (id, i) {
+          var w = h('span', { class: 'tw' }, mkTile(id, v.ok, 'mini'));
+          if (E.isJoker(id, v.ok) && md.kind !== 'pair' && md.cells[i]) w.appendChild(h('b', { class: 'rep' }, md.cells[i].n === 14 ? 1 : md.cells[i].n));
+          opts.forEach(function (o) { if (o.mode === 'swap' && o.index === i) { w.classList.add('swap'); w.onclick = function () { send1('swap'); }; } });
+          m.appendChild(w);
+        });
+        opts.forEach(function (o) { if (o.mode === 'hi' || o.mode === 'add') m.appendChild(h('button', { class: 'plus', onclick: function () { send1(o.mode); } }, '+')); });
+        row.appendChild(m);
+      });
+      box.appendChild(row);
+    });
+    if (!any) box.appendChild(h('div', { class: 'hint', style: 'padding:18px 0;text-align:center' }, t('tblEmpty')));
+  }
+  st.tblRefresh = draw; draw();
+  var mod = OK.modal({ title: t('tableBtn'), body: box, buttons: [{ label: t('ok'), cls: 'gold' }], onclose: function () { st.tblRefresh = null; } });
+};
+function showResult101(view) {
+  var r = view.result, info = r.info, body = h('div', { class: 'result' });
+  var mineWin = r.winner === st.me;
+  body.appendChild(h('div', { class: 'title' }, r.draw ? t('drawGame') : (mineWin ? t('youWon') : t('playerWon', nameOf(r.winner)))));
+  var badges = h('div', { class: 'badges' });
+  if (info) {
+    if (info.okey) badges.appendChild(h('span', { class: 'chip' }, '★ ' + t('bOkey') + ' ×2'));
+    if (info.pairs) badges.appendChild(h('span', { class: 'chip' }, t('bPairs') + ' ×2'));
+    if (info.elden) badges.appendChild(h('span', { class: 'chip' }, t('bElden') + ' ×2'));
+    if (info.mult > 1) badges.appendChild(h('span', { class: 'chip gold' }, '×' + info.mult));
+  }
+  body.appendChild(badges);
+  var tb = h('table', { class: 'sc' }, h('tr', null, h('th', null, ''), h('th', { style: 'text-align:right' }, t('handPts')), view.cfg.type === 'single' ? null : h('th', { style: 'text-align:right' }, t('points'))));
+  for (var s = 0; s < 4; s++) {
+    var d = r.deltas[s];
+    var sub = s === r.winner ? t('wentOut') : (r.opened[s] ? (r.hands[s].length ? t('left101', r.hands[s].length) : '') : t('notOpened'));
+    var tr = h('tr', { class: s === r.winner ? 'win' : '' },
+      h('td', null, h('div', null, nameOf(s)), h('div', { class: 'hint', style: 'font-size:11px' }, sub)),
+      h('td', { class: 'n' }, (d > 0 ? '+' : '') + d),
+      view.cfg.type === 'single' ? null : h('td', { class: 'n' }, view.scores[s]));
+    tb.appendChild(tr);
+  }
+  body.appendChild(tb);
+  var buttons = [];
+  if (view.status === 'matchEnd') {
+    var won = view.matchWinner === st.me;
+    body.insertBefore(h('div', { class: 'title', style: 'color:var(--gold1);font-size:26px' }, won ? t('matchWon') : t('matchLost', nameOf(view.matchWinner))), body.firstChild);
+    if (won) { OK.sfx('win'); confetti(); } else OK.sfx('lose');
+    if (st.kind === 'off') OK.lsDel('save');
+    buttons.push({ label: t('toMenu'), onclick: function () { G.exit(true); } });
+    if (st.kind === 'off' || st.kind === 'host') buttons.push({ label: t('rematch'), cls: 'gold', onclick: function () { rematch(); } });
+    else buttons.push({ label: t('waitHost'), cls: 'dis', keep: true });
+  } else {
+    if (mineWin) { OK.sfx('win'); if (!OK.S.lite) confetti(); } else if (!r.draw) OK.sfx('lose');
+    buttons.push({ label: t('toMenu'), onclick: function () { G.confirmExit(); } });
+    buttons.push({ label: st.kind === 'off' ? t('nextHand') : t('ready'), cls: 'gold', keep: true, onclick: function (api) {
+      if (st.kind === 'off') { api.close(); st.table.nextHand(); }
+      else { st.ctrl.ready(); var btn = api.card.querySelector('.ft .btn.gold'); if (btn) { btn.textContent = t('waiting'); btn.classList.add('dis'); } return false; }
+    } });
+  }
+  var m = OK.modal({ title: undefined, body: body, buttons: buttons, dismiss: false, noclose: true });
+  st.resultModal = m;
+  var oc = m.close; m.close = function () { st.resultModal = null; oc(); };
 }
 
 /* ================= Menüler ================= */
@@ -968,7 +1144,7 @@ G.resume = function () {
 G.saveInfo = function (sv) {
   try {
     var c = sv.cfg;
-    return OK.modeName(c.type, c.value) + ' · ' + t('handN', sv.m.handNo);
+    return (c.game === '101' ? '101 · ' : '') + OK.modeName(c.type, c.value) + ' · ' + t('handN', sv.m.handNo);
   } catch (e) { return ''; }
 };
 var saveT = 0;

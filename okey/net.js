@@ -283,7 +283,7 @@ RoomHost.prototype.filled = function () {
 RoomHost.prototype.listing = function () {
   var topic = R + '/t/' + this.code;
   if (this.closed || this.state !== 'lobby' || !this.pubList) { this.net.pub(topic, '', { retain: true }); return; }
-  this.net.pub(topic, { h: this.net.name, a: this.net.av, hid: this.net.id, c: { p: !!this.cfg.partner, ty: this.cfg.type, v: this.cfg.value }, f: this.filled(), t: Date.now() }, { retain: true });
+  this.net.pub(topic, { h: this.net.name, a: this.net.av, hid: this.net.id, c: { p: !!this.cfg.partner, ty: this.cfg.type, v: this.cfg.value, g: this.cfg.game === '101' ? '101' : 'classic' }, f: this.filled(), t: Date.now() }, { retain: true });
 };
 RoomHost.prototype.pushLobby = function () {
   var inf = this.info();
@@ -333,9 +333,20 @@ RoomHost.prototype.onMsg = function (m) {
   if (m.t === 'ready') return this.markReady(seat);
   if (m.t === 'act' && this.table) {
     var a = m.a;
-    if (!a || (a.t !== 'draw' && a.t !== 'discard' && a.t !== 'finish')) return;
-    var r = this.table.act(seat, { t: a.t, from: a.from === 'discard' ? 'discard' : 'pile', tile: +a.tile });
-    if (!r.ok) this.sendState(seat, { t: 'sync' });
+    if (!a || ['draw', 'discard', 'finish', 'open', 'pairs', 'add'].indexOf(a.t) < 0) return;
+    var act = { t: a.t, from: a.from === 'discard' ? 'discard' : 'pile', tile: +a.tile };
+    if (this.cfg && this.cfg.game === '101') {
+      var num = function (x) { return +x | 0; };
+      if (a.t === 'open' && Array.isArray(a.sets)) act.sets = a.sets.slice(0, 12).map(function (g) { return Array.isArray(g) ? g.slice(0, 14).map(num) : []; });
+      else if (a.t === 'pairs' && Array.isArray(a.pairs)) act.pairs = a.pairs.slice(0, 11).map(function (g) { return Array.isArray(g) ? g.slice(0, 2).map(num) : []; });
+      else if (a.t === 'add') { act.meld = num(a.meld); act.mode = ['lo', 'hi', 'add', 'swap'].indexOf(a.mode) >= 0 ? a.mode : ''; }
+      else if (a.t === 'open' || a.t === 'pairs') return;
+    } else if (a.t !== 'draw' && a.t !== 'discard' && a.t !== 'finish') return;
+    var r = this.table.act(seat, act);
+    if (!r.ok) {
+      this.sendState(seat, { t: 'sync' });
+      if (r.err) this.net.pub(this.base() + '/c/' + this.seats[seat].id, { t: 'err', e: String(r.err).slice(0, 20) });
+    }
   }
 };
 RoomHost.prototype.onJoin = function (id, name, av) {
@@ -543,6 +554,7 @@ RoomClient.prototype.onMsg = function (m) {
     this.cb.game(m.v, m.ev, m.meta, this.seat);
     return;
   }
+  if (m.t === 'err') { if (this.cb.err) this.cb.err(m.e); return; }
   if (m.t === 'closed') return this.end(m.why || 'host');
 };
 RoomClient.prototype.onPub = function (m) {

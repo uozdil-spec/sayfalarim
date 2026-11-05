@@ -10,7 +10,10 @@ function Table(o) {
   this.seats = o.seats;                 // [{kind:'human'|'bot'|'remote', name, av, level, cid}]
   this.speed = o.speed === undefined ? 1 : o.speed;   // gecikme çarpanı (0 = anında)
   this.turnTime = o.turnTime || 0;      // saniye (insan oyuncular için), 0 = sınırsız
-  this.m = o.m || E.newMatch(this.cfg, this.rng);
+  var is101 = (this.cfg && this.cfg.game === '101') || (o.m && o.m.cfg && o.m.cfg.game === '101');
+  this.E = is101 ? root.OkeyEngine101 : root.OkeyEngine;
+  this.AI = is101 ? root.OkeyAI101 : root.OkeyAI;
+  this.m = o.m || this.E.newMatch(this.cfg, this.rng);
   this.paused = false;
   this.timer = null;
   this.listeners = [];
@@ -40,7 +43,7 @@ Table.prototype.meta = function () {
 };
 
 Table.prototype.view = function (seat) {
-  var v = E.viewFor(this.m, seat);
+  var v = this.E.viewFor(this.m, seat);
   v.left = this.deadline ? Math.max(0, this.deadline - Date.now()) : 0;
   return v;
 };
@@ -54,7 +57,7 @@ Table.prototype.act = function (seat, a) {
   if (this.dead || this.paused) return { ok: false, err: 'paused' };
   var snap = null;
   if (this.allowUndo && a && a.t === 'draw' && this.seats[seat].kind === 'human') snap = JSON.stringify(this.m);
-  var r = E.apply(this.m, seat, a);
+  var r = this.E.apply(this.m, seat, a);
   if (!r.ok) return r;
   if (snap) this.undoSnap = snap; else if (a.t !== 'draw') this.undoSnap = null;
   this.afk[seat] = 0;
@@ -78,7 +81,7 @@ Table.prototype.undo = function (seat) {
 
 Table.prototype.nextHand = function () {
   if (this.dead || this.m.status !== 'handEnd') return false;
-  E.dealHand(this.m, this.rng, false);
+  this.E.dealHand(this.m, this.rng, false);
   this.turnKey = '';
   this.emit({ t: 'deal' });
   this.schedule();
@@ -131,13 +134,16 @@ Table.prototype.schedule = function (keepDeadline) {
 Table.prototype.botMove = function (seat) {
   if (this.dead || this.paused || this.m.status !== 'playing' || this.m.h.turn !== seat) return;
   var s = this.seats[seat];
-  var view = E.viewFor(this.m, seat);
-  var a = AI.chooseAction(view, seat, s.level || 'medium', this.rng, this.m.h.picks);
-  var r = E.apply(this.m, seat, a);
+  var view = this.E.viewFor(this.m, seat);
+  var a = this.AI.chooseAction(view, seat, s.level || 'medium', this.rng, this.m.h.picks);
+  var r = this.E.apply(this.m, seat, a);
   if (!r.ok) {
     // güvenli geri dönüş
-    a = this.m.h.phase === 'draw' ? { t: 'draw', from: 'pile' } : { t: 'discard', tile: this.m.h.hands[seat][0] };
-    r = E.apply(this.m, seat, a);
+    if (this.m.h.phase === 'draw') r = this.E.apply(this.m, seat, { t: 'draw', from: 'pile' });
+    else {
+      var hh = this.m.h.hands[seat].slice();
+      for (var q = 0; q < hh.length; q++) { r = this.E.apply(this.m, seat, { t: 'discard', tile: hh[q] }); if (r.ok) break; }
+    }
     if (!r.ok) return;
   }
   this.emit(r.ev);
@@ -151,10 +157,10 @@ Table.prototype.timeout = function (seat) {
   var a;
   if (h.phase === 'draw') a = { t: 'draw', from: h.pile.length ? 'pile' : 'discard' };
   else {
-    var view = E.viewFor(this.m, seat);
-    a = AI.chooseAction(view, seat, 'medium', this.rng, h.picks);
+    var view = this.E.viewFor(this.m, seat);
+    a = this.AI.chooseAction(view, seat, 'medium', this.rng, h.picks);
   }
-  var r = E.apply(this.m, seat, a);
+  var r = this.E.apply(this.m, seat, a);
   if (r.ok) this.emit(r.ev);
   if (this.afk[seat] >= 3 && s.kind !== 'bot') {
     // üç kez süre aşımı: yerine bilgisayar oturur

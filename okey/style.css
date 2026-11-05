@@ -364,3 +364,31 @@ html, body { touch-action: manipulation; overscroll-behavior: none; -webkit-text
 .tile.down { background: linear-gradient(165deg, #e9dcb6, #cdbd8d); }
 .tile.down > * { visibility: hidden; }
 .tile.down::before { content: ""; position: absolute; inset: 14%; border-radius: calc(var(--tw) * .08); border: 1px solid rgba(120,90,30,.35); }
+
+/* ===== 101 Okey ===== */
+.tbl101 { max-height: 62vh; overflow: auto; -webkit-overflow-scrolling: touch; }
+.tbl101 .who { display: flex; align-items: center; gap: 8px; font-weight: 700; margin: 10px 0 6px; }
+.tbl101 .melds { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+.tbl101 .meld { display: flex; align-items: center; gap: 2px; padding: 5px 7px; border-radius: 10px; background: rgba(0,0,0,.28); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.tbl101 .meld.fit { box-shadow: inset 0 0 0 2px var(--gold1); background: rgba(255,230,140,.1); }
+.tbl101 .tw { position: relative; display: inline-flex; }
+.tbl101 .tw .rep { position: absolute; right: -2px; top: -6px; font-size: 10px; line-height: 1; padding: 2px 4px; border-radius: 99px; background: var(--gold1); color: var(--accent-ink); }
+.tbl101 .tw.swap { cursor: pointer; filter: drop-shadow(0 0 5px var(--gold1)); animation: pl101 1s infinite alternate; }
+.tbl101 .plus { width: 26px; height: 34px; margin: 0 2px; border-radius: 8px; border: 0; font-size: 20px; font-weight: 800; cursor: pointer; background: linear-gradient(180deg, var(--gold1), var(--gold2)); color: var(--accent-ink); }
+@keyframes pl101 { from { transform: scale(1); } to { transform: scale(1.1); } }
+#bTable.ready { box-shadow: 0 0 0 2px var(--gold1), 0 0 12px var(--gold1); }
+.openbox .sets { max-height: 40vh; overflow: auto; }
+
+/* ===== Ana menü: oyun seçimi ===== */
+.gcards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 4px; }
+.gcard { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px 11px; border-radius: 16px; border: 0; cursor: pointer; color: var(--txt); font: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(0,0,0,.22)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 6px 14px rgba(0,0,0,.28); transition: transform .15s, box-shadow .15s; }
+.gcard .art { display: flex; gap: 3px; height: 44px; align-items: center; justify-content: center; }
+.gcard .art .tile { --tw: 28px; position: relative; animation: none; left: auto; top: auto; }
+.gcard .gn { font-weight: 800; font-size: 15px; letter-spacing: .02em; }
+.gcard .gd { font-size: 11px; line-height: 1.25; color: var(--txt2); text-align: center; min-height: 28px; }
+.gcard.on { box-shadow: inset 0 0 0 2px var(--gold1), 0 0 18px rgba(255,214,102,.28), 0 6px 14px rgba(0,0,0,.3); transform: translateY(-2px); background: linear-gradient(180deg, rgba(255,230,140,.16), rgba(0,0,0,.2)); }
+.gcard.on .gn { color: var(--gold1); }
+@media (max-height: 430px) { .gcard .gd { display: none; } .gcard { padding: 8px 6px; } .gcard .art { height: 36px; } .gcard .art .tile { --tw: 22px; } }
+.gcard .art .tile .n { font-size: 22px !important; }
+@media (max-height: 430px) { .gcard .art .tile .n { font-size: 17px !important; } }
