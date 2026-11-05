@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="bg" cx=".5" cy=".4" r=".8"><stop offset="0" stop-color="#2a1114"/><stop offset=".65" stop-color="#120708"/><stop offset="1" stop-color="#000"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3dd97"/><stop offset=".55" stop-color="#d4a73f"/><stop offset="1" stop-color="#8f6a1f"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ef4a3c"/><stop offset=".6" stop-color="#b3201b"/><stop offset="1" stop-color="#6d0f0d"/></linearGradient>
+<clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<g clip-path="url(#r)" stroke="#d4a73f" stroke-opacity=".28" stroke-width="5">
+<path d="M-40 60L560 660M-40 160L460 660M-40 260L360 660M-40 360L260 660M60 -40L560 460M160 -40L560 360M260 -40L560 260M360 -40L560 160"/>
+<path d="M552 60L-48 660M552 160L-48 560M552 260L52 660M552 360L152 660M452 -40L-48 460M352 -40L-48 360M252 -40L-48 260M152 -40L-48 160" stroke-opacity=".18"/>
+</g>
+<rect x="26" y="26" width="460" height="460" rx="90" fill="none" stroke="url(#gold)" stroke-width="7" stroke-opacity=".8"/>
+<g transform="rotate(-14 256 270)">
+<path d="M150 250C150 170 205 120 280 120C355 120 395 175 390 235C388 262 378 280 362 292L362 360C362 378 348 392 330 392L212 392C194 392 180 378 180 360L180 308C160 292 150 276 150 250Z" fill="url(#red)" stroke="#3a0705" stroke-width="8" stroke-linejoin="round"/>
+<path d="M205 226C205 192 232 170 266 170L330 170" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="14" stroke-linecap="round"/>
+<path d="M190 300C230 316 300 316 350 296" fill="none" stroke="#3a0705" stroke-opacity=".55" stroke-width="7" stroke-linecap="round"/>
+<rect x="176" y="392" width="192" height="58" rx="14" fill="url(#gold)" stroke="#5a3f0f" stroke-width="6"/>
+<path d="M205 410L205 432M240 410L240 432M275 410L275 432M310 410L310 432" stroke="#5a3f0f" stroke-opacity=".5" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g fill="#f3dd97"><path d="M92 92l7 15 15 7-15 7-7 15-7-15-15-7 15-7z"/><path d="M420 96l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" opacity=".8"/></g>
+</svg>
