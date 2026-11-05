@@ -66,22 +66,38 @@ button{font:inherit;color:inherit;cursor:pointer}
 #tick{display:flex;gap:8px;align-items:stretch;flex:none}
 #ticker{flex:1;min-width:0;font-size:13px;line-height:1.3;color:var(--dim);padding:7px 10px;border:1px solid var(--line);border-radius:8px;min-height:2.7em;display:flex;align-items:center}
 #menuBtn{flex:none;width:44px;border:1px solid var(--line);border-radius:8px;background:var(--s1);display:grid;place-items:center;color:var(--dim)}
-#ctl{flex:1;min-height:104px;display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:8px}
-.act{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:12px;border:1px solid var(--line);background:var(--s1);overflow:hidden;touch-action:none;transition:transform .06s,background .15s}
-.act .ic{font-size:26px;line-height:1}
-.act .lb{font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.12em}
-.act .ht{font-size:11px;color:var(--dim)}
-.act:active,.act.on{transform:scale(.96)}
-.act.blk{color:#b8d9f5;border-color:#27415a}
+#ctl{flex:1;min-height:150px;display:flex;flex-direction:column;gap:8px}
+#atk{flex:1.2;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;min-height:0}
+#def{flex:1;display:grid;grid-template-columns:1.5fr 1fr;gap:8px;min-height:0}
+.act{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:0;min-height:56px;padding:4px 2px;border-radius:12px;border:1px solid var(--line);background:var(--s1);overflow:hidden;touch-action:none;transition:transform .06s,background .15s}
+.act .ic{font-size:24px;line-height:1}
+.act .lb{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.08em}
+.act .ht{font-size:10.5px;color:var(--dim);text-align:center;line-height:1.15;padding:0 2px}
+.act:active,.act.on{transform:scale(.95)}
+.act.mv{color:#f3d9d6;background:linear-gradient(#2a1412,#150a09);border-color:#5c2823}
+.act.mv:active{background:linear-gradient(#b5342b,#6f1914)}
+#bJ .lb{color:#ffc9c2}#bH .lb{color:#ffb4a8}#bU .lb{color:#ff9d8e}#bK .lb{color:#ff8a78}
+.act.blk{color:#b8d9f5;border-color:#27415a;background:linear-gradient(#0f1c29,#070d14)}
 .act.blk.on{background:#10263a}
-.act.pun{color:#fff;background:linear-gradient(#b5342b,#6f1914);border-color:#d3564c}
-.act.pun .ht{color:#f0b9b3}
 .act.spc{color:#8a6a2a;border-color:#3a2e14}
 .act.spc.rdy{color:#1a1100;background:linear-gradient(#e6bb5c,#b3822a);border-color:#f0cf84;animation:rd .7s steps(2) infinite}
 .act.spc.rdy .ht{color:#4a3510}
+.act.hint{outline:2px solid var(--gold);outline-offset:-2px;box-shadow:0 0 14px rgba(217,171,76,.55);animation:hn .8s ease-in-out infinite alternate}
+.act.hint.warnh{outline-color:#ff6f5e;box-shadow:0 0 16px rgba(255,111,94,.7)}
+@keyframes hn{to{filter:brightness(1.35)}}
 @keyframes rd{50%{filter:brightness(1.25)}}
 .stam{position:absolute;left:10px;right:10px;bottom:6px;height:3px;background:#0b1620;border-radius:2px;overflow:hidden}
 .stam i{display:block;height:100%;width:100%;background:var(--ice)}
+#cmb{position:absolute;left:10px;top:8px;font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.1em;color:var(--gold);text-shadow:0 1px 8px #000;pointer-events:none;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--s2);color:var(--dim);min-height:36px}
+.chip.on{color:var(--gold);border-color:var(--gold2);background:#17130a}
+.prog{display:flex;gap:5px;justify-content:center;width:100%}
+.prog i{flex:1;max-width:34px;height:6px;border-radius:3px;background:#2a2a33}
+.prog i.d{background:var(--gold)}.prog i.c{background:var(--red)}
+.tipl{display:flex;flex-direction:column;gap:6px;width:100%;max-width:300px;text-align:left}
+.tipl div{font-size:13px;line-height:1.35;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--s1)}
+.tipl b{color:var(--gold)}
 
 /* panel (sheet) */
 #sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
@@ -123,4 +139,4 @@ button{font:inherit;color:inherit;cursor:pointer}
 #dim.on{opacity:var(--dimop,.75);pointer-events:auto}
 body.idle #hud,body.idle #tick{opacity:.55}
 @media (max-width:380px){#ov h1{font-size:36px}.act .lb{font-size:13px}}
-@media (prefers-reduced-motion:reduce){.act.spc.rdy{animation:none}}
+@media (prefers-reduced-motion:reduce){.act.spc.rdy,.act.hint{animation:none}}

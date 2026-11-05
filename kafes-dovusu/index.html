@@ -36,12 +36,20 @@
     <canvas id="cv" width="400" height="300" aria-label="Kafes dövüşü sahnesi"></canvas>
     <div id="callout"></div>
     <div id="coach"></div>
+    <div id="cmb"></div>
   </main>
   <div id="tick"><span id="ticker">Belediye Personeli Turnuvası başlıyor.</span><button id="menuBtn" type="button" aria-label="Menü"></button></div>
   <div id="ctl">
-    <button class="act blk" id="bBlock" type="button"><span class="ic"></span><span class="lb">SAVUN</span><span class="ht">basılı tut</span><span class="stam"><i id="stb"></i></span></button>
-    <button class="act spc" id="bSpecial" type="button"><span class="ic"></span><span class="lb">DİLEKÇE</span><span class="ht">dolunca</span></button>
-    <button class="act pun" id="bPunch" type="button"><span class="ic"></span><span class="lb">VUR</span><span class="ht">dokun</span></button>
+    <div id="atk">
+      <button class="act mv" id="bJ" data-k="j" type="button"><span class="ic"></span><span class="lb">DÜZ</span><span class="ht">hızlı</span></button>
+      <button class="act mv" id="bH" data-k="h" type="button"><span class="ic"></span><span class="lb">KROŞE</span><span class="ht">orta</span></button>
+      <button class="act mv" id="bU" data-k="u" type="button"><span class="ic"></span><span class="lb">APARKAT</span><span class="ht">savunmayı deler</span></button>
+      <button class="act mv" id="bK" data-k="k" type="button"><span class="ic"></span><span class="lb">TEKME</span><span class="ht">ağır</span></button>
+    </div>
+    <div id="def">
+      <button class="act blk" id="bBlock" type="button"><span class="ic"></span><span class="lb">SAVUN</span><span class="ht">basılı tut</span><span class="stam"><i id="stb"></i></span></button>
+      <button class="act spc" id="bSpecial" type="button"><span class="ic"></span><span class="lb">DİLEKÇE</span><span class="ht">dolunca</span></button>
+    </div>
   </div>
   <div id="ov"></div>
 </div>
@@ -49,9 +57,13 @@
 <div id="toast"></div>
 <div id="dim"></div>
 <script src="../kart-salonu/vendor/mqtt.min.js"></script>
-<script src="gfx.js?v=1"></script>
-<script src="net.js?v=1"></script>
-<script src="game.js?v=1"></script>
-<script src="ui.js?v=1"></script>
+<script src="gfx.js?v=2"></script>
+<script src="venues2.js?v=2"></script>
+<script src="looks.js?v=2"></script>
+<script src="fighters.js?v=2"></script>
+<script src="net.js?v=2"></script>
+<script src="game.js?v=2"></script>
+<script src="ui.js?v=2"></script>
+<script src="ui2.js?v=2"></script>
 </body>
 </html>
