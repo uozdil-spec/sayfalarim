@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261105-2248">
+<meta name="surum" content="20261105-2312">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
@@ -9,10 +9,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Dokuz Taş">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" href="dokuz-tas-ikon.svg?v=20261105-2248" type="image/svg+xml">
-<link rel="icon" href="dokuz-tas-ikon-32.png?v=20261105-2248" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="dokuz-tas-ikon-180.png?v=20261105-2248">
-<link rel="manifest" href="dokuz-tas.webmanifest?v=20261105-2248">
+<link rel="icon" href="dokuz-tas-ikon.svg?v=20261105-2312" type="image/svg+xml">
+<link rel="icon" href="dokuz-tas-ikon-32.png?v=20261105-2312" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="dokuz-tas-ikon-180.png?v=20261105-2312">
+<link rel="manifest" href="dokuz-tas.webmanifest?v=20261105-2312">
 <title>Dokuz Taş · by uozdil</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -51,6 +51,68 @@ background:var(--pan);border:1px solid var(--ln);border-radius:16px;font-size:17
 .btn.pri svg.i{color:#1b1306}
 .foot{margin-top:auto;padding-top:14px;font-size:11px;color:#6a6252;letter-spacing:.12em;text-align:center}
 
+.hbar{display:flex;justify-content:flex-end;flex:none;min-height:44px}
+.hdr{display:flex;flex-wrap:wrap;align-items:center;flex:none}
+.hg{display:flex}
+.hg.l{order:1}.hg.l .ib{margin-right:8px}
+.hg.r{order:2;margin-left:auto}.hg.r .ib{margin-left:8px}
+.hdr #status{order:3;-webkit-flex:1 0 100%;flex:1 0 100%;padding:4px 8px 0}
+#game{position:relative}
+.ab{position:relative}
+.bd{position:absolute;top:0;right:8px;min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:10px;line-height:16px;text-align:center;font-weight:700;padding:0 4px}
+.bd:empty{display:none}
+#coach,#hintP{position:absolute;left:0;right:0;display:none;z-index:20;padding:0 2px}
+#coach.on,#hintP.on{display:block}
+.cw{margin:0 auto;max-width:520px;background:rgba(14,12,9,.97);border:1px solid var(--gold);border-radius:18px;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.85);-webkit-animation:up .35s ease-out;animation:up .35s ease-out}
+@-webkit-keyframes up{from{opacity:0;-webkit-transform:translateY(16px)}to{opacity:1;-webkit-transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.cc{display:flex;align-items:flex-start}
+.bulb{width:34px;height:34px;border-radius:50%;background:rgba(212,170,90,.16);border:1px solid var(--gold);color:var(--gold2);display:flex;align-items:center;justify-content:center;flex:none;margin-right:10px;-webkit-animation:glowp 1.6s ease-in-out infinite;animation:glowp 1.6s ease-in-out infinite}
+@-webkit-keyframes glowp{0%,100%{box-shadow:0 0 0 0 rgba(240,212,138,.5)}50%{box-shadow:0 0 0 8px rgba(240,212,138,0)}}
+@keyframes glowp{0%,100%{box-shadow:0 0 0 0 rgba(240,212,138,.5)}50%{box-shadow:0 0 0 8px rgba(240,212,138,0)}}
+.ct{min-width:0}.ct b{display:block;font-size:15px;color:var(--gold2)}.ct p{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:#d9cfb8}
+.cb{display:flex;flex-wrap:wrap;align-items:center;margin-top:8px}
+.cb .chip{margin:0 8px 0 0}
+.lnk{background:none;border:0;color:var(--mut);font-size:12px;text-decoration:underline;padding:6px 2px}
+.hp{max-height:44vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.hp h4{margin:0 0 2px;font-size:14px;color:var(--gold2);letter-spacing:.04em}
+.hp .sm2{font-size:12px;color:var(--mut);margin:0 0 6px}
+.alt{display:flex;align-items:flex-start;padding:8px 6px;border-radius:12px;border:1px solid transparent;margin-top:2px}
+.alt.on{border-color:var(--gold);background:rgba(212,170,90,.1)}
+.lt{width:26px;height:26px;border-radius:50%;flex:none;margin-right:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#1b1306;margin-top:1px}
+.at{flex:1;min-width:0}.at b{font-size:14.5px}.at p{margin:2px 0 0;font-size:12.5px;color:#cfc5ac;line-height:1.35}
+.alt .btn{width:auto;min-height:36px;padding:0 14px;font-size:13px;margin-left:8px;flex:none;align-self:center}
+.best{font-size:9.5px;letter-spacing:.1em;color:#1b1306;background:var(--gold2);border-radius:99px;padding:2px 7px;margin-left:6px;vertical-align:1px;font-weight:700}
+.t-mill{background:#f0d48a}.t-block{background:#ff8a7a}.t-setup{background:#8fc3ff}.t-open{background:#c8a0ff}.t-mob{background:#8fe0b0}.t-safe{background:#cfc8b6}
+.mk .al{display:flex;align-items:center;justify-content:center;font-weight:800;color:#1b1306;border:2px solid #1b1306;box-shadow:0 0 10px rgba(0,0,0,.5);-webkit-animation:pu 1s ease-in-out infinite;animation:pu 1s ease-in-out infinite}
+.mk .al.dim{-webkit-animation:none;animation:none;opacity:.55}
+.mk.ar{background:repeating-linear-gradient(90deg,#ffd36a 0,#ffd36a 8px,transparent 8px,transparent 14px);background-size:28px 100%;-webkit-animation:mv .6s linear infinite;animation:mv .6s linear infinite;-webkit-transform-origin:0 50%;transform-origin:0 50%;border-radius:3px}
+@-webkit-keyframes mv{to{background-position:28px 0}}
+@keyframes mv{to{background-position:28px 0}}
+.msg{max-width:82%;padding:8px 12px;margin:3px 0;border-radius:14px;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere;word-wrap:break-word;-webkit-user-select:text;user-select:text}
+.msg.me{align-self:flex-end;background:rgba(212,170,90,.2);border:1px solid rgba(212,170,90,.45)}
+.msg.th{align-self:flex-start;background:var(--pan2);border:1px solid var(--ln)}
+.msg small{display:block;font-size:10.5px;color:var(--mut);margin-bottom:2px}
+.chlog{max-height:34vh;overflow-y:auto;display:flex;flex-direction:column;padding:6px 2px;-webkit-overflow-scrolling:touch}
+.chips{display:flex;flex-wrap:wrap;margin:6px -3px 0}
+.chip{margin:3px;padding:8px 12px;border-radius:99px;border:1px solid var(--ln);background:var(--pan);font-size:13px;display:inline-flex;align-items:center}
+.chip:active{border-color:var(--gold)}
+.chrow{display:flex;margin-top:8px}
+.chrow .inp{font-size:16px;letter-spacing:0;text-align:left;text-transform:none;flex:1;padding:12px;min-width:0}
+.chrow .btn{width:auto;margin-left:8px;padding:0 18px}
+.fr{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid rgba(212,170,90,.1)}
+.fr .dot{width:10px;height:10px;border-radius:50%;background:#4a4538;margin-right:12px;flex:none}
+.fr.on .dot{background:#6fd08c;box-shadow:0 0 8px rgba(111,208,140,.7)}
+.fn{flex:1;min-width:0}.fn b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fn small{color:var(--mut);font-size:11px;letter-spacing:.12em}
+.fr .btn{width:auto;min-height:40px;padding:0 14px;font-size:14px;margin-left:8px;flex:none}
+.xb{background:none;border:0;color:var(--mut);padding:8px;margin-left:2px;flex:none}
+.namechip{display:inline-flex;align-items:center;margin:-8px 0 14px;padding:7px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--pan);font-size:13px;color:var(--ink)}
+.namechip svg.i{width:16px;height:16px;color:var(--gold)}
+.namechip span{margin:0 8px}
+.st-ok{color:#6fd08c}.st-bad{color:#ff8a7a}.st-conn{color:var(--mut)}
+#sheet{position:relative}
+.sb{position:absolute;left:12px;top:12px;width:38px;height:38px}
 .sig{display:flex;align-items:center;justify-content:center;margin-top:12px}
 .sig i{display:block;width:44px;height:1px;background:linear-gradient(90deg,rgba(212,170,90,0),rgba(212,170,90,.7))}
 .sig i:last-child{background:linear-gradient(270deg,rgba(212,170,90,0),rgba(212,170,90,.7))}
@@ -114,8 +176,8 @@ background:var(--pan);border:1px solid var(--ln);border-radius:16px;font-size:17
 .ab svg.i{margin-bottom:3px}
 .ab:active{opacity:.6}
 .ab[disabled]{opacity:.3}
-body.idle .pl,body.idle .bar,body.idle .acts{opacity:.55}
-.pl,.bar,.acts{transition:opacity 1.2s}
+body.idle .pl,body.idle .hdr,body.idle .acts{opacity:.55}
+.pl,.hdr,.acts{transition:opacity 1.2s}
 #toast{position:fixed;left:50%;bottom:calc(var(--sab) + 96px);-webkit-transform:translateX(-50%);transform:translateX(-50%);background:rgba(20,17,12,.96);border:1px solid var(--ln);color:var(--ink);padding:9px 16px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:80;max-width:88%;text-align:center}
 #toast.on{opacity:1}
 
@@ -150,10 +212,19 @@ padding:18px 18px 18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(
 @keyframes dt{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
 
 @media (orientation:landscape) and (max-height:540px){
- .hwrap{flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:center}
+ .hdr #status{order:2;-webkit-flex:1 1 0;flex:1 1 0;padding:0 8px}
+ .hg.r{order:3}
+ .hg .ib{width:40px;height:40px}
+ .hwrap{flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:flex-start}
+ .hbar{position:absolute;top:6px;right:10px;min-height:0;z-index:5}
+ #coach,#hintP{left:auto;right:6px;width:252px;top:56px!important;bottom:auto!important;padding:0}
+ .hp{max-height:calc(100vh - 118px)}
+ .hbar .ib{width:40px;height:40px}
+ .menu{flex-direction:row;flex-wrap:wrap;justify-content:space-between;max-width:560px}
+ .menu>.btn{width:calc(50% - 5px);min-height:52px;margin-bottom:8px;padding-top:6px;padding-bottom:6px}
  #logo{width:64px;height:64px;margin-right:14px}
  h1{font-size:26px;margin-top:0}
- .menu{max-width:380px}
+ .menu{max-width:560px}
  .body{flex-direction:row}
  .pl{width:150px;flex-direction:column;align-items:flex-start;margin:0 6px;justify-content:flex-start}
  .pl.flip{-webkit-transform:none;transform:none}
@@ -167,6 +238,9 @@ padding:18px 18px 18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(
  #toast{bottom:calc(var(--sab) + 56px)}
 }
 @media (prefers-reduced-motion:reduce){.mk .in{-webkit-animation:none;animation:none}}
+#sheet.hasb h2{padding:0 44px}
+#coach,#hintP{pointer-events:none}.alt:not(.on) .at p{display:none}.alt{padding:3px 4px}.hp{padding:8px 10px}.alt .btn{min-height:34px}.at p{font-size:12px}.hp h4{margin-bottom:4px}.cw{pointer-events:auto}
+.fr .btn.pri{min-height:40px}
 </style>
 </head>
 <body>
@@ -174,17 +248,19 @@ padding:18px 18px 18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(
 
  <!-- ANA MENÜ -->
  <section id="home" class="screen on">
+  <div class="hbar"><button class="ib" data-act="fs" aria-label="Tam ekran"><svg class="i fsi"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div>
   <div class="hwrap">
    <img id="logo" src="dokuz-tas-ikon.svg" alt="">
    <div style="display:flex;flex-direction:column;align-items:center">
     <h1>DOKUZ TAŞ</h1>
     <p class="sub">Değirmen oyunu</p>
+    <button class="namechip" data-act="name"><svg class="i"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg><span id="homeName">Adını yaz</span><svg class="i"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
    </div>
    <div class="menu">
     <button class="btn pri" id="bCont" data-act="cont" style="display:none"><span>Devam et<small id="bContS"></small></span><svg class="i"><path d="M8 5l9 7-9 7z"/></svg></button>
     <button class="btn" data-act="newai"><span>Bilgisayara karşı<small>Kolay, orta ya da usta</small></span><svg class="i"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9 12h.01M15 12h.01M9 15h6"/></svg></button>
     <button class="btn" data-act="local"><span>İki kişilik<small>Aynı telefonda, sırayla</small></span><svg class="i"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 20c.6-3.2 2.6-5 5-5s4.4 1.8 5 5M11 20c.6-3.2 2.6-5 5-5s4.4 1.8 5 5"/></svg></button>
-    <button class="btn" data-act="online"><span>Çevrimiçi<small>Oda kodu ile arkadaşınla oyna</small></span><svg class="i"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></button>
+    <button class="btn" data-act="online"><span>Çevrimiçi<small>Arkadaş listesi, davet ve sohbet</small></span><svg class="i"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></button>
     <button class="btn" data-act="rules"><span>Kılavuz<small>Kurallar, çizimli anlatım, ipuçları</small></span><svg class="i"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg></button>
     <button class="btn" data-act="settings"><span>Ayarlar<small>Ses, görünüm, ekran</small></span><svg class="i"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
    </div>
@@ -194,10 +270,10 @@ padding:18px 18px 18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(
 
  <!-- OYUN -->
  <section id="game" class="screen">
-  <div class="bar">
-   <button class="ib" data-act="home" aria-label="Ana menü"><svg class="i"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg></button>
+  <div class="hdr">
+   <div class="hg l"><button class="ib" data-act="back" aria-label="Geri"><svg class="i"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib" data-act="home" aria-label="Ana menü"><svg class="i"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg></button></div>
+   <div class="hg r"><button class="ib" data-act="fs" aria-label="Tam ekran"><svg class="i fsi"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><button class="ib" data-act="settings" aria-label="Ayarlar"><svg class="i"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button></div>
    <div id="status"><div id="st1">&nbsp;</div><div id="st2">&nbsp;</div></div>
-   <button class="ib" data-act="settings" aria-label="Ayarlar"><svg class="i"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
   </div>
   <div class="body">
    <div class="pl" id="plT"><i class="av c2"></i><div class="nm"><b></b><small></small></div><div class="tray"></div></div>
@@ -207,9 +283,12 @@ padding:18px 18px 18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(
   <nav class="acts">
    <button class="ab" id="aUndo" data-act="undo"><svg class="i"><path d="M3 4v5h5"/><path d="M3.5 9a9 9 0 1 1-.8 5"/></svg>Geri al</button>
    <button class="ab" id="aHint" data-act="hint"><svg class="i"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>İpucu</button>
+   <button class="ab" id="aChat" data-act="chat" style="display:none"><svg class="i"><path d="M4 5h16v11H9l-5 4z"/></svg>Sohbet<b class="bd" id="chBadge"></b></button>
    <button class="ab" id="aView" data-act="view"><svg class="i"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Bakış</button>
    <button class="ab" id="aRes" data-act="resign"><svg class="i"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>Teslim</button>
   </nav>
+  <div id="coach"><div class="cw"><div class="cc"><i class="bulb"><svg class="i"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></i><div class="ct"><b id="cTitle"></b><p id="cText"></p></div></div><div class="cb"><button class="chip" data-act="coachAlt">Seçenekleri göster</button><button class="chip" data-act="coachOk">Anladım</button><button class="lnk" data-act="coachOff">İpuçlarını kapat</button></div></div></div>
+  <div id="hintP"><div class="cw hp" id="hintBody"></div></div>
  </section>
 </div>
 <div id="ov"><div id="sheet"></div></div>
@@ -353,7 +432,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp
 var CN={1:'Beyaz',2:'Siyah'};
 
 var S=(function(){
- var d={sound:true,haptic:true,anim:'full',tilt:42,theme:'bambu',oled:true,top:0,wake:false,perf:false,name:'',stats:{w:0,l:0,d:0}};
+ var d={sound:true,haptic:true,anim:'full',tilt:42,theme:'bambu',oled:true,top:0,wake:false,perf:false,name:'',stats:{w:0,l:0,d:0},coach:true,seen:{},uid:'',friends:[],onl:false};
  var s=LS.get('dokuztas.v1',{}),k;
  for(k in d)if(s[k]===undefined)s[k]=d[k];
  if(s.perf===false&&!LS.get('dokuztas.perfset',false)){
@@ -694,9 +773,30 @@ function newGame(cfg){
  saveGame();
  nextTurn();
 }
+var histG=false,skipPop=false;
 function showScreen(id){
  ['home','game'].forEach(function(n){$('#'+n).className='screen'+(n===id?' on':'');});
- if(id==='home')homeRefresh();
+ closeHintPanel();hideCoach();
+ if(id==='game'){
+  if(!histG){try{history.pushState({g:1},'');histG=true;}catch(e){}}
+ }else{
+  if(histG){histG=false;skipPop=true;try{history.back();}catch(e){skipPop=false;}}
+  homeRefresh();
+ }
+}
+function rePush(){
+ if($('#game').className.indexOf('on')>=0&&!histG){try{history.pushState({g:1},'');histG=true;}catch(e){}}
+}
+function handleBack(fromPop){
+ function rep(){if(fromPop)rePush();}
+ if(HT.on){closeHintPanel();rep();return;}
+ if($('#coach').className.indexOf('on')>=0){hideCoach();rep();return;}
+ if($('#ov').className==='on'){
+  if(UI.back){var f=UI.back;f();rep();return;}
+  if($('#ov').getAttribute('data-nc')){rep();return;}
+  closeSheet();rep();return;
+ }
+ if($('#game').className.indexOf('on')>=0){ACT.home();if(fromPop)setTimeout(rePush,0);}
 }
 function layoutSoon(){layout();setTimeout(layout,60);setTimeout(layout,300);}
 
@@ -704,14 +804,14 @@ function tentative(f,t){var b=G.s.b.slice(),p=G.s.turn;if(f>=0)b[f]=0;b[t]=p;ret
 
 function humanMove(f,t){
  var s=G.s,p=s.turn,b=tentative(f,t),mill=E.isMillAt(b,t,p);
- deselect();G.busy=true;hud();
+ hideCoach();closeHintPanel();deselect();G.busy=true;hud();
  visMove(f,t,function(){
   if(mill){
    var rs=E.removable(s,3-p),ms=millsAt(b,t,p);
    G.pend={f:f,t:t,rem:rs};
    updateMills(b,ms);ms.forEach(sparks);SND.mill();vib([30,40,50]);
    rs.forEach(function(i){addMark(i,'rm');});
-   G.busy=false;hud();
+   G.busy=false;hud();coachShow('mill');
   }else commit([f,t,-1],true);
  });
 }
@@ -732,6 +832,7 @@ function remoteMove(m){
  });
 }
 function commit(m,local){
+ closeHintPanel();hideCoach();
  G.hist.push({s:E.clone(G.s),keys:G.keys.slice()});
  if(G.hist.length>60)G.hist.shift();
  E.commit(G.s,m);
@@ -753,6 +854,7 @@ function nextTurn(){
  if(G.over)return;
  G.sel=-1;
  hud();
+ setTimeout(coachCheck,450);
  if(G.mode==='ai'&&G.s.turn===G.ai){runAI();return;}
  pumpRemote();
 }
@@ -788,9 +890,10 @@ function endGame(winner,reason){
  setTimeout(function(){
   SND[snd]();vib(snd==='win'?[40,60,40,60,80]:[80]);
   var btns='';
-  if(G.mode==='online')btns='<button class="btn pri sm" data-act="rematch" id="bRem">Rövanş</button><div class="gap"></div><button class="btn sm" data-act="home">Ana menü</button><p class="note" id="remNote"></p>';
+  if(G.mode==='online')btns='<button class="btn pri sm" data-act="rematch" id="bRem">Rövanş</button><div class="gap"></div><button class="btn sm" data-act="chat">Sohbet</button><div class="gap"></div><button class="btn sm" data-act="home">Ana menü</button><p class="note" id="remNote"></p>';
   else btns='<button class="btn pri sm" data-act="again">Tekrar oyna</button><div class="gap"></div><button class="btn sm" data-act="home">Ana menü</button>';
-  openSheet('<div class="big">'+esc(title)+'</div><p class="note" style="font-size:14px">'+esc(sub)+'</p><div class="gap"></div>'+btns,{noClose:true});
+  G.overHtml='<div class="big">'+esc(title)+'</div><p class="note" style="font-size:14px">'+esc(sub)+'</p><div class="gap"></div>'+btns;
+  openSheet(G.overHtml,{noClose:true});
  },winner?700:300);
 }
 
@@ -849,8 +952,13 @@ function hud(){
  else if(G.mode==='local'){a='Sıra: '+CN[s.turn];b=phaseText(s.turn);}
  else{a=E.flying(s,s.turn)&&s.hand[s.turn]===0?'Sıra sende · Uçabilirsin':'Sıra sende';b=phaseText(s.turn);}
  $('#st1').textContent=a;$('#st2').textContent=b;
- $('#aUndo').disabled=(G.mode==='online'||G.over||!G.hist.length);
- $('#aHint').disabled=(G.mode==='online'||G.over||G.busy||!myTurn()||!!G.pend);
+ var onl=G.mode==='online';
+ $('#aUndo').style.display=onl?'none':'';
+ $('#aHint').style.display=(onl||!S.coach)?'none':'';
+ $('#aChat').style.display=onl?'':'none';
+ $('#chBadge').textContent=Net.unread>0?String(Net.unread):'';
+ $('#aUndo').disabled=(G.over||!G.hist.length);
+ $('#aHint').disabled=(G.over||G.busy||!myTurn()||!!G.pend);
  $('#aRes').disabled=G.over;
 }
 
@@ -859,6 +967,7 @@ function tapPoint(i){
  resetIdle();audio();
  if(G.over||G.busy||!G.started)return;
  if(G.pend){humanPick(i);return;}
+ hideCoach();if(HT.on)closeHintPanel();
  if(!myTurn()){toast(G.mode==='ai'?'Bilgisayarın sırası':'Rakibin sırası');return;}
  var s=G.s,p=s.turn;
  if(s.hand[p]>0){
@@ -874,19 +983,169 @@ function tapPoint(i){
  if(s.b[i]===3-p){SND.err();toast('Bu taş rakibin');return;}
  SND.err();toast('Önce kendi taşını seç');
 }
+/* ---- öğretici ipuçları ---- */
+var HT={on:false,list:[],all:[],sel:0},coachT=null,coachMk=false;
+var CATS={
+ mill:{n:'Değirmen kur',d:'Üç taşı bir çizgide dizersin ve rakibin bir taşını alırsın.',c:'t-mill',p:6},
+ block:{n:'Rakibi durdur',d:'Rakibin değirmen kuracağı boş noktayı kapatırsın.',c:'t-block',p:5},
+ setup:{n:'Tuzak kur',d:'İki taşın bir çizgide olur; boş uç, bir sonraki hamlede değirmen tehdidi yaratır.',c:'t-setup',p:4},
+ open:{n:'Değirmeni aç',d:'Kurulu değirmeni açıp sonra yeniden kapatırsan her seferinde yeni bir taş alırsın.',c:'t-open',p:3},
+ mob:{n:'Özgürlük kazan',d:'Çok yönlü bir noktaya geçersin; taşların sıkışmaz, seçeneklerin artar.',c:'t-mob',p:2},
+ safe:{n:'Sağlam hamle',d:'Riski artırmadan konumunu korur.',c:'t-safe',p:1}
+};
+var COACH={
+ place:{t:'Taşını yerleştir',x:'Boş bir noktaya dokun. Üç taşı bir çizgide dizersen “değirmen” olur ve rakibin bir taşını alırsın.',max:1},
+ move:{t:'Şimdi taşları kaydır',x:'Parlayan taşların hareket edebilir. Önce bir taşına, sonra beliren altın noktaya dokun.',max:1},
+ fly:{t:'Uçma zamanı!',x:'3 taşın kaldı: taşlarını istediğin boş noktaya uçurabilirsin. Hem savunmada hem saldırıda çok güçlü.',max:1},
+ mill:{t:'Değirmen!',x:'Kırmızı halkalı taşlardan birine dokunarak rakipten bir taş al. Değirmendeki taşlar korunur.',max:1},
+ threat:{t:'Dikkat: tehdit!',x:'Rakip bu çizgide değirmen kurmak üzere. Parlayan boş noktayı kapatmayı düşün.',max:3}
+};
+function placePanel(el){
+ var g=$('#game'),ab=g.querySelector('.acts'),hd=g.querySelector('.hdr'),gr=g.getBoundingClientRect(),sr=$('#stage').getBoundingClientRect();
+ var up=sr.top-gr.top-(hd.offsetTop+hd.offsetHeight),down=ab.offsetTop-(sr.bottom-gr.top),top=up>down;
+ el.style.top='';el.style.bottom='';
+ if(top)el.style.top=(hd.offsetTop+hd.offsetHeight+6)+'px';
+ else el.style.bottom=(g.clientHeight-ab.offsetTop+6)+'px';
+}
+function hideCoach(){
+ if(coachT){clearTimeout(coachT);coachT=null;}
+ var c=$('#coach');if(c)c.className='';
+ if(coachMk){coachMk=false;if(G.sel<0&&!HT.on&&!G.pend)clearMarks();}
+}
+function reach(s,o,e,l){
+ if(s.hand[o]>0||E.flying(s,o))return true;
+ var a=E.ADJ[e],i;
+ for(i=0;i<a.length;i++)if(s.b[a[i]]===o&&a[i]!==l[0]&&a[i]!==l[1]&&a[i]!==l[2])return true;
+ return false;
+}
+function threatPts(s,p){
+ var o=3-p,out=[],i,j,l,oc,em;
+ for(i=0;i<E.MILLS.length;i++){
+  l=E.MILLS[i];oc=0;em=-1;
+  for(j=0;j<3;j++){if(s.b[l[j]]===o)oc++;else if(s.b[l[j]]===0)em=l[j];}
+  if(oc===2&&em>=0&&reach(s,o,em,l)&&out.indexOf(em)<0)out.push(em);
+ }
+ return out;
+}
+function coachShow(kind,pts){
+ var c=COACH[kind];if(!c||!S.coach||G.over)return false;
+ var n=S.seen[kind]||0;if(n>=c.max)return false;
+ S.seen[kind]=n+1;saveS();
+ $('#cTitle').textContent=c.t;$('#cText').textContent=c.x;
+ $('#coach').querySelector('[data-act=coachAlt]').style.display=(kind==='mill'||G.mode==='online')?'none':'';
+ var el=$('#coach'),mean=0;
+ el.className='on';
+ if(pts&&pts.length&&G.sel<0&&!G.pend){
+  clearMarks();pts.forEach(function(i){addMark(i,'hn');mean+=GY[i];});mean/=pts.length;coachMk=true;
+ }
+ placePanel(el);
+ if(coachT)clearTimeout(coachT);
+ coachT=setTimeout(hideCoach,16000);
+ return true;
+}
+function coachCheck(){
+ if(!S.coach||G.over||G.busy||G.pend||!G.started)return;
+ if($('#game').className.indexOf('on')<0||$('#ov').className==='on'||HT.on||$('#coach').className==='on')return;
+ if(G.mode==='ai'&&G.s.turn===G.ai)return;
+ if(G.mode==='online'&&G.s.turn!==G.me)return;
+ var s=G.s,p=s.turn,th=threatPts(s,p);
+ if(th.length&&coachShow('threat',th))return;
+ if(s.hand[p]>0)coachShow('place');
+ else if(E.flying(s,p))coachShow('fly');
+ else{
+  var mv=[],i,a,j;
+  for(i=0;i<24;i++)if(s.b[i]===p){a=E.ADJ[i];for(j=0;j<a.length;j++)if(s.b[a[j]]===0){mv.push(i);break;}}
+  coachShow('move',mv);
+ }
+}
+function classify(s,p,o,m,b){
+ var f=m[0],t=m[1],i,j,l,oc,mine,emp,a;
+ if(E.isMillAt(b,t,p))return 'mill';
+ for(i=0;i<E.MILLS.length;i++){
+  l=E.MILLS[i];if(l[0]!==t&&l[1]!==t&&l[2]!==t)continue;
+  oc=0;for(j=0;j<3;j++)if(l[j]!==t&&s.b[l[j]]===o)oc++;
+  if(oc===2&&reach(s,o,t,l))return 'block';
+ }
+ for(i=0;i<E.MILLS.length;i++){
+  l=E.MILLS[i];if(l[0]!==t&&l[1]!==t&&l[2]!==t)continue;
+  mine=0;emp=0;for(j=0;j<3;j++)if(l[j]!==t){if(b[l[j]]===p)mine++;else if(b[l[j]]===0)emp++;}
+  if(mine===1&&emp===1)return 'setup';
+ }
+ if(f>=0)for(i=0;i<E.MILLS.length;i++){
+  l=E.MILLS[i];if(l[0]!==f&&l[1]!==f&&l[2]!==f)continue;
+  if(s.b[l[0]]===p&&s.b[l[1]]===p&&s.b[l[2]]===p)return 'open';
+ }
+ a=E.ADJ[t];
+ if(f<0){if(a.length>=4)return 'mob';}
+ else{mine=0;for(j=0;j<a.length;j++)if(b[a[j]]===0)mine++;if(mine>=2)return 'mob';}
+ return 'safe';
+}
+function analyze(){
+ var s=G.s,p=s.turn,o=3-p,mv=E.genMoves(s),seen={},out=[],i,m,k;
+ for(i=0;i<mv.length;i++){
+  m=mv[i];k=m[0]+'_'+m[1];if(seen[k])continue;seen[k]=1;
+  out.push({f:m[0],t:m[1],cat:classify(s,p,o,m,tentative(m[0],m[1])),r:Math.random(),best:false});
+ }
+ return out;
+}
+function closeHintPanel(){
+ if(!HT.on)return;
+ HT.on=false;var el=$('#hintP');if(el)el.className='';
+ clearMarks();
+}
 function hint(){
- if(G.busy||G.over||G.pend||!myTurn())return;
- deselect();G.busy=true;hud();toast('İpucu hesaplanıyor…');
+ if(G.busy||G.over||G.pend||!myTurn()||G.mode==='online'||!S.coach)return;
+ if(HT.on){closeHintPanel();return;}
+ hideCoach();deselect();clearMarks();G.busy=true;hud();
  var id=++G.aiId;
  askEngine(E.clone(G.s),6,800,0,null,function(m){
   if(id!==G.aiId)return;
-  G.busy=false;hud();clearMarks();if(!m)return;
-  if(m[0]>=0)addMark(m[0],'hn');
-  addMark(m[1],'hn');
-  toast(m[0]<0?'Önerilen nokta işaretlendi':'Önerilen hamle işaretlendi');
+  G.busy=false;hud();
+  showAlts(m);
  });
 }
+function showAlts(best){
+ var all=analyze(),bi=-1,i,picks=[],used={};
+ for(i=0;i<all.length;i++)if(best&&all[i].f===best[0]&&all[i].t===best[1])bi=i;
+ if(bi>=0){all[bi].best=true;picks.push(all[bi]);used[all[bi].cat]=1;}
+ var rest=all.filter(function(x,k){return k!==bi;});
+ rest.sort(function(a,b){return (CATS[b.cat].p-CATS[a.cat].p)||(a.r-b.r);});
+ rest.forEach(function(x){if(picks.length<3&&!used[x.cat]){picks.push(x);used[x.cat]=1;}});
+ rest.forEach(function(x){if(picks.length<3&&picks.indexOf(x)<0)picks.push(x);});
+ if(!picks.length)return;
+ HT.list=picks;HT.sel=0;HT.on=true;
+ renderAlts();
+}
+function addAlt(k,pk){
+ var q=XY(pk.t),sz=L.d*1.15,m=document.createElement('div');
+ m.className='mk';m.style.width=m.style.height=sz+'px';
+ tr(m,'translate3d('+(q.x-sz/2)+'px,'+(q.y-sz/2)+'px,3px)');
+ m.innerHTML='<i class="in al '+CATS[pk.cat].c+(k===HT.sel?'':' dim')+'" style="font-size:'+Math.round(sz*0.52)+'px">'+'ABC'.charAt(k)+'</i>';
+ plane.appendChild(m);G.marks.push(m);
+}
+function addArrow(f,t){
+ var a=XY(f),b=XY(t),dx=b.x-a.x,dy=b.y-a.y,len=Math.sqrt(dx*dx+dy*dy),ang=Math.atan2(dy,dx),m=document.createElement('div');
+ m.className='mk ar';m.style.width=len+'px';m.style.height='5px';
+ tr(m,'translate3d('+a.x+'px,'+(a.y-2.5)+'px,2px) rotate('+ang+'rad)');
+ plane.appendChild(m);G.marks.push(m);
+}
+function renderAlts(){
+ clearMarks();
+ var sel=HT.list[HT.sel],mean=0,h='',n=HT.list.length;
+ if(sel.f>=0){addMark(sel.f,'hn');addArrow(sel.f,sel.t);}
+ HT.list.forEach(function(pk,k){addAlt(k,pk);mean+=GY[pk.t];});
+ mean/=n;
+ h='<h4 style="display:flex;justify-content:space-between;align-items:center"><span>İPUCU · BİR SEÇENEĞE DOKUN</span><button class="lnk" data-act="hintOff" style="padding:0 2px">Kapat</button></h4>';
+ HT.list.forEach(function(pk,k){
+  var c=CATS[pk.cat];
+  h+='<div class="alt'+(k===HT.sel?' on':'')+'" data-act="altSel" data-k="'+k+'"><i class="lt '+c.c+'">'+'ABC'.charAt(k)+'</i><div class="at"><b>'+c.n+'</b>'+(pk.best?'<span class="best">EN İYİ</span>':'')+'<p>'+c.d+(pk.f<0?' Boş noktaya koyarsın.':'')+'</p></div><button class="btn sm" data-act="altPlay" data-k="'+k+'">Oyna</button></div>';
+ });
+ $('#hintBody').innerHTML=h;
+ var el=$('#hintP');el.className='on';
+ placePanel(el);
+}
 function undo(){
+ closeHintPanel();hideCoach();
  if(G.busy||G.mode==='online'||!G.hist.length||G.over)return;
  G.aiId++;
  if(G.pend){G.pend=null;}
@@ -907,8 +1166,17 @@ function resign(){
 
 /* ================= SAYFALAR (alttan açılan paneller) ================= */
 var UI={sel:{}};
-function openSheet(html,o){$('#sheet').innerHTML=html;$('#ov').className='on';$('#ov').setAttribute('data-nc',o&&o.noClose?'1':'');$('#sheet').scrollTop=0;}
-function closeSheet(){$('#ov').className='';$('#sheet').innerHTML='';}
+function openSheet(html,o){
+ UI.back=(o&&o.back)||null;UI.chatOpen=false;UI.onl=false;UI.invOpen=false;stopPoll();
+ var sh=$('#sheet');
+ sh.className=UI.back?'hasb':'';
+ sh.innerHTML=(UI.back?'<button class="ib sb" data-act="sheetBack" aria-label="Geri"><svg class="i"><path d="M15 5l-7 7 7 7"/></svg></button>':'')+html;
+ $('#ov').className='on';$('#ov').setAttribute('data-nc',o&&o.noClose?'1':'');sh.scrollTop=0;
+}
+function closeSheet(){
+ $('#ov').className='';$('#sheet').innerHTML='';$('#sheet').className='';
+ UI.back=null;UI.chatOpen=false;UI.onl=false;UI.invOpen=false;stopPoll();setNameChip();
+}
 function seg(key,opts,val){
  return '<div class="seg" data-seg="'+key+'">'+opts.map(function(o){return '<button data-v="'+o[0]+'"'+(String(o[0])===String(val)?' class="on"':'')+'>'+o[1]+'</button>';}).join('')+'</div>';
 }
@@ -933,7 +1201,7 @@ function miniBoard(stones,hl,dots){
  stones.forEach(function(st){o+='<circle cx="'+X(st[0])+'" cy="'+Y(st[0])+'" r="8.5" fill="url(#'+(st[1]===1?'gw':'gb')+')" stroke="rgba(0,0,0,.5)" stroke-width="1"/>';});
  return o+'</svg>';
 }
-function sheetRules(){
+function sheetRules(back){
  openSheet('<h2>Kılavuz</h2>'+
  '<p><b>Amaç:</b> Rakibin taşlarını 2’ye düşürmek ya da onu hamle yapamaz hale getirmek.</p>'+
  '<h3>Tahta</h3><p>Üç iç içe kare ve onları birleştiren dört çizgi var. Toplam <b>24 nokta</b> bulunur. Her oyuncunun <b>9 taşı</b> vardır; beyaz başlar. Aynı çizgi üzerindeki üç noktaya <b>değirmen</b> denir.</p>'+
@@ -948,10 +1216,10 @@ function sheetRules(){
  '<p>Tahtada <b>3 taşınız</b> kalırsa taşlarınız komşu olmasa bile boş herhangi bir noktaya atlar. Savunmada büyük kurtarıcıdır.</p>'+
  '<h3>Taş alırken</h3><ul><li>Değirmen halindeki taşlar korunur.</li><li>Rakibin bütün taşları değirmendeyse istediğini alabilirsin.</li><li>Alınabilecek taşlar <b>kırmızı halkayla</b> işaretlenir; birine dokun.</li></ul>'+
  '<h3>Oyun nasıl biter</h3><ul><li>Rakip <b>2 taşa</b> düşerse kazanırsın.</li><li>Rakip hiç hamle yapamazsa (sıkışırsa) kazanırsın.</li><li>Aynı konum 3 kez tekrarlanırsa ya da 60 hamle boyunca taş alınmazsa oyun berabere biter.</li></ul>'+
- '<h3>Bu oyunda nasıl oynanır</h3><ul><li><b>Yerleştirme:</b> boş bir noktaya dokun.</li><li><b>Hareket:</b> önce taşına, sonra altın noktaya dokun. Taşa tekrar dokunursan seçim kalkar.</li><li><b>Geri al:</b> son hamleni (bilgisayara karşı oyununda son turu) geri alır.</li><li><b>İpucu:</b> iyi bir hamleyi altın halkayla gösterir.</li><li><b>Bakış:</b> tahtanın eğimini değiştirir (düz, hafif, eğik, yüksek).</li><li>Oyun kendiliğinden kaydedilir; ana menüden <b>Devam et</b> ile sürdürebilirsin.</li></ul>'+
+ '<h3>Bu oyunda nasıl oynanır</h3><ul><li><b>Yerleştirme:</b> boş bir noktaya dokun.</li><li><b>Hareket:</b> önce taşına, sonra altın noktaya dokun. Taşa tekrar dokunursan seçim kalkar.</li><li><b>Geri al:</b> son hamleni (bilgisayara karşı oyununda son turu) geri alır.</li><li><b>İpucu:</b> en iyi hamleyi ve birkaç alternatifi harfli işaretlerle gösterir; her birinin ne işe yaradığını okuyabilir, istediğini <b>Oyna</b> ile uygulayabilirsin. Ayarlardan kapatılır.</li><li><b>Bakış:</b> tahtanın eğimini değiştirir (düz, hafif, eğik, yüksek).</li><li>Oyun kendiliğinden kaydedilir; ana menüden <b>Devam et</b> ile sürdürebilirsin.</li></ul>'+
  '<h3>Strateji ipuçları</h3><ul class="tip"><li>Dört komşulu orta halka noktaları hareket özgürlüğü verir; erken sahiplen.</li><li>Rakibin iki taşlı hattının boş ucunu kapat.</li><li>Taşlarını sıkıştırma; hareketsiz kalmak kaybettirir.</li><li>Aç-kapa yapabileceğin bir değirmen (koşan değirmen) en güçlü yapıdır.</li></ul>'+
  '<div class="sig2"></div><div class="sig"><i></i><span>by <b>uozdil</b></span><i></i></div><div class="gap"></div>'+
- '<button class="btn pri sm" data-act="close">Anladım</button>');
+ '<button class="btn pri sm" data-act="close">Anladım</button>',{back:back||null});
 }
 function sheetSettings(){
  var inGame=$('#game').className.indexOf('on')>=0;
@@ -964,15 +1232,18 @@ function sheetSettings(){
  '<div class="row"><div class="lb">OLED koruma<small>Saf siyah, ekran kayması, kısılan arayüz</small></div>'+seg('oled',[[1,'Açık'],[0,'Kapalı']],S.oled?1:0)+'</div>'+
  '<div class="row"><div class="lb">Üst boşluk<small>Kamera deliği ya da çentik için</small></div>'+seg('top',[[0,'Yok'],[14,'Az'],[28,'Orta'],[44,'Çok']],S.top)+'</div>'+
  '<div class="row"><div class="lb">Ekran açık kalsın</div>'+seg('wake',[[1,'Evet'],[0,'Hayır']],S.wake?1:0)+'</div>'+
+ '<div class="row"><div class="lb">Öğretici ipuçları<small>Oyun sırasında açıklama ve İpucu düğmesi</small></div>'+seg('coach',[[1,'Açık'],[0,'Kapalı']],S.coach?1:0)+'</div>'+
  '<div class="row"><div class="lb">Eski telefon modu<small>Daha az katman ve gölge</small></div>'+seg('perf',[[1,'Açık'],[0,'Kapalı']],S.perf?1:0)+'</div>'+
  '<h3>Çevrimiçi adın</h3><input class="inp nm2" id="nameIn" maxlength="14" placeholder="Oyuncu" value="'+esc(S.name)+'" autocomplete="off">'+
- '<div class="gap"></div><button class="btn sm" data-act="rules">Kılavuz</button><div class="gap"></div><button class="btn pri sm" data-act="close">Tamam</button><div class="sig2"></div><div class="sig"><i></i><span>by <b>uozdil</b></span><i></i></div>');
+ '<div class="gap"></div><button class="btn sm" data-act="rules2">Kılavuz</button><div class="gap"></div><button class="btn pri sm" data-act="close">Tamam</button><div class="sig2"></div><div class="sig"><i></i><span>by <b>uozdil</b></span><i></i></div>');
 }
 function applySetting(k,v){
- if(k==='sound'||k==='haptic'||k==='oled'||k==='wake'||k==='perf')S[k]=v==='1';
+ if(k==='sound'||k==='haptic'||k==='oled'||k==='wake'||k==='perf'||k==='coach')S[k]=v==='1';
  else if(k==='tilt'||k==='top')S[k]=parseInt(v,10);
  else S[k]=v;
+ if(k==='coach'){if(S.coach)S.seen={};else{hideCoach();closeHintPanel();}}
  saveS();
+ if(k==='coach')hud();
  if(k==='top')probeInsets();
  if(k==='perf'){G.texSize=0;if(G.pcs)for(var q in G.pcs)if(G.pcs.hasOwnProperty(q))rebuildPieceSize(G.pcs[q]);}
  if(k==='theme'||k==='tilt'||k==='perf'||k==='top')layoutSoon();
@@ -985,17 +1256,30 @@ function applySetting(k,v){
 var PFX='uozdil-dokuztas-';
 var ICE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}];
 var ALPH='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-var Net={peer:null,conn:null,role:null,code:'',oppName:'',lastRx:0,hb:null,myRem:false,oppRem:false,joinT:null,
- q:[],
- send:function(o){try{if(!this.conn)return;if(this.conn.open)this.conn.send(o);else this.q.push(o);}catch(e){}},
+var QUICK=['Merhaba 👋','İyi oyunlar!','Güzel hamle 👏','Bir tur daha?','Biraz düşüneyim…','Teşekkürler'];
+var Net={peer:null,starting:false,ready:false,pstat:'',retry:0,conn:null,role:null,out:null,inv:null,oppName:'',oppUid:'',lastRx:0,hb:null,
+ myRem:false,oppRem:false,q:[],pres:{},poll:null,invT:null,unread:0,chat:[],
+ send:function(o){try{if(!this.conn)return;if(this.conn.open)this.conn.send(o);else if(o.t!=='p')this.q.push(o);}catch(e){}},
  flush:function(){try{while(this.q.length&&this.conn&&this.conn.open)this.conn.send(this.q.shift());}catch(e){}},
  close:function(){
   if(this.hb){clearInterval(this.hb);this.hb=null;}
-  if(this.joinT){clearTimeout(this.joinT);this.joinT=null;}
-  try{if(this.conn)this.conn.close();}catch(e){}
-  try{if(this.peer)this.peer.destroy();}catch(e){}
-  this.conn=null;this.peer=null;this.role=null;this.code='';this.oppName='';this.myRem=false;this.oppRem=false;
+  if(this.invT){clearTimeout(this.invT);this.invT=null;}
+  var c=this.conn;this.conn=null;
+  try{if(c)c.close();}catch(e){}
+  this.role=null;this.out=null;this.inv=null;this.oppName='';this.oppUid='';this.myRem=false;this.oppRem=false;this.q=[];this.chat=[];this.unread=0;
  }};
+function newUid(){var c='',i;for(i=0;i<6;i++)c+=ALPH.charAt(rnd(ALPH.length));return c;}
+function ensureUid(){if(!S.uid||!/^[A-Z0-9]{6}$/.test(S.uid)){S.uid=newUid();saveS();}}
+function cleanCode(v){return String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6);}
+function pid(id){return PFX+'u-'+id;}
+function findFr(id){for(var i=0;i<S.friends.length;i++)if(S.friends[i].id===id)return S.friends[i];return null;}
+function addFr(id,name){
+ id=cleanCode(id);if(id.length!==6||id===S.uid)return null;
+ var f=findFr(id);
+ if(f){if(name&&f.name!==name){f.name=name;saveS();}return f;}
+ if(S.friends.length>=24){toast('Arkadaş listesi dolu');return null;}
+ f={id:id,name:name||'Arkadaş'};S.friends.push(f);saveS();return f;
+}
 function netLoad(cb,fail){
  if(window.Peer)return cb();
  var urls=['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'],i=0;
@@ -1006,89 +1290,193 @@ function netLoad(cb,fail){
  })();
 }
 function setOnl(html){var el=$('#onlMsg');if(el)el.innerHTML=html;}
+
+/* kendi kimliğimiz: uygulama açıkken davet alabilmek için sürekli kayıtlı */
+function presStart(){
+ ensureUid();
+ if(Net.peer||Net.starting)return;
+ Net.starting=true;Net.pstat='conn';refreshOnl();
+ if(!S.onl){S.onl=true;saveS();}
+ netLoad(function(){
+  var pr;
+  try{pr=new Peer(pid(S.uid),{debug:0,config:{iceServers:ICE}});}catch(e){Net.starting=false;Net.pstat='bad';refreshOnl();return;}
+  Net.peer=pr;Net.starting=false;
+  pr.on('open',function(){Net.ready=true;Net.pstat='ok';Net.retry=0;refreshOnl();if(UI.onl)pollNow();});
+  pr.on('connection',onIncoming);
+  pr.on('disconnected',function(){
+   Net.ready=false;if(Net.peer!==pr)return;Net.pstat='conn';refreshOnl();
+   setTimeout(function(){try{if(Net.peer===pr&&!pr.destroyed)pr.reconnect();}catch(e){}},2500);
+  });
+  pr.on('close',function(){if(Net.peer===pr){Net.peer=null;Net.ready=false;Net.pstat='bad';refreshOnl();}});
+  pr.on('error',function(e){
+   var ty=e&&e.type,msg=String((e&&e.message)||'');
+   if(ty==='peer-unavailable'){peerGone(msg);return;}
+   if(ty==='unavailable-id'){
+    if(Net.peer===pr){Net.peer=null;Net.ready=false;}
+    try{pr.destroy();}catch(x){}
+    if(Net.retry<6){Net.retry++;Net.pstat='conn';refreshOnl();setTimeout(presStart,3000);}
+    else{Net.pstat='dup';refreshOnl();}
+    return;
+   }
+   if(ty==='network'||ty==='server-error'||ty==='socket-error'||ty==='socket-closed'){Net.ready=false;Net.pstat='bad';refreshOnl();}
+  });
+ },function(){Net.starting=false;Net.pstat='bad';refreshOnl();});
+}
+function peerGone(msg){
+ var m=/u-([A-Z0-9]{6})/.exec(msg),id=m&&m[1];
+ if(!id)return;
+ delete Net.pres[id];
+ if(Net.out&&Net.out.id===id)inviteFail((Net.oppName||'Arkadaşın')+' şu an çevrimdışı görünüyor.');
+ refreshFr();
+}
+
+/* arkadaş durumu (ping/pong) */
+var pingT={};
+function pingFr(id){
+ if(!Net.peer||!Net.ready||pingT[id])return;
+ var c,done=false;
+ try{c=Net.peer.connect(pid(id),{reliable:true});}catch(e){return;}
+ function fin(){if(done)return;done=true;if(pingT[id]){clearTimeout(pingT[id]);delete pingT[id];}try{c.close();}catch(e){}}
+ pingT[id]=setTimeout(function(){if(done)return;delete Net.pres[id];fin();refreshFr();},7000);
+ c.on('open',function(){try{c.send({t:'ping',name:S.name||'',uid:S.uid});}catch(e){}});
+ c.on('data',function(d){
+  if(d&&d.t==='pong'){
+   Net.pres[id]={t:Date.now(),busy:!!d.busy};
+   var f=findFr(id),nm=String(d.name||'').slice(0,14);
+   if(f&&nm&&f.name!==nm){f.name=nm;saveS();}
+   fin();refreshFr();
+  }
+ });
+ c.on('error',function(){fin();});
+}
+function pollNow(){S.friends.forEach(function(f){pingFr(f.id);});}
+function startPoll(){stopPoll();Net.poll=setInterval(pollNow,15000);pollNow();}
+function stopPoll(){if(Net.poll){clearInterval(Net.poll);Net.poll=null;}}
+function isOn(id){var p=Net.pres[id];return !!(p&&Date.now()-p.t<45000);}
+
+function stHtml(){
+ var p=Net.pstat;
+ if(p==='ok')return '<span class="st-ok">● Bağlı</span> · davet alabilirsin';
+ if(p==='bad')return '<span class="st-bad">● Sunucuya ulaşılamıyor</span> <button class="lnk" data-act="retry">Tekrar dene</button>';
+ if(p==='dup')return '<span class="st-bad">● Bu kod başka bir pencerede açık</span> <button class="lnk" data-act="retry">Tekrar dene</button>';
+ return '<span class="st-conn">● Bağlanılıyor<span class="dots"></span></span>';
+}
+function frHtml(){
+ if(!S.friends.length)return '<p class="note" style="margin:6px 0">Henüz arkadaşın yok. Aşağıdan arkadaşının kodunu ekle ya da kendi kodunu paylaş.</p>';
+ var l=S.friends.slice();
+ l.sort(function(a,b){return (isOn(b.id)?1:0)-(isOn(a.id)?1:0)||(a.name<b.name?-1:1);});
+ return l.map(function(f){
+  var on=isOn(f.id),bz=on&&Net.pres[f.id].busy;
+  return '<div class="fr'+(on?' on':'')+'"><i class="dot"></i><div class="fn"><b>'+esc(f.name)+'</b><small>'+f.id+' · '+(on?(bz?'OYUNDA':'ÇEVRİMİÇİ'):'ÇEVRİMDIŞI')+'</small></div>'+
+   (on&&!bz?'<button class="btn pri" data-act="inv" data-id="'+f.id+'">Davet et</button>':'')+
+   '<button class="xb" data-act="rmFr" data-id="'+f.id+'" aria-label="Sil"><svg class="i"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
+ }).join('');
+}
+function refreshFr(){if(!UI.onl)return;var el=$('#frList');if(el)el.innerHTML=frHtml();}
+function refreshOnl(){if(!UI.onl)return;var el=$('#onlSt');if(el)el.innerHTML=stHtml();refreshFr();}
+
 function sheetOnline(){
- Net.close();
- openSheet('<h2>Çevrimiçi</h2><p class="note" style="font-size:14px;margin-top:0">Arkadaşınla farklı telefonlardan oynayın. Biriniz oda kurar, diğeri kodu girer.</p>'+
- '<button class="btn pri sm" data-act="host">Oda kur</button><div class="gap"></div>'+
- '<h3>Odaya katıl</h3><input class="inp" id="codeIn" maxlength="4" placeholder="KOD" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false">'+
- '<div class="gap"></div><button class="btn sm" data-act="join">Katıl</button>'+
+ ensureUid();
+ openSheet('<h2>Çevrimiçi</h2><p class="note" id="onlSt" style="text-align:center;margin:0 0 4px"></p>'+
+ '<div class="row"><div class="lb">Adın<small>Arkadaşların seni bu adla görür</small></div><button class="chip" data-act="name"><b>'+esc(S.name||'Adını yaz')+'</b>&nbsp;·&nbsp;Değiştir</button></div>'+
+ '<h3>Arkadaş kodun</h3><div class="code" style="font-size:34px">'+S.uid+'</div>'+
+ '<div class="chrow"><button class="btn sm" style="flex:1;margin:0 4px 0 0" data-act="share">Paylaş</button><button class="btn sm" style="flex:1;margin:0 0 0 4px" data-act="copyCode">Kopyala</button></div>'+
+ '<h3>Arkadaşlar</h3><div id="frList"></div>'+
+ '<h3>Arkadaş ekle</h3><div class="chrow"><input class="inp" id="fcIn" maxlength="6" placeholder="KOD" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" style="font-size:20px;letter-spacing:.3em;text-align:center;text-transform:uppercase"><button class="btn pri sm" data-act="addFr">Ekle</button></div>'+
  '<p class="note" id="onlMsg"></p><button class="btn sm" data-act="close">Kapat</button>');
+ UI.onl=true;
+ $('#onlSt').innerHTML=stHtml();refreshFr();
+ presStart();startPoll();
 }
-function netHost(tries){
- tries=tries||0;
- setOnl('Bağlantı kuruluyor<span class="dots"></span>');
- netLoad(function(){
-  var code='',i;for(i=0;i<4;i++)code+=ALPH.charAt(rnd(ALPH.length));
-  var pr;
-  try{pr=new Peer(PFX+code,{debug:0,config:{iceServers:ICE}});}catch(e){setOnl('Bağlantı kurulamadı.');return;}
-  Net.peer=pr;Net.role='host';Net.code=code;
-  pr.on('open',function(){
-   openSheet('<h2>Oda kuruldu</h2><div class="code">'+code+'</div><p class="note" style="font-size:14px">Bu kodu arkadaşına ver.<br>Katılınca oyun kendiliğinden başlar.</p>'+
-   '<p class="note" id="onlMsg">Rakip bekleniyor<span class="dots"></span></p>'+
-   '<button class="btn sm" data-act="share">Kodu paylaş</button><div class="gap"></div><button class="btn sm" data-act="cancelOnl">İptal</button>');
-  });
-  pr.on('connection',function(c){
-   if(Net.conn){try{c.close();}catch(e){}return;}
-   Net.conn=c;wireConn(c);
-  });
-  pr.on('error',function(e){
-   if(e&&e.type==='unavailable-id'&&tries<6){try{pr.destroy();}catch(x){}Net.peer=null;netHost(tries+1);return;}
-   if(Net.role==='host'&&!Net.conn)setOnl('Çevrimiçi sunucuya ulaşılamadı. İnternetini kontrol edip tekrar dene.');
-  });
- },function(){setOnl('Çevrimiçi bileşen yüklenemedi. İnternet bağlantını kontrol et.');});
+function inviteFriend(id){
+ if(!S.name){sheetName(sheetOnline);return;}
+ if(!Net.peer||!Net.ready){setOnl('Bağlantı kuruluyor, birazdan tekrar dene.');return;}
+ if(Net.conn||Net.inv){return;}
+ var f=findFr(id),c;
+ try{c=Net.peer.connect(pid(id),{reliable:true});}catch(e){setOnl('Bağlantı kurulamadı.');return;}
+ Net.conn=c;Net.role='host';Net.out={id:id};Net.oppName=f?f.name:'Arkadaş';Net.lastRx=Date.now();
+ wireConn(c);
+ c.on('data',function(d){route(c,d);});
+ Net.send({t:'invite',name:S.name,uid:S.uid});
+ openSheet('<h2>Davet gönderildi</h2><div class="code" style="font-size:24px;letter-spacing:.06em">'+esc(Net.oppName)+'</div><p class="note" style="text-align:center">Yanıt bekleniyor<span class="dots"></span></p><button class="btn sm" data-act="cancelInv">Vazgeç</button>',{noClose:true});
+ Net.invT=setTimeout(function(){if(Net.out)inviteFail('Cevap gelmedi. '+(Net.oppName||'Arkadaşın')+' uygulamayı açık tutmuyor olabilir.');},30000);
 }
-function netJoin(code){
- code=(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
- if(code.length!==4){setOnl('Kod 4 karakter olmalı.');return;}
- setOnl('Odaya bağlanılıyor<span class="dots"></span>');
- netLoad(function(){
-  var pr;
-  try{pr=new Peer(undefined,{debug:0,config:{iceServers:ICE}});}catch(e){setOnl('Bağlantı kurulamadı.');return;}
-  Net.peer=pr;Net.role='guest';Net.code=code;
-  pr.on('open',function(){
-   var c=pr.connect(PFX+code,{reliable:true});Net.conn=c;wireConn(c);
-   Net.joinT=setTimeout(function(){if(!(Net.conn&&Net.conn.open&&Net.oppName)){setOnl('Oda bulunamadı ya da bağlantı kurulamadı.');try{pr.destroy();}catch(e){}Net.peer=null;Net.conn=null;}},15000);
-  });
-  pr.on('error',function(e){
-   if(e&&e.type==='peer-unavailable')setOnl('Bu koda ait oda yok. Kodu kontrol et.');
-   else if(!(G.mode==='online'&&!G.over))setOnl('Bağlantı kurulamadı. Tekrar dene.');
-  });
- },function(){setOnl('Çevrimiçi bileşen yüklenemedi. İnternet bağlantını kontrol et.');});
+function inviteFail(msg){
+ if(Net.invT){clearTimeout(Net.invT);Net.invT=null;}
+ Net.close();
+ openSheet('<h2>Oyun başlamadı</h2><p class="note" style="font-size:14px;text-align:center">'+esc(msg)+'</p><div class="gap"></div><button class="btn pri sm" data-act="online">Arkadaş listesi</button><div class="gap"></div><button class="btn sm" data-act="close">Kapat</button>');
+}
+function onIncoming(c){
+ c.on('data',function(d){route(c,d);});
+ c.on('close',function(){
+  if(Net.inv&&Net.inv.c===c){Net.inv=null;if(UI.invOpen){closeSheet();toast('Davet iptal edildi');}}
+ });
+ c.on('error',function(){});
+}
+function route(c,d){
+ if(!d||!d.t)return;
+ if(c===Net.conn){Net.lastRx=Date.now();onNet(d);return;}
+ if(d.t==='ping'){
+  try{c.send({t:'pong',name:S.name||'',uid:S.uid,busy:G.mode==='online'&&!G.over});}catch(e){}
+  setTimeout(function(){try{c.close();}catch(e){}},1500);
+ }else if(d.t==='invite'){
+  if((G.mode==='online'&&!G.over)||Net.inv||Net.conn){try{c.send({t:'busy'});}catch(e){}setTimeout(function(){try{c.close();}catch(e){}},800);return;}
+  Net.inv={c:c,name:String(d.name||'Arkadaş').slice(0,14),uid:cleanCode(d.uid)};
+  showInvite();
+ }
+}
+function showInvite(){
+ var iv=Net.inv;if(!iv)return;
+ openSheet('<h2>Oyun daveti</h2><div class="code" style="font-size:26px;letter-spacing:.06em">'+esc(iv.name)+'</div><p class="note" style="text-align:center">seni Dokuz Taş oynamaya çağırıyor.</p><div class="gap"></div><button class="btn pri sm" data-act="invAcc">Kabul et</button><div class="gap"></div><button class="btn sm" data-act="invNo">Reddet</button>',{noClose:true});
+ UI.invOpen=true;vib([60,40,60]);try{SND.mill();}catch(e){}
 }
 function wireConn(c){
- c.on('open',function(){
-  Net.lastRx=Date.now();Net.flush();
-  if(Net.role==='guest')c.send({t:'hi',name:S.name||'Oyuncu'});
- });
- c.on('data',function(d){Net.lastRx=Date.now();onNet(d);});
- c.on('close',function(){onNetLost();});
- c.on('error',function(){onNetLost();});
+ c.on('open',function(){Net.lastRx=Date.now();Net.flush();});
+ c.on('close',function(){connDown(c);});
+ c.on('error',function(){connDown(c);});
  if(!Net.hb)Net.hb=setInterval(function(){
   Net.send({t:'p'});
   if(G.mode==='online'&&!G.over&&Date.now()-Net.lastRx>40000)onNetLost();
  },4000);
 }
+function connDown(c){
+ if(c!==Net.conn)return;
+ if(Net.out){inviteFail((Net.oppName||'Arkadaşın')+' ile bağlantı kurulamadı.');return;}
+ if(G.mode==='online'){onNetLost();return;}
+ Net.close();closeSheet();toast('Bağlantı kesildi');
+}
 function onNet(d){
- if(!d||!d.t)return;
- if(d.t==='hi'&&Net.role==='host'&&G.mode!=='online'||(d.t==='hi'&&Net.role==='host'&&G.over)){
-  Net.oppName=String(d.name||'Rakip').slice(0,14);
-  Net.send({t:'init',name:S.name||'Oyuncu',me:2});
+ var t=d.t;
+ if(t==='hi'&&Net.role==='host'&&(G.mode!=='online'||G.over)){
+  Net.oppName=String(d.name||'Arkadaş').slice(0,14);Net.oppUid=cleanCode(d.uid);
+  if(Net.oppUid)addFr(Net.oppUid,Net.oppName);
+  if(Net.invT){clearTimeout(Net.invT);Net.invT=null;}
+  Net.out=null;
+  Net.send({t:'init',name:S.name||'Oyuncu',uid:S.uid,me:2});
   closeSheet();newGame({mode:'online',me:1});
- }else if(d.t==='init'&&Net.role==='guest'){
-  Net.oppName=String(d.name||'Rakip').slice(0,14);
+ }else if(t==='init'&&Net.role==='guest'){
+  if(Net.invT){clearTimeout(Net.invT);Net.invT=null;}
+  Net.oppName=String(d.name||Net.oppName||'Arkadaş').slice(0,14);
   closeSheet();newGame({mode:'online',me:d.me===1?1:2});
- }else if(d.t==='mv'&&G.mode==='online'&&!G.over){
+ }else if((t==='no'||t==='busy')&&Net.out){
+  inviteFail((Net.oppName||'Arkadaşın')+(t==='no'?' daveti reddetti.':' şu an başka bir oyunda.'));
+ }else if(t==='mv'&&G.mode==='online'&&!G.over){
   if(d.m&&d.m.length===3){G.rq.push([d.m[0]|0,d.m[1]|0,d.m[2]|0]);pumpRemote();}
- }else if(d.t==='sync-req'&&Net.role==='host'&&G.mode==='online'){
+ }else if(t==='sync-req'&&Net.role==='host'&&G.mode==='online'){
   Net.send({t:'sync',s:G.s,keys:G.keys});
- }else if(d.t==='sync'&&G.mode==='online'&&d.s){
+ }else if(t==='sync'&&G.mode==='online'&&d.s){
   G.s=d.s;G.keys=d.keys||[];G.rq=[];G.busy=false;G.pend=null;render();nextTurn();
- }else if(d.t==='resign'&&G.mode==='online'&&!G.over){
+ }else if(t==='resign'&&G.mode==='online'&&!G.over){
   endGame(G.me,'resign');
- }else if(d.t==='rematch'){
+ }else if(t==='rematch'){
   Net.oppRem=true;rematchCheck();
- }else if(d.t==='newgame'&&Net.role==='guest'){
+ }else if(t==='newgame'&&Net.role==='guest'){
   Net.myRem=false;Net.oppRem=false;closeSheet();newGame({mode:'online',me:d.me===1?1:2});
+ }else if(t==='chat'&&typeof d.x==='string'){
+  var x=d.x.slice(0,200);
+  Net.chat.push({me:false,x:x});
+  if(UI.chatOpen)appendChat(false,x);
+  else{Net.unread++;hud();toast((Net.oppName||'Rakip')+': '+x.slice(0,40),2400);vib(25);}
  }
 }
 function rematchCheck(){
@@ -1102,13 +1490,48 @@ function rematchCheck(){
 }
 function onNetLost(){
  if(G.mode!=='online'||Net.lost)return;
- if(!Net.conn&&!Net.peer)return;
+ if(!Net.conn)return;
  if(G.over){var rn=$('#remNote');if(rn)rn.textContent='Rakip ayrıldı.';var rb=$('#bRem');if(rb)rb.disabled=true;Net.close();return;}
  Net.lost=true;
  G.over=true;G.busy=false;G.aiId++;hud();
  openSheet('<h2>Bağlantı koptu</h2><p class="note" style="font-size:14px">Rakiple bağlantı kesildi.</p><div class="gap"></div><button class="btn pri sm" data-act="home">Ana menü</button>',{noClose:true});
  Net.close();Net.lost=false;
 }
+
+/* sohbet */
+function msgHtml(m){return '<div class="msg '+(m.me?'me':'th')+'"><small>'+esc(m.me?(S.name||'Sen'):(Net.oppName||'Rakip'))+'</small>'+esc(m.x)+'</div>';}
+function appendChat(me,x){
+ var el=$('#chLog');if(!el)return;
+ var e0=$('#chEmpty');if(e0&&e0.parentNode)e0.parentNode.removeChild(e0);
+ var d=document.createElement('div');d.innerHTML=msgHtml({me:me,x:x});el.appendChild(d.firstChild);
+ el.scrollTop=el.scrollHeight;
+}
+function sendChat(x){
+ x=String(x||'').replace(/\s+/g,' ').trim().slice(0,140);if(!x)return;
+ Net.send({t:'chat',x:x});Net.chat.push({me:true,x:x});appendChat(true,x);
+}
+function reopenEnd(){if(G.overHtml)openSheet(G.overHtml,{noClose:true});else closeSheet();}
+function sheetChat(){
+ Net.unread=0;hud();
+ var back=G.over?reopenEnd:null;
+ var h='<h2>Sohbet</h2><p class="note" style="text-align:center;margin:0">'+esc(Net.oppName||'Rakip')+' ile</p><div class="chlog" id="chLog">'+
+  (Net.chat.length?Net.chat.map(msgHtml).join(''):'<p class="note" id="chEmpty" style="text-align:center">Henüz mesaj yok. Hızlı bir mesaj seç ya da yaz.</p>')+'</div>'+
+  '<div class="chips">'+QUICK.map(function(q,i){return '<button class="chip" data-act="chQ" data-i="'+i+'">'+esc(q)+'</button>';}).join('')+'</div>'+
+  '<div class="chrow"><input class="inp" id="chIn" maxlength="140" placeholder="Mesaj yaz…" autocomplete="off"><button class="btn pri sm" data-act="chSend">Gönder</button></div>';
+ if(!back)h+='<div class="gap"></div><button class="btn sm" data-act="close">Kapat</button>';
+ openSheet(h,{back:back,noClose:!!back});
+ UI.chatOpen=true;
+ var el=$('#chLog');if(el)el.scrollTop=el.scrollHeight;
+}
+function sheetName(next){
+ UI.afterName=next||null;
+ openSheet('<h2>Kullanıcı adın</h2><p class="note" style="text-align:center;margin-top:0">Arkadaşların ve rakibin seni bu adla görür.</p>'+
+  '<input class="inp nm2" id="nameIn2" maxlength="14" placeholder="Adın" value="'+esc(S.name)+'" autocomplete="off" autocapitalize="words">'+
+  '<div class="gap"></div><button class="btn pri sm" data-act="saveName">Kaydet</button><div class="gap"></div><button class="btn sm" data-act="'+(next?'sheetBack':'close')+'">Vazgeç</button>',
+  {back:next?function(){UI.afterName=null;next();}:null});
+ setTimeout(function(){var e=$('#nameIn2');if(e&&e.focus){try{e.focus();}catch(x){}}},150);
+}
+function setNameChip(){var e=$('#homeName');if(e)e.textContent=S.name||'Adını yaz';}
 
 /* ================= EKRAN KORUMA ================= */
 var idleT=null,shiftT=null,wl=null;
@@ -1131,9 +1554,9 @@ function wake(){
 
 /* ================= TOAST ================= */
 var toastT=null;
-function toast(msg){
+function toast(msg,ms){
  var t=$('#toast');t.textContent=msg;t.className='on';
- if(toastT)clearTimeout(toastT);toastT=setTimeout(function(){t.className='';},1900);
+ if(toastT)clearTimeout(toastT);toastT=setTimeout(function(){t.className='';},ms||1900);
 }
 
 /* ================= ANA MENÜ ================= */
@@ -1144,6 +1567,7 @@ function homeRefresh(){
   var t=sv.mode==='ai'?('Bilgisayar · '+LV[sv.diff||2].name):'İki kişilik';
   $('#bContS').textContent=t;
  }else b.style.display='none';
+ setNameChip();
  var st=S.stats;
  $('#homeFoot').textContent=(st.w+st.l+st.d>0?'Galibiyet '+st.w+'  ·  Mağlubiyet '+st.l+'  ·  Beraberlik '+st.d:'');
 }
@@ -1157,17 +1581,87 @@ var ACT={
   closeSheet();newGame({mode:'ai',diff:UI.sel.diff||2,me:c});
  },
  local:function(){audio();newGame({mode:'local'});},
- online:function(){audio();sheetOnline();},
- host:function(){netHost();},
- join:function(){var v=$('#codeIn');netJoin(v?v.value:'');},
+ online:function(){if(!S.name)sheetName(sheetOnline);else sheetOnline();},
+ name:function(){sheetName(UI.onl?sheetOnline:null);},
+ saveName:function(){
+  var e=$('#nameIn2'),v=e?e.value.replace(/\s+/g,' ').trim().slice(0,14):'';
+  if(!v){toast('Bir ad yaz');return;}
+  S.name=v;saveS();setNameChip();
+  var nx=UI.afterName;UI.afterName=null;
+  if(nx)nx();else closeSheet();
+ },
  share:function(){
-  var txt='Dokuz Taş oynayalım! Oda kodu: '+Net.code+'\n'+location.href.split('#')[0].split('?')[0];
+  var link=location.href.split('#')[0].split('?')[0]+'?f='+S.uid;
+  var txt='Dokuz Taş oynayalım! Arkadaş kodum: '+S.uid+'\n'+link;
   if(navigator.share){try{navigator.share({text:txt});return;}catch(e){}}
   var ok=false;
   try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt);ok=true;}}catch(e){}
-  toast(ok?'Kopyalandı':'Kodu elle paylaş: '+Net.code);
+  setOnl(ok?'Davet metni kopyalandı.':'Kodunu elle paylaş: <b>'+S.uid+'</b>');
  },
- cancelOnl:function(){Net.close();closeSheet();},
+ copyCode:function(){
+  var ok=false;
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(S.uid);ok=true;}}catch(e){}
+  setOnl(ok?'Kod kopyalandı.':'Kodun: <b>'+S.uid+'</b>');
+ },
+ addFr:function(){
+  var el=$('#fcIn'),c=cleanCode(el?el.value:'');
+  if(c.length!==6){setOnl('Kod 6 karakter olmalı.');return;}
+  if(c===S.uid){setOnl('Bu senin kendi kodun.');return;}
+  if(findFr(c)){setOnl('Bu kişi zaten listende.');return;}
+  if(!addFr(c,''))return;
+  if(el)el.value='';
+  setOnl('Eklendi. Çevrimiçiyse adı görünecek.');refreshFr();pingFr(c);
+ },
+ rmFr:function(b){
+  var id=b.getAttribute('data-id');
+  S.friends=S.friends.filter(function(f){return f.id!==id;});saveS();refreshFr();
+ },
+ inv:function(b){inviteFriend(b.getAttribute('data-id'));},
+ invAcc:function(){
+  var iv=Net.inv;if(!iv)return;
+  Net.inv=null;UI.invOpen=false;
+  Net.conn=iv.c;Net.role='guest';Net.oppName=iv.name;Net.oppUid=iv.uid;Net.lastRx=Date.now();
+  wireConn(iv.c);
+  if(iv.uid)addFr(iv.uid,iv.name);
+  Net.send({t:'hi',name:S.name||'Oyuncu',uid:S.uid});
+  openSheet('<h2>Bağlanılıyor</h2><p class="note" style="text-align:center">Oyun başlıyor<span class="dots"></span></p>',{noClose:true});
+  Net.invT=setTimeout(function(){if(G.mode!=='online'){Net.close();closeSheet();toast('Bağlantı kurulamadı');}},15000);
+ },
+ invNo:function(){
+  var iv=Net.inv;Net.inv=null;UI.invOpen=false;
+  if(iv){try{iv.c.send({t:'no'});}catch(e){}setTimeout(function(){try{iv.c.close();}catch(e){}},600);}
+  closeSheet();
+ },
+ cancelInv:function(){Net.close();sheetOnline();},
+ retry:function(){
+  Net.retry=0;
+  if(Net.peer){var p=Net.peer;Net.peer=null;try{p.destroy();}catch(e){}}
+  Net.starting=false;Net.ready=false;presStart();
+ },
+ chat:function(){sheetChat();},
+ chSend:function(){var e=$('#chIn');if(!e)return;sendChat(e.value);e.value='';},
+ chQ:function(b){sendChat(QUICK[parseInt(b.getAttribute('data-i'),10)]);},
+ sheetBack:function(){if(UI.back){var f=UI.back;f();}},
+ back:function(){handleBack(false);},
+ fs:function(){
+  var d=document.documentElement,rq=d.requestFullscreen||d.webkitRequestFullscreen||d.mozRequestFullScreen||d.msRequestFullscreen;
+  if(fsEl()){
+   var ex=document.exitFullscreen||document.webkitExitFullscreen||document.mozCancelFullScreen||document.msExitFullscreen;
+   try{ex.call(document);}catch(e){}return;
+  }
+  if(!rq){toast('Bu tarayıcı tam ekranı desteklemiyor. Ana ekrana ekleyerek tam ekran kullanabilirsin.',3600);return;}
+  try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){toast('Tam ekran açılamadı');});}catch(e){toast('Tam ekran açılamadı');}
+ },
+ coachAlt:function(){hideCoach();hint();},
+ coachOk:function(){hideCoach();},
+ coachOff:function(){S.coach=false;saveS();hideCoach();closeHintPanel();hud();toast('İpuçları kapandı. Ayarlardan açabilirsin.',2800);},
+ altSel:function(b){HT.sel=parseInt(b.getAttribute('data-k'),10)||0;if(HT.on)renderAlts();},
+ altPlay:function(b){
+  var pk=HT.list[parseInt(b.getAttribute('data-k'),10)||0];
+  closeHintPanel();if(pk&&!G.busy&&!G.over)humanMove(pk.f,pk.t);
+ },
+ hintOff:function(){closeHintPanel();},
+ rules2:function(){sheetRules(sheetSettings);},
  rules:function(){sheetRules();},
  settings:function(){sheetSettings();},
  close:function(){closeSheet();},
@@ -1213,17 +1707,47 @@ document.addEventListener('click',function(e){
  var pt=up(t,'data-i');
  if(pt&&pt.className.indexOf('pt')>=0){tapPoint(parseInt(pt.getAttribute('data-i'),10));}
 },false);
-document.addEventListener('input',function(e){if(e.target.id==='nameIn'){S.name=e.target.value.slice(0,14);saveS();}});
+document.addEventListener('input',function(e){
+ var id=e.target.id;
+ if(id==='nameIn'){S.name=e.target.value.slice(0,14);saveS();}
+ else if(id==='fcIn'){var c=cleanCode(e.target.value);if(c!==e.target.value)e.target.value=c;}
+});
+document.addEventListener('keydown',function(e){
+ if(e.keyCode!==13)return;
+ var id=e.target.id;
+ if(id==='chIn')ACT.chSend();else if(id==='fcIn')ACT.addFr();else if(id==='nameIn2')ACT.saveName();
+});
+window.addEventListener('popstate',function(){
+ if(skipPop){skipPop=false;return;}
+ histG=false;handleBack(true);
+});
+function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement;}
+function fsChange(){
+ var on=!!fsEl(),ps=document.querySelectorAll('.fsi path'),i;
+ document.body.className=document.body.className.replace(/\bisfs\b/g,'').replace(/\s+$/,'')+(on?' isfs':'');
+ for(i=0;i<ps.length;i++)ps[i].setAttribute('d',on?'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5':'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5');
+ onResize();
+}
+['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange'].forEach(function(n){document.addEventListener(n,fsChange,false);});
 document.addEventListener('touchstart',resetIdle,{passive:true});
 document.addEventListener('contextmenu',function(e){e.preventDefault();});
 var rs=null;
 function onResize(){clearTimeout(rs);rs=setTimeout(function(){probeInsets();layout();},120);}
 window.addEventListener('resize',onResize);
 window.addEventListener('orientationchange',function(){setTimeout(onResize,250);});
-document.addEventListener('visibilitychange',function(){if(!document.hidden)wake();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){wake();try{if(Net.peer&&Net.peer.disconnected)Net.peer.reconnect();}catch(e){}}});
 
 /* ================= BAŞLAT ================= */
 probeInsets();buildStatic();applyOled();homeRefresh();G.started=true;
+ensureUid();
+(function(){
+ var m=/[?&]f=([A-Za-z0-9]{6})/.exec(location.search),code=m&&m[1].toUpperCase();
+ if(m){try{history.replaceState(null,'',location.pathname);}catch(e){}}
+ if(code&&code!==S.uid){
+  addFr(code,'');
+  setTimeout(function(){if(!S.name)sheetName(sheetOnline);else{sheetOnline();setOnl('Davet bağlantısından eklendi.');}},500);
+ }else if(S.onl)presStart();
+})();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){G.texSize=0;layout();});
 })();
 </script>
