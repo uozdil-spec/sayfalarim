@@ -247,7 +247,10 @@ function updateSum101(rack) {
   if (!b) {
     b = h('div', { id: 'sum101' }, h('div', { class: 'row1' }, h('span', { class: 'lb' }), h('b', { class: 'num' }), h('span', { class: 'need' })), h('div', { class: 'bar' }, h('i')), h('div', { class: 'pr' }));
   }
-  if (b.parentNode !== rack) rack.appendChild(b);
+  var tr = document.getElementById('toolsR'), side = !document.body.classList.contains('tb') && tr;
+  if (side) { if (b.parentNode !== tr || tr.firstChild !== b) tr.insertBefore(b, tr.firstChild); }
+  else if (b.parentNode !== rack) rack.appendChild(b);
+  b.classList.toggle('side', !!side);
   var need = E1.OPEN_MIN, okOpen = r.total >= need || r.pairs >= E1.PAIRS_MIN;
   b.querySelector('.lb').textContent = t('sumLabel');
   b.querySelector('.num').textContent = r.total;
@@ -634,7 +637,7 @@ function renderTools() {
     var fb1 = $('#bFin'), tb = $('#bTable');
     var lab = fb1.querySelector('span:not(.ico)'); if (lab) lab.textContent = t('openHand');
     fb1.classList.toggle('dis', !canDiscard()); fb1.classList.remove('ready');
-    tb.style.display = ''; $('#bHint').style.display = OK.S.hints ? '' : 'none';
+    $('#toolsL').classList.add('g101'); tb.style.display = ''; $('#bHint').style.display = OK.S.hints ? '' : 'none';
     var u1 = $('#bUndo'); u1.style.display = st.kind === 'off' ? '' : 'none'; u1.classList.toggle('dis', !(st.table && st.table.canUndo(st.me)));
     $('#bChat').style.display = st.kind === 'off' ? 'none' : '';
     $('#indic').classList.remove('can');

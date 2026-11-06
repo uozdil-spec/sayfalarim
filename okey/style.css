@@ -408,3 +408,13 @@ html, body { touch-action: manipulation; overscroll-behavior: none; -webkit-text
 #sum101.open .bar { display: none; }
 body.tb #sum101 { top: -100px; right: 4px; }
 body.tb #sum101 { min-width: 0; padding: 4px 10px 5px; } body.tb #sum101 .lb { display: none; } body.tb #sum101.ok .row1::before { content: "✓"; color: var(--gold1); font-weight: 800; }
+
+/* 101 rozeti: yatay ekranda sağ düğme sütununda (atılan taş yerleriyle çakışmaz) */
+#sum101.side { position: static; width: 100%; min-width: 0; padding: 5px 4px 6px; text-align: center; margin-bottom: 2px; }
+#sum101.side .row1 { flex-direction: column; align-items: center; gap: 0; }
+#sum101.side .lb { display: block; flex: none; font-size: 8px; letter-spacing: .04em; line-height: 1.2; }
+#sum101.side .num { font-size: 21px; }
+#sum101.side .need { font-size: 10px; line-height: 1; }
+#sum101.side.ok .lb::after { content: ''; }
+#sum101.side.ok .row1::before { content: '✓'; color: var(--gold1); font-size: 12px; font-weight: 800; line-height: 1; }
+@media (max-height: 400px) { #toolsL.g101 .btn > span:not(.ico) { display: none; } #toolsL.g101 .btn { min-height: 34px; } #toolsL.g101 { gap: 4px; } }
