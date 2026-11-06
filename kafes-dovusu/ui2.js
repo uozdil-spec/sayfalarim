@@ -12,14 +12,40 @@ function stats() { var S = KF.S; return S.wins + S.losses ? 'Skor: ' + S.wins + 
 U.home = function () {
   qTok++; stopQ(); G.stop(); U.closeSheet(); U.keepAwake(false); U.resetBlock(); U.lesson = null; G.train = false; G.lv = -1;
   var S = KF.S, first = !S.trained, cont = S.best > 0 && S.best < KF.LADDER.length, rows = [];
-  if (first) rows.push(btn('Antrenman (önce bunu dene)', 'pri wide', startTrain));
-  rows.push(btn(cont ? 'Turnuva · devam (maç ' + (S.best + 1) + '/' + KF.LADDER.length + ')' : 'Turnuva · ' + KF.LADDER.length + ' maç', first ? 'wide' : 'pri wide', function () { if (cont) tourChoice(); else startTour(0); }));
-  rows.push(btn('Serbest maç', 'wide', freeSheet));
-  rows.push(btn('Çevrimiçi düello', 'red wide', function () { onlineSheet(0); }));
-  rows.push(row([first ? null : btn('Antrenman', 'sm', startTrain), btn('Nasıl oynanır', 'sm', U.helpSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
+  U.resetMove();
+  rows.push(charCard());
+  if (first) rows.push(btn('Antrenman · başla', 'pri wide', function () { pick(startTrain); }));
+  rows.push(btn(cont ? 'Turnuva · devam ' + (S.best + 1) + '/' + KF.LADDER.length : 'Turnuva · ' + KF.LADDER.length + ' maç', first ? 'wide' : 'pri wide', function () { pick(function () { if (cont) tourChoice(); else startTour(0); }); }));
+  rows.push(btn('Serbest maç', 'wide', function () { pick(freeSheet); }));
+  rows.push(btn('Çevrimiçi düello', 'red wide', function () { pick(function () { onlineSheet(0); }); }));
+  rows.push(row([first ? null : btn('Antrenman', 'sm', function () { pick(startTrain); }), btn('Nasıl oynanır', 'sm', U.helpSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
   showOv([h('h1', { html: 'KAFES<br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), h('div', { cls: 'menu' }, rows)]);
   $('ticker').textContent = 'Hakem mesai kartını basıyor. Turnuva başlamak üzere.';
 };
+/* ---------- karakter seçimi ---------- */
+var TOOLN = { level: 'Su terazisi', notebook: 'Ceza defteri', tray: 'Çay tepsisi', weight: 'Kantar ağırlığı', case: 'Evrak çantası', anchor: 'Demir', shears: 'Budama makası', wrench: 'İngiliz anahtarı', book: 'Kanun kitabı', axe: 'İtfaiye baltası', nozzle: 'Hortum başlığı', stamp: 'Kaşe', phone: 'Telefon', compass: 'Pergel', rod: 'Jalon', cleaver: 'Satır', pan: 'Tava' };
+function mini(key, w, hgt, live) {
+  var cv = h('canvas', { width: String(w * 2), height: String(hgt * 2), style: 'width:' + w + 'px;height:' + hgt + 'px' });
+  GFX.preview(cv, key, 0);
+  if (live) { var t0 = 0; (function lp() { if (!document.body.contains(cv)) return; t0 += .05; GFX.preview(cv, cv._key || key, t0); setTimeout(lp, 70); })(); }
+  return cv;
+}
+function charCard() {
+  var S = KF.S, L = GFX.LOOKS[S.look] || GFX.LOOKS.muhendis;
+  return h('button', { cls: 'charbtn', type: 'button', onclick: function () { KF.sfx('ui'); charSelect(U.home); } }, [mini(S.look, 38, 52), h('span', { cls: 'cb', html: '<small>KARAKTERİN</small><b>' + L.name + '</b><em>' + (TOOLN[L.tool] || '') + ' · değiştir</em>' })]);
+}
+function pick(fn) { if (KF.S.picked) fn(); else charSelect(fn); }
+function charSelect(done) {
+  var S = KF.S, sel = S.look, big = mini(sel, 96, 130, true), nm = h('b', { cls: 'cn' }), tl = h('span', { cls: 'ct' }), cards = [];
+  function show() { var L = GFX.LOOKS[sel]; nm.textContent = L.name; tl.textContent = 'Alet: ' + (TOOLN[L.tool] || '—'); big._key = sel; cards.forEach(function (c) { c.el.classList.toggle('on', c.k === sel); }); }
+  var grid = h('div', { cls: 'cgrid' });
+  GFX.LOOK_KEYS.forEach(function (k) {
+    var el = h('button', { type: 'button', cls: 'ccard', 'aria-label': GFX.LOOKS[k].name, onclick: function () { sel = k; KF.sfx('ui'); show(); } }, [mini(k, 48, 66), h('span', { text: GFX.LOOKS[k].name })]);
+    cards.push({ k: k, el: el }); grid.appendChild(el);
+  });
+  show();
+  showOv([T('h2', '', 'Karakterini seç'), h('div', { cls: 'cbig' }, [big, h('div', { cls: 'ci' }, [nm, tl])]), grid, row([btn('Geri', 'sm', U.home), btn('Bu benim', 'pri', function () { S.look = sel; S.picked = true; KF.saveProfile(); if (done === U.home) U.home(); else done(); })])]);
+}
 function tourChoice() {
   var S = KF.S;
   showOv([T('h2', '', 'Turnuva'), T('p', '', 'Maç ' + (S.best + 1) + '/' + KF.LADDER.length + '\'den devam edebilir ya da baştan başlayabilirsin.'), h('div', { cls: 'menu' }, [btn('Maç ' + (S.best + 1) + '\'den devam', 'pri wide', function () { startTour(S.best); }), btn('Baştan başla', 'wide', function () { startTour(0); }), btn('Geri', 'sm', U.home)])]);
@@ -29,7 +55,7 @@ function tourChoice() {
 var TIPS = ['İpucu: Rakip kırmızı ünlem gösterince SAVUN\'a bas.', 'İpucu: Aparkat savunmayı deler, korumadaki rakibe işe yarar.', 'İpucu: Rakip sersemken ağır vuruş at.', 'İpucu: Dilekçe dolunca fırlat, savunma tanımaz.', 'İpucu: Düz ile rakibin yavaş vuruşunu hazırlanırken kesebilirsin.', 'İpucu: Savunmayı uzun tutma, dayanıklılık biter.', 'İpucu: Tekme uzak ve ağırdır, bol vakit olunca kullan.', 'İpucu: Aparkat gelince SAVUN yerine SIYRIL dene.', 'İpucu: Rakip sürekli kaçıyorsa SÜPÜR ile yakala.', 'İpucu: SIYRIL başarılı olursa rakip açık kalır, hemen vur.', 'İpucu: Telefonu yan çevirirsen düğmeler iki yana açılır.'];
 function intro(o, bg, tag, prog, onGo, onBack) {
   var tip = KF.S.guide ? h('div', { cls: 'tipl' }, [h('div', { html: '<b>' + TIPS[Math.floor(Math.random() * TIPS.length)].replace('İpucu: ', 'İpucu · ') + '</b>' })]) : null;
-  showOv([T('span', 'tag', tag), prog, T('h2', '', KF.VENUES[bg]), h('div', { cls: 'vs', html: (KF.S.name || 'Mühendis').toUpperCase() + '<em>VS</em><br>' + o.name }), T('p', '', o.desc), tip, row([btn('Menü', 'sm', onBack || U.home), btn('Hazırım', 'pri', onGo)])]);
+  showOv([T('span', 'tag', tag), prog, T('h2', '', KF.VENUES[bg]), h('div', { cls: 'vs', html: (KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis').toUpperCase() + '<em>VS</em><br>' + o.name }), T('p', '', o.desc), tip, row([btn('Menü', 'sm', onBack || U.home), btn('Hazırım', 'pri', onGo)])]);
 }
 function go() { hideOv(); G.sim.ph = 'count'; U.keepAwake(true); }
 
@@ -71,12 +97,17 @@ var LESS = [
   { t: 'Ünlem çıkınca SAVUN\'a bas ve basılı tut', b: 'bBlock', ev: 'block', n: 1, w: 1 },
   { t: 'Kusursuz savunma: ünlemden hemen sonra SAVUN (ya da 3 savunma)', b: 'bBlock', ev: 'perfect', n: 1, w: 1, alt: 3 },
   { t: 'SIYRIL: ünlem çıkınca SIYRIL\'a bas, yumruk boşa gider', b: 'bDodge', ev: 'dodge', n: 1, w: 1 },
+  { t: 'YÜRÜ: İLERİ ve GERİ\'ye birer kez bas (basılı tut)', b: 'bMF', pk: ['mf', 'mb'] },
+  { t: 'ZIPLA: havadayken yerdeki vuruşlar sana değmez', b: 'bJp', pk: ['jp'] },
+  { t: 'EVRAK TOPU: EĞİL\'e basılı tut, DÜZ\'e bas', b: 'bDn', k: 'pf', n: 1 },
+  { t: 'YÜKSELEN APARKAT: EĞİL basılı + APARKAT', b: 'bDn', k: 'dp', n: 1 },
+  { t: 'DÖNEN TEKME: EĞİL basılı + TEKME', b: 'bDn', k: 'tk', n: 1 },
   { t: 'DİLEKÇE doldu! Fırlat', b: 'bSpecial', k: 's', n: 1 }
 ];
 var step = 0, cnt = 0, alt = 0;
 function setLesson() { var L = LESS[step]; cnt = 0; alt = 0; U.lesson = { t: L.t, c: L.w ? 'warn' : 'info', b: L.b, w: L.w }; if (L.k === 's' && G.sim) G.sim.f[0].sp = 100; }
 function startTrain() {
-  G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; U.resetBlock(); step = 0; U.lesson = null;
+  G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; U.resetBlock(); U.resetMove(); step = 0; U.lesson = null;
   showOv([T('span', 'tag', 'ANTRENMAN'), T('h2', '', 'Kafes Okulu'), T('p', '', 'Çırak Cemil sana vurmaz, sadece öğretir. Parlayan düğmeye bas.'), row([btn('Menü', 'sm', U.home), btn('Başla', 'pri', function () { hideOv(); setLesson(); G.sim.ph = 'count'; U.keepAwake(true); })])]);
 }
 function lessonDone() {
@@ -86,6 +117,10 @@ function lessonDone() {
     showOv([T('h2', '', 'Antrenman tamam!'), T('p', '', 'Artık hazırsın. Turnuvada rakipler sırayla zorlaşır.'), h('div', { cls: 'menu' }, [btn('Turnuvaya başla', 'pri wide', function () { startTour(0); }), btn('Serbest maç', 'wide', freeSheet), btn('Ana menü', 'sm', U.home)])]);
   } else setLesson();
 }
+U.onPress = function (k) {
+  if (!G.train || !U.lesson || G.mode !== 'solo' || step >= LESS.length) return; var L = LESS[step];
+  if (L.pk && L.pk.indexOf(k) >= 0) { L.seen = L.seen || {}; L.seen[k] = 1; if (Object.keys(L.seen).length >= L.pk.length) { L.seen = null; lessonDone(); } }
+};
 U.onEv = function (e) {
   if (!G.train || !U.lesson || G.mode !== 'solo' || step >= LESS.length) return;
   var L = LESS[step];

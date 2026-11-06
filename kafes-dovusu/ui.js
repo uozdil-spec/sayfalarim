@@ -9,7 +9,7 @@ KF.loadProfile();
 var IC = {
   j: '<path d="M4 12h12M12 7l5 5-5 5"/>', h: '<path d="M5 18c-1-8 4-12 12-10M13 4l5 4-4 5"/>', u: '<path d="M12 20V5M6 11l6-6 6 6"/>', k: '<path d="M9 3v9l-5 5v3h14v-4l-6-2V3z"/>', l: '<path d="M3 19h18M6 19c1-6 6-9 13-8"/>', dg: '<path d="M19 5c-7 0-12 4-12 11M3 12l4 4 4-4"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>', scroll: '<path d="M6 4h10a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6"/>',
-  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>'
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', mb: '<path d="M19 12H6M11 7l-5 5 5 5"/>', mf: '<path d="M5 12h13M13 7l5 5-5 5"/>', jp: '<path d="M12 19V6M7 11l5-5 5 5"/>', dn: '<path d="M12 5v13M7 13l5 5 5-5"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>'
 };
 var ico = U.ico = function (n) { return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>'; };
 var h = U.h = function (tag, a, kids) {
@@ -34,7 +34,7 @@ var ov = U.ov = $('ov');
 U.showOv = function (nodes) { ov.innerHTML = ''; (Array.isArray(nodes) ? nodes : [nodes]).forEach(function (n) { if (n) ov.appendChild(typeof n === 'string' ? h('div', { html: n }) : n); }); ov.style.display = 'flex'; };
 U.hideOv = function () { ov.style.display = 'none'; ov.innerHTML = ''; };
 U.callout = function (txt, col) {
-  var el = $('callout'); el.textContent = txt; el.style.color = col || '#fff';
+  var el = $('callout'); el.textContent = txt; el.style.color = col || '#fff'; el.style.fontSize = txt.length > 12 ? '22px' : ''; el.style.top = txt.length > 12 ? '4%' : '';
   if (el.animate) el.animate([{ opacity: 1, transform: 'scale(1.3)' }, { opacity: 1, transform: 'scale(1)', offset: .18 }, { opacity: 0, transform: 'scale(1)' }], { duration: 950, fill: 'forwards' }); else el.style.opacity = 1;
 };
 
@@ -56,7 +56,7 @@ U.openSheet = function (o) {
 };
 $('shX').innerHTML = ico('x'); $('shX').onclick = U.closeSheet; document.querySelector('.shbg').onclick = U.closeSheet;
 $('menuBtn').innerHTML = ico('menu');
-[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll']].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
+[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll'], ['bMB', 'mb'], ['bMF', 'mf'], ['bJp', 'jp'], ['bDn', 'dn']].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
 
 /* ---------- ticker ---------- */
 var LINES = {
@@ -127,7 +127,24 @@ function hud(M) {
 /* ---------- düğmeler ---------- */
 var blockDown = false;
 var playing = U.playing = function () { return G.mode === 'solo' || G.mode === 'host' || G.mode === 'guest'; };
-function press(k) { if (!playing()) return; G.input(k); if (U.onPress) U.onPress(k); }
+var dnHeld = false;
+function press(k) { if (!playing()) return; if (dnHeld && (k === 'j' || k === 'u' || k === 'k')) k = 'x' + k; G.input(k); if (U.onPress) U.onPress(k); }
+/* yürüme / zıplama / eğilme: basılı tutulan düğmeler */
+var held = {};
+function holdBtn(id, on, off) {
+  var el = $(id);
+  el.addEventListener('pointerdown', function (e) { e.preventDefault(); if (held[id]) return; held[id] = true; el.classList.add('on'); on(); });
+  function up() { if (!held[id]) return; held[id] = false; el.classList.remove('on'); if (off) off(); }
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { el.addEventListener(n, up); });
+  window.addEventListener('pointerup', up); window.addEventListener('blur', up);
+  return up;
+}
+function moveOn(k) { if (playing()) { G.input(k); if (U.onPress) U.onPress(k); } }
+holdBtn('bMF', function () { moveOn('mf'); }, function () { G.input('mfu'); });
+holdBtn('bMB', function () { moveOn('mb'); }, function () { G.input('mbu'); });
+holdBtn('bJp', function () { moveOn('jp'); });
+holdBtn('bDn', function () { dnHeld = true; moveOn('dn'); }, function () { dnHeld = false; });
+U.resetMove = function () { dnHeld = false; held = {}; ['bMF', 'bMB', 'bJp', 'bDn'].forEach(function (b) { $(b).classList.remove('on'); }); };
 function blockOn() { if (!blockDown && playing()) { blockDown = true; press('bd'); } }
 function blockOff() { if (blockDown) { blockDown = false; G.input('bu'); } }
 U.resetBlock = function () { blockDown = false; };
@@ -137,12 +154,17 @@ $('bDodge').addEventListener('pointerdown', function (e) { e.preventDefault(); p
 $('bBlock').addEventListener('pointerdown', function (e) { e.preventDefault(); blockOn(); });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { $('bBlock').addEventListener(n, blockOff); });
 window.addEventListener('pointerup', blockOff); window.addEventListener('blur', blockOff);
-var KM = { a: 'j', s: 'h', d: 'u', f: 'k', x: 'l', z: 'dg', enter: 's', g: 's' };
+var KM = { a: 'j', s: 'h', d: 'u', f: 'k', x: 'l', z: 'dg', enter: 's', g: 's' }, kHeld = {};
 window.addEventListener('keydown', function (e) {
   if (e.repeat || !playing()) return; var k = e.key.toLowerCase();
   if (KM[k]) { e.preventDefault(); press(KM[k]); } else if (k === ' ' || k === 'shift') { e.preventDefault(); blockOn(); }
+  else if (k === 'arrowright') { e.preventDefault(); kHeld[k] = 1; moveOn('mf'); } else if (k === 'arrowleft') { e.preventDefault(); kHeld[k] = 1; moveOn('mb'); }
+  else if (k === 'arrowup') { e.preventDefault(); moveOn('jp'); } else if (k === 'arrowdown') { e.preventDefault(); dnHeld = true; moveOn('dn'); }
 });
-window.addEventListener('keyup', function (e) { var k = e.key.toLowerCase(); if (k === ' ' || k === 'shift') blockOff(); });
+window.addEventListener('keyup', function (e) {
+  var k = e.key.toLowerCase(); if (k === ' ' || k === 'shift') blockOff();
+  else if (k === 'arrowright' && kHeld[k]) { kHeld[k] = 0; G.input('mfu'); } else if (k === 'arrowleft' && kHeld[k]) { kHeld[k] = 0; G.input('mbu'); } else if (k === 'arrowdown') dnHeld = false;
+});
 document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
 /* ---------- OLED koruması ---------- */
@@ -192,6 +214,7 @@ U.settingsSheet = function () {
     d.appendChild(U.T('div', 'grp', 'Zorluk (bilgisayara karşı)'));
     d.appendChild(chips([['easy', 'Kolay'], ['normal', 'Normal'], ['hard', 'Zor']], S.dif, function (k) { S.dif = k; KF.saveProfile(); }));
     d.appendChild(sw('Rehber ipuçları', 'Basman gereken düğmeyi parlatır', 'guide'));
+    d.appendChild(sw('Boks eldiveni', 'Kapalıyken herkes kendi iş aletiyle dövüşür', 'gloves', function () { GFX.GLOVES = !!KF.S.gloves; }));
     d.appendChild(U.T('div', 'grp', 'Ekran ve ses'));
     d.appendChild(sw('OLED koruması', 'Görüntüyü zaman zaman birkaç piksel kaydırır, menüde boşta karartır', 'oled'));
     var dimBtn = U.btn(S.idleDim ? 'Boşta karart: ' + S.idleDim + ' sn' : 'Boşta karart: kapalı', 'sm', function () { var o = [0, 30, 60, 90, 180], i = o.indexOf(S.idleDim); S.idleDim = o[(i + 1) % o.length]; KF.saveProfile(); dimBtn.textContent = S.idleDim ? 'Boşta karart: ' + S.idleDim + ' sn' : 'Boşta karart: kapalı'; });
@@ -211,9 +234,11 @@ U.helpSheet = function () {
      ['SAVUN', 'Basılı tut. Rakip kırmızı ünlem gösterince savunmada ol. Vuruş inmeden hemen önce savunmaya basarsan KUSURSUZ savunma olur, rakip sersemler. Savunma dayanıklılığı bitirir, uzun tutma.'],
      ['SIYRIL', 'Kısa dokun. Bir an eğilip kaçarsın. Ünlem çıkınca dokunursan rakibin vuruşu boşa gider, rakip uzun süre açık kalır ve sen can bulursun. Biraz dayanıklılık harcar. Süpürmeye karşı işe yaramaz.'],
      ['DİLEKÇE', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca savunma tanımaz, çok sert vurur. Karşısında tek çare SIYRIL.'],
+     ['HAREKET', 'İLERİ ve GERİ\'ye basılı tutarak yürürsün. Vuruşların menzili var: rakip uzaktaysa vuruş boşa gider (ISKA) ve açık kalırsın. Yaklaşmak ya da uzaklaşmak oyunun yarısı. ZIPLA ile havaya çıkarsın: yerdeki vuruşlar (düz, kroşe, tekme, süpürme) altından geçer, aparkat yakalar. Havadayken bir vuruş tuşuna basarsan HAVA TEKMESİ atarsın.'],
+     ['ÖZEL HAREKETLER', 'EĞİL\'e basılı tutup bir vuruşa basarsan özel hareket çıkar (dayanıklılık harcar): EĞİL+DÜZ = EVRAK TOPU, yerde uçar, zıplayan geçer, savunan tutar. EĞİL+APARKAT = YÜKSELEN APARKAT, başlarken dokunulmazdır, havadakini ve saldıranı yakalar. EĞİL+TEKME = DÖNEN TEKME, ileri kayarak vurur. Street Fighter sevenler için klasik yön girişleri de geçerli: aşağı, ileri, DÜZ (topu); ileri, aşağı, ileri, APARKAT; aşağı, geri, TEKME.'],
      ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Bir vuruşa basıp hemen bir sonrakine basarsan sıraya girer. Takılırsan ayarlardan Kolay modu ve Rehberi aç.']
     ].forEach(function (x) { d.appendChild(h('div', { cls: 'li' }, [h('div', { cls: 'tx' }, [h('b', { text: x[0] }), h('span', { text: x[1] })])])); });
-    d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter dilekçe.'));
+    d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter dilekçe. Oklar: sağ ileri, sol geri, yukarı zıpla, aşağı eğil (basılı tut).'));
   } });
 };
 U.menuSheet = function () {

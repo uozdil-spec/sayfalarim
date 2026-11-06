@@ -43,9 +43,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 #callout{position:absolute;left:0;right:0;top:9%;text-align:center;font-family:var(--disp);font-weight:700;font-size:34px;letter-spacing:.06em;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9);pointer-events:none;opacity:0;text-transform:uppercase}
 #coach{position:absolute;left:10px;right:10px;bottom:8px;text-align:center;font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-shadow:0 1px 8px #000;pointer-events:none;min-height:18px}
 #coach.warn{color:#ff6f5e}#coach.good{color:var(--gold)}#coach.info{color:var(--ice)}
-#ov{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px 8px;text-align:center;background:rgba(0,0,0,.93);overflow:auto;border-radius:10px}
+#ov{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:safe center;gap:12px;padding:16px 10px;text-align:center;background:#000;overflow:auto;border-radius:10px}
 #ov h1{font-family:var(--disp);font-weight:700;font-size:44px;line-height:.95;letter-spacing:.04em;margin:0;text-transform:uppercase;color:var(--gold)}
-#ov h1 small{display:block;font-size:13px;letter-spacing:.34em;color:var(--dim);font-weight:500;margin-top:8px}
+#ov h1 small{display:block;font-size:11px;letter-spacing:.2em;padding-left:.2em;color:var(--dim);font-weight:500;margin-top:8px;max-width:24em;margin-left:auto;margin-right:auto}
 #ov h2{font-family:var(--disp);font-weight:700;font-size:28px;letter-spacing:.06em;margin:0;text-transform:uppercase;color:var(--gold)}
 #ov p{margin:0;font-size:14px;line-height:1.4;max-width:32ch;color:var(--ink)}
 #ov .tag{font-family:var(--disp);font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
@@ -60,6 +60,22 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn.sm{padding:8px 12px;font-size:12px;min-height:36px}
 .btn.wide{width:100%;max-width:260px}
 .btn:focus-visible,.act:focus-visible,#menuBtn:focus-visible,#shX:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.charbtn{display:flex;align-items:center;gap:10px;width:100%;max-width:260px;padding:6px 12px;border-radius:10px;border:1px solid var(--gold2);background:#120e05;text-align:left;min-height:62px}
+.charbtn canvas{flex:none;border-radius:6px;background:#0b0b0f}
+.charbtn .cb{display:flex;flex-direction:column;min-width:0}
+.charbtn small{font-family:var(--disp);font-size:9px;letter-spacing:.18em;color:var(--dim)}
+.charbtn b{font-family:var(--disp);font-size:17px;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}
+.charbtn em{font-style:normal;font-size:11px;color:var(--dim)}
+.cbig{display:flex;align-items:center;gap:14px;justify-content:center}
+.cbig canvas{border-radius:10px;background:radial-gradient(#1c1c26,#0b0b0f);border:1px solid var(--line)}
+.cbig .ci{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left}
+.cbig .cn{font-family:var(--disp);font-size:22px;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}
+.cbig .ct{font-size:13px;color:var(--ink)}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:340px}
+.ccard{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;border-radius:10px;border:1px solid var(--line);background:var(--s1);min-width:0}
+.ccard canvas{border-radius:6px}
+.ccard span{font-family:var(--disp);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--dim);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ccard.on{border-color:var(--gold);background:#17130a}.ccard.on span{color:var(--gold)}
 .menu{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center}
 
 /* alt şerit ve düğmeler */
@@ -68,6 +84,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 #menuBtn{flex:none;width:44px;border:1px solid var(--line);border-radius:8px;background:var(--s1);display:grid;place-items:center;color:var(--dim)}
 #ctl{flex:1;min-height:150px;display:flex;flex-direction:column;gap:8px}
 #atk{flex:1.25;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;min-height:0}
+#lft{flex:1.9;display:flex;flex-direction:column;gap:6px;min-height:0}
+#mov{flex:.85;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-height:0}
+.act.mvb{color:#d6dbea;border-color:#2c3550;background:linear-gradient(#141a2a,#0a0d16)}
+.act.mvb:active,.act.mvb.on{background:#26345e}
+.act.mvb .ic{font-size:21px}.act.mvb .lb{font-size:11px;letter-spacing:.08em}.act.mvb .ht{font-size:8.5px}
 #def{flex:1;display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;min-height:0}
 .act{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:0;min-height:56px;padding:4px 2px;border-radius:12px;border:1px solid var(--line);background:var(--s1);overflow:hidden;touch-action:none;transition:transform .06s,background .15s}
 .act .ic{font-size:24px;line-height:1}
@@ -155,10 +176,19 @@ body.idle #hud,body.idle #tick{opacity:.55}
   #ctl{display:contents}
   #atk{grid-area:atk;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1.15fr;grid-template-areas:"u k" "h l" "j j";gap:8px;min-height:0}
   #bU{grid-area:u}#bK{grid-area:k}#bH{grid-area:h}#bL{grid-area:l}#bJ{grid-area:j}
-  #def{grid-area:def;grid-template-columns:1fr;grid-template-rows:1fr 1fr 1.25fr;grid-template-areas:"s" "d" "b";gap:8px;min-height:0}
+  #lft{grid-area:def;gap:8px}
+  #mov{flex:1.25;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px}
+  #def{flex:2.4;grid-template-columns:1fr;grid-template-rows:1fr 1fr 1.25fr;grid-template-areas:"s" "d" "b";gap:8px;min-height:0}
   #bSpecial{grid-area:s}#bDodge{grid-area:d}#bBlock{grid-area:b}
   .act{min-height:0}
   .act .ic{font-size:22px}.act .lb{font-size:15px}.act .ht{font-size:10.5px}
   #coach{font-size:12px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  #ov{gap:6px;padding:8px 12px}#ov h1{font-size:30px}#ov h1 small{margin-top:4px}#ov h2{font-size:22px}
+  #ov .menu{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:480px}
+  #ov .menu .btn.wide,#ov .menu .charbtn{max-width:none;width:100%}#ov .menu .charbtn,#ov .menu .row,#ov .menu .btn.red{grid-column:1/-1}
+  .cgrid{grid-template-columns:repeat(9,1fr);max-width:640px}.ccard span{font-size:8px}
+  .cbig canvas{width:72px!important;height:98px!important}
 }
 @media (prefers-reduced-motion:reduce){.act.spc.rdy,.act.hint{animation:none}}

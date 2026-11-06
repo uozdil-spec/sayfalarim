@@ -39,6 +39,7 @@ KF.sfx = function (k) {
   else if (k === 'cd') tone(440, .12, 'square', .04);
   else if (k === 'go') tone(740, .25, 'square', .05);
   else if (k === 'ui') tone(520, .05, 'square', .03);
+  else if (k === 'jump') tone(300, .14, 'sine', .035, 260);
   else if (k === 'slip') { tone(620, .14, 'sine', .03, -380); thud(.1, .12, 3200); }
   else if (k === 'ok') { tone(660, .1, 'triangle', .06); tone(990, .15, 'triangle', .05, 0, .08); }
   else if (k === 'win') { tone(523, .15, 'triangle', .07); tone(659, .15, 'triangle', .07, 0, .15); tone(784, .3, 'triangle', .07, 0, .3); }
@@ -55,6 +56,16 @@ var MV = KF.MV = {
   k: { n: 'TEKME', w: .48, rec: .42, d: 12, sd: 16, hs: .50 },
   l: { n: 'SÜPÜRME', w: .30, rec: .28, d: 7, sd: 10, hs: .38 }
 };
+/* özel hareketler (Street Fighter tarzı yön + vuruş): c: dayanıklılık bedeli, st: kullandığı poz */
+var SM = KF.SM = {
+  pf: { n: 'EVRAK TOPU', w: .3, rec: .36, d: 8, sd: 10, hs: .35, c: 25, st: 'sp' },
+  dp: { n: 'YÜKSELEN APARKAT', w: .12, rec: .52, d: 16, sd: 22, hs: .62, pierce: .6, c: 32, st: 'u' },
+  tk: { n: 'DÖNEN TEKME', w: .2, rec: .46, d: 14, sd: 18, hs: .5, c: 30, st: 'k' },
+  a: { n: 'HAVA TEKMESİ', w: .12, rec: .2, d: 10, sd: 13, hs: .4, c: 0, st: 'k' }
+};
+var REACH = { j: 112, h: 108, u: 104, k: 128, l: 128, a: 112, dp: 106, tk: 150, s: 170 };
+var WALL = [30, 370], MINGAP = 66;
+function MA(k) { return MV[k] || SM[k]; }
 var DIF = KF.DIF = {
   easy: { rd: .9, tell: 1.2, gap: 1.1, perf: .28, drain: 30, react: .8, pw: .9, dg: .5, dgw: .6, rt: [.16, .38] },
   normal: { rd: 1, tell: 1.1, gap: 1, perf: .22, drain: 36, react: 1, pw: 1, dg: 1, dgw: .44, rt: [.1, .3] },
@@ -64,19 +75,50 @@ var DIF = KF.DIF = {
 KF.VENUES = ['OTOPARK', 'KÖPRÜ ALTI', 'ORMAN', 'ÇAY BAHÇESİ', 'PAZAR YERİ', 'İSKELE', 'ÇATI', 'ŞANTİYE', 'METRO PERONU', 'HAYVANAT BAHÇESİ'];
 
 /* ---------- dövüş kuralları ---------- */
-function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null }; }
+function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null, x: 0, y: 0, vy: 0, air: false, aa: false, jv: 0, md: 0, dh: [], inv: false }; }
 function Sim(o) {
   this.o = o; this.dif = DIF[o.dif || (o.cpu ? 'normal' : 'pvp')]; this.as = o.cpu ? Math.max(0, Math.min(3, o.assist || 0)) : 0;
-  this.f = [FS(100), FS(o.hp || 100)];
+  this.f = [FS(100), FS(o.hp || 100)]; this.f[0].x = 148; this.f[1].x = 252; this.pj = []; this.pid = 0;
   this.ev = []; this.eid = 0; this.time = o.time || 60; this.lock = o.train ? 1 : 2.4; this.lc = 4; this.ph = 'count'; this.endT = 0;
-  this.cpu = o.cpu ? { t: 1.8, reacting: false, bt: 999, hold: 0 } : null;
+  this.cpu = o.cpu ? { t: 1.8, reacting: false, bt: 999, hold: 0, pm: null, walk: false, pr: false } : null;
   this.sc = [0, 0]; this.round = 1; this.bg = o.bg || 0; this.mw = -1; this.rw = -1;
 }
+Sim.prototype.motion = function (f, k) {
+  var now = this.clock || 0, seq = f.dh.filter(function (e) { return now - e.t < .75; }).map(function (e) { return e.d; }).join('');
+  if (k === 'j' && /d.*f$/.test(seq) && /d/.test(seq)) return 'pf';
+  if (k === 'u' && /f.*d.*f$/.test(seq)) return 'dp';
+  if (k === 'k' && /d.*b$/.test(seq)) return 'tk';
+  return null;
+};
+Sim.prototype.mult = function (a) { return (this.cpu && a === 1) ? (this.o.dm || 1) * this.dif.rd * (1 - .1 * this.as) * (this.mercy() ? .8 : 1) : 1; };
 Sim.prototype.emit = function (k, s, v, m) { this.eid++; this.ev.push({ id: this.eid, k: k, s: s, v: v || 0, m: m || '', ts: Date.now() }); };
 Sim.prototype.input = function (i, k) {
   if (this.ph !== 'fight') return;
   var f = this.f[i]; if (f.st === 'ko') return;
-  var mv = MV[k];
+  var mv = MV[k], sgn = i === 0 ? 1 : -1, now0 = this.clock || 0, sk = null;
+  if (k === 'mf' || k === 'mb') { f.md = k === 'mf' ? 1 : -1; f.dh.push({ d: k === 'mf' ? 'f' : 'b', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return; }
+  if (k === 'mfu') { if (f.md > 0) f.md = 0; return; }
+  if (k === 'mbu') { if (f.md < 0) f.md = 0; return; }
+  if (k === 'dn') { f.dh.push({ d: 'd', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return; }
+  if (k === 'jp') {
+    if (f.air || f.st !== 'idle' || f.cd > 0 || f.stam < 14) return;
+    f.stam -= 12; f.air = true; f.aa = false; f.vy = 380; f.jv = f.md * sgn * 80; this.emit('jump', i, 0, ''); return;
+  }
+  var forced = k === 'xj' || k === 'xu' || k === 'xk', k0 = k;
+  if (forced) { sk = { xj: 'pf', xu: 'dp', xk: 'tk' }[k]; k = k.charAt(1); mv = MV[k]; }
+  else if ((k === 'j' || k === 'u' || k === 'k') && !f.air) sk = this.motion(f, k);
+  if (sk && f.air) sk = null;
+  if (sk) {
+    if (f.st === 'rec' || RX.test(f.st)) { f.buf = { k: k0, t: .3 }; return; }
+    if (f.st === 'block' || (f.block && f.st === 'idle')) { f.block = false; f.st = 'idle'; }
+    var S0 = SM[sk];
+    if (f.stam >= S0.c) {
+      if (f.st !== 'idle' || f.cd > 0) return;
+      f.dh.length = 0; f.stam -= S0.c; f.mv = sk; f.st = S0.st === 'sp' ? 'sp' : 'w' + S0.st; f.t = S0.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = S0.rec; f.cd = .06; if (sk === 'dp') f.inv = true; this.emit('swing', i, 0, sk); return;
+    }
+  }
+  if (f.air && mv && f.st === 'idle' && !f.aa) { var Sa = SM.a; f.aa = true; f.mv = 'a'; f.st = 'wk'; f.t = Sa.w; f.rt = Sa.rec; f.cd = .02; this.emit('swing', i, 0, 'a'); return; }
+  if (f.air && k !== 'bd' && k !== 'bu') return;
   if (k === 'dg') {
     if (f.st === 'block' || (f.block && f.st === 'idle')) { f.block = false; f.st = 'idle'; }
     var now = this.clock || 0, chain = (f.dgAt != null && now - f.dgAt < 2.2) ? Math.min(3, (f.dgN || 0) + 1) : 1, cost = 20 + 9 * (chain - 1);
@@ -109,25 +151,50 @@ Sim.prototype.runCpu = function (dt) {
     if (c.bt <= 0) { c.bt = 999; if (op.mv !== 'l' && me.stam >= 30 && Math.random() < (L.dodge || 0) * d.dg * (1 - .25 * this.as)) { this.input(1, 'dg'); c.hold = 0; } else { this.input(1, 'bd'); c.hold = .5; } }
   }
   if ((me.block || me.hold) && !opAtk && c.hold <= 0) this.input(1, 'bu');
-  if (!me.block && !me.hold && c.t <= 0 && me.st === 'idle' && me.cd <= 0 && !opAtk) {
+  if (opAtk && c.walk) { this.input(1, 'mfu'); c.walk = false; }
+  var self = this, inc = this.pj.some(function (p) { return p.o === 0 && Math.abs(p.x - me.x) < 95; });
+  if (inc && !c.pr) {
+    c.pr = true;
+    if (Math.random() < Math.min(.95, L.react * d.react * (1 - .18 * this.as)) + .25) { if (Math.random() < .6) { this.input(1, 'bd'); c.hold = .55; } else this.input(1, 'jp'); }
+  }
+  if (!inc) c.pr = false;
+  if (!me.block && !me.hold && c.t <= 0 && me.st === 'idle' && me.cd <= 0 && !opAtk && !me.air) {
+    var dist = Math.abs(me.x - op.x), as = 1 - .3 * this.as;
+    if (!c.pm) {
+      if (op.air && dist < 122 && me.stam >= 32 && Math.random() < .5 * as) { this.input(1, 'xu'); c.t = rr(.5, .9); return; }
+      if (dist > 165 && me.stam >= 25 && Math.random() < (.12 + (L.dodge || 0) * .7) * as) { this.input(1, 'xj'); c.t = rr(1, 1.7); return; }
+      if (dist > 114 && dist < 150 && me.stam >= 30 && (L.mix.k || 0) >= .1 && Math.random() < .3 * as) { this.input(1, 'xk'); c.t = rr(.8, 1.4); return; }
+      c.pm = me.sp >= 100 && Math.random() < .7 ? 's' : null;
+    }
     var vuln = op.st === 'rec' || op.st === 'hit' || op.st === 'stun' || RX.test(op.st);
-    this.input(1, me.sp >= 100 && Math.random() < .7 ? 's' : pick(L.mix, vuln, op.block, op.st === 'dg' || c.dodged > 0));
+    if (!c.pm) c.pm = pick(L.mix, vuln, op.block, op.st === 'dg' || c.dodged > 0);
+    if (dist > (c.pm === 's' ? 170 : { j: 112, h: 108, u: 104, k: 128, l: 128 }[c.pm]) - 5) { if (!c.walk) { this.input(1, 'mf'); c.walk = true; } c.t = .05; return; }
+    if (c.walk) { this.input(1, 'mfu'); c.walk = false; }
+    this.input(1, c.pm); c.pm = null;
     c.dodged = Math.max(0, (c.dodged || 0) - 1); c.t = (Math.random() < L.dbl * (1 - .3 * this.as) ? .15 : rr(L.gap[0], L.gap[1])) * d.gap * (1 + .16 * this.as) * (1 + .45 * this.mercy());
   }
 };
 Sim.prototype.resolve = function (land) {
-  var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block, bt: f.blockT, dg: f.st === 'dg' }; }), out = [];
+  var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block, bt: f.blockT, dg: f.st === 'dg', air: f.y > 22, inv: f.inv }; }), out = [], dist = Math.abs(F[1].x - F[0].x);
+  land = land.filter(function (a) {
+    var A = F[a];
+    if (A.mv === 'pf') { self.pj.push({ id: ++self.pid, o: a, x: A.x + (a ? -30 : 30), v: (a ? -1 : 1) * 215 }); A.st = 'spstrike'; A.t = .16; A.cd = .08; self.emit('fire', a, 0, 'pf'); return false; }
+    if (A.mv === 'tk') { var room = Math.max(0, dist - MINGAP - 4); A.x += (a ? -1 : 1) * Math.min(46, room); dist = Math.abs(F[1].x - F[0].x); }
+    return true;
+  });
   land.forEach(function (a) {
-    var A = F[a], d = 1 - a, S = snap[d], sp = A.st === 'sp', m = MV[A.mv] || MV.j;
-    var mult = (self.cpu && a === 1) ? (self.o.dm || 1) * self.dif.rd * (1 - .1 * self.as) * (self.mercy() ? .8 : 1) : 1;
+    var A = F[a], d = 1 - a, S = snap[d], sp = A.st === 'sp', m = MA(A.mv) || MV.j;
+    var mult = self.mult(a);
     var dmg = Math.max(1, Math.round((sp ? 22 : m.d + Math.min(A.combo, 4)) * mult));
     var mk = sp ? 's' : A.mv; if (S.dg && mk === 'l') dmg = Math.round(dmg * 1.4);
-    out.push({ a: a, d: d, dmg: dmg, mv: mk, res: S.dg && mk !== 'l' ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')) });
+    var far = dist > (REACH[mk] || 120), airMiss = S.air && !(mk === 'u' || mk === 'dp' || mk === 'a' || mk === 's');
+    out.push({ a: a, d: d, dmg: dmg, mv: mk, air: S.air, res: far ? 'whiff' : (S.inv && mk !== 's' ? 'dodge' : ((S.dg && mk !== 'l') || airMiss ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')))) });
   });
   out.forEach(function (o) {
-    var A = F[o.a], D = F[o.d], m = MV[o.mv] || { sd: 0, hs: .9 }, wasWind = RW.test(D.st), simult = out.some(function (q) { return q.a === o.d; });
-    A.st = o.mv === 's' ? 'spstrike' : 'x' + o.mv; A.t = .14; A.cd = .08;
-    if (o.res === 'dodge') { if (self.cpu && o.a === 1) self.cpu.dodged = 3; A.rt = (m.rec || .5) + .32; A.combo = 0; D.sp = Math.min(100, D.sp + 12); D.stam = Math.min(100, D.stam + 8); self.emit('dodge', o.d, 0, o.mv); }
+    var A = F[o.a], D = F[o.d], m = MA(o.mv) || { sd: 0, hs: .9 }, wasWind = RW.test(D.st), simult = out.some(function (q) { return q.a === o.d && q.res !== 'whiff'; });
+    A.st = o.mv === 's' ? 'spstrike' : 'x' + (SM[o.mv] ? SM[o.mv].st : o.mv); A.t = .14; A.cd = .08;
+    if (o.res === 'whiff') { A.rt = (m.rec || .4) + .16; A.combo = 0; self.emit('whiff', o.a, 0, o.mv); }
+    else if (o.res === 'dodge') { if (self.cpu && o.a === 1) self.cpu.dodged = 3; A.rt = (m.rec || .5) + .32; A.combo = 0; D.sp = Math.min(100, D.sp + 12); D.stam = Math.min(100, D.stam + 8); self.emit('dodge', o.d, o.air ? 1 : 0, o.mv); }
     else if (o.res === 'perfect') { A.st = 'stun'; A.t = 1.0; A.combo = 0; D.sp = Math.min(100, D.sp + 18); self.emit('perfect', o.d, 0, o.mv); }
     else if (o.res === 'block') {
       var dm = Math.max(1, Math.round(o.dmg * (m.pierce || .2))); D.hp -= dm; D.sp = Math.min(100, D.sp + 8); D.stam -= m.sd; A.combo = 0;
@@ -135,7 +202,7 @@ Sim.prototype.resolve = function (land) {
       self.emit('block', o.d, dm, o.mv);
     } else {
       D.hp -= o.dmg; D.block = false; D.combo = 0; D.comboT = 0; D.sp = Math.min(100, D.sp + 5); D.buf = null;
-      var armor = (D.st === 'sp' || D.st === 'wu' || D.st === 'wk') && o.mv === 'j';
+      var armor = (D.st === 'sp' || D.st === 'wu' || D.st === 'wk') && o.mv === 'j' && !D.inv;
       if (o.res === 'spec') { D.st = 'stun'; D.t = .9; } else if (!simult && !armor) { D.st = 'hit'; D.t = m.hs; }
       A.combo++; A.comboT = 1.3; if (o.res === 'hit') A.sp = Math.min(100, A.sp + 9);
       self.emit(o.res, o.d, o.dmg, o.mv); if (wasWind && !simult && !armor && o.res === 'hit') self.emit('cut', o.d, 0, o.mv);
@@ -146,14 +213,14 @@ Sim.prototype.finish = function () {
   var F = this.f, d0 = F[0].hp <= 0, d1 = F[1].hp <= 0, w;
   if (d0 && d1) w = -1; else if (d0) w = 1; else if (d1) w = 0;
   else w = F[0].hp > F[1].hp ? 0 : (F[1].hp > F[0].hp ? 1 : -1);
-  F.forEach(function (f, i) { f.block = false; f.hold = false; f.buf = null; if (w >= 0 && i !== w) f.st = f.hp <= 0 ? 'ko' : 'stun'; else if (w < 0 && f.hp <= 0) f.st = 'ko'; else if (w >= 0) f.st = 'idle'; });
+  this.pj = []; F.forEach(function (f, i) { f.md = 0; f.block = false; f.hold = false; f.buf = null; if (w >= 0 && i !== w) f.st = f.hp <= 0 ? 'ko' : 'stun'; else if (w < 0 && f.hp <= 0) f.st = 'ko'; else if (w >= 0) f.st = 'idle'; });
   if (w >= 0) this.sc[w]++;
   this.mw = this.o.solo ? w : (this.sc[0] >= 2 ? 0 : (this.sc[1] >= 2 ? 1 : -1));
   this.ph = 'end'; this.endT = 2; this.rw = w; this.emit('end', w, F[0].hp <= 0 || F[1].hp <= 0 ? 1 : 0);
 };
 Sim.prototype.nextRound = function () {
   this.round++; this.bg = this.o.solo ? this.bg : ((this.round - 1) * 3) % KF.VENUES.length; this.time = this.o.time || 60; this.lock = 2.4; this.lc = 4; this.ph = 'count';
-  var hp1 = this.f[1].max; this.f = [FS(100), FS(hp1)]; if (this.cpu) this.cpu = { t: 1.8, reacting: false, bt: 999, hold: 0 };
+  var hp1 = this.f[1].max; this.f = [FS(100), FS(hp1)]; this.f[0].x = 148; this.f[1].x = 252; this.pj = []; if (this.cpu) this.cpu = { t: 1.8, reacting: false, bt: 999, hold: 0, pm: null, walk: false, pr: false };
 };
 Sim.prototype.step = function (dt) {
   var F = this.f, i, land = [];
@@ -175,15 +242,44 @@ Sim.prototype.step = function (dt) {
     else if (f.st === 'rec' || f.st === 'hit' || f.st === 'stun') { f.t -= dt; if (f.t <= 0) f.st = 'idle'; }
     if (f.buf) { f.buf.t -= dt; if (f.buf.t <= 0) f.buf = null; else if (f.st === 'idle' && f.cd <= 0) { var b = f.buf.k; f.buf = null; this.input(i, b); } }
     if (f.hold && !f.block && f.st === 'idle' && f.stam > 12) { f.block = true; f.blockT = 0; f.st = 'block'; }
+    /* hareket: yürüme, zıplama, sınırlar */
+    var sg = i ? -1 : 1;
+    if (f.inv && !(f.mv === 'dp' && (f.st === 'wu' || f.st === 'xu'))) f.inv = false;
+    if (f.air) {
+      f.y += f.vy * dt; f.vy -= 1150 * dt; f.x += f.jv * dt;
+      if (f.y <= 0) { f.y = 0; f.vy = 0; f.air = false; f.aa = false; f.jv = 0; f.cd = Math.max(f.cd, .09); }
+    } else if (f.md && f.st === 'idle' && !f.block && !f.hold && f.cd <= 0) f.x += sg * f.md * (f.md > 0 ? 74 : 60) * dt;
+    f.x = Math.max(WALL[0], Math.min(WALL[1], f.x));
+  }
+  var gap = F[1].x - F[0].x;
+  if (gap < MINGAP) {
+    var sh = (MINGAP - gap) / 2; F[0].x -= sh; F[1].x += sh;
+    if (F[0].x < WALL[0]) { F[1].x += WALL[0] - F[0].x; F[0].x = WALL[0]; } if (F[1].x > WALL[1]) { F[0].x -= F[1].x - WALL[1]; F[1].x = WALL[1]; }
   }
   this.resolve(land);
+  this.stepPj(dt);
   if (this.o.train) { F[1].hp = F[1].max; if (F[0].hp < 40) F[0].hp = 40; this.time = 99; return; }
   if (F[0].hp <= 0 || F[1].hp <= 0 || this.time <= 0) this.finish();
+};
+/* evrak topu: yere yakın uçar; zıplayan geçer, savunan yer, sıyrılan ıskalar */
+Sim.prototype.stepPj = function (dt) {
+  var F = this.f, self = this;
+  this.pj = this.pj.filter(function (p) {
+    p.x += p.v * dt; var D = F[1 - p.o], A = F[p.o];
+    if (p.x < -20 || p.x > 420) return false;
+    if (Math.abs(p.x - D.x) > 20) return true;
+    if (D.y > 30 || D.inv || D.st === 'dg' || D.st === 'ko') return true;
+    if (D.block) { var bd = Math.max(1, Math.round(2 * self.mult(p.o))); D.hp -= bd; D.stam -= 10; D.sp = Math.min(100, D.sp + 5); self.emit('block', 1 - p.o, bd, 'pf'); return false; }
+    var dm = Math.max(1, Math.round(SM.pf.d * self.mult(p.o)));
+    D.hp -= dm; D.st = 'hit'; D.t = SM.pf.hs; D.block = false; D.buf = null; D.combo = 0; D.sp = Math.min(100, D.sp + 5); A.sp = Math.min(100, A.sp + 6);
+    self.emit('hit', 1 - p.o, dm, 'pf'); return false;
+  });
 };
 Sim.prototype.snap = function () {
   var now = Date.now(), F = this.f;
   return { t: 's', ph: this.ph, tm: Math.max(0, Math.ceil(this.time)), sc: this.sc, rn: this.round, bg: this.bg, mw: this.mw, rw: this.rw,
-    f: F.map(function (f) { return [Math.max(0, Math.round(f.hp)), Math.round(f.sp), f.st, Math.round(f.stam), f.combo, f.block ? 1 : 0, Math.round(f.max)]; }),
+    f: F.map(function (f) { return [Math.max(0, Math.round(f.hp)), Math.round(f.sp), f.st, Math.round(f.stam), f.combo, f.block ? 1 : 0, Math.round(f.max), Math.round(f.x), Math.round(f.y)]; }),
+    pj: this.pj.map(function (p) { return [p.id, Math.round(p.x), p.o]; }),
     ev: this.ev.filter(function (e) { return now - e.ts < 1500; }).map(function (e) { return [e.id, e.k, e.s, e.v, e.m]; }) };
 };
 KF.Sim = Sim;
@@ -214,7 +310,11 @@ KF.DUMMY = { k: 'zabita', look: 'zabita', name: 'ÇIRAK CEMİL', av: '🥋', bg:
 /* ---------- denetleyici ---------- */
 var G = KF.G = { mode: 'menu', sim: null, room: null, net: null, me: 0, M: null, parts: [], pops: [], shake: 0, freeze: 0, tm: 0, seen: 0, hook: {}, names: ['', ''], avs: ['', ''], lastPh: '', over: false, paused: false };
 var V = G.V = { a: GFX.mkF(148, GFX.LOOKS.muhendis), b: GFX.mkF(252, GFX.LOOKS.zabita), bg: 0, flip: false, parts: G.parts, pops: G.pops, shake: 0, tm: 0, warn: true };
-function setLooks(l0, l1) { V.a = GFX.mkF(148, GFX.LOOKS[l0] || GFX.LOOKS.muhendis); V.b = GFX.mkF(252, GFX.LOOKS[l1] || GFX.LOOKS.zabita); }
+function setLooks(l0, l1) {
+  var A = GFX.LOOKS[l0] || GFX.LOOKS.muhendis, B = GFX.LOOKS[l1] || GFX.LOOKS.zabita;
+  if (A === B) { var c = {}, k; for (k in B) c[k] = B[k]; c.shirt = B.pants; c.pants = B.shirt; if (B.vest) c.vest = B.pants; c.hatc = B.glove; c.glove = B.shirt; B = c; }
+  V.a = GFX.mkF(148, A); V.b = GFX.mkF(252, B); V.pj = [];
+}
 G.setLooks = setLooks;
 function reset() { G.seen = 0; G.parts.length = 0; G.pops.length = 0; G.over = false; G.lastPh = ''; G.M = null; G.freeze = 0; }
 G.stop = function () {
@@ -231,7 +331,7 @@ G.solo = function (o, bg, cfg) {
   G.mode = 'solo'; G.opp = o; G.lv = cfg.lv == null ? -1 : cfg.lv; G.me = 0; G.train = !!cfg.train; reset();
   var sim = G.sim = new Sim({ cpu: o, hp: o.hp, dm: o.dm, time: 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train, assist: cfg.train ? 0 : (cfg.assist != null ? cfg.assist : (KF.S.assist || 0)) });
   if (cfg.hp != null) sim.f[0].hp = cfg.hp; if (cfg.sp) sim.f[0].sp = cfg.sp;
-  setLooks(KF.S.look, o.look); V.bg = bg; G.names = [KF.S.name || 'Mühendis', o.name]; G.avs = [KF.S.av, o.av || '🥊'];
+  setLooks(KF.S.look, o.look); V.bg = bg; G.names = [KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis', o.name]; G.avs = [KF.S.av, o.av || '🥊'];
 };
 G.host = function (pub) {
   G.stop(); var net = ensureNet();
@@ -270,24 +370,27 @@ function applySnap(m) {
     var h = g.info && g.info.h || {}; setLooks(h.l || 'muhendis', KF.S.look); G.names = [h.n || 'Rakip', KF.S.name || 'Oyuncu']; G.avs = [h.a || '🥊', KF.S.av];
     if (G.hook.guestStart) G.hook.guestStart();
   }
-  G.M = { ph: m.ph, tm: m.tm, sc: m.sc, rn: m.rn, bg: m.bg, mw: m.mw, rw: m.rw, hp: [m.f[0][0], m.f[1][0]], sp: [m.f[0][1], m.f[1][1]], st: [m.f[0][2], m.f[1][2]], stam: [m.f[0][3], m.f[1][3]], combo: [m.f[0][4], m.f[1][4]], max: [m.f[0][6], m.f[1][6]] };
+  G.M = { ph: m.ph, tm: m.tm, sc: m.sc, rn: m.rn, bg: m.bg, mw: m.mw, rw: m.rw, hp: [m.f[0][0], m.f[1][0]], sp: [m.f[0][1], m.f[1][1]], st: [m.f[0][2], m.f[1][2]], stam: [m.f[0][3], m.f[1][3]], combo: [m.f[0][4], m.f[1][4]], max: [m.f[0][6], m.f[1][6]], x: [m.f[0][7], m.f[1][7]], y: [m.f[0][8], m.f[1][8]], pj: m.pj || [] };
   m.ev.forEach(function (a) { if (a[0] > G.seen) { G.seen = a[0]; handleEv({ k: a[1], s: a[2], v: a[3], m: a[4] || '' }); } });
   g.lastHost = Date.now();
 }
 function modelFromSim(s) {
-  var F = s.f; return { ph: s.ph, tm: Math.max(0, Math.ceil(s.time)), sc: s.sc, rn: s.round, bg: s.bg, mw: s.mw, rw: s.rw, hp: [F[0].hp, F[1].hp], sp: [F[0].sp, F[1].sp], st: [F[0].st, F[1].st], stam: [F[0].stam, F[1].stam], combo: [F[0].combo, F[1].combo], max: [F[0].max, F[1].max] };
+  var F = s.f; return { ph: s.ph, tm: Math.max(0, Math.ceil(s.time)), sc: s.sc, rn: s.round, bg: s.bg, mw: s.mw, rw: s.rw, hp: [F[0].hp, F[1].hp], sp: [F[0].sp, F[1].sp], st: [F[0].st, F[1].st], stam: [F[0].stam, F[1].stam], combo: [F[0].combo, F[1].combo], max: [F[0].max, F[1].max], x: [F[0].x, F[1].x], y: [F[0].y, F[1].y], pj: s.pj.map(function (p) { return [p.id, p.x, p.o]; }) };
 }
 
 /* ---------- olaylar -> görsel ve ses ---------- */
 function fx(seat) { return seat === 0 ? V.a : V.b; }
 function spark(x, y, col, n) { for (var i = 0; i < n; i++) G.parts.push({ k: 'spark', x: x, y: y, vx: rr(-190, 190), vy: rr(-190, 40), g: 380, c: col, life: .4, max: .4 }); }
 function pop(x, y, txt, col) { G.pops.push({ x: x, y: y, txt: txt, col: col, t: .9 }); }
-var SHK = { j: 2, h: 4, u: 6, k: 6, l: 3, s: 8 }, FRZ = { j: .03, h: .05, u: .08, k: .08, l: .05, s: .1 };
+var SHK = { j: 2, h: 4, u: 6, k: 6, l: 3, s: 8, dp: 7, tk: 6, a: 3, pf: 3 }, FRZ = { j: .03, h: .05, u: .08, k: .08, l: .05, s: .1, dp: .09, tk: .08, a: .04, pf: .03 };
 function handleEv(e) {
   var me = G.me, mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, hy = mv === 'k' ? 190 : (mv === 'l' ? 218 : 152), hs = G.hook;
-  if (e.k === 'swing') KF.sfx(e.m === 'k' || e.m === 'l' ? 'kick' : 'swing');
+  if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); }
+  else if (e.k === 'fire') KF.sfx('spec');
+  else if (e.k === 'jump') KF.sfx('jump');
+  else if (e.k === 'whiff') pop(f.x, 112, 'ISKA', '#9a9aa4');
   else if (e.k === 'hit' || e.k === 'spec') {
-    var strong = mv === 'u' || mv === 'k' || mv === 's';
+    var strong = mv === 'u' || mv === 'k' || mv === 's' || mv === 'dp' || mv === 'tk';
     f.flash = .13; spark(f.x + side * 10, hy, '#ffd23f', strong ? 16 : 9); G.parts.push({ k: 'ring', x: f.x + side * 14, y: hy, c: '#fff', life: .3, max: .3 });
     if (strong) G.parts.push({ k: 'burst', x: f.x + side * 12, y: hy, c: '#ffe27a', life: .22, max: .22 });
     pop(f.x, 118, '-' + e.v, mine ? '#ff6b5e' : '#ffd23f'); G.shake = SHK[mv] || 4; G.freeze = FRZ[mv] || .04; KF.sfx(e.k === 'spec' ? 'spec' : (strong ? 'heavy' : 'hit')); if (mine) KF.buzz(strong ? 60 : 35);
@@ -296,7 +399,7 @@ function handleEv(e) {
   } else if (e.k === 'block') { spark(f.x + side * 14, 150, '#8cc8ff', 7); pop(f.x, 118, 'SAVUNDU', '#8cc8ff'); KF.sfx('block'); G.shake = 2; }
   else if (e.k === 'perfect') { spark(f.x + side * 14, 150, '#6fe3ff', 16); G.parts.push({ k: 'burst', x: f.x + side * 14, y: 150, c: '#6fe3ff', life: .25, max: .25 }); G.shake = 4; G.freeze = .08; KF.sfx('perfect'); if (hs.callout) hs.callout('KUSURSUZ SAVUNMA!', '#6fe3ff'); KF.buzz(25); }
   else if (e.k === 'slip') { KF.sfx('slip'); }
-  else if (e.k === 'dodge') { spark(f.x - side * 6, 140, '#bfe4ff', 12); G.parts.push({ k: 'ring', x: f.x, y: 140, c: '#8cc8ff', life: .3, max: .3 }); pop(f.x, 112, 'SIYRILDI!', '#8cc8ff'); KF.sfx('perfect'); G.shake = 2; if (mine && hs.callout) hs.callout('SIYRILDIN!', '#8cc8ff'); }
+  else if (e.k === 'dodge') { spark(f.x - side * 6, 140, '#bfe4ff', 12); G.parts.push({ k: 'ring', x: f.x, y: 140, c: '#8cc8ff', life: .3, max: .3 }); pop(f.x, 112, e.v ? 'HAVADA!' : 'SIYRILDI!', '#8cc8ff'); KF.sfx('perfect'); G.shake = 2; if (mine && hs.callout) hs.callout('SIYRILDIN!', '#8cc8ff'); }
   else if (e.k === 'cut') pop(f.x, 100, mine ? 'KESİLDİ' : 'KESTİN!', mine ? '#ff9a5e' : '#9aff9a');
   else if (e.k === 'break') { pop(f.x, 118, 'SAVUNMA KIRILDI', '#ff9a5e'); KF.sfx('block'); }
   else if (e.k === 'cd') { if (hs.callout) hs.callout(e.v === 0 ? 'DÖVÜŞ!' : String(e.v), e.v === 0 ? '#d9ab4c' : '#fff'); KF.sfx(e.v === 0 ? 'go' : 'cd'); }
@@ -324,6 +427,12 @@ function frame(ts) {
     V.a.st = M.st[0]; V.b.st = M.st[1]; V.bg = M.bg || 0; V.a.hurt = 1 - M.hp[0] / M.max[0]; V.b.hurt = 1 - M.hp[1] / M.max[1];
     if (M.ph !== 'over') G.over = false;
     if (M.ph !== G.lastPh) { G.lastPh = M.ph; if (M.ph === 'over' && !G.over) { G.over = true; if (G.hook.over) G.hook.over(M.mw); } if (G.hook.phase) G.hook.phase(M.ph, M); }
+  }
+  if (M && M.x) {
+    var kk = Math.min(1, dt * 24), oa = V.a.x, ob = V.b.x;
+    V.a.x += (M.x[0] - V.a.x) * kk; V.b.x += (M.x[1] - V.b.x) * kk;
+    if (dt > 0) { V.a.mvx = (V.a.mvx || 0) * .6 + ((V.a.x - oa) / dt) * .4; V.b.mvx = (V.b.mvx || 0) * .6 + (-(V.b.x - ob) / dt) * .4; }
+    V.a.jy = M.y[0]; V.b.jy = M.y[1]; V.pj = M.pj || [];
   }
   V.a.flash = Math.max(0, V.a.flash - dt); V.b.flash = Math.max(0, V.b.flash - dt);
   if (!fz) { GFX.pose(V.a, dt, G.tm); GFX.pose(V.b, dt, G.tm); }
