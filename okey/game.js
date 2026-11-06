@@ -127,6 +127,21 @@ function orderTiles(ids, mode) {
 }
 /* gruplar (diziler) halinde istakaya yerleştir; gruplar arasında bir boşluk */
 function layoutGroups(groups) {
+  var res = layoutGroups0(groups), n = 0, total = 0, i;
+  groups.forEach(function (g) { total += g.length; });
+  for (i = 0; i < res.length; i++) if (res[i] >= 0) n++;
+  if (n >= total) return res;
+  // sığmadı: tekli taşları tek blokta topla, olmadı hepsini tek blok yap
+  var singles = [], rest = [];
+  groups.forEach(function (g) { if (g.length === 1) singles = singles.concat(g); else rest.push(g); });
+  if (singles.length) rest.push(singles);
+  res = layoutGroups0(rest); n = 0;
+  for (i = 0; i < res.length; i++) if (res[i] >= 0) n++;
+  if (n >= total) return res;
+  var flat = []; groups.forEach(function (g) { flat = flat.concat(g); });
+  return layoutGroups0([flat]);
+}
+function layoutGroups0(groups) {
   var C = cols(), R = rowsN(), slots = [], i;
   for (i = 0; i < SLOTS; i++) slots.push(-1);
   var total = 0; groups.forEach(function (g) { total += g.length; });
@@ -145,10 +160,74 @@ function layoutGroups(groups) {
   });
   return slots;
 }
+/* 101: sıralama blokları yalnızca geçerli per/seri parçalarından oluşsun (aynı taş iki kez, kopuk sayı yan yana olmasın) */
+function ident101(id, ok) { return id >= 104 ? { c: ok.color, n: ok.num } : { c: E.colorOf(id), n: E.numOf(id) }; }
+function groups101(hand, ok, mode) {
+  var wild = hand.filter(function (id) { return E.isJoker(id, ok); }), nat = hand.filter(function (id) { return !E.isJoker(id, ok); });
+  var melds = [], loose = [];
+  if (mode === 'smart') {
+    var ar = E1.arrange(hand, ok, 60000);
+    melds = ar.sets.map(function (x) { return x.ids.slice(); });
+    nat = ar.rest.filter(function (id) { return !E.isJoker(id, ok); });
+    wild = ar.rest.filter(function (id) { return E.isJoker(id, ok); });
+    splitRun101(nat, ok).forEach(function (g) { loose = loose.concat(g); });
+  } else {
+    (mode === 'group' ? splitGroup101(nat, ok) : splitRun101(nat, ok)).forEach(function (g) {
+      if (g.length >= 3 && E1.classify(g, ok)) melds.push(g); else loose = loose.concat(g);
+    });
+  }
+  loose = loose.concat(wild);
+  var out = melds.slice();
+  if (loose.length) out.push(loose);
+  return out;
+}
+function splitGroup101(nat, ok) {
+  var by = {}, keys = [], out = [];
+  nat.forEach(function (id) { var q = ident101(id, ok); if (!by[q.n]) { by[q.n] = []; keys.push(q.n); } by[q.n].push(id); });
+  keys.sort(function (a, b) { return a - b; });
+  keys.forEach(function (n) {
+    var chunks = [];
+    by[n].sort(function (a, b) { return ident101(a, ok).c - ident101(b, ok).c; }).forEach(function (id) {
+      var c = ident101(id, ok).c, placed = false;
+      for (var k = 0; k < chunks.length && !placed; k++) {
+        if (!chunks[k].some(function (x) { return ident101(x, ok).c === c; })) { chunks[k].push(id); placed = true; }
+      }
+      if (!placed) chunks.push([id]);
+    });
+    chunks.forEach(function (c) { out.push(c); });
+  });
+  return out;
+}
+function splitRun101(nat, ok) {
+  var out = [];
+  [0, 1, 2, 3].forEach(function (col) {
+    var list = nat.filter(function (id) { return ident101(id, ok).c === col; }).sort(function (a, b) { return ident101(a, ok).n - ident101(b, ok).n; });
+    var chunks = [], dups = [];
+    list.forEach(function (id) {
+      var n = ident101(id, ok).n, cur = chunks[chunks.length - 1];
+      if (cur) {
+        var last = ident101(cur[cur.length - 1], ok).n;
+        if (n === last) { dups.push(id); return; }
+        if (n === last + 1) { cur.push(id); return; }
+      }
+      chunks.push([id]);
+    });
+    // 12-13 sonrası As (1) varsa: 1 bloğunu sona bağla (…12-13-1)
+    if (chunks.length > 1 && chunks[0].length === 1 && ident101(chunks[0][0], ok).n === 1) {
+      var lastC = chunks[chunks.length - 1];
+      if (ident101(lastC[lastC.length - 1], ok).n === 13) { lastC.push(chunks[0][0]); chunks.shift(); }
+    }
+    chunks.forEach(function (c) { out.push(c); });
+    dups.forEach(function (d) { out.push([d]); });
+  });
+  return out;
+}
 function applySort(mode) {
   var v = st.view; if (!v) return;
   var hand = v.hand.slice(), groups;
-  if (mode === 'run') {
+  if (is101() && (mode === 'run' || mode === 'group' || mode === 'smart')) {
+    groups = groups101(hand, v.ok, mode);
+  } else if (mode === 'run') {
     var ord = orderTiles(hand, 'run'), byc = [[], [], [], []];
     ord.forEach(function (id) { var c = id >= 104 ? v.ok.color : E.colorOf(id); byc[c].push(id); });
     groups = byc;
@@ -173,7 +252,9 @@ function applySort(mode) {
 }
 function initialLayout(hand) {
   var v = st.view;
-  if (OK.S.startSort === 'sorted') {
+  if (OK.S.startSort === 'sorted' && is101()) {
+    st.slots = layoutGroups(groups101(hand, v.ok, 'run'));
+  } else if (OK.S.startSort === 'sorted') {
     var ord = orderTiles(hand, 'run'), byc = [[], [], [], []];
     ord.forEach(function (id) { var c = id >= 104 ? v.ok.color : E.colorOf(id); byc[c].push(id); });
     st.slots = layoutGroups(byc);
@@ -236,40 +317,122 @@ function meldSum(v, seat) {
   v.melds.forEach(function (m) { if (m.owner === seat && m.kind !== 'pair') m.cells.forEach(function (c) { n += E1.numVal(c.n); }); });
   return n;
 }
-/* 101: elini açan oyuncuların perleri, üst şeritte (oyun alanına binmez); hepsi görünür kalır */
-function renderBoard() {
-  var b = document.getElementById('board101'), b2 = document.getElementById('board101b'), v = st.view;
-  if (!b) return;
-  if (!v || !is101() || v.status !== 'playing' || !v.melds || !v.melds.length) { b.style.display = 'none'; if (b2) b2.style.display = 'none'; document.body.classList.remove('hasboard'); return; }
-  var wrap = document.body.classList.contains('tb');
-  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join() + '|' + innerWidth + 'x' + innerHeight + wrap;
-  if (b.dataset.sig === sig && b.style.display !== 'none') return;
-  b.dataset.sig = sig; clear(b); clear(b2);
-  var secs = [], total = 0;
-  [0, 1, 2, 3].forEach(function (k) {
-    var seat = (st.me + k) % 4, list = v.melds.filter(function (x) { return x.owner === seat; });
-    if (!list.length) return;
-    var n = 0; list.forEach(function (md) { n += md.tiles.length; });
-    var sec = h('div', { class: 'bsec' + (seat === st.me ? ' me' : '') },
-      h('div', { class: 'bwho' }, h('b', null, nameOf(seat)), h('span', null, v.opened[seat] === 'pairs' ? list.length + ' ' + t('pairsWord') : meldSum(v, seat))));
-    var row = h('div', { class: 'bm' });
-    list.forEach(function (md) {
-      var m = h('div', { class: 'bmeld' });
-      md.tiles.forEach(function (id) { m.appendChild(mkTile(id, v.ok, 'mini')); });
-      row.appendChild(m);
-    });
-    sec.appendChild(row); secs.push({ el: sec, n: n + 3 }); total += n + 3;
+/* 101: elini açan oyuncuların perleri — her biri kendi oyuncusunun yanındaki boş alanda (çakışmadan);
+   yer bulunamazsa üst şeritte gösterilir */
+function feltRect() { var f = document.getElementById('felt'); return f ? f.getBoundingClientRect() : null; }
+function freeRect(zone, obst, cell) {
+  var cols_ = Math.floor(zone.w / cell), rows_ = Math.floor(zone.h / cell), r, c, k;
+  if (cols_ < 2 || rows_ < 2) return null;
+  var occ = [];
+  for (r = 0; r < rows_; r++) { occ.push(new Array(cols_)); }
+  obst.forEach(function (o) {
+    var c0 = Math.max(0, Math.floor((o.x - zone.x) / cell)), c1 = Math.min(cols_ - 1, Math.floor((o.x + o.w - zone.x) / cell));
+    var r0 = Math.max(0, Math.floor((o.y - zone.y) / cell)), r1 = Math.min(rows_ - 1, Math.floor((o.y + o.h - zone.y) / cell));
+    for (r = r0; r <= r1; r++) for (c = c0; c <= c1; c++) occ[r][c] = 1;
   });
+  var hist = new Array(cols_).fill(0), best = null;
+  for (r = 0; r < rows_; r++) {
+    for (c = 0; c < cols_; c++) hist[c] = occ[r][c] ? 0 : hist[c] + 1;
+    var stack = [];
+    for (c = 0; c <= cols_; c++) {
+      var cur = c === cols_ ? 0 : hist[c], start = c;
+      while (stack.length && stack[stack.length - 1].h >= cur) {
+        var top = stack.pop(), area = top.h * (c - top.s);
+        if (!best || area > best.area) best = { area: area, c0: top.s, c1: c, r1: r + 1, hh: top.h };
+        start = top.s;
+      }
+      stack.push({ h: cur, s: start });
+    }
+  }
+  if (!best || best.area < 4) return null;
+  return { x: zone.x + best.c0 * cell, y: zone.y + (best.r1 - best.hh) * cell, w: (best.c1 - best.c0) * cell, h: best.hh * cell };
+}
+function seatSection(v, seat, cls) {
+  var list = v.melds.filter(function (x) { return x.owner === seat; });
+  if (!list.length) return null;
+  var n = 0; list.forEach(function (md) { n += md.tiles.length; });
+  var sec = h('div', { class: 'bsec' + (seat === st.me ? ' me' : '') },
+    h('div', { class: 'bwho' }, h('b', null, nameOf(seat)), h('span', null, v.opened[seat] === 'pairs' ? list.length + ' ' + t('pairsWord') : meldSum(v, seat))));
+  var row = h('div', { class: 'bm' });
+  list.forEach(function (md) {
+    var m = h('div', { class: 'bmeld' });
+    md.tiles.forEach(function (id) { m.appendChild(mkTile(id, v.ok, 'mini')); });
+    row.appendChild(m);
+  });
+  sec.appendChild(row);
+  return { el: sec, n: n + 3 };
+}
+function renderBoard() {
+  var b = document.getElementById('board101'), b2 = document.getElementById('board101b'), v = st.view, felt = document.getElementById('felt');
+  if (!b || !felt) return;
+  var layer = document.getElementById('mp101');
+  if (!layer) { layer = h('div', { id: 'mp101' }); felt.appendChild(layer); }
+  if (!v || !is101() || v.status !== 'playing' || !v.melds || !v.melds.length) { b.style.display = 'none'; b2.style.display = 'none'; clear(layer); layer.dataset.sig = ''; b.dataset.sig = ''; return; }
+  var wrap = document.body.classList.contains('tb');
+  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join() + '|' + innerWidth + 'x' + innerHeight + wrap + '|' + (st.view.turn);
+  if (layer.dataset.sig === sig) return;
+  layer.dataset.sig = sig; clear(layer);
+  var fr = feltRect(); if (!fr) return;
+  var W = fr.width, H = fr.height, cell = 6, pad = 6;
+  function R(e) { var r = e.getBoundingClientRect(); return { x: r.left - fr.left - pad, y: r.top - fr.top - pad, w: r.width + pad * 2, h: r.height + pad * 2 }; }
+  var obst = [];
+  Array.prototype.forEach.call(felt.querySelectorAll('.plate, .fan, .dp, #pile, #indic, #status, #hud > .grp, #felt > button, .drawbtn, #drawBtn, #mp101 .mp'), function (e) { if (e.offsetWidth) obst.push(R(e)); });
+  Array.prototype.forEach.call(felt.querySelectorAll('button'), function (e) { if (e.offsetWidth && !e.closest('#hud')) obst.push(R(e)); });
+  var rk = document.getElementById('rack'), rr = rk ? rk.getBoundingClientRect() : null;
+  var rackTop = rr ? rr.top - fr.top - 40 : H;                       // iştaka + rozet payı
+  obst.push({ x: 0, y: rackTop, w: W, h: H - rackTop + 10 });
+  var plate = function (sel) { var e = felt.querySelector(sel); return e && e.offsetWidth ? e.getBoundingClientRect() : null; };
+  var pT = plate('#seat2 .plate'), pL = plate('#seat3 .plate'), pR = plate('#seat1 .plate'), pM = plate('#mine .plate');
+  var pile = document.getElementById('pile').getBoundingClientRect(), ind = document.getElementById('indic').getBoundingClientRect();
+  var ix0 = ind.left, ix1 = ind.right, iy1 = ind.bottom;
+  Array.prototype.forEach.call(document.querySelectorAll('#indic *'), function (e) { var q = e.getBoundingClientRect(); if (!q.width) return; ix0 = Math.min(ix0, q.left); ix1 = Math.max(ix1, q.right); iy1 = Math.max(iy1, q.bottom); obst.push({ x: q.left - fr.left - pad, y: q.top - fr.top - pad, w: q.width + pad * 2, h: q.height + pad * 2 }); });
+  var cx0 = Math.min(pile.left, ix0) - fr.left, cx1 = Math.max(pile.right, ix1) - fr.left, cy1 = iy1 - fr.top;
+  var zones = {};
+  var botY = pM ? pM.top - fr.top : rackTop;
+  zones[2] = { x: W * 0.12, y: pT ? pT.bottom - fr.top : 40, w: W * 0.76, h: Math.max(0, (pile.top - fr.top) - (pT ? pT.bottom - fr.top : 40)) + 4 };
+  zones[3] = { x: 0, y: pL ? pL.top - fr.top : H * 0.3, w: Math.max(0, cx0 - 4), h: Math.max(0, botY - (pL ? pL.top - fr.top : H * 0.3)) };
+  zones[1] = { x: cx1 + 4, y: pR ? pR.top - fr.top : H * 0.3, w: Math.max(0, W - cx1 - 4), h: Math.max(0, botY - (pR ? pR.top - fr.top : H * 0.3)) };
+  zones[0] = { x: W * 0.12, y: cy1 - 4, w: W * 0.76, h: Math.max(0, rackTop - cy1 + 4) };
+  var vpOf = function (seat) { return (seat - st.me + 4) % 4; };
+  var fail = [], placed = [];
+  var order = [2, 3, 1, 0];
+  var big = innerHeight >= 560;
+  order.forEach(function (vp) {
+    var seat = (st.me + vp) % 4, sc = seatSection(v, seat);
+    if (!sc) return;
+    var z = zones[vp];
+    if (!z || z.w < 60 || z.h < 24) { fail.push(seat); return; }
+    var rect = freeRect(z, obst.concat(placed), cell);
+    if (!rect || rect.w < 60 || rect.h < 22) { fail.push(seat); return; }
+    var p = h('div', { class: 'mp vp' + vp + (seat === st.me ? ' me' : ''), onclick: function () { G.openTable(); } }, sc.el);
+    p.style.maxWidth = rect.w + 'px'; p.style.maxHeight = rect.h + 'px';
+    layer.appendChild(p);
+    var okFit = false;
+    for (var w = big ? 26 : 20; w >= 12; w--) {
+      p.style.setProperty('--bt', w + 'px');
+      if (p.scrollWidth <= p.clientWidth + 1 && p.scrollHeight <= p.clientHeight + 1) { okFit = true; break; }
+    }
+    if (!okFit) { layer.removeChild(p); fail.push(seat); return; }
+    var pw = p.offsetWidth, ph = p.offsetHeight, x, y;
+    x = vp === 3 ? rect.x : vp === 1 ? rect.x + rect.w - pw : rect.x + (rect.w - pw) / 2;
+    y = vp === 2 ? rect.y : (vp === 0 ? rect.y : rect.y);
+    p.style.left = Math.max(0, x) + 'px'; p.style.top = Math.max(0, y) + 'px';
+    placed.push({ x: x - 4, y: y - 4, w: pw + 8, h: ph + 8 });
+  });
+  // yer bulunamayanlar: üst şerit
+  clear(b); clear(b2);
+  var secs = [], total = 0;
+  fail.forEach(function (seat) { var sc = seatSection(v, seat); if (sc) { secs.push(sc); total += sc.n; } });
+  if (!secs.length) { b.style.display = 'none'; b2.style.display = 'none'; return; }
   var acc = 0;
   secs.forEach(function (x, i) {
     var left = wrap || acc + x.n / 2 <= total / 2 || i === 0;
     (left ? b : b2).appendChild(x.el); acc += x.n;
   });
   b.style.display = ''; b2.style.display = b2.firstChild && !wrap ? '' : 'none';
-  document.body.classList.add('hasboard');
   fitBoard(b, b2, wrap);
 }
-/* tüm eller görünsün: sığana kadar taşları küçült (en küçük 9px) */
+/* şerit: sığana kadar taşları küçült (en küçük 9px), olmazsa özet */
 function fitBoard(b, b2, wrap) {
   var big = innerHeight >= 560, w = wrap ? 18 : (big ? 26 : 19);
   function fits(e) { return !e || e.style.display === 'none' || e.scrollHeight <= e.clientHeight + 1; }
@@ -277,7 +440,6 @@ function fitBoard(b, b2, wrap) {
     b.style.setProperty('--bt', w + 'px'); b2.style.setProperty('--bt', w + 'px');
     if (fits(b) && fits(b2)) return;
   }
-  // çok kalabalık küçük ekran: taşlar yerine oyuncu başına özet (dokununca tam masa)
   [b, b2].forEach(function (e) {
     Array.prototype.forEach.call(e.querySelectorAll('.bmeld'), function (m) { m.style.display = 'none'; });
     Array.prototype.forEach.call(e.querySelectorAll('.bwho'), function (wh) {
