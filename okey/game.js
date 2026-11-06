@@ -59,7 +59,9 @@ function build() {
     h('div', { class: 'grp' },
       h('button', { class: 'btn iconbtn', id: 'bMenu', 'aria-label': t('menu'), onclick: G.openMenu }, OK.icon('menu')),
       h('div', { id: 'info', onclick: G.openScores })),
-    h('div', { id: 'board101', style: 'display:none', onclick: function () { G.openTable(); } }),
+    h('div', { id: 'board101', class: 'bwrap', style: 'display:none', onclick: function () { G.openTable(); } }),
+    h('div', { id: 'bspacer' }),
+    h('div', { id: 'board101b', class: 'bwrap', style: 'display:none', onclick: function () { G.openTable(); } }),
     h('div', { class: 'grp' },
       OK.fsOK() ? h('button', { class: 'btn iconbtn', id: 'bFs', 'aria-label': t('fullscreen'), onclick: OK.fsToggle }, OK.icon(OK.isFs() ? 'shrink' : 'expand')) : null,
       h('button', { class: 'btn iconbtn', id: 'bSnd', onclick: function () { OK.S.sound = !OK.S.sound; OK.save(); renderSnd(); } }),
@@ -234,17 +236,20 @@ function meldSum(v, seat) {
   v.melds.forEach(function (m) { if (m.owner === seat && m.kind !== 'pair') m.cells.forEach(function (c) { n += E1.numVal(c.n); }); });
   return n;
 }
-/* 101: elini açan oyuncuların perleri, üst şeritte (oyun alanına binmez) */
+/* 101: elini açan oyuncuların perleri, üst şeritte (oyun alanına binmez); hepsi görünür kalır */
 function renderBoard() {
-  var b = document.getElementById('board101'), v = st.view;
+  var b = document.getElementById('board101'), b2 = document.getElementById('board101b'), v = st.view;
   if (!b) return;
-  if (!v || !is101() || v.status !== 'playing' || !v.melds || !v.melds.length) { b.style.display = 'none'; return; }
-  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join();
+  if (!v || !is101() || v.status !== 'playing' || !v.melds || !v.melds.length) { b.style.display = 'none'; if (b2) b2.style.display = 'none'; document.body.classList.remove('hasboard'); return; }
+  var wrap = document.body.classList.contains('tb');
+  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join() + '|' + innerWidth + 'x' + innerHeight + wrap;
   if (b.dataset.sig === sig && b.style.display !== 'none') return;
-  b.dataset.sig = sig; clear(b); b.style.display = '';
+  b.dataset.sig = sig; clear(b); clear(b2);
+  var secs = [], total = 0;
   [0, 1, 2, 3].forEach(function (k) {
     var seat = (st.me + k) % 4, list = v.melds.filter(function (x) { return x.owner === seat; });
     if (!list.length) return;
+    var n = 0; list.forEach(function (md) { n += md.tiles.length; });
     var sec = h('div', { class: 'bsec' + (seat === st.me ? ' me' : '') },
       h('div', { class: 'bwho' }, h('b', null, nameOf(seat)), h('span', null, v.opened[seat] === 'pairs' ? list.length + ' ' + t('pairsWord') : meldSum(v, seat))));
     var row = h('div', { class: 'bm' });
@@ -253,9 +258,34 @@ function renderBoard() {
       md.tiles.forEach(function (id) { m.appendChild(mkTile(id, v.ok, 'mini')); });
       row.appendChild(m);
     });
-    sec.appendChild(row); b.appendChild(sec);
+    sec.appendChild(row); secs.push({ el: sec, n: n + 3 }); total += n + 3;
+  });
+  var acc = 0;
+  secs.forEach(function (x, i) {
+    var left = wrap || acc + x.n / 2 <= total / 2 || i === 0;
+    (left ? b : b2).appendChild(x.el); acc += x.n;
+  });
+  b.style.display = ''; b2.style.display = b2.firstChild && !wrap ? '' : 'none';
+  document.body.classList.add('hasboard');
+  fitBoard(b, b2, wrap);
+}
+/* tüm eller görünsün: sığana kadar taşları küçült (en küçük 9px) */
+function fitBoard(b, b2, wrap) {
+  var big = innerHeight >= 560, w = wrap ? 18 : (big ? 26 : 19);
+  function fits(e) { return !e || e.style.display === 'none' || e.scrollHeight <= e.clientHeight + 1; }
+  for (; w >= 9; w--) {
+    b.style.setProperty('--bt', w + 'px'); b2.style.setProperty('--bt', w + 'px');
+    if (fits(b) && fits(b2)) return;
+  }
+  // çok kalabalık küçük ekran: taşlar yerine oyuncu başına özet (dokununca tam masa)
+  [b, b2].forEach(function (e) {
+    Array.prototype.forEach.call(e.querySelectorAll('.bmeld'), function (m) { m.style.display = 'none'; });
+    Array.prototype.forEach.call(e.querySelectorAll('.bwho'), function (wh) {
+      var sp = wh.querySelector('span'); if (sp && !sp.dataset.x) { sp.dataset.x = 1; sp.textContent += ' · ' + wh.parentNode.querySelectorAll('.bmeld').length + ' ' + t('perWord'); }
+    });
   });
 }
+
 /* 101: istakada dizili perlerin anlık toplamı (tekli boştaki taşlar dahil değil) */
 function sumMelds101(v) {
   var ok = v.ok, total = 0, pairs = 0, groups = rackGroups();
@@ -875,6 +905,7 @@ function renderRackInit(view, fresh) {
 }
 G.onLayout = function () {
   if (!st.built || !st.view) return;
+  renderBoard();
   if (st.cols && st.cols !== cols()) { reflowCols(); st.cols = cols(); }
   renderRack();
 };

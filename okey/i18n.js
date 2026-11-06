@@ -137,5 +137,6 @@ r1_mult_h:['Katlar','Multipliers'],r1_mult:['Okeyle bitirmek, çiftle bitirmek v
 r1_not_h:['Bu sürümde olmayanlar','Not in this version'],r1_not:['Eşli oyun, katlama (el açma eşiğini yükseltme) ve işlek taş cezası yoktur.','No partner mode, no "folding" rule and no penalty for discarding a useful tile.'],
 r1_x:['',''],
 sumLabel:['Per toplamı','Meld total'],sumPairs:['Çift {0}/{1}','Pairs {0}/{1}'],
-sumLeft:['Elde kalan','In hand'],ptsWord:['puan','pts']
+sumLeft:['Elde kalan','In hand'],ptsWord:['puan','pts'],
+perWord:['per','melds']
 };
