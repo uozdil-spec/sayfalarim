@@ -36,8 +36,14 @@ function match(filter, topic) {
   return f.length === t.length;
 }
 
+function mkPeer(id) {
+  if (!root.Peer) return null;
+  try { var o = { debug: 0 }, k, ov = root.KF_PEER || {}; for (k in ov) o[k] = ov[k]; return id ? new root.Peer(id, o) : new root.Peer(o); } catch (e) { return null; }
+}
+KF.hasP2P = function () { return !!root.Peer; };
+
 function Net() {
-  this.cli = null; this.status = 'idle'; this.subs = []; this.presence = {}; this.tables = {};
+  this.cli = null; this.errs = {}; this.status = 'idle'; this.subs = []; this.presence = {}; this.tables = {};
   this.reqs = KF.ks.get('reqs', {}); this.sent = KF.ks.get('sent', {}); this.invites = [];
   this.state = 'on'; this.connecting = null; this.timers = []; this.wanted = false;
   var self = this;
@@ -55,7 +61,9 @@ Net.prototype.start = function () {
   if (this.connecting) return this.connecting;
   if (this.cli && this.cli.connected) return Promise.resolve();
   if (!root.mqtt) return Promise.reject(new Error('no-lib'));
+  if (this.cli && !this.cli.connected) { try { this.cli.end(true); } catch (e) {} this.cli = null; }
   this.setStatus('connecting');
+  this.errs = {};
   this.connecting = new Promise(function (resolve, reject) {
     var n = BROKERS.length, res = [], cl = [], done = false;
     function check() {
@@ -63,7 +71,7 @@ Net.prototype.start = function () {
       for (var k = 0; k < n; k++) { if (res[k] === undefined) return; if (res[k] === true) { done = true; choose(k); return; } }
       done = true; self.connecting = null; self.setStatus('offline'); reject(new Error('no-broker'));
     }
-    function fail(i) { if (res[i] !== undefined) return; res[i] = false; try { cl[i].end(true); } catch (e) {} check(); }
+    function fail(i, why) { if (res[i] !== undefined) return; res[i] = false; self.errs[BROKERS[i].replace(/^wss?:\/\//, '').split('/')[0]] = why || 'kapalı'; try { cl[i].end(true); } catch (e) {} check(); }
     function choose(k) {
       for (var m = 0; m < n; m++) if (m !== k && cl[m]) { try { cl[m].end(true); } catch (e) {} }
       self.cli = cl[k]; self.cli.options.reconnectPeriod = 2000; self.attach(); self.connecting = null; resolve();
@@ -75,10 +83,10 @@ Net.prototype.start = function () {
           will: { topic: RK + '/p/' + KF.S.id, payload: JSON.stringify({ st: 'off' }), retain: true, qos: 0 } });
       } catch (e) { res[i] = false; return; }
       cl[i] = c;
-      var to = setTimeout(function () { fail(i); }, 8500);
+      var to = setTimeout(function () { fail(i, 'zaman aşımı'); }, 8500);
       c.on('connect', function () { clearTimeout(to); if (res[i] === undefined) { res[i] = true; check(); } });
-      c.on('error', function () { clearTimeout(to); fail(i); });
-      c.on('close', function () { clearTimeout(to); fail(i); });
+      c.on('error', function (e) { clearTimeout(to); fail(i, String(e && e.message || 'hata').slice(0, 30)); });
+      c.on('close', function () { clearTimeout(to); fail(i, 'kapandı'); });
     });
     check();
   });
@@ -229,8 +237,20 @@ function Host(net, pub) {
   var self = this;
   this.net = net; this.pubRoom = !!pub; this.code = KF.rid(5, KF.CODEA); this.base = RK + '/r/' + this.code;
   this.guest = null; this.status = 'lobby'; this.closed = false; this.rtt = 0; this.n = 0;
+  this.conn = null; this.peer = null;
   this.unsub = net.sub(this.base + '/g', function (m) { self.onMsg(m); });
   this.tm = setInterval(function () { self.tick(); }, 2000);
+  var P = mkPeer('kfd1-' + this.code);
+  if (P) {
+    this.peer = P;
+    P.on('connection', function (c) {
+      c.on('open', function () { if (self.conn && self.conn.open && self.conn !== c) { try { c.send({ t: 'full' }); c.close(); } catch (e) {} return; } self.conn = c; });
+      c.on('data', function (m) { if (m && typeof m === 'object') self.onMsg(m); });
+      c.on('close', function () { if (self.conn === c) self.conn = null; });
+      c.on('error', function () {});
+    });
+    P.on('error', function () {});
+  }
   net.setBusy(true); this.publishInfo();
 }
 KF.Host = Host;
@@ -240,7 +260,11 @@ Host.prototype.publishInfo = function () {
   if (this.pubRoom && this.status === 'lobby' && !this.guest) this.net.pub(RK + '/t/' + this.code, { h: p.n, a: p.a, t: Date.now(), host: KF.S.id }, { retain: true });
   else if (this.pubRoom) this.net.pub(RK + '/t/' + this.code, '', { retain: true });
 };
-Host.prototype.send = function (o) { this.net.pub(this.base + '/h', o, { qos: 0 }); };
+Host.prototype.send = function (o) {
+  if (this.conn && this.conn.open) { try { this.conn.send(o); return; } catch (e) {} }
+  this.net.pub(this.base + '/h', o, { qos: 0 });
+};
+Host.prototype.direct = function () { return !!(this.conn && this.conn.open); };
 Host.prototype.onMsg = function (m) {
   if (this.closed || typeof m.t !== 'string') return;
   var pid = clean(m.id, 12);
@@ -251,7 +275,7 @@ Host.prototype.onMsg = function (m) {
     this.guest = { id: pid, n: clean(m.n, 14) || 'Oyuncu', a: clean(m.a, 4) || '🙂', l: clean(m.l, 10) || 'zabita', seen: Date.now() };
     this.publishInfo();
     if (isNew && this.onGuest) this.onGuest(this.guest);
-    this.send({ t: 'welcome', to: pid, st: this.status });
+    this.send({ t: 'welcome', to: pid, st: this.status, h: { n: this.net.profile().n, a: this.net.profile().a, l: this.net.profile().l } });
     return;
   }
   if (!this.guest || this.guest.id !== pid) return;
@@ -272,7 +296,8 @@ Host.prototype.setStatus = function (s) { this.status = s; this.publishInfo(); }
 Host.prototype.link = function () { return location.href.split('#')[0].split('?')[0] + '#o=' + this.code; };
 Host.prototype.close = function () {
   if (this.closed) return; this.closed = true; clearInterval(this.tm); this.unsub();
-  this.send({ t: 'bye' });
+  this.send({ t: 'bye' }); if (this.conn && this.conn.open) this.net.pub(this.base + '/h', { t: 'bye' }, { qos: 0 });
+  if (this.peer) { var pp = this.peer; setTimeout(function () { try { pp.destroy(); } catch (e) {} }, 300); }
   this.net.pub(this.base + '/i', '', { retain: true }); if (this.pubRoom) this.net.pub(RK + '/t/' + this.code, '', { retain: true });
   this.net.setBusy(false);
 };
@@ -283,25 +308,46 @@ function Guest(net, code) {
   this.net = net; this.code = code.toUpperCase(); this.base = RK + '/r/' + this.code;
   this.info = null; this.state = 'joining'; this.lastHost = 0; this.t0 = Date.now(); this.closed = false;
   this.u1 = net.sub(this.base + '/i', function (o) { self.lastHost = Date.now(); self.info = o; if (self.onInfo) self.onInfo(o); });
-  this.u2 = net.sub(this.base + '/h', function (m) {
-    if (m.to && m.to !== KF.S.id) return;
-    self.lastHost = Date.now();
-    if (m.t === 'full') { self.state = 'full'; if (self.onState) self.onState(); }
-    else if (m.t === 'bye') { self.state = 'bye'; if (self.onState) self.onState(); }
-    else if (m.t === 'welcome') { if (self.state === 'joining') self.state = 'lobby'; if (self.onState) self.onState(); }
-    else if (m.t === 'ping') self.send({ t: 'pong', ts: m.ts });
-    else if (self.onMsg) self.onMsg(m);
-  });
+  this.u2 = net.sub(this.base + '/h', function (m) { self.handle(m); });
+  this.conn = null; this.peer = null;
+  var P = mkPeer();
+  if (P) {
+    this.peer = P;
+    P.on('open', function () {
+      if (self.closed) return;
+      var c = P.connect('kfd1-' + self.code, { reliable: true, serialization: 'json' });
+      c.on('open', function () { self.conn = c; self.sendJoin(); });
+      c.on('data', function (m) { if (m && typeof m === 'object') self.handle(m); });
+      c.on('close', function () { if (self.conn === c) self.conn = null; });
+      c.on('error', function () {});
+    });
+    P.on('error', function () {});
+  }
   net.setBusy(true); this.sendJoin();
   this.tm = setInterval(function () { self.tick(); }, 1500); this.k = 0;
 }
 KF.Guest = Guest;
-Guest.prototype.send = function (o, q) { o.id = KF.S.id; return this.net.pub(this.base + '/g', o, { qos: q || 0 }); };
+Guest.prototype.handle = function (m) {
+  if (this.closed || !m || typeof m.t !== 'string') return;
+  if (m.to && m.to !== KF.S.id) return;
+  this.lastHost = Date.now();
+  if (m.t === 'full') { this.state = 'full'; if (this.onState) this.onState(); }
+  else if (m.t === 'bye') { this.state = 'bye'; if (this.onState) this.onState(); }
+  else if (m.t === 'welcome') { if (!this.info && m.h) { this.info = { st: m.st, h: m.h }; if (this.onInfo) this.onInfo(this.info); } if (this.state === 'joining') this.state = 'lobby'; if (this.onState) this.onState(); }
+  else if (m.t === 'ping') this.send({ t: 'pong', ts: m.ts });
+  else if (this.onMsg) this.onMsg(m);
+};
+Guest.prototype.direct = function () { return !!(this.conn && this.conn.open); };
+Guest.prototype.send = function (o, q) {
+  o.id = KF.S.id;
+  if (this.conn && this.conn.open) { try { this.conn.send(o); return true; } catch (e) {} }
+  return this.net.pub(this.base + '/g', o, { qos: q || 0 });
+};
 Guest.prototype.sendJoin = function () { var p = this.net.profile(); this.send({ t: 'join', n: p.n, a: p.a, l: p.l }, 1); };
 Guest.prototype.tick = function () {
   if (this.closed) return;
   this.k++;
-  if (this.state === 'joining') { this.sendJoin(); if (Date.now() - this.t0 > 12000 && !this.lastHost) { this.state = 'gone'; if (this.onState) this.onState(); } }
+  if (this.state === 'joining') { this.sendJoin(); if (Date.now() - this.t0 > 12000) { this.state = 'gone'; if (this.onState) this.onState(); } }
   else if (this.state === 'lobby' || this.state === 'play') {
     this.send({ t: 'hb' });
     if (this.lastHost && Date.now() - this.lastHost > 11000) { this.state = 'gone'; if (this.onState) this.onState(); }
@@ -309,6 +355,6 @@ Guest.prototype.tick = function () {
 };
 Guest.prototype.input = function (k) { this.send({ t: 'in', k: k }, 1); };
 Guest.prototype.leave = function () { try { this.send({ t: 'leave' }, 1); } catch (e) {} };
-Guest.prototype.close = function () { if (this.closed) return; this.closed = true; clearInterval(this.tm); this.u1(); this.u2(); this.net.setBusy(false); };
+Guest.prototype.close = function () { if (this.closed) return; this.closed = true; clearInterval(this.tm); this.u1(); this.u2(); if (this.peer) { var pp = this.peer; setTimeout(function () { try { pp.destroy(); } catch (e) {} }, 300); } this.net.setBusy(false); };
 
 })(window);

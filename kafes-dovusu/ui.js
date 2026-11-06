@@ -7,7 +7,7 @@ var $ = U.$ = function (id) { return document.getElementById(id); };
 KF.loadProfile();
 
 var IC = {
-  j: '<path d="M4 12h12M12 7l5 5-5 5"/>', h: '<path d="M5 18c-1-8 4-12 12-10M13 4l5 4-4 5"/>', u: '<path d="M12 20V5M6 11l6-6 6 6"/>', k: '<path d="M9 3v9l-5 5v3h14v-4l-6-2V3z"/>',
+  j: '<path d="M4 12h12M12 7l5 5-5 5"/>', h: '<path d="M5 18c-1-8 4-12 12-10M13 4l5 4-4 5"/>', u: '<path d="M12 20V5M6 11l6-6 6 6"/>', k: '<path d="M9 3v9l-5 5v3h14v-4l-6-2V3z"/>', l: '<path d="M3 19h18M6 19c1-6 6-9 13-8"/>', dg: '<path d="M19 5c-7 0-12 4-12 11M3 12l4 4 4-4"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>', scroll: '<path d="M6 4h10a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>'
 };
@@ -56,7 +56,7 @@ U.openSheet = function (o) {
 };
 $('shX').innerHTML = ico('x'); $('shX').onclick = U.closeSheet; document.querySelector('.shbg').onclick = U.closeSheet;
 $('menuBtn').innerHTML = ico('menu');
-[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bBlock', 'shield'], ['bSpecial', 'scroll']].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
+[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll']].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
 
 /* ---------- ticker ---------- */
 var LINES = {
@@ -65,6 +65,7 @@ var LINES = {
   block: ['Dosya iade edildi: eksik evrak.', 'Darbe görev alanı dışı olduğu için reddedildi.'],
   perfect: ['Kusursuz! Rakip kendi evrakına dolandı.', 'Tam zamanında mühür bastın.'],
   spec: ['Üç nüsha, iki mühür, tek yumruk.', 'Dilekçe imzalandı, rakip evraka boğuldu.'],
+  dodge: ['Evrak ıskalandı, kaçan kurtuldu.', 'Darbe boşluğa gitti, hakem gülüyor.', 'Sıyrıldı! Rakip havayı yumrukladı.'],
   kick: ['Tekme müdürlüğü devreye girdi.', 'Bu tekme için ruhsat alınmamıştı.'],
   idle: ['Çay ocağından taze demlendi sesi geliyor.', 'Seyirciler simit paylaşıyor.', 'Hakem mesai kartını basıyor.', 'Bir kedi kafesin üstünden geçti, kimse şaşırmadı.']
 };
@@ -72,7 +73,7 @@ var lastSay = 0;
 var say = U.say = function (k, force) { var n = Date.now(); if (!force && n - lastSay < 2200) return; lastSay = n; var a = LINES[k]; $('ticker').textContent = a[Math.floor(Math.random() * a.length)]; };
 
 /* ---------- HUD, rehber ve ipuçları ---------- */
-var cache = {}, ALLB = ['bJ', 'bH', 'bU', 'bK', 'bBlock', 'bSpecial'];
+var cache = {}, ALLB = ['bJ', 'bH', 'bU', 'bK', 'bL', 'bDodge', 'bBlock', 'bSpecial'];
 function setTxt(id, v) { if (cache[id] !== v) { cache[id] = v; $(id).textContent = v; } }
 function setW(id, v) { v = Math.max(0, Math.min(100, v)).toFixed(1) + '%'; if (cache[id] !== v) { cache[id] = v; $(id).style.width = v; } }
 function setCls(el, c, on) { if (el.classList.contains(c) !== on) el.classList.toggle(c, on); }
@@ -87,9 +88,15 @@ function advice(M) {
   if (U.lesson) return U.lesson;
   if (M.ph === 'count') return { t: 'Hazır ol', c: 'info' };
   if (M.ph !== 'fight') return { t: '', c: '' };
-  if (GFX.isWind(os)) return { t: 'Rakip vuracak! SAVUN\'a bas', c: 'warn', b: 'bBlock', w: 1 };
+  if (GFX.isWind(os)) {
+    if (os === 'wu') return { t: 'APARKAT geliyor! SIYRIL (savunmayı deler)', c: 'warn', b: 'bDodge', w: 1 };
+    if (os === 'sp') return { t: 'DİLEKÇE geliyor! SIYRIL, savunma işe yaramaz', c: 'warn', b: 'bDodge', w: 1 };
+    if (os === 'wl') return { t: 'Süpürme! SAVUN\'a bas (kaçarsan yakalanırsın)', c: 'warn', b: 'bBlock', w: 1 };
+    return { t: 'Rakip vuracak! SAVUN ya da SIYRIL', c: 'warn', b: 'bBlock', w: 1 };
+  }
   if (ms === 'stun' || ms === 'hit') return { t: 'Sersemledin', c: 'warn' };
   if (M.sp[me] >= 100 && ms === 'idle') return { t: 'DİLEKÇE hazır, fırlat!', c: 'good', b: 'bSpecial' };
+  if (os === 'dg') return { t: 'Rakip kaçıyor: SÜPÜR ile yakala', c: 'good', b: 'bL' };
   if (os === 'stun') return { t: 'Rakip sersemledi, APARKAT!', c: 'good', b: 'bU' };
   if (os === 'hit' || os === 'rec') return { t: 'Şimdi vur!', c: 'good', b: 'bJ' };
   if (os === 'block') return { t: 'Rakip korumada: APARKAT savunmayı deler', c: 'info', b: 'bU' };
@@ -104,7 +111,7 @@ function hud(M) {
   setW('mHp', M.hp[me] / M.max[me] * 100); setW('mHpG', M.hp[me] / M.max[me] * 100); setW('oHp', M.hp[op] / M.max[op] * 100); setW('oHpG', M.hp[op] / M.max[op] * 100);
   setW('mSp', M.sp[me]); setW('oSp', M.sp[op]); setW('stb', M.stam[me]);
   var pvp = G.mode === 'host' || G.mode === 'guest';
-  setTxt('rnd', pvp ? 'RAUND ' + M.rn : (G.train ? 'ANTRENMAN' : (G.lv >= 0 ? 'MAÇ ' + (G.lv + 1) + '/7' : 'SERBEST MAÇ')));
+  setTxt('rnd', pvp ? 'RAUND ' + M.rn : (G.train ? 'ANTRENMAN' : (G.lv >= 0 ? 'MAÇ ' + (G.lv + 1) + '/' + KF.LADDER.length : 'SERBEST MAÇ')));
   setTxt('tmr', G.train ? '∞' : String(M.tm));
   var pips = '', i;
   if (pvp) { for (i = 0; i < 2; i++) pips += '<i class="' + (i < M.sc[me] ? 'w' : '') + '"></i>'; for (i = 0; i < 2; i++) pips += '<i class="' + (i < M.sc[op] ? 'l' : '') + '"></i>'; }
@@ -126,10 +133,11 @@ function blockOff() { if (blockDown) { blockDown = false; G.input('bu'); } }
 U.resetBlock = function () { blockDown = false; };
 Array.prototype.forEach.call(document.querySelectorAll('.mv'), function (el) { el.addEventListener('pointerdown', function (e) { e.preventDefault(); press(el.dataset.k); }); });
 $('bSpecial').addEventListener('pointerdown', function (e) { e.preventDefault(); press('s'); });
+$('bDodge').addEventListener('pointerdown', function (e) { e.preventDefault(); press('dg'); });
 $('bBlock').addEventListener('pointerdown', function (e) { e.preventDefault(); blockOn(); });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { $('bBlock').addEventListener(n, blockOff); });
 window.addEventListener('pointerup', blockOff); window.addEventListener('blur', blockOff);
-var KM = { a: 'j', s: 'h', d: 'u', f: 'k', enter: 's', g: 's' };
+var KM = { a: 'j', s: 'h', d: 'u', f: 'k', x: 'l', z: 'dg', enter: 's', g: 's' };
 window.addEventListener('keydown', function (e) {
   if (e.repeat || !playing()) return; var k = e.key.toLowerCase();
   if (KM[k]) { e.preventDefault(); press(KM[k]); } else if (k === ' ' || k === 'shift') { e.preventDefault(); blockOn(); }
@@ -195,14 +203,17 @@ U.settingsSheet = function () {
 U.helpSheet = function () {
   if (G.mode === 'solo') G.paused = true;
   U.openSheet({ title: 'Nasıl oynanır', f: function (d) {
-    [['Amaç', 'Rakibin canını bitir ya da süre dolunca daha çok canı olan kazanır.'],
-     ['DÜZ', 'En hızlı vuruş, hasarı az. Rakip kroşe hazırlarken düz atarsan vuruşu keser. Aparkat ve tekmeyi kesemez.'],
-     ['KROŞE', 'Biraz yavaş, daha sert.'], ['APARKAT', 'Yavaş ama çok sert. Savunmanın çoğunu deler.'], ['TEKME', 'Ağır ve sert. Rakibi daha uzun sersemletir.'],
+    [['Amaç', 'Rakibin canını bitir ya da süre dolunca daha çok canı olan kazanır. Telefonu yan çevirirsen düğmeler iki yana açılır: solda savunma, sağda vuruşlar.'],
+     ['Taş-kâğıt-makas', 'SAVUN, düz-kroşe-tekmeyi durdurur ama aparkatı tam durduramaz. SIYRIL her vuruşu boşa çıkarır ama süpürmeye yakalanırsın. SÜPÜR, kaçanı yakalar ama savunmaya takılır. Rakibin ne yaptığına göre seç.'],
+     ['DÜZ', 'En hızlı vuruş, hasarı az. Rakip kroşe ya da süpürme hazırlarken düz atarsan vuruşu keser. Aparkat ve tekmeyi kesemez.'],
+     ['KROŞE', 'Biraz yavaş, daha sert.'], ['APARKAT', 'Yavaş ama çok sert. Savunmanın çoğunu deler. Karşısında SIYRIL iyi gelir.'], ['TEKME', 'Ağır ve sert. Rakibi daha uzun sersemletir.'],
+     ['SÜPÜR', 'Alçak tekme. Orta hızda, hasarı az. Kaçan (SIYRIL) rakibi yakalar ve ekstra hasar verir.'],
      ['SAVUN', 'Basılı tut. Rakip kırmızı ünlem gösterince savunmada ol. Vuruş inmeden hemen önce savunmaya basarsan KUSURSUZ savunma olur, rakip sersemler. Savunma dayanıklılığı bitirir, uzun tutma.'],
-     ['DİLEKÇE', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca savunma tanımaz, çok sert vurur.'],
-     ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Bir vuruşa basıp hemen bir sonrakine basarsan sıraya girer.']
+     ['SIYRIL', 'Kısa dokun. Bir an eğilip kaçarsın. Ünlem çıkınca dokunursan rakibin vuruşu boşa gider, rakip uzun süre açık kalır ve sen can bulursun. Biraz dayanıklılık harcar. Süpürmeye karşı işe yaramaz.'],
+     ['DİLEKÇE', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca savunma tanımaz, çok sert vurur. Karşısında tek çare SIYRIL.'],
+     ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Bir vuruşa basıp hemen bir sonrakine basarsan sıraya girer. Takılırsan ayarlardan Kolay modu ve Rehberi aç.']
     ].forEach(function (x) { d.appendChild(h('div', { cls: 'li' }, [h('div', { cls: 'tx' }, [h('b', { text: x[0] }), h('span', { text: x[1] })])])); });
-    d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, Boşluk savun, Enter dilekçe.'));
+    d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter dilekçe.'));
   } });
 };
 U.menuSheet = function () {
@@ -217,7 +228,7 @@ $('menuBtn').onclick = U.menuSheet;
 /* ---------- ortak olay ve kare kancaları ---------- */
 G.hook.callout = U.callout;
 G.hook.ev = function (e) {
-  if (e.k === 'hit') say(e.s === G.me ? 'hurt' : (e.m === 'k' ? 'kick' : 'hit')); else if (e.k === 'block') say('block'); else if (e.k === 'perfect') say('perfect', true); else if (e.k === 'spec') say('spec', true);
+  if (e.k === 'hit') say(e.s === G.me ? 'hurt' : (e.m === 'k' ? 'kick' : 'hit')); else if (e.k === 'block') say('block'); else if (e.k === 'dodge') say('dodge', true); else if (e.k === 'perfect') say('perfect', true); else if (e.k === 'spec') say('spec', true);
   if (U.onEv) U.onEv(e);
 };
 var idleSay = 0;

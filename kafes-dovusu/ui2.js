@@ -3,16 +3,17 @@
 'use strict';
 var KF = root.KF, G = KF.G, U = KF.U, GFX = root.GFX, h = U.h, T = U.T, btn = U.btn, toast = U.toast, showOv = U.showOv, hideOv = U.hideOv, $ = U.$;
 function row(k) { return h('div', { cls: 'row' }, k); }
-var qTimer = null, qTok = 0, streak = 0;
+var qTimer = null, qTok = 0, streak = 0, deadT = {};
+function liveTables() { var now = Date.now(); return net().openTables().filter(function (t) { return !(deadT[t.code] && now - deadT[t.code] < 120000); }); }
 function stopQ() { clearInterval(qTimer); qTimer = null; }
 
 /* ---------- ana menü ---------- */
 function stats() { var S = KF.S; return S.wins + S.losses ? 'Skor: ' + S.wins + ' galibiyet · ' + S.losses + ' mağlubiyet' : 'Yeni misin? Önce antrenmanı dene.'; }
 U.home = function () {
   qTok++; stopQ(); G.stop(); U.closeSheet(); U.keepAwake(false); U.resetBlock(); U.lesson = null; G.train = false; G.lv = -1;
-  var S = KF.S, first = !S.trained, cont = S.best > 0 && S.best < 7, rows = [];
+  var S = KF.S, first = !S.trained, cont = S.best > 0 && S.best < KF.LADDER.length, rows = [];
   if (first) rows.push(btn('Antrenman (önce bunu dene)', 'pri wide', startTrain));
-  rows.push(btn(cont ? 'Turnuva · devam (maç ' + (S.best + 1) + '/7)' : 'Turnuva · 7 maç', first ? 'wide' : 'pri wide', function () { if (cont) tourChoice(); else startTour(0); }));
+  rows.push(btn(cont ? 'Turnuva · devam (maç ' + (S.best + 1) + '/' + KF.LADDER.length + ')' : 'Turnuva · ' + KF.LADDER.length + ' maç', first ? 'wide' : 'pri wide', function () { if (cont) tourChoice(); else startTour(0); }));
   rows.push(btn('Serbest maç', 'wide', freeSheet));
   rows.push(btn('Çevrimiçi düello', 'red wide', function () { onlineSheet(0); }));
   rows.push(row([first ? null : btn('Antrenman', 'sm', startTrain), btn('Nasıl oynanır', 'sm', U.helpSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
@@ -21,11 +22,11 @@ U.home = function () {
 };
 function tourChoice() {
   var S = KF.S;
-  showOv([T('h2', '', 'Turnuva'), T('p', '', 'Maç ' + (S.best + 1) + '/7\'den devam edebilir ya da baştan başlayabilirsin.'), h('div', { cls: 'menu' }, [btn('Maç ' + (S.best + 1) + '\'den devam', 'pri wide', function () { startTour(S.best); }), btn('Baştan başla', 'wide', function () { startTour(0); }), btn('Geri', 'sm', U.home)])]);
+  showOv([T('h2', '', 'Turnuva'), T('p', '', 'Maç ' + (S.best + 1) + '/' + KF.LADDER.length + '\'den devam edebilir ya da baştan başlayabilirsin.'), h('div', { cls: 'menu' }, [btn('Maç ' + (S.best + 1) + '\'den devam', 'pri wide', function () { startTour(S.best); }), btn('Baştan başla', 'wide', function () { startTour(0); }), btn('Geri', 'sm', U.home)])]);
 }
 
 /* ---------- ortak: maç tanıtımı ---------- */
-var TIPS = ['İpucu: Rakip kırmızı ünlem gösterince SAVUN\'a bas.', 'İpucu: Aparkat savunmayı deler, korumadaki rakibe işe yarar.', 'İpucu: Rakip sersemken ağır vuruş at.', 'İpucu: Dilekçe dolunca fırlat, savunma tanımaz.', 'İpucu: Düz ile rakibin yavaş vuruşunu hazırlanırken kesebilirsin.', 'İpucu: Savunmayı uzun tutma, dayanıklılık biter.', 'İpucu: Tekme uzak ve ağırdır, bol vakit olunca kullan.'];
+var TIPS = ['İpucu: Rakip kırmızı ünlem gösterince SAVUN\'a bas.', 'İpucu: Aparkat savunmayı deler, korumadaki rakibe işe yarar.', 'İpucu: Rakip sersemken ağır vuruş at.', 'İpucu: Dilekçe dolunca fırlat, savunma tanımaz.', 'İpucu: Düz ile rakibin yavaş vuruşunu hazırlanırken kesebilirsin.', 'İpucu: Savunmayı uzun tutma, dayanıklılık biter.', 'İpucu: Tekme uzak ve ağırdır, bol vakit olunca kullan.', 'İpucu: Aparkat gelince SAVUN yerine SIYRIL dene.', 'İpucu: Rakip sürekli kaçıyorsa SÜPÜR ile yakala.', 'İpucu: SIYRIL başarılı olursa rakip açık kalır, hemen vur.', 'İpucu: Telefonu yan çevirirsen düğmeler iki yana açılır.'];
 function intro(o, bg, tag, prog, onGo, onBack) {
   var tip = KF.S.guide ? h('div', { cls: 'tipl' }, [h('div', { html: '<b>' + TIPS[Math.floor(Math.random() * TIPS.length)].replace('İpucu: ', 'İpucu · ') + '</b>' })]) : null;
   showOv([T('span', 'tag', tag), prog, T('h2', '', KF.VENUES[bg]), h('div', { cls: 'vs', html: (KF.S.name || 'Mühendis').toUpperCase() + '<em>VS</em><br>' + o.name }), T('p', '', o.desc), tip, row([btn('Menü', 'sm', onBack || U.home), btn('Hazırım', 'pri', onGo)])]);
@@ -36,7 +37,7 @@ function go() { hideOv(); G.sim.ph = 'count'; U.keepAwake(true); }
 function startTour(lv, hp, sp) {
   var o = KF.OPPS[KF.LADDER[lv]]; G.solo(o, o.bg, { lv: lv, hp: hp, sp: sp }); G.sim.ph = 'wait'; U.resetBlock(); U.lesson = null;
   var prog = h('div', { cls: 'prog' }); KF.LADDER.forEach(function (k, i) { prog.appendChild(h('i', { cls: i < lv ? 'd' : (i === lv ? 'c' : '') })); });
-  intro(o, o.bg, 'MAÇ ' + (lv + 1) + '/7' + (lv === 6 ? ' · FİNAL' : ''), prog, go);
+  intro(o, o.bg, 'MAÇ ' + (lv + 1) + '/' + KF.LADDER.length + (lv === KF.LADDER.length - 1 ? ' · FİNAL' : ''), prog, go);
 }
 
 /* ---------- serbest maç ---------- */
@@ -45,7 +46,7 @@ function freeSheet() {
   FS.dif = FS.dif || KF.S.dif;
   U.openSheet({ title: 'Serbest maç', f: function (d) {
     d.appendChild(T('div', 'grp', 'Rakip'));
-    d.appendChild(U.chips(Object.keys(KF.OPPS).map(function (k) { return [k, KF.OPPS[k].name.split(' ')[0]]; }), FS.o, function (k) { FS.o = k; FS.bg = KF.OPPS[k].bg; mekan.replaceWith(mekan = mk()); }));
+    d.appendChild(U.chips(Object.keys(KF.OPPS).map(function (k) { return [k, k === 'sofor' ? 'ŞOFÖR' : KF.OPPS[k].name.split(' ')[0]]; }), FS.o, function (k) { FS.o = k; FS.bg = KF.OPPS[k].bg; mekan.replaceWith(mekan = mk()); }));
     d.appendChild(T('div', 'grp', 'Mekân'));
     var mekan = mk(); function mk() { return U.chips(KF.VENUES.map(function (v, i) { return [i, v]; }), FS.bg, function (i) { FS.bg = i; }); }
     d.appendChild(mekan);
@@ -66,8 +67,10 @@ var LESS = [
   { t: 'KROŞE: biraz yavaş, daha sert. 2 kez dokun', b: 'bH', k: 'h', n: 2 },
   { t: 'APARKAT: yavaş ama çok sert. 2 kez dokun', b: 'bU', k: 'u', n: 2 },
   { t: 'TEKME: ağır vuruş. 2 kez dokun', b: 'bK', k: 'k', n: 2 },
+  { t: 'SÜPÜR: alçak tekme. 2 kez dokun', b: 'bL', k: 'l', n: 2 },
   { t: 'Ünlem çıkınca SAVUN\'a bas ve basılı tut', b: 'bBlock', ev: 'block', n: 1, w: 1 },
   { t: 'Kusursuz savunma: ünlemden hemen sonra SAVUN (ya da 3 savunma)', b: 'bBlock', ev: 'perfect', n: 1, w: 1, alt: 3 },
+  { t: 'SIYRIL: ünlem çıkınca SIYRIL\'a bas, yumruk boşa gider', b: 'bDodge', ev: 'dodge', n: 1, w: 1 },
   { t: 'DİLEKÇE doldu! Fırlat', b: 'bSpecial', k: 's', n: 1 }
 ];
 var step = 0, cnt = 0, alt = 0;
@@ -87,6 +90,7 @@ U.onEv = function (e) {
   if (!G.train || !U.lesson || G.mode !== 'solo' || step >= LESS.length) return;
   var L = LESS[step];
   if (L.k && e.k === 'swing' && e.s === 0 && e.m === L.k) { if (++cnt >= L.n) lessonDone(); }
+  else if (L.ev === 'dodge') { if (e.k === 'dodge' && e.s === 0 && ++cnt >= L.n) lessonDone(); }
   else if (L.ev && e.s === 0 && (e.k === 'block' || e.k === 'perfect')) {
     if (L.ev === 'block' || e.k === 'perfect') { if (++cnt >= L.n) lessonDone(); }
     else if (L.alt && ++alt >= L.alt) lessonDone();
@@ -102,7 +106,7 @@ G.hook.over = function (mw) {
       if (G.lv >= 0) S.best = Math.max(S.best, G.lv + 1);
       KF.saveProfile();
       var M = G.M, hp = Math.min(100, Math.round(M.hp[0]) + 35), sp = M.sp[0];
-      if (G.lv === 6) showOv([T('h1', '', 'Şampiyon!'), T('p', '', 'Terfi geldi: Daire Başkanı Yardımcısı Vekili (Geçici). Maaş farkı bir sonraki dönemde.'), row([btn('Yeniden oyna', 'pri', function () { startTour(0); }), btn('Menü', '', U.home)])]);
+      if (G.lv === KF.LADDER.length - 1) showOv([T('h1', '', 'Şampiyon!'), T('p', '', 'Terfi geldi: Daire Başkanı Yardımcısı Vekili (Geçici). Maaş farkı bir sonraki dönemde.'), row([btn('Yeniden oyna', 'pri', function () { startTour(0); }), btn('Menü', '', U.home)])]);
       else if (G.lv >= 0) showOv([T('h2', '', 'Kazandın!'), T('p', '', 'Çay molası: +35 can. Seyirciler simit atıyor.'), row([btn('Sıradaki maç', 'pri', function () { startTour(G.lv + 1, hp, sp); }), btn('Menü', 'sm', U.home)])]);
       else showOv([T('h2', '', 'Kazandın!'), T('p', '', o.name + ' yere serildi.'), row([btn('Tekrar', 'pri', startFree), btn('Menü', 'sm', U.home)])]);
     } else {
@@ -151,7 +155,7 @@ function nameGuard(d) {
 }
 function quickTab(d) {
   netLine(d); nameGuard(d);
-  d.appendChild(T('p', 'note', 'Gerçek bir rakip bulunur, üç raundun ikisini kazanan düelloyu alır. Her raund farklı bir mekânda oynanır. Dört vuruşun hepsi çevrimiçinde de var.'));
+  d.appendChild(T('p', 'note', 'Gerçek bir rakip bulunur, üç raundun ikisini kazanan düelloyu alır. Her raund farklı bir mekânda oynanır. Beş vuruşun ve sıyrılmanın hepsi çevrimiçinde de var.'));
   d.appendChild(btn('Rakip bul', 'red wide', function () { if (!KF.S.name) { toast('Önce bir ad yaz', true); return; } U.closeSheet(); quick(); }));
   d.appendChild(btn('Özel oda kur', 'wide', function () { if (!KF.S.name) { toast('Önce bir ad yaz', true); return; } U.closeSheet(); hostRoom(false); }));
 }
@@ -199,7 +203,16 @@ function inviteFriend(fid) {
 
 /* ---------- oda akışları ---------- */
 function lobbyOv(title, lines, acts) { showOv([T('span', 'tag', 'ÇEVRİMİÇİ'), T('h2', '', title)].concat(lines, [row(acts)])); }
-function fail(msg) { showOv([T('h2', '', 'Bağlanılamadı'), T('p', '', msg || (root.mqtt ? 'Çevrimiçi sunuculara ulaşılamadı. İnternetini kontrol edip tekrar dene.' : 'Çevrimiçi mod için sayfayı yayınlanmış GitHub adresinden aç.')), row([btn('Ana menü', 'pri', U.home)])]); }
+function fail(msg) {
+  var N = net(), det = Object.keys(N.errs || {}).map(function (k) { return k + ': ' + N.errs[k]; }).join(' · '), acts = [];
+  if (KF.hasP2P()) acts.push(btn('Özel oda kur', 'pri', function () { hostRoom(false); }));
+  acts.push(btn('Tekrar dene', KF.hasP2P() ? '' : 'pri', function () { onlineSheet(0); }), btn('Ana menü', 'sm', U.home));
+  showOv([T('h2', '', 'Sunuculara ulaşılamadı'), T('p', '', msg || (root.mqtt ? 'Eşleştirme sunucularına bağlanılamadı. Hızlı maç ve arkadaş listesi çalışmaz, ama özel oda kurup kodu arkadaşına gönderirsen telefonlar doğrudan bağlanarak oynayabilir.' : 'Çevrimiçi mod için sayfayı yayınlanmış GitHub adresinden aç.')), det ? T('p', 'note', det) : null, row(acts)]);
+}
+function vsCpu() {
+  var ks = Object.keys(KF.OPPS), k = ks[Math.floor(Math.random() * ks.length)];
+  FS.o = k; FS.bg = KF.OPPS[k].bg; FS.dif = FS.dif || KF.S.dif; startFree();
+}
 function hostRoom(pub, cb) {
   lobbyOv('Oda kuruluyor…', [], [btn('İptal', 'sm', U.home)]);
   G.host(pub).then(function (hst) {
@@ -223,11 +236,11 @@ function hostRoom(pub, cb) {
       net().watchTables(true); var t0 = Date.now();
       var tick = function () {
         if (G.room !== hst || G.mode !== 'lobbyH') { stopQ(); return; }
-        var other = net().openTables().filter(function (t) { return t.code < hst.code; })[0];
-        if (other && !hst.guest) { stopQ(); joinRoom(other.code); return; }
-        if (Date.now() - t0 > 40000 && !hst.guest) {
+        var other = liveTables().filter(function (t) { return t.code < hst.code; })[0];
+        if (other && !hst.guest) { stopQ(); joinRoom(other.code, true); return; }
+        if (Date.now() - t0 > 25000 && !hst.guest) {
           stopQ();
-          lobbyOv('Rakip bulunamadı', [T('p', '', 'Şu an açık oda yok. Beklemeye devam edebilir ya da bilgisayara karşı oynayabilirsin.')], [btn('Bekle', 'sm', function () { t0 = Date.now(); paint(); stopQ(); qTimer = setInterval(tick, 4000); }), btn('Turnuva', 'sm pri', function () { startTour(0); }), btn('Menü', 'sm', U.home)]);
+          lobbyOv('Rakip bulunamadı', [T('p', '', 'Şu an aynı anda arayan başka oyuncu yok. Bekleyebilir, arkadaşını davet edebilir ya da bilgisayara karşı oynayabilirsin.')], [btn('Bekle', 'sm', function () { t0 = Date.now(); paint(); stopQ(); qTimer = setInterval(tick, 4000); }), btn('Arkadaş çağır', 'sm', function () { G.stop(); hostRoom(false, function () { onlineSheet(1); }); }), btn('Bilgisayara karşı', 'sm pri', function () { stopQ(); G.stop(); vsCpu(); }), btn('Menü', 'sm', U.home)]);
         }
       };
       stopQ(); qTimer = setInterval(tick, 4000);
@@ -241,11 +254,11 @@ function quick() {
     N.watchTables(true);
     setTimeout(function () {
       if (tok !== qTok || G.mode !== 'menu') return;
-      var t = N.openTables(); if (t.length) joinRoom(t[0].code); else hostRoom(true);
+      var t = liveTables(); if (t.length) joinRoom(t[0].code, true); else hostRoom(true);
     }, 2400);
   }).catch(function () { fail(); });
 }
-function joinRoom(code) {
+function joinRoom(code, auto) {
   stopQ(); G.stop();
   lobbyOv('Bağlanılıyor', [T('div', 'code', code)], [btn('İptal', 'sm', U.home)]);
   G.join(code).then(function (g) {
@@ -254,7 +267,7 @@ function joinRoom(code) {
       var m = { joining: ['Bağlanılıyor', 'Oda aranıyor…'], lobby: ['Bağlandın', 'Ev sahibi dövüşü başlatıyor…'], full: ['Oda dolu', 'Bu odada zaten iki oyuncu var.'], gone: ['Oda bulunamadı', 'Kod yanlış ya da oda kapanmış olabilir.'], bye: ['Oda kapandı', 'Ev sahibi odadan ayrıldı.'] }[g.state] || ['Bağlanılıyor', ''];
       lobbyOv(m[0], [T('div', 'code', code), T('p', '', m[1])], [btn(g.state === 'lobby' || g.state === 'joining' ? 'İptal' : 'Ana menü', 'sm', U.home)]);
     }
-    g.onState = function () { if (G.mode === 'guest' && (g.state === 'gone' || g.state === 'bye')) { KF.sfx('lose'); showOv([T('h2', '', 'Bağlantı koptu'), T('p', '', 'Rakip ayrıldı ya da bağlantı kesildi.'), row([btn('Ana menü', 'pri', U.home)])]); } else paint(); };
+    g.onState = function () { if (auto && g.state === 'gone' && G.guest === g && G.mode === 'lobbyG') { deadT[code] = Date.now(); hostRoom(true); return; } if (G.mode === 'guest' && (g.state === 'gone' || g.state === 'bye')) { KF.sfx('lose'); showOv([T('h2', '', 'Bağlantı koptu'), T('p', '', 'Rakip ayrıldı ya da bağlantı kesildi.'), row([btn('Ana menü', 'pri', U.home)])]); } else paint(); };
     g.onInfo = paint; paint();
   }).catch(function () { fail('Çevrimiçi sunuculara ulaşılamadı.'); });
 }

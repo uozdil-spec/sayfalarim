@@ -13,7 +13,13 @@ G.LOOKS = {
   sofor: { name: 'Tır Şoförü', skin: '#bf8a62', skin2: '#946440', hair: '#1a1410', shirt: '#8d2a26', pants: '#3c4c6a', glove: '#2a2a2e', shoe: '#3a2a18', hat: 'cap', hatc: '#b32822', must: 1, plaid: '#2a1210', build: 1.28, sleeve: 1 },
   avukat: { name: 'Avukat', skin: '#e8c1a0', skin2: '#c0916c', hair: '#17110d', shirt: '#2a2c36', pants: '#2a2c36', glove: '#b8283a', shoe: '#101012', hat: 'bun', glasses: 1, blazer: 1, build: .9, sleeve: 1 },
   itfaiyeci: { name: 'İtfaiyeci', skin: '#cf9a72', skin2: '#a06f4a', hair: '#1c1612', shirt: '#1d1e24', pants: '#1d1e24', glove: '#e8a21c', shoe: '#0e0e10', hat: 'fire', hatc: '#c8281f', stripes: '#e8d24a', build: 1.16, sleeve: 1 },
+  sprinkci: { name: 'Sprinkci', skin: '#c99068', skin2: '#9c6a46', hair: '#1a1410', shirt: '#2f7fb8', vest: '#1e5a86', pants: '#2c3440', glove: '#22a08a', shoe: '#1a2a30', hat: 'cap', hatc: '#1f8f78', hose: '#3fae52', must: 1, build: 1.06, sleeve: 0, stripes: '#9ad8f0' },
+  imzaci: { name: 'İmzacı', skin: '#e0b793', skin2: '#b98a64', hair: '#b8b8b8', shirt: '#e9e6df', pants: '#2a2c36', glove: '#1c3f8f', shoe: '#101012', hat: 'none', glasses: 1, blazer: 1, tie: '#9a1f2a', pen: '#1c3f8f', build: .96, sleeve: 1 },
+  trol: { name: 'Trol', skin: '#e3b896', skin2: '#b98d68', hair: '#2a2018', shirt: '#3a3f4a', pants: '#1d1f26', glove: '#22d06a', shoe: '#e8e8e8', hat: 'hood', hatc: '#3a3f4a', headset: 1, build: .94, sleeve: 1 },
+  haritaci: { name: 'Haritacı', skin: '#d8a67c', skin2: '#b07b52', hair: '#3a2a1c', shirt: '#b9a56a', pants: '#4d4a3a', glove: '#2f6fb5', shoe: '#2a2218', hat: 'cap', hatc: '#5d6b3c', glasses: 1, tube: '#c9c2a8', buttons: '#6a5a2a', build: 1, sleeve: 1 },
+  jaloncu: { name: 'Jaloncu', skin: '#c08a60', skin2: '#946440', hair: '#14110e', shirt: '#2a2d36', vest: '#c8e03a', pants: '#3a3a44', glove: '#e8431f', shoe: '#1a1a1c', hat: 'cap', hatc: '#e9e9e4', stripes: '#dfe6ea', pole: 1, build: 1.04, sleeve: 0 },
+  kavurmaci: { name: 'Kavurmacı', skin: '#cf9468', skin2: '#a26a44', hair: '#1a1410', shirt: '#d9d4c8', pants: '#3a3f4a', glove: '#7a1f1a', shoe: '#1c1c1f', hat: 'cap', hatc: '#f1efe8', must: 1, apron: '#efe8da', blood: 1, build: 1.26, sleeve: 1 },
   asci: { name: 'Aşçı', skin: '#d8a47f', skin2: '#b0795a', hair: '#222', shirt: '#f4f4f0', pants: '#3b4350', glove: '#d86a1f', shoe: '#1c1c1f', hat: 'chef', hatc: '#fbfbf8', must: 1, buttons: '#9a9a9a', build: 1.2, sleeve: 1 }
 };
-G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci'];
+G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol'];
 })(window);

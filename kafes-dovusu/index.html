@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261106-1023">
+<meta name="surum" content="20261106-1027">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <title>Kafes Dövüşü</title>
-<link rel="icon" href="../kafes-dovusu-ikon.svg?v=20261106-1023" type="image/svg+xml">
-<link rel="icon" href="../kafes-dovusu-ikon-32.png?v=20261106-1023" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="../kafes-dovusu-ikon-180.png?v=20261106-1023">
+<link rel="icon" href="../kafes-dovusu-ikon.svg?v=20261106-1027" type="image/svg+xml">
+<link rel="icon" href="../kafes-dovusu-ikon-32.png?v=20261106-1027" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../kafes-dovusu-ikon-180.png?v=20261106-1027">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Oswald:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261106-1023">
+<link rel="stylesheet" href="style.css?v=20261106-1027">
 </head>
 <body>
 <div id="app">
@@ -47,11 +47,13 @@
     <div id="atk">
       <button class="act mv" id="bJ" data-k="j" type="button"><span class="ic"></span><span class="lb">DÜZ</span><span class="ht">hızlı</span></button>
       <button class="act mv" id="bH" data-k="h" type="button"><span class="ic"></span><span class="lb">KROŞE</span><span class="ht">orta</span></button>
-      <button class="act mv" id="bU" data-k="u" type="button"><span class="ic"></span><span class="lb">APARKAT</span><span class="ht">savunmayı deler</span></button>
+      <button class="act mv" id="bU" data-k="u" type="button"><span class="ic"></span><span class="lb">APARKAT</span><span class="ht">korumayı deler</span></button>
       <button class="act mv" id="bK" data-k="k" type="button"><span class="ic"></span><span class="lb">TEKME</span><span class="ht">ağır</span></button>
+      <button class="act mv" id="bL" data-k="l" type="button"><span class="ic"></span><span class="lb">SÜPÜR</span><span class="ht">alçak</span></button>
     </div>
     <div id="def">
       <button class="act blk" id="bBlock" type="button"><span class="ic"></span><span class="lb">SAVUN</span><span class="ht">basılı tut</span><span class="stam"><i id="stb"></i></span></button>
+      <button class="act dgb" id="bDodge" type="button"><span class="ic"></span><span class="lb">SIYRIL</span><span class="ht">yumruğu boşa çıkar</span></button>
       <button class="act spc" id="bSpecial" type="button"><span class="ic"></span><span class="lb">DİLEKÇE</span><span class="ht">dolunca</span></button>
     </div>
   </div>
@@ -60,14 +62,16 @@
 <div id="sheet" hidden><div class="shbg"></div><div class="shp" role="dialog" aria-modal="true"><div class="shh"><h3 id="shT"></h3><button id="shX" type="button" aria-label="Kapat"></button></div><div class="shtabs" id="shTabs"></div><div class="shb" id="shB"></div></div></div>
 <div id="toast"></div>
 <div id="dim"></div>
-<script src="../kart-salonu/vendor/mqtt.min.js?v=20261106-1023"></script>
-<script src="gfx.js?v=20261106-1023"></script>
-<script src="venues2.js?v=20261106-1023"></script>
-<script src="looks.js?v=20261106-1023"></script>
-<script src="fighters.js?v=20261106-1023"></script>
-<script src="net.js?v=20261106-1023"></script>
-<script src="game.js?v=20261106-1023"></script>
-<script src="ui.js?v=20261106-1023"></script>
-<script src="ui2.js?v=20261106-1023"></script>
+<script src="../kart-salonu/vendor/mqtt.min.js?v=20261106-1027"></script>
+<script src="vendor/peerjs.min.js?v=20261106-1027"></script>
+<script src="gfx.js?v=20261106-1027"></script>
+<script src="venues2.js?v=20261106-1027"></script>
+<script src="venues3.js?v=20261106-1027"></script>
+<script src="looks.js?v=20261106-1027"></script>
+<script src="fighters.js?v=20261106-1027"></script>
+<script src="net.js?v=20261106-1027"></script>
+<script src="game.js?v=20261106-1027"></script>
+<script src="ui.js?v=20261106-1027"></script>
+<script src="ui2.js?v=20261106-1027"></script>
 </body>
 </html>
