@@ -78,18 +78,41 @@ button{font:inherit;color:inherit;cursor:pointer}
 .ccard.on{border-color:var(--gold);background:#17130a}.ccard.on span{color:var(--gold)}
 .menu{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center}
 
+/* yerleşim: PlayStation gibi, yatay. Solda yön tuşları ve savunma, sağda vuruş tuşları ve omuz tuşları */
+#app{--b:min(66px,calc((100dvh - 150px)/3),max(46px,calc((100vw - 350px)/6)));max-width:none;display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"hud hud hud" "pl stage pr" "pl tick pr";gap:6px 12px}
+body{padding:max(6px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+#hud{grid-area:hud;max-width:780px;width:100%;justify-self:center}
+#stage{grid-area:stage;width:min(calc((100vh - 112px) * 1.3333),calc(100vw - 6 * var(--b) - 84px));height:auto;align-self:start}
+@supports (height:100dvh){#stage{width:min(calc((100dvh - 112px) * 1.3333),calc(100vw - 6 * var(--b) - 84px))}}
+#tick{width:min(calc((100dvh - 112px) * 1.3333),calc(100vw - 6 * var(--b) - 84px))}
+#tick{grid-area:tick;align-self:start}
+#ticker{font-size:12px;padding:5px 8px;min-height:2.2em}
+#ctl{display:contents}
+#pl,#pr{display:flex;flex-direction:column;gap:8px;min-height:0;width:calc(3 * var(--b) + 12px);align-self:end}
+#pl{grid-area:pl;justify-self:start}#pr{grid-area:pr;justify-self:end}
+.sh{flex:none;height:calc(var(--b) * 1.05);display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#dpad,#face{flex:none;display:grid;grid-template-columns:repeat(3,var(--b));grid-template-rows:repeat(3,var(--b));gap:6px}
+#dpad .lb,#face .lb{font-size:min(12px,calc(var(--b) * .2));letter-spacing:0}#dpad .ic,#face .ic{font-size:calc(var(--b) * .36)}.sh .lb{font-size:min(13px,calc(var(--b) * .22));letter-spacing:.02em}.sh .ht{font-size:min(9.5px,calc(var(--b) * .15))}
+#dpad #bJp{grid-area:1/2}#dpad #bMB{grid-area:2/1}#dpad #bMF{grid-area:2/3}#dpad #bDn{grid-area:3/2}
+#face #bU{grid-area:1/2}#face #bK{grid-area:2/1}#face #bH{grid-area:2/3}#face #bJ{grid-area:3/2}
+#rot{display:none;position:fixed;inset:0;z-index:200;background:#000;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
+#rot .ph{width:70px;height:110px;border:3px solid var(--gold);border-radius:14px;animation:rt 2.4s ease-in-out infinite}
+#rot b{font-family:var(--disp);font-size:24px;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
+#rot p{margin:0;font-size:14px;color:var(--dim);max-width:26ch;line-height:1.4}
+@keyframes rt{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait) and (max-width:760px){#rot{display:flex}}
+.act{min-height:0}
+.act .ic{font-size:22px}.act .lb{font-size:13px}.act .ht{font-size:9.5px}
+#dpad .ht,#face .ht{display:none}
+#face .act,#dpad .act{border-radius:16px}
+#coach{font-size:12px}
 /* alt şerit ve düğmeler */
 #tick{display:flex;gap:8px;align-items:stretch;flex:none}
 #ticker{flex:1;min-width:0;font-size:13px;line-height:1.3;color:var(--dim);padding:7px 10px;border:1px solid var(--line);border-radius:8px;min-height:2.7em;display:flex;align-items:center}
 #menuBtn{flex:none;width:44px;border:1px solid var(--line);border-radius:8px;background:var(--s1);display:grid;place-items:center;color:var(--dim)}
-#ctl{flex:1;min-height:150px;display:flex;flex-direction:column;gap:8px}
-#atk{flex:1.25;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;min-height:0}
-#lft{flex:1.9;display:flex;flex-direction:column;gap:6px;min-height:0}
-#mov{flex:.85;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;min-height:0}
 .act.mvb{color:#d6dbea;border-color:#2c3550;background:linear-gradient(#141a2a,#0a0d16)}
 .act.mvb:active,.act.mvb.on{background:#26345e}
 .act.mvb .ic{font-size:21px}.act.mvb .lb{font-size:11px;letter-spacing:.08em}.act.mvb .ht{font-size:8.5px}
-#def{flex:1;display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:6px;min-height:0}
 .act{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:0;min-height:56px;padding:4px 2px;border-radius:12px;border:1px solid var(--line);background:var(--s1);overflow:hidden;touch-action:none;transition:transform .06s,background .15s}
 .act .ic{font-size:24px;line-height:1}
 .act .lb{font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.06em}
@@ -164,26 +187,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 #dim.on{opacity:var(--dimop,.75);pointer-events:auto}
 body.idle #hud,body.idle #tick{opacity:.55}
 @media (max-width:380px){#ov h1{font-size:36px}.act .lb{font-size:12px;letter-spacing:.03em}.act .ht{font-size:9px}}
-/* yatay ekran: solda savunma, ortada sahne, sağda vuruşlar (baş parmak yayında) */
-@media (orientation:landscape) and (min-aspect-ratio:13/10){
-  body{padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}
-  #app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.2fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"hud hud hud" "def stage atk" "def tick atk";gap:6px 10px}
-  #hud{grid-area:hud;max-width:760px;width:100%;justify-self:center}
-  #stage{grid-area:stage;width:min(calc((100vh - 118px) * 1.3333),52vw);height:auto;align-self:start}
-  @supports (height:100dvh){#stage{width:min(calc((100dvh - 118px) * 1.3333),52vw)}}
-  #tick{grid-area:tick;width:100%;align-self:start}
-  #ticker{font-size:12px;padding:5px 8px;min-height:2.2em}
-  #ctl{display:contents}
-  #atk{grid-area:atk;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1.15fr;grid-template-areas:"u k" "h l" "j j";gap:8px;min-height:0}
-  #bU{grid-area:u}#bK{grid-area:k}#bH{grid-area:h}#bL{grid-area:l}#bJ{grid-area:j}
-  #lft{grid-area:def;gap:8px}
-  #mov{flex:1.25;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px}
-  #def{flex:2.4;grid-template-columns:1fr;grid-template-rows:1fr 1fr 1.25fr;grid-template-areas:"s" "d" "b";gap:8px;min-height:0}
-  #bSpecial{grid-area:s}#bDodge{grid-area:d}#bBlock{grid-area:b}
-  .act{min-height:0}
-  .act .ic{font-size:22px}.act .lb{font-size:15px}.act .ht{font-size:10.5px}
-  #coach{font-size:12px}
-}
 @media (orientation:landscape) and (max-height:520px){
   #ov{gap:6px;padding:8px 12px}#ov h1{font-size:30px}#ov h1 small{margin-top:4px}#ov h2{font-size:22px}
   #ov .menu{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:480px}
@@ -192,3 +195,6 @@ body.idle #hud,body.idle #tick{opacity:.55}
   .cbig canvas{width:72px!important;height:98px!important}
 }
 @media (prefers-reduced-motion:reduce){.act.spc.rdy,.act.hint{animation:none}}
+#dpad .act,#face .act,.sh .act{min-height:0}
+.sh .ht{display:none}
+.sh .blk .lb{margin-bottom:5px}.sh .stam{bottom:3px}

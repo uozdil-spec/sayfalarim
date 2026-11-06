@@ -250,6 +250,18 @@ U.menuSheet = function () {
 };
 $('menuBtn').onclick = U.menuSheet;
 
+/* ---------- yatay oyun: dikeyde uyarı, tam ekran, otomatik duraklatma ---------- */
+$('rotFs').onclick = function () {
+  try { var el = document.documentElement, p = el.requestFullscreen ? el.requestFullscreen() : (el.webkitRequestFullscreen && el.webkitRequestFullscreen()); Promise.resolve(p).then(function () { return screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); }).catch(function () {}); } catch (e) {}
+};
+var mq = window.matchMedia ? window.matchMedia('(orientation:portrait) and (max-width:760px)') : null, rotPaused = false;
+function onRot() {
+  if (!mq) return;
+  if (mq.matches) { if (G.mode === 'solo' && !G.paused) { G.paused = true; rotPaused = true; } }
+  else if (rotPaused) { rotPaused = false; if (!U.sheet()) G.paused = false; }
+}
+if (mq) { if (mq.addEventListener) mq.addEventListener('change', onRot); else if (mq.addListener) mq.addListener(onRot); }
+
 /* ---------- ortak olay ve kare kancaları ---------- */
 G.hook.callout = U.callout;
 G.hook.ev = function (e) {
