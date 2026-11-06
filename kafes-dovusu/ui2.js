@@ -19,7 +19,7 @@ U.home = function () {
   rows.push(btn('Serbest maç', 'wide', function () { pick(freeSheet); }));
   rows.push(btn('Çevrimiçi düello', 'red wide', function () { pick(function () { onlineSheet(0); }); }));
   rows.push(row([first ? null : btn('Antrenman', 'sm', function () { pick(startTrain); }), btn('Nasıl oynanır', 'sm', U.helpSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
-  showOv([h('h1', { html: 'KAFES<br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), h('div', { cls: 'menu' }, rows)]);
+  showOv([h('h1', { html: 'KAFES <br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), h('div', { cls: 'menu' }, rows)]);
   $('ticker').textContent = 'Hakem mesai kartını basıyor. Turnuva başlamak üzere.';
 };
 /* ---------- karakter seçimi ---------- */
