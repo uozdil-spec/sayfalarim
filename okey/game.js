@@ -59,6 +59,7 @@ function build() {
     h('div', { class: 'grp' },
       h('button', { class: 'btn iconbtn', id: 'bMenu', 'aria-label': t('menu'), onclick: G.openMenu }, OK.icon('menu')),
       h('div', { id: 'info', onclick: G.openScores })),
+    h('div', { id: 'board101', style: 'display:none', onclick: function () { G.openTable(); } }),
     h('div', { class: 'grp' },
       OK.fsOK() ? h('button', { class: 'btn iconbtn', id: 'bFs', 'aria-label': t('fullscreen'), onclick: OK.fsToggle }, OK.icon(OK.isFs() ? 'shrink' : 'expand')) : null,
       h('button', { class: 'btn iconbtn', id: 'bSnd', onclick: function () { OK.S.sound = !OK.S.sound; OK.save(); renderSnd(); } }),
@@ -228,6 +229,33 @@ function renderRack(animate) {
   for (var k in st.tiles) if (!used[k]) { var d = st.tiles[k]; if (d.parentNode) d.parentNode.removeChild(d); delete st.tiles[k]; if (st.flipped) delete st.flipped[k]; }
   updateSum101(rack);
 }
+function meldSum(v, seat) {
+  var n = 0;
+  v.melds.forEach(function (m) { if (m.owner === seat && m.kind !== 'pair') m.cells.forEach(function (c) { n += E1.numVal(c.n); }); });
+  return n;
+}
+/* 101: elini açan oyuncuların perleri, üst şeritte (oyun alanına binmez) */
+function renderBoard() {
+  var b = document.getElementById('board101'), v = st.view;
+  if (!b) return;
+  if (!v || !is101() || v.status !== 'playing' || !v.melds || !v.melds.length) { b.style.display = 'none'; return; }
+  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join();
+  if (b.dataset.sig === sig && b.style.display !== 'none') return;
+  b.dataset.sig = sig; clear(b); b.style.display = '';
+  [0, 1, 2, 3].forEach(function (k) {
+    var seat = (st.me + k) % 4, list = v.melds.filter(function (x) { return x.owner === seat; });
+    if (!list.length) return;
+    var sec = h('div', { class: 'bsec' + (seat === st.me ? ' me' : '') },
+      h('div', { class: 'bwho' }, h('b', null, nameOf(seat)), h('span', null, v.opened[seat] === 'pairs' ? list.length + ' ' + t('pairsWord') : meldSum(v, seat))));
+    var row = h('div', { class: 'bm' });
+    list.forEach(function (md) {
+      var m = h('div', { class: 'bmeld' });
+      md.tiles.forEach(function (id) { m.appendChild(mkTile(id, v.ok, 'mini')); });
+      row.appendChild(m);
+    });
+    sec.appendChild(row); b.appendChild(sec);
+  });
+}
 /* 101: istakada dizili perlerin anlık toplamı (tekli boştaki taşlar dahil değil) */
 function sumMelds101(v) {
   var ok = v.ok, total = 0, pairs = 0, groups = rackGroups();
@@ -244,6 +272,7 @@ function updateSum101(rack) {
   var b = document.getElementById('sum101'), v = st.view;
   if (!v || !is101() || v.status !== 'playing') { if (b && b.parentNode) b.parentNode.removeChild(b); return; }
   var r = sumMelds101(v), opened = v.opened && v.opened[st.me];
+  if (opened) { r.total = 0; v.hand.forEach(function (id) { r.total += E.isJoker(id, v.ok) ? E1.WIN_BONUS : E1.tileValue(id, v.ok); }); r.pairs = 0; }
   if (!b) {
     b = h('div', { id: 'sum101' }, h('div', { class: 'row1' }, h('span', { class: 'lb' }), h('b', { class: 'num' }), h('span', { class: 'need' })), h('div', { class: 'bar' }, h('i')), h('div', { class: 'pr' }));
   }
@@ -252,12 +281,12 @@ function updateSum101(rack) {
   else if (b.parentNode !== rack) rack.appendChild(b);
   b.classList.toggle('side', !!side);
   var need = E1.OPEN_MIN, okOpen = r.total >= need || r.pairs >= E1.PAIRS_MIN;
-  b.querySelector('.lb').textContent = t('sumLabel');
+  b.querySelector('.lb').textContent = t(opened ? 'sumLeft' : 'sumLabel');
   b.querySelector('.num').textContent = r.total;
   b.querySelector('.need').textContent = opened ? '' : '/ ' + need;
   b.querySelector('.bar i').style.width = (opened ? 100 : Math.min(100, Math.round(r.total * 100 / need))) + '%';
   var pr = b.querySelector('.pr');
-  pr.textContent = opened === 'pairs' || (!opened && r.pairs > 0) ? t('sumPairs', r.pairs, E1.PAIRS_MIN) : '';
+  pr.textContent = !opened && r.pairs > 0 ? t('sumPairs', r.pairs, E1.PAIRS_MIN) : '';
   pr.style.display = pr.textContent ? '' : 'none';
   b.classList.toggle('ok', !opened && okOpen);
   b.classList.toggle('open', !!opened);
@@ -576,7 +605,7 @@ function plateFill(plate, seat) {
   if (seat === st.me && v.cfg.type === 'single') ct.textContent = v.cfg.partner ? '♥ ' + nameOf((seat + 2) % 4) : '';
   if (v.cfg.game === '101' && v.opened) {
     var op = v.opened[seat], mc = v.melds.filter(function (x) { return x.owner === seat; }).length;
-    if (op) ct.textContent = (ct.textContent ? ct.textContent + ' · ' : '') + '✓ ' + (op === 'pairs' ? t('openedPairs') : t('openedSets')) + ' ' + mc;
+    if (op) ct.textContent = (ct.textContent ? ct.textContent + ' · ' : '') + '✓ ' + (op === 'pairs' ? mc + ' ' + t('pairsWord') : meldSum(v, seat) + ' ' + t('ptsWord'));
   }
   var turn = v.status === 'playing' && v.turn === seat;
   plate.classList.toggle('turn', turn);
@@ -668,7 +697,7 @@ function renderStatus() {
     } else txt = t('stWait', nameOf(v.turn));
   }
   s.textContent = txt; s.className = me ? 'me' : '';
-  if (is101()) renderTools();
+  if (is101()) { renderTools(); renderBoard(); }
   s.style.display = txt ? '' : 'none';
 }
 function startTimerLoop() {

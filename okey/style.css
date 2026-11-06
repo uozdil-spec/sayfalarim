@@ -418,3 +418,23 @@ body.tb #sum101 { min-width: 0; padding: 4px 10px 5px; } body.tb #sum101 .lb { d
 #sum101.side.ok .lb::after { content: ''; }
 #sum101.side.ok .row1::before { content: '✓'; color: var(--gold1); font-size: 12px; font-weight: 800; line-height: 1; }
 @media (max-height: 400px) { #toolsL.g101 .btn > span:not(.ico) { display: none; } #toolsL.g101 .btn { min-height: 34px; } #toolsL.g101 { gap: 4px; } }
+
+/* 101: açılan perler şeridi (üst bar ortası) */
+#board101 { flex: 1 1 auto; min-width: 0; align-self: flex-start; display: flex; gap: 10px; align-items: center; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; padding: 3px 8px; border-radius: 12px; cursor: pointer; scrollbar-width: none;
+  background: linear-gradient(180deg, rgba(10,22,16,.78), rgba(6,14,10,.78)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 3px 10px rgba(0,0,0,.35); max-height: 38px; }
+#board101::-webkit-scrollbar { display: none; }
+#board101 .bsec { display: flex; align-items: center; gap: 6px; flex: none; padding-right: 10px; border-right: 1px solid rgba(255,255,255,.14); }
+#board101 .bsec:last-child { border-right: 0; padding-right: 0; }
+#board101 .bwho { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; max-width: 62px; }
+#board101 .bwho b { font-size: 10px; font-weight: 700; color: var(--txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62px; }
+#board101 .bwho span { font-size: 13px; font-weight: 800; color: var(--gold1); font-variant-numeric: tabular-nums; }
+#board101 .bsec.me .bwho b { color: var(--gold1); }
+#board101 .bm { display: flex; gap: 6px; }
+#board101 .bmeld { display: flex; gap: 1px; flex: none; }
+#board101 .tile.mini { --tw: 17px; }
+@media (min-height: 560px) { #board101 { max-height: 50px; } #board101 .tile.mini { --tw: 24px; } #board101 .bwho b { font-size: 11px; } }
+/* dikey ekran: açılan perler, orta boşlukta kendi bölgesinde (oyun öğelerine binmez) */
+body.tb #board101 { position: fixed; left: 10px; right: 10px; top: 49vh; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; gap: 5px 10px; max-height: 13.5vh; overflow-y: auto; overflow-x: hidden; padding: 5px 8px; z-index: 6; }
+body.tb #board101 .bsec { flex-wrap: wrap; border-right: 0; padding-right: 0; max-width: 100%; }
+body.tb #board101 .bm { flex-wrap: wrap; }
+body.tb #board101 .tile.mini { --tw: 18px; }

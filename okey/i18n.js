@@ -136,5 +136,6 @@ r1_score_h:['Puanlama','Scoring'],r1_s1:['Bitiren −101 puan alır.','The winne
 r1_mult_h:['Katlar','Multipliers'],r1_mult:['Okeyle bitirmek, çiftle bitirmek ve elden (ilk turda açıp bitirmek) puanları ikiye katlar; hepsi bir arada çarpılır.','Going out with the joker, with pairs, or straight from hand (open and finish on the first turn) each doubles all scores; they multiply.'],
 r1_not_h:['Bu sürümde olmayanlar','Not in this version'],r1_not:['Eşli oyun, katlama (el açma eşiğini yükseltme) ve işlek taş cezası yoktur.','No partner mode, no "folding" rule and no penalty for discarding a useful tile.'],
 r1_x:['',''],
-sumLabel:['Per toplamı','Meld total'],sumPairs:['Çift {0}/{1}','Pairs {0}/{1}']
+sumLabel:['Per toplamı','Meld total'],sumPairs:['Çift {0}/{1}','Pairs {0}/{1}'],
+sumLeft:['Elde kalan','In hand'],ptsWord:['puan','pts']
 };
