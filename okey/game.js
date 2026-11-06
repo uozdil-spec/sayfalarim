@@ -226,6 +226,38 @@ function renderRack(animate) {
     } else while (s.firstChild) s.removeChild(s.firstChild);
   }
   for (var k in st.tiles) if (!used[k]) { var d = st.tiles[k]; if (d.parentNode) d.parentNode.removeChild(d); delete st.tiles[k]; if (st.flipped) delete st.flipped[k]; }
+  updateSum101(rack);
+}
+/* 101: istakada dizili perlerin anlık toplamı (tekli boştaki taşlar dahil değil) */
+function sumMelds101(v) {
+  var ok = v.ok, total = 0, pairs = 0, groups = rackGroups();
+  groups.forEach(function (g) {
+    if (g.length >= 3) {
+      var c = E1.classify(g, ok);
+      if (c) total += c.value;
+      else if (g.length >= 4) total += E1.arrange(g, ok, 20000).total;      // bitişik dizilmiş birkaç per
+    } else if (g.length === 2 && E1.classifyPair(g, ok)) pairs++;
+  });
+  return { total: total, pairs: pairs };
+}
+function updateSum101(rack) {
+  var b = document.getElementById('sum101'), v = st.view;
+  if (!v || !is101() || v.status !== 'playing') { if (b && b.parentNode) b.parentNode.removeChild(b); return; }
+  var r = sumMelds101(v), opened = v.opened && v.opened[st.me];
+  if (!b) {
+    b = h('div', { id: 'sum101' }, h('div', { class: 'row1' }, h('span', { class: 'lb' }), h('b', { class: 'num' }), h('span', { class: 'need' })), h('div', { class: 'bar' }, h('i')), h('div', { class: 'pr' }));
+  }
+  if (b.parentNode !== rack) rack.appendChild(b);
+  var need = E1.OPEN_MIN, okOpen = r.total >= need || r.pairs >= E1.PAIRS_MIN;
+  b.querySelector('.lb').textContent = t('sumLabel');
+  b.querySelector('.num').textContent = r.total;
+  b.querySelector('.need').textContent = opened ? '' : '/ ' + need;
+  b.querySelector('.bar i').style.width = (opened ? 100 : Math.min(100, Math.round(r.total * 100 / need))) + '%';
+  var pr = b.querySelector('.pr');
+  pr.textContent = opened === 'pairs' || (!opened && r.pairs > 0) ? t('sumPairs', r.pairs, E1.PAIRS_MIN) : '';
+  pr.style.display = pr.textContent ? '' : 'none';
+  b.classList.toggle('ok', !opened && okOpen);
+  b.classList.toggle('open', !!opened);
 }
 /* FLIP: istaka yeniden düzenlenirken taşlar yumuşakça kayar */
 function flipRack(change) {

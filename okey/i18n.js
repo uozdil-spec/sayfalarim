@@ -135,5 +135,6 @@ r1_take_h:['Taş almak','Taking tiles'],r1_take:['Soldan taş almak için o taş
 r1_score_h:['Puanlama','Scoring'],r1_s1:['Bitiren −101 puan alır.','The winner gets −101.'],r1_s2:['El açmayanlar +202 puan alır.','Players who did not open get +202.'],r1_s3:['El açıp bitiremeyenler elindeki taşların toplamı kadar puan alır; elinde kalan okey +101 sayılır.','Players who opened get the sum of their remaining tiles; a joker left in hand counts 101.'],r1_s4:['Deste biterse el berabere biter; herkes durumuna göre ceza alır.','If the pile runs out the hand is drawn; everyone takes their penalty.'],
 r1_mult_h:['Katlar','Multipliers'],r1_mult:['Okeyle bitirmek, çiftle bitirmek ve elden (ilk turda açıp bitirmek) puanları ikiye katlar; hepsi bir arada çarpılır.','Going out with the joker, with pairs, or straight from hand (open and finish on the first turn) each doubles all scores; they multiply.'],
 r1_not_h:['Bu sürümde olmayanlar','Not in this version'],r1_not:['Eşli oyun, katlama (el açma eşiğini yükseltme) ve işlek taş cezası yoktur.','No partner mode, no "folding" rule and no penalty for discarding a useful tile.'],
-r1_x:['','']
+r1_x:['',''],
+sumLabel:['Per toplamı','Meld total'],sumPairs:['Çift {0}/{1}','Pairs {0}/{1}']
 };
