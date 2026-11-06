@@ -9,7 +9,7 @@ KF.loadProfile();
 var IC = {
   j: '<path d="M4 12h12M12 7l5 5-5 5"/>', h: '<path d="M5 18c-1-8 4-12 12-10M13 4l5 4-4 5"/>', u: '<path d="M12 20V5M6 11l6-6 6 6"/>', k: '<path d="M9 3v9l-5 5v3h14v-4l-6-2V3z"/>', l: '<path d="M3 19h18M6 19c1-6 6-9 13-8"/>', dg: '<path d="M19 5c-7 0-12 4-12 11M3 12l4 4 4-4"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>', scroll: '<path d="M6 4h10a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6"/>',
-  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', mb: '<path d="M19 12H6M11 7l-5 5 5 5"/>', mf: '<path d="M5 12h13M13 7l5 5-5 5"/>', jp: '<path d="M12 19V6M7 11l5-5 5 5"/>', dn: '<path d="M12 5v13M7 13l5 5 5-5"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>'
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', fs: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', fsx: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>', mb: '<path d="M19 12H6M11 7l-5 5 5 5"/>', mf: '<path d="M5 12h13M13 7l5 5-5 5"/>', jp: '<path d="M12 19V6M7 11l5-5 5 5"/>', dn: '<path d="M12 5v13M7 13l5 5 5-5"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>'
 };
 var ico = U.ico = function (n) { return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>'; };
 var h = U.h = function (tag, a, kids) {
@@ -56,7 +56,7 @@ U.openSheet = function (o) {
 };
 $('shX').innerHTML = ico('x'); $('shX').onclick = U.closeSheet; document.querySelector('.shbg').onclick = U.closeSheet;
 $('menuBtn').innerHTML = ico('menu');
-[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll'], ['bMB', 'mb'], ['bMF', 'mf'], ['bJp', 'jp'], ['bDn', 'dn']].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
+[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll'], ].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
 
 /* ---------- ticker ---------- */
 var LINES = {
@@ -73,7 +73,7 @@ var lastSay = 0;
 var say = U.say = function (k, force) { var n = Date.now(); if (!force && n - lastSay < 2200) return; lastSay = n; var a = LINES[k]; $('ticker').textContent = a[Math.floor(Math.random() * a.length)]; };
 
 /* ---------- HUD, rehber ve ipuçları ---------- */
-var cache = {}, ALLB = ['bJ', 'bH', 'bU', 'bK', 'bL', 'bDodge', 'bBlock', 'bSpecial'];
+var cache = {}, ALLB = ['joy', 'bJ', 'bH', 'bU', 'bK', 'bL', 'bDodge', 'bBlock', 'bSpecial'];
 function setTxt(id, v) { if (cache[id] !== v) { cache[id] = v; $(id).textContent = v; } }
 function setW(id, v) { v = Math.max(0, Math.min(100, v)).toFixed(1) + '%'; if (cache[id] !== v) { cache[id] = v; $(id).style.width = v; } }
 function setCls(el, c, on) { if (el.classList.contains(c) !== on) el.classList.toggle(c, on); }
@@ -129,22 +129,30 @@ var blockDown = false;
 var playing = U.playing = function () { return G.mode === 'solo' || G.mode === 'host' || G.mode === 'guest'; };
 var dnHeld = false;
 function press(k) { if (!playing()) return; if (dnHeld && (k === 'j' || k === 'u' || k === 'k')) k = 'x' + k; G.input(k); if (U.onPress) U.onPress(k); }
-/* yürüme / zıplama / eğilme: basılı tutulan düğmeler */
-var held = {};
-function holdBtn(id, on, off) {
-  var el = $(id);
-  el.addEventListener('pointerdown', function (e) { e.preventDefault(); if (held[id]) return; held[id] = true; el.classList.add('on'); on(); });
-  function up() { if (!held[id]) return; held[id] = false; el.classList.remove('on'); if (off) off(); }
-  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { el.addEventListener(n, up); });
-  window.addEventListener('pointerup', up); window.addEventListener('blur', up);
-  return up;
-}
+/* yön tuşu: Brawl Stars gibi sanal joystick. Sağa ileri, sola geri, yukarı zıpla, aşağı eğil (basılı) */
 function moveOn(k) { if (playing()) { G.input(k); if (U.onPress) U.onPress(k); } }
-holdBtn('bMF', function () { moveOn('mf'); }, function () { G.input('mfu'); });
-holdBtn('bMB', function () { moveOn('mb'); }, function () { G.input('mbu'); });
-holdBtn('bJp', function () { moveOn('jp'); });
-holdBtn('bDn', function () { dnHeld = true; moveOn('dn'); }, function () { dnHeld = false; });
-U.resetMove = function () { dnHeld = false; held = {}; ['bMF', 'bMB', 'bJp', 'bDn'].forEach(function (b) { $(b).classList.remove('on'); }); };
+var joy = $('joy'), knob = $('joyK'), jid = null, js = { f: 0, b: 0, u: 0, d: 0 };
+function buzz(n) { if (KF.S.vib) try { navigator.vibrate && navigator.vibrate(n); } catch (e) {} }
+function joyApply(dx, dy) {
+  var f = dx > .28 ? 1 : 0, b = dx < -.28 ? 1 : 0, u = dy < -.5 ? 1 : 0, d = dy > .5 ? 1 : 0;
+  if (f !== js.f) { js.f = f; if (f) { moveOn('mf'); buzz(6); } else G.input('mfu'); }
+  if (b !== js.b) { js.b = b; if (b) { moveOn('mb'); buzz(6); } else G.input('mbu'); }
+  if (u && !js.u) { moveOn('jp'); buzz(10); } js.u = u;
+  if (d !== js.d) { js.d = d; dnHeld = !!d; if (d) { moveOn('dn'); buzz(6); } }
+  joy.classList.toggle('af', !!f); joy.classList.toggle('ab', !!b); joy.classList.toggle('au', !!u); joy.classList.toggle('ad', !!d);
+}
+function joyPos(e) {
+  var r = joy.getBoundingClientRect(), R = r.width / 2, dx = (e.clientX - r.left - R) / R, dy = (e.clientY - r.top - R) / R, m = Math.hypot(dx, dy);
+  if (m > 1) { dx /= m; dy /= m; }
+  knob.style.transform = 'translate(' + (dx * R * .5).toFixed(1) + 'px,' + (dy * R * .5).toFixed(1) + 'px)';
+  joyApply(dx, dy);
+}
+function joyEnd(e) { if (jid === null || (e && e.pointerId !== jid)) return; jid = null; knob.style.transform = ''; joyApply(0, 0); joy.classList.remove('on'); }
+joy.addEventListener('pointerdown', function (e) { e.preventDefault(); if (jid !== null) return; jid = e.pointerId; try { joy.setPointerCapture(jid); } catch (x) {} joy.classList.add('on'); joyPos(e); });
+joy.addEventListener('pointermove', function (e) { if (e.pointerId === jid) { e.preventDefault(); joyPos(e); } });
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (n) { joy.addEventListener(n, joyEnd); });
+window.addEventListener('blur', function () { joyEnd(); });
+U.resetMove = function () { jid = null; knob.style.transform = ''; js = { f: 0, b: 0, u: 0, d: 0 }; dnHeld = false; joy.className = ''; };
 function blockOn() { if (!blockDown && playing()) { blockDown = true; press('bd'); } }
 function blockOff() { if (blockDown) { blockDown = false; G.input('bu'); } }
 U.resetBlock = function () { blockDown = false; };
@@ -214,6 +222,7 @@ U.settingsSheet = function () {
     d.appendChild(U.T('div', 'grp', 'Zorluk (bilgisayara karşı)'));
     d.appendChild(chips([['easy', 'Kolay'], ['normal', 'Normal'], ['hard', 'Zor']], S.dif, function (k) { S.dif = k; KF.saveProfile(); }));
     d.appendChild(sw('Rehber ipuçları', 'Basman gereken düğmeyi parlatır', 'guide'));
+    d.appendChild(sw('Otomatik tam ekran', 'Maça başlarken ekranı kaplar', 'autofs'));
     d.appendChild(sw('Boks eldiveni', 'Kapalıyken herkes kendi iş aletiyle dövüşür', 'gloves', function () { GFX.GLOVES = !!KF.S.gloves; }));
     d.appendChild(U.T('div', 'grp', 'Ekran ve ses'));
     d.appendChild(sw('OLED koruması', 'Görüntüyü zaman zaman birkaç piksel kaydırır, menüde boşta karartır', 'oled'));
@@ -234,8 +243,9 @@ U.helpSheet = function () {
      ['SAVUN', 'Basılı tut. Rakip kırmızı ünlem gösterince savunmada ol. Vuruş inmeden hemen önce savunmaya basarsan KUSURSUZ savunma olur, rakip sersemler. Savunma dayanıklılığı bitirir, uzun tutma.'],
      ['SIYRIL', 'Kısa dokun. Bir an eğilip kaçarsın. Ünlem çıkınca dokunursan rakibin vuruşu boşa gider, rakip uzun süre açık kalır ve sen can bulursun. Biraz dayanıklılık harcar. Süpürmeye karşı işe yaramaz.'],
      ['DİLEKÇE', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca savunma tanımaz, çok sert vurur. Karşısında tek çare SIYRIL.'],
-     ['HAREKET', 'İLERİ ve GERİ\'ye basılı tutarak yürürsün. Vuruşların menzili var: rakip uzaktaysa vuruş boşa gider (ISKA) ve açık kalırsın. Yaklaşmak ya da uzaklaşmak oyunun yarısı. ZIPLA ile havaya çıkarsın: yerdeki vuruşlar (düz, kroşe, tekme, süpürme) altından geçer, aparkat yakalar. Havadayken bir vuruş tuşuna basarsan HAVA TEKMESİ atarsın.'],
-     ['ÖZEL HAREKETLER', 'EĞİL\'e basılı tutup bir vuruşa basarsan özel hareket çıkar (dayanıklılık harcar): EĞİL+DÜZ = EVRAK TOPU, yerde uçar, zıplayan geçer, savunan tutar. EĞİL+APARKAT = YÜKSELEN APARKAT, başlarken dokunulmazdır, havadakini ve saldıranı yakalar. EĞİL+TEKME = DÖNEN TEKME, ileri kayarak vurur. Street Fighter sevenler için klasik yön girişleri de geçerli: aşağı, ileri, DÜZ (topu); ileri, aşağı, ileri, APARKAT; aşağı, geri, TEKME.'],
+     ['HAREKET', 'Sol alttaki yön topunu kaydır: sağa ileri, sola geri yürürsün, yukarı kaydırınca zıplarsın, aşağı kaydırıp tutunca eğilirsin (özel hareket için).'],
+     ['MENZİL', ' Vuruşların menzili var: rakip uzaktaysa vuruş boşa gider (ISKA) ve açık kalırsın. Yaklaşmak ya da uzaklaşmak oyunun yarısı. ZIPLA ile havaya çıkarsın: yerdeki vuruşlar (düz, kroşe, tekme, süpürme) altından geçer, aparkat yakalar. Havadayken bir vuruş tuşuna basarsan HAVA TEKMESİ atarsın.'],
+     ['ÖZEL HAREKETLER', 'Topu aşağı tutup bir vuruşa basarsan özel hareket çıkar (dayanıklılık harcar): AŞAĞI+DÜZ = EVRAK TOPU, yerde uçar, zıplayan geçer, savunan tutar. AŞAĞI+APARKAT = YÜKSELEN APARKAT, başlarken dokunulmazdır, havadakini ve saldıranı yakalar. AŞAĞI+TEKME = DÖNEN TEKME, ileri kayarak vurur. Street Fighter sevenler için klasik yön girişleri de geçerli: aşağı, ileri, DÜZ (topu); ileri, aşağı, ileri, APARKAT; aşağı, geri, TEKME.'],
      ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Bir vuruşa basıp hemen bir sonrakine basarsan sıraya girer. Takılırsan ayarlardan Kolay modu ve Rehberi aç.']
     ].forEach(function (x) { d.appendChild(h('div', { cls: 'li' }, [h('div', { cls: 'tx' }, [h('b', { text: x[0] }), h('span', { text: x[1] })])])); });
     d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter dilekçe. Oklar: sağ ileri, sol geri, yukarı zıpla, aşağı eğil (basılı tut).'));
@@ -244,13 +254,22 @@ U.helpSheet = function () {
 U.menuSheet = function () {
   if (G.mode === 'solo') G.paused = true;
   U.openSheet({ title: 'Menü', f: function (d) {
-    d.appendChild(U.btn('Devam', 'pri', U.closeSheet)); d.appendChild(U.btn('Nasıl oynanır', '', U.helpSheet)); d.appendChild(U.btn('Ayarlar', '', U.settingsSheet));
+    d.appendChild(U.btn('Devam', 'pri', U.closeSheet)); d.appendChild(U.btn(isFs() ? 'Tam ekrandan çık' : 'Tam ekran yap', '', function () { U.closeSheet(); U.toggleFs(); })); d.appendChild(U.btn('Nasıl oynanır', '', U.helpSheet)); d.appendChild(U.btn('Ayarlar', '', U.settingsSheet));
     d.appendChild(U.btn(G.mode === 'menu' ? 'Ana menü' : 'Maçı bırak, ana menü', 'red', function () { U.home(); }));
   } });
 };
 $('menuBtn').onclick = U.menuSheet;
 
 /* ---------- yatay oyun: dikeyde uyarı, tam ekran, otomatik duraklatma ---------- */
+function isFs() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+function goFs() { try { var el = document.documentElement, p = el.requestFullscreen ? el.requestFullscreen({ navigationUI: 'hide' }) : (el.webkitRequestFullscreen && el.webkitRequestFullscreen()); Promise.resolve(p).then(function () { return screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); }).catch(function () {}); } catch (e) {} }
+function outFs() { try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); var p = document.exitFullscreen ? document.exitFullscreen() : (document.webkitExitFullscreen && document.webkitExitFullscreen()); Promise.resolve(p).catch(function () {}); } catch (e) {} }
+var canFs = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen), standalone = (window.matchMedia && window.matchMedia('(display-mode:fullscreen),(display-mode:standalone)').matches) || window.navigator.standalone;
+function fsIcon() { var b = $('fsBtn'); b.innerHTML = ico(isFs() ? 'fsx' : 'fs'); b.setAttribute('aria-label', isFs() ? 'Tam ekrandan çık' : 'Tam ekran'); }
+U.toggleFs = function () { if (isFs()) outFs(); else if (canFs) goFs(); else U.toast('Bu tarayıcı tam ekranı desteklemiyor. Safari: Paylaş > Ana Ekrana Ekle ile tam ekran açılır.'); };
+U.autoFs = function () { if (KF.S.autofs !== false && canFs && !isFs() && !standalone) goFs(); };
+$('fsBtn').onclick = U.toggleFs; if (standalone) $('fsBtn').style.display = 'none';
+['fullscreenchange', 'webkitfullscreenchange'].forEach(function (n) { document.addEventListener(n, fsIcon); }); fsIcon();
 $('rotFs').onclick = function () {
   try { var el = document.documentElement, p = el.requestFullscreen ? el.requestFullscreen() : (el.webkitRequestFullscreen && el.webkitRequestFullscreen()); Promise.resolve(p).then(function () { return screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); }).catch(function () {}); } catch (e) {}
 };

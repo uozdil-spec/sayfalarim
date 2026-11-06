@@ -57,7 +57,7 @@ function intro(o, bg, tag, prog, onGo, onBack) {
   var tip = KF.S.guide ? h('div', { cls: 'tipl' }, [h('div', { html: '<b>' + TIPS[Math.floor(Math.random() * TIPS.length)].replace('İpucu: ', 'İpucu · ') + '</b>' })]) : null;
   showOv([T('span', 'tag', tag), prog, T('h2', '', KF.VENUES[bg]), h('div', { cls: 'vs', html: (KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis').toUpperCase() + '<em>VS</em><br>' + o.name }), T('p', '', o.desc), tip, row([btn('Menü', 'sm', onBack || U.home), btn('Hazırım', 'pri', onGo)])]);
 }
-function go() { hideOv(); G.sim.ph = 'count'; U.keepAwake(true); }
+function go() { U.autoFs(); hideOv(); G.sim.ph = 'count'; U.keepAwake(true); }
 
 /* ---------- turnuva ---------- */
 function startTour(lv, hp, sp) {
@@ -97,11 +97,11 @@ var LESS = [
   { t: 'Ünlem çıkınca SAVUN\'a bas ve basılı tut', b: 'bBlock', ev: 'block', n: 1, w: 1 },
   { t: 'Kusursuz savunma: ünlemden hemen sonra SAVUN (ya da 3 savunma)', b: 'bBlock', ev: 'perfect', n: 1, w: 1, alt: 3 },
   { t: 'SIYRIL: ünlem çıkınca SIYRIL\'a bas, yumruk boşa gider', b: 'bDodge', ev: 'dodge', n: 1, w: 1 },
-  { t: 'YÜRÜ: İLERİ ve GERİ\'ye birer kez bas (basılı tut)', b: 'bMF', pk: ['mf', 'mb'] },
-  { t: 'ZIPLA: havadayken yerdeki vuruşlar sana değmez', b: 'bJp', pk: ['jp'] },
-  { t: 'EVRAK TOPU: EĞİL\'e basılı tut, DÜZ\'e bas', b: 'bDn', k: 'pf', n: 1 },
-  { t: 'YÜKSELEN APARKAT: EĞİL basılı + APARKAT', b: 'bDn', k: 'dp', n: 1 },
-  { t: 'DÖNEN TEKME: EĞİL basılı + TEKME', b: 'bDn', k: 'tk', n: 1 },
+  { t: 'YÜRÜ: yön topunu sağa ve sola kaydır', b: 'joy', pk: ['mf', 'mb'] },
+  { t: 'ZIPLA: topu yukarı kaydır, havadayken yerdeki vuruşlar sana değmez', b: 'joy', pk: ['jp'] },
+  { t: 'EVRAK TOPU: yön topunu aşağı tut, DÜZ\'e bas', b: 'joy', k: 'pf', n: 1 },
+  { t: 'YÜKSELEN APARKAT: topu aşağı tut + APARKAT', b: 'joy', k: 'dp', n: 1 },
+  { t: 'DÖNEN TEKME: topu aşağı tut + TEKME', b: 'joy', k: 'tk', n: 1 },
   { t: 'DİLEKÇE doldu! Fırlat', b: 'bSpecial', k: 's', n: 1 }
 ];
 var step = 0, cnt = 0, alt = 0;
