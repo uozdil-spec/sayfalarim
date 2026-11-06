@@ -102,7 +102,7 @@ G.hook.over = function (mw) {
   var S = KF.S, o = G.opp;
   if (G.mode === 'solo') {
     if (mw === 0) {
-      streak = 0; S.wins++; KF.sfx('win');
+      streak = 0; S.wins++; S.assist = Math.max(0, (S.assist || 0) - 1); KF.sfx('win');
       if (G.lv >= 0) S.best = Math.max(S.best, G.lv + 1);
       KF.saveProfile();
       var M = G.M, hp = Math.min(100, Math.round(M.hp[0]) + 35), sp = M.sp[0];
@@ -110,8 +110,8 @@ G.hook.over = function (mw) {
       else if (G.lv >= 0) showOv([T('h2', '', 'Kazandın!'), T('p', '', 'Çay molası: +35 can. Seyirciler simit atıyor.'), row([btn('Sıradaki maç', 'pri', function () { startTour(G.lv + 1, hp, sp); }), btn('Menü', 'sm', U.home)])]);
       else showOv([T('h2', '', 'Kazandın!'), T('p', '', o.name + ' yere serildi.'), row([btn('Tekrar', 'pri', startFree), btn('Menü', 'sm', U.home)])]);
     } else {
-      streak++; S.losses++; KF.sfx('lose'); KF.saveProfile();
-      var again = G.lv >= 0 ? function () { startTour(G.lv); } : startFree, nodes = [T('h2', '', 'Mesai bitti'), T('p', '', 'Hakem seni çay ocağına taşıdı. Bir bardak çay iyi gelir.')];
+      streak++; S.losses++; S.assist = Math.min(3, (S.assist || 0) + 1); KF.sfx('lose'); KF.saveProfile();
+      var again = G.lv >= 0 ? function () { startTour(G.lv); } : startFree, nodes = [T('h2', '', 'Mesai bitti'), T('p', '', 'Hakem seni çay ocağına taşıdı. Bir bardak çay iyi gelir. Sıradaki maçta rakip biraz daha yavaş ve zayıf olacak.')];
       var acts = [btn('Tekrar dene', 'pri', again)];
       if (S.dif !== 'easy' && G.lv >= 0) acts.push(btn('Kolay modda dene', '', function () { S.dif = 'easy'; KF.saveProfile(); again(); }));
       if (streak >= 2) { nodes.push(T('p', '', 'Takıldın mı? Antrenmanı dene, rehber ipuçları ve kolay mod seni parlayan düğmeye yönlendirir.')); acts.push(btn('Antrenman', '', startTrain)); }

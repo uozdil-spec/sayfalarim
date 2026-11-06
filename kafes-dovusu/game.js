@@ -66,7 +66,7 @@ KF.VENUES = ['OTOPARK', 'KÖPRÜ ALTI', 'ORMAN', 'ÇAY BAHÇESİ', 'PAZAR YERİ'
 /* ---------- dövüş kuralları ---------- */
 function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null }; }
 function Sim(o) {
-  this.o = o; this.dif = DIF[o.dif || (o.cpu ? 'normal' : 'pvp')];
+  this.o = o; this.dif = DIF[o.dif || (o.cpu ? 'normal' : 'pvp')]; this.as = o.cpu ? Math.max(0, Math.min(3, o.assist || 0)) : 0;
   this.f = [FS(100), FS(o.hp || 100)];
   this.ev = []; this.eid = 0; this.time = o.time || 60; this.lock = o.train ? 1 : 2.4; this.lc = 4; this.ph = 'count'; this.endT = 0;
   this.cpu = o.cpu ? { t: 1.8, reacting: false, bt: 999, hold: 0 } : null;
@@ -79,15 +79,16 @@ Sim.prototype.input = function (i, k) {
   var mv = MV[k];
   if (k === 'dg') {
     if (f.st === 'block' || (f.block && f.st === 'idle')) { f.block = false; f.st = 'idle'; }
-    if (f.st !== 'idle' || f.cd > 0 || f.stam < 20) return;
-    f.stam -= 20; f.st = 'dg'; f.t = this.dif.dgw || .4; f.rt = .24; this.emit('slip', i, 0, ''); return;
+    var now = this.clock || 0, chain = (f.dgAt != null && now - f.dgAt < 2.2) ? Math.min(3, (f.dgN || 0) + 1) : 1, cost = 20 + 9 * (chain - 1);
+    if (f.st !== 'idle' || f.cd > 0 || f.stam < cost) return;
+    f.dgN = chain; f.dgAt = now; f.stam -= cost; f.st = 'dg'; f.t = this.dif.dgw || .4; f.rt = .24; this.emit('slip', i, 0, ''); return;
   }
   if (mv || k === 's') {
     if (f.st === 'rec' || RX.test(f.st)) { f.buf = { k: k, t: .3 }; return; }
     if (f.block && f.st === 'block') { f.block = false; f.st = 'idle'; }
     if (f.st !== 'idle' || f.cd > 0) return;
     if (k === 's') { if (f.sp < 100) return; f.sp = 0; f.mv = 's'; f.st = 'sp'; f.t = .4; f.rt = .5; this.emit('swing', i, 0, 's'); }
-    else { f.mv = k; f.st = 'w' + k; f.t = mv.w * ((this.cpu && i === 1) ? this.dif.tell : this.dif.pw); f.rt = mv.rec; f.cd = .06; this.emit('swing', i, 0, k); }
+    else { f.mv = k; f.st = 'w' + k; f.t = mv.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = mv.rec; f.cd = .06; this.emit('swing', i, 0, k); }
   } else if (k === 'bd') { f.hold = true; if (f.st === 'idle' && f.stam > 6 && !f.block) { f.block = true; f.blockT = 0; f.st = 'block'; } }
   else if (k === 'bu') { f.hold = false; if (f.block) { f.block = false; if (f.st === 'block') f.st = 'idle'; } }
 };
@@ -96,27 +97,29 @@ function pick(mix, vuln, opBlock, opDodge) {
   for (i = 0; i < 5; i++) { x -= w[i]; if (x <= 0) return ks[i]; }
   return 'j';
 }
+/* yardım: kaybettikçe artar (0-3), bilgisayar yavaşlar ve zayıflar. Merhamet: oyuncu ölmek üzereyken bilgisayar nefes aldırır. */
+Sim.prototype.mercy = function () { var op = this.f[0], me = this.f[1]; return this.cpu && op.hp < 35 && me.hp > op.hp + 20 ? 1 : 0; };
 Sim.prototype.runCpu = function (dt) {
   var c = this.cpu, L = this.o.cpu, d = this.dif, me = this.f[1], op = this.f[0];
   c.t -= dt; c.hold -= dt;
   var opAtk = RW.test(op.st);
-  if (opAtk) { if (!c.reacting) { c.reacting = true; c.bt = Math.random() < Math.min(.95, L.react * d.react) ? rr(d.rt[0], d.rt[1]) : 999; } } else c.reacting = false;
+  if (opAtk) { if (!c.reacting) { c.reacting = true; c.bt = Math.random() < Math.min(.95, L.react * d.react * (1 - .18 * this.as)) ? rr(d.rt[0], d.rt[1]) * (1 + .12 * this.as) : 999; } } else c.reacting = false;
   if (c.reacting && c.bt < 999) {
     c.bt -= dt;
-    if (c.bt <= 0) { c.bt = 999; if (op.mv !== 'l' && me.stam >= 22 && Math.random() < (L.dodge || 0) * d.dg) { this.input(1, 'dg'); c.hold = 0; } else { this.input(1, 'bd'); c.hold = .5; } }
+    if (c.bt <= 0) { c.bt = 999; if (op.mv !== 'l' && me.stam >= 30 && Math.random() < (L.dodge || 0) * d.dg * (1 - .25 * this.as)) { this.input(1, 'dg'); c.hold = 0; } else { this.input(1, 'bd'); c.hold = .5; } }
   }
   if ((me.block || me.hold) && !opAtk && c.hold <= 0) this.input(1, 'bu');
   if (!me.block && !me.hold && c.t <= 0 && me.st === 'idle' && me.cd <= 0 && !opAtk) {
     var vuln = op.st === 'rec' || op.st === 'hit' || op.st === 'stun' || RX.test(op.st);
     this.input(1, me.sp >= 100 && Math.random() < .7 ? 's' : pick(L.mix, vuln, op.block, op.st === 'dg' || c.dodged > 0));
-    c.dodged = Math.max(0, (c.dodged || 0) - 1); c.t = (Math.random() < L.dbl ? .15 : rr(L.gap[0], L.gap[1])) * d.gap;
+    c.dodged = Math.max(0, (c.dodged || 0) - 1); c.t = (Math.random() < L.dbl * (1 - .3 * this.as) ? .15 : rr(L.gap[0], L.gap[1])) * d.gap * (1 + .16 * this.as) * (1 + .45 * this.mercy());
   }
 };
 Sim.prototype.resolve = function (land) {
   var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block, bt: f.blockT, dg: f.st === 'dg' }; }), out = [];
   land.forEach(function (a) {
     var A = F[a], d = 1 - a, S = snap[d], sp = A.st === 'sp', m = MV[A.mv] || MV.j;
-    var mult = (self.cpu && a === 1) ? (self.o.dm || 1) * self.dif.rd : 1;
+    var mult = (self.cpu && a === 1) ? (self.o.dm || 1) * self.dif.rd * (1 - .1 * self.as) * (self.mercy() ? .8 : 1) : 1;
     var dmg = Math.max(1, Math.round((sp ? 22 : m.d + Math.min(A.combo, 4)) * mult));
     var mk = sp ? 's' : A.mv; if (S.dg && mk === 'l') dmg = Math.round(dmg * 1.4);
     out.push({ a: a, d: d, dmg: dmg, mv: mk, res: S.dg && mk !== 'l' ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')) });
@@ -157,6 +160,7 @@ Sim.prototype.step = function (dt) {
   if (this.ph === 'count') { this.lock -= dt; var n = Math.ceil(this.lock / .6); if (n !== this.lc && n >= 1) { this.lc = n; this.emit('cd', -1, n); } if (this.lock <= 0) { this.ph = 'fight'; this.emit('cd', -1, 0); } return; }
   if (this.ph === 'end') { this.endT -= dt; if (this.endT <= 0) this.ph = 'after'; return; }
   if (this.ph !== 'fight') return;
+  this.clock = (this.clock || 0) + dt;
   if (!this.o.train) this.time -= dt;
   if (this.cpu) this.runCpu(dt);
   for (i = 0; i < 2; i++) {
@@ -225,7 +229,7 @@ G.getNet = ensureNet;
 G.solo = function (o, bg, cfg) {
   G.stop(); cfg = cfg || {};
   G.mode = 'solo'; G.opp = o; G.lv = cfg.lv == null ? -1 : cfg.lv; G.me = 0; G.train = !!cfg.train; reset();
-  var sim = G.sim = new Sim({ cpu: o, hp: o.hp, dm: o.dm, time: 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train });
+  var sim = G.sim = new Sim({ cpu: o, hp: o.hp, dm: o.dm, time: 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train, assist: cfg.train ? 0 : (cfg.assist != null ? cfg.assist : (KF.S.assist || 0)) });
   if (cfg.hp != null) sim.f[0].hp = cfg.hp; if (cfg.sp) sim.f[0].sp = cfg.sp;
   setLooks(KF.S.look, o.look); V.bg = bg; G.names = [KF.S.name || 'Mühendis', o.name]; G.avs = [KF.S.av, o.av || '🥊'];
 };
