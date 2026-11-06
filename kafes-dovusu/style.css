@@ -209,3 +209,4 @@ body.idle #hud,body.idle #tick{opacity:.55}
 #joy.hint{outline:2px solid var(--gold);outline-offset:3px;box-shadow:0 0 18px rgba(217,171,76,.6),inset 0 0 0 1.5px #2c3a63}
 #fsFloat{position:absolute;top:8px;right:8px;z-index:40;width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--s1);color:var(--ink);display:none;place-items:center}
 #fsFloat[hidden]{display:none!important}
+#pl,#pr{align-self:center!important;margin-top:-2vh}
