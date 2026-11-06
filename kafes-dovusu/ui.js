@@ -235,7 +235,7 @@ U.settingsSheet = function () {
 U.helpSheet = function () {
   if (G.mode === 'solo') G.paused = true;
   U.openSheet({ title: 'Nasıl oynanır', f: function (d) {
-    [['Amaç', 'Rakibin canını bitir ya da süre dolunca daha çok canı olan kazanır. Telefonu yan çevirirsen düğmeler iki yana açılır: solda savunma, sağda vuruşlar.'],
+    [['Amaç', 'Rakibin canını bitir ya da süre dolunca daha çok canı olan kazanır. Solda yön topu ile savunma ve sıyrılma, sağda vuruş tuşları var.'],
      ['Taş-kâğıt-makas', 'SAVUN, düz-kroşe-tekmeyi durdurur ama aparkatı tam durduramaz. SIYRIL her vuruşu boşa çıkarır ama süpürmeye yakalanırsın. SÜPÜR, kaçanı yakalar ama savunmaya takılır. Rakibin ne yaptığına göre seç.'],
      ['DÜZ', 'En hızlı vuruş, hasarı az. Rakip kroşe ya da süpürme hazırlarken düz atarsan vuruşu keser. Aparkat ve tekmeyi kesemez.'],
      ['KROŞE', 'Biraz yavaş, daha sert.'], ['APARKAT', 'Yavaş ama çok sert. Savunmanın çoğunu deler. Karşısında SIYRIL iyi gelir.'], ['TEKME', 'Ağır ve sert. Rakibi daha uzun sersemletir.'],

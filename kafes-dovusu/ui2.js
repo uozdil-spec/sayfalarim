@@ -3,6 +3,7 @@
 'use strict';
 var KF = root.KF, G = KF.G, U = KF.U, GFX = root.GFX, h = U.h, T = U.T, btn = U.btn, toast = U.toast, showOv = U.showOv, hideOv = U.hideOv, $ = U.$;
 function row(k) { return h('div', { cls: 'row' }, k); }
+function cols(l, r, c) { return h('div', { cls: 'cols ' + (c || '') }, [h('div', { cls: 'cl' }, l), h('div', { cls: 'cr' }, r)]); }
 var qTimer = null, qTok = 0, streak = 0, deadT = {};
 function liveTables() { var now = Date.now(); return net().openTables().filter(function (t) { return !(deadT[t.code] && now - deadT[t.code] < 120000); }); }
 function stopQ() { clearInterval(qTimer); qTimer = null; }
@@ -13,13 +14,12 @@ U.home = function () {
   qTok++; stopQ(); G.stop(); U.closeSheet(); U.keepAwake(false); U.resetBlock(); U.lesson = null; G.train = false; G.lv = -1;
   var S = KF.S, first = !S.trained, cont = S.best > 0 && S.best < KF.LADDER.length, rows = [];
   U.resetMove();
-  rows.push(charCard());
   if (first) rows.push(btn('Antrenman · başla', 'pri wide', function () { pick(startTrain); }));
   rows.push(btn(cont ? 'Turnuva · devam ' + (S.best + 1) + '/' + KF.LADDER.length : 'Turnuva · ' + KF.LADDER.length + ' maç', first ? 'wide' : 'pri wide', function () { pick(function () { if (cont) tourChoice(); else startTour(0); }); }));
   rows.push(btn('Serbest maç', 'wide', function () { pick(freeSheet); }));
   rows.push(btn('Çevrimiçi düello', 'red wide', function () { pick(function () { onlineSheet(0); }); }));
   rows.push(row([first ? null : btn('Antrenman', 'sm', function () { pick(startTrain); }), btn('Nasıl oynanır', 'sm', U.helpSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
-  showOv([h('h1', { html: 'KAFES <br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), h('div', { cls: 'menu' }, rows)]);
+  showOv([cols([h('h1', { html: 'KAFES <br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), charCard()], [h('div', { cls: 'menu' }, rows)])]);
   $('ticker').textContent = 'Hakem mesai kartını basıyor. Turnuva başlamak üzere.';
 };
 /* ---------- karakter seçimi ---------- */
@@ -44,7 +44,7 @@ function charSelect(done) {
     cards.push({ k: k, el: el }); grid.appendChild(el);
   });
   show();
-  showOv([T('h2', '', 'Karakterini seç'), h('div', { cls: 'cbig' }, [big, h('div', { cls: 'ci' }, [nm, tl])]), grid, row([btn('Geri', 'sm', U.home), btn('Bu benim', 'pri', function () { S.look = sel; S.picked = true; KF.saveProfile(); if (done === U.home) U.home(); else done(); })])]);
+  showOv([cols([T('h2', '', 'Karakterini seç'), h('div', { cls: 'cbig' }, [big, h('div', { cls: 'ci' }, [nm, tl])]), row([btn('Geri', 'sm', U.home), btn('Bu benim', 'pri', function () { S.look = sel; S.picked = true; KF.saveProfile(); if (done === U.home) U.home(); else done(); })])], [grid], 'csel')]);
 }
 function tourChoice() {
   var S = KF.S;
@@ -55,7 +55,7 @@ function tourChoice() {
 var TIPS = ['İpucu: Rakip kırmızı ünlem gösterince SAVUN\'a bas.', 'İpucu: Aparkat savunmayı deler, korumadaki rakibe işe yarar.', 'İpucu: Rakip sersemken ağır vuruş at.', 'İpucu: Dilekçe dolunca fırlat, savunma tanımaz.', 'İpucu: Düz ile rakibin yavaş vuruşunu hazırlanırken kesebilirsin.', 'İpucu: Savunmayı uzun tutma, dayanıklılık biter.', 'İpucu: Tekme uzak ve ağırdır, bol vakit olunca kullan.', 'İpucu: Aparkat gelince SAVUN yerine SIYRIL dene.', 'İpucu: Rakip sürekli kaçıyorsa SÜPÜR ile yakala.', 'İpucu: SIYRIL başarılı olursa rakip açık kalır, hemen vur.', 'İpucu: Telefonu yan çevirirsen düğmeler iki yana açılır.'];
 function intro(o, bg, tag, prog, onGo, onBack) {
   var tip = KF.S.guide ? h('div', { cls: 'tipl' }, [h('div', { html: '<b>' + TIPS[Math.floor(Math.random() * TIPS.length)].replace('İpucu: ', 'İpucu · ') + '</b>' })]) : null;
-  showOv([T('span', 'tag', tag), prog, T('h2', '', KF.VENUES[bg]), h('div', { cls: 'vs', html: (KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis').toUpperCase() + '<em>VS</em><br>' + o.name }), T('p', '', o.desc), tip, row([btn('Menü', 'sm', onBack || U.home), btn('Hazırım', 'pri', onGo)])]);
+  showOv([cols([T('span', 'tag', tag), prog, T('h2', '', KF.VENUES[bg]), h('div', { cls: 'vs', html: (KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis').toUpperCase() + '<em>VS</em><br>' + o.name })], [T('p', '', o.desc), tip, row([btn('Menü', 'sm', onBack || U.home), btn('Hazırım', 'pri', onGo)])])]);
 }
 function go() { U.autoFs(); hideOv(); G.sim.ph = 'count'; U.keepAwake(true); }
 

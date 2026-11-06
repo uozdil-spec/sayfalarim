@@ -222,3 +222,39 @@ body.idle #hud,body.idle #tick{opacity:.55}
   #ov .menu .charbtn canvas{width:30px!important;height:41px!important}
   #ov .row .btn.sm{min-height:36px}
 }
+
+/* geniş yatay yerleşim: sol bilgi, sağ seçenekler */
+.cols{display:flex;gap:30px;align-items:center;justify-content:center;width:100%;max-width:860px}
+.cols .cl,.cols .cr{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0;flex:1}
+.cols .cr{max-width:340px}.cols.csel .cr{max-width:none;flex:1.5}.cols.csel .cl{flex:1}
+.cols .menu{width:100%}
+.cols .menu .btn.wide,.cols .charbtn{max-width:none;width:100%}
+.cols .cl .charbtn{max-width:300px}
+@media (orientation:portrait){.cols{flex-direction:column}}
+@media (orientation:landscape) and (max-height:520px){
+  #ov{justify-content:safe center}
+  #ov .cols .menu{display:flex;flex-direction:column;gap:9px;max-width:none}
+  #ov .cols .menu .btn{min-height:46px}
+  #ov .cols .menu .row{grid-column:auto}
+  #ov .cols h1{font-size:36px;line-height:1.1}#ov .cols h1 br{display:inline}
+  #ov .cols h1{max-width:12ch}
+  .cols.csel .cgrid{grid-template-columns:repeat(6,1fr);max-width:none;gap:6px}
+  .cols.csel .cbig canvas{width:78px!important;height:106px!important}
+  .cols .cl .tipl{max-width:none}
+  #sheet{align-items:center}
+  .shp{max-width:780px;max-height:94%;border-radius:16px;border-bottom:1px solid var(--line)}
+  .shb{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;align-content:start}
+  .shb>*{min-width:0}.shb>.grp,.shb>.chips,.shb>.btn,.shb>.input,.shb>.avs,.shb>.note,.shb>.empty,.shb>.code{grid-column:1/-1}
+}
+@media (orientation:landscape) and (max-height:520px){#ov{padding-top:46px}#fsFloat{top:6px;right:8px;width:38px;height:38px}}
+@media (orientation:landscape) and (max-height:520px){
+  .shp{padding:8px 14px 8px}.shh{margin-bottom:4px}.shh h3{font-size:15px}#shX{width:34px;height:34px}
+  .chips{gap:5px}.chip{padding:5px 9px;min-height:30px;font-size:11px}
+  .grp{margin-top:2px}.shb{gap:6px 16px}
+  .shb>.btn.pri.wide{position:sticky;bottom:0;max-width:none;width:100%;z-index:2;box-shadow:0 -10px 14px var(--s1)}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .shp{max-height:100%}.chip{padding:3px 9px;min-height:26px}
+  .shb>.btn.pri.wide{position:static;box-shadow:none;min-height:38px;padding:6px 14px}
+}
+@media (orientation:landscape) and (max-height:520px){.avs{grid-template-columns:repeat(16,1fr);gap:4px}.avs button{font-size:16px;border-radius:8px}}
