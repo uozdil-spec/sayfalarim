@@ -31,8 +31,8 @@ U.base = function () { return location.href.split('#')[0].split('?')[0]; };
 
 /* ---------- ekran katmanı ---------- */
 var ov = U.ov = $('ov');
-U.showOv = function (nodes) { ov.innerHTML = ''; (Array.isArray(nodes) ? nodes : [nodes]).forEach(function (n) { if (n) ov.appendChild(typeof n === 'string' ? h('div', { html: n }) : n); }); ov.style.display = 'flex'; };
-U.hideOv = function () { ov.style.display = 'none'; ov.innerHTML = ''; };
+U.showOv = function (nodes) { ov.innerHTML = ''; (Array.isArray(nodes) ? nodes : [nodes]).forEach(function (n) { if (n) ov.appendChild(typeof n === 'string' ? h('div', { html: n }) : n); }); ov.style.display = 'flex'; var ff = $('fsFloat'); if (ff && !ff.hidden) ff.style.display = 'grid'; };
+U.hideOv = function () { ov.style.display = 'none'; var ff = $('fsFloat'); if (ff) ff.style.display = 'none'; ov.innerHTML = ''; };
 U.callout = function (txt, col) {
   var el = $('callout'); el.textContent = txt; el.style.color = col || '#fff'; el.style.fontSize = txt.length > 12 ? '22px' : ''; el.style.top = txt.length > 12 ? '4%' : '';
   if (el.animate) el.animate([{ opacity: 1, transform: 'scale(1.3)' }, { opacity: 1, transform: 'scale(1)', offset: .18 }, { opacity: 0, transform: 'scale(1)' }], { duration: 950, fill: 'forwards' }); else el.style.opacity = 1;
@@ -265,10 +265,10 @@ function isFs() { return !!(document.fullscreenElement || document.webkitFullscr
 function goFs() { try { var el = document.documentElement, p = el.requestFullscreen ? el.requestFullscreen({ navigationUI: 'hide' }) : (el.webkitRequestFullscreen && el.webkitRequestFullscreen()); Promise.resolve(p).then(function () { return screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); }).catch(function () {}); } catch (e) {} }
 function outFs() { try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); var p = document.exitFullscreen ? document.exitFullscreen() : (document.webkitExitFullscreen && document.webkitExitFullscreen()); Promise.resolve(p).catch(function () {}); } catch (e) {} }
 var canFs = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen), standalone = (window.matchMedia && window.matchMedia('(display-mode:fullscreen),(display-mode:standalone)').matches) || window.navigator.standalone;
-function fsIcon() { var b = $('fsBtn'); b.innerHTML = ico(isFs() ? 'fsx' : 'fs'); b.setAttribute('aria-label', isFs() ? 'Tam ekrandan çık' : 'Tam ekran'); }
+function fsIcon() { [$('fsBtn'), $('fsFloat')].forEach(function (b) { b.innerHTML = ico(isFs() ? 'fsx' : 'fs'); b.setAttribute('aria-label', isFs() ? 'Tam ekrandan çık' : 'Tam ekran'); }); }
 U.toggleFs = function () { if (isFs()) outFs(); else if (canFs) goFs(); else U.toast('Bu tarayıcı tam ekranı desteklemiyor. Safari: Paylaş > Ana Ekrana Ekle ile tam ekran açılır.'); };
 U.autoFs = function () { if (KF.S.autofs !== false && canFs && !isFs() && !standalone) goFs(); };
-$('fsBtn').onclick = U.toggleFs; if (standalone) $('fsBtn').style.display = 'none';
+$('fsBtn').onclick = U.toggleFs; $('fsFloat').onclick = U.toggleFs; if (standalone) { $('fsBtn').style.display = 'none'; $('fsFloat').hidden = true; }
 ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (n) { document.addEventListener(n, fsIcon); }); fsIcon();
 $('rotFs').onclick = function () {
   try { var el = document.documentElement, p = el.requestFullscreen ? el.requestFullscreen() : (el.webkitRequestFullscreen && el.webkitRequestFullscreen()); Promise.resolve(p).then(function () { return screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); }).catch(function () {}); } catch (e) {}

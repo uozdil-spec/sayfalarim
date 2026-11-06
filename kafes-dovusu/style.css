@@ -207,3 +207,5 @@ body.idle #hud,body.idle #tick{opacity:.55}
 #joy.on #joyK{transition:none;box-shadow:0 5px 12px rgba(0,0,0,.65),inset 0 -4px 7px rgba(0,0,0,.35),0 0 24px rgba(110,170,255,.8)}
 #joyK svg{width:64%;height:64%;fill:rgba(255,255,255,.9)}
 #joy.hint{outline:2px solid var(--gold);outline-offset:3px;box-shadow:0 0 18px rgba(217,171,76,.6),inset 0 0 0 1.5px #2c3a63}
+#fsFloat{position:absolute;top:8px;right:8px;z-index:40;width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--s1);color:var(--ink);display:none;place-items:center}
+#fsFloat[hidden]{display:none!important}
