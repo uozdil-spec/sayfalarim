@@ -18,8 +18,9 @@ G.LOOKS = {
   trol: { tool: 'phone', name: 'Trol', skin: '#e3b896', skin2: '#b98d68', hair: '#2a2018', shirt: '#3a3f4a', pants: '#1d1f26', glove: '#22d06a', shoe: '#e8e8e8', hat: 'hood', hatc: '#3a3f4a', headset: 1, build: .94, sleeve: 1 },
   haritaci: { tool: 'compass', name: 'Haritacı', skin: '#d8a67c', skin2: '#b07b52', hair: '#3a2a1c', shirt: '#b9a56a', pants: '#4d4a3a', glove: '#2f6fb5', shoe: '#2a2218', hat: 'cap', hatc: '#5d6b3c', glasses: 1, tube: '#c9c2a8', buttons: '#6a5a2a', build: 1, sleeve: 1 },
   jaloncu: { tool: 'rod', name: 'Jaloncu', skin: '#c08a60', skin2: '#946440', hair: '#14110e', shirt: '#2a2d36', vest: '#c8e03a', pants: '#3a3a44', glove: '#e8431f', shoe: '#1a1a1c', hat: 'cap', hatc: '#e9e9e4', stripes: '#dfe6ea', pole: 1, build: 1.04, sleeve: 0 },
+  mezarci: { tool: 'shovel', name: 'Mezarcı', skin: '#c9a07c', skin2: '#9c7452', hair: '#1a1612', shirt: '#4a5043', pants: '#2b2d2a', glove: '#5a4630', shoe: '#1a1512', hat: 'cap', hatc: '#2a2d33', must: 1, vest: '#3a3f36', buttons: '#8a8f7a', build: 1.12, sleeve: 1 },
   kavurmaci: { tool: 'cleaver', name: 'Kavurmacı', skin: '#cf9468', skin2: '#a26a44', hair: '#1a1410', shirt: '#d9d4c8', pants: '#3a3f4a', glove: '#7a1f1a', shoe: '#1c1c1f', hat: 'cap', hatc: '#f1efe8', must: 1, apron: '#efe8da', blood: 1, build: 1.26, sleeve: 1 },
   asci: { tool: 'pan', name: 'Aşçı', skin: '#d8a47f', skin2: '#b0795a', hair: '#222', shirt: '#f4f4f0', pants: '#3b4350', glove: '#d86a1f', shoe: '#1c1c1f', hat: 'chef', hatc: '#fbfbf8', must: 1, buttons: '#9a9a9a', build: 1.2, sleeve: 1 }
 };
-G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol'];
+G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol', 'mezarci'];
 })(window);

@@ -23,7 +23,7 @@ U.home = function () {
   $('ticker').textContent = 'Hakem mesai kartını basıyor. Turnuva başlamak üzere.';
 };
 /* ---------- karakter seçimi ---------- */
-var TOOLN = { level: 'Su terazisi', notebook: 'Ceza defteri', tray: 'Çay tepsisi', weight: 'Kantar ağırlığı', case: 'Evrak çantası', anchor: 'Demir', shears: 'Budama makası', wrench: 'İngiliz anahtarı', book: 'Kanun kitabı', axe: 'İtfaiye baltası', nozzle: 'Hortum başlığı', stamp: 'Kaşe', phone: 'Telefon', compass: 'Pergel', rod: 'Jalon', cleaver: 'Satır', pan: 'Tava' };
+var TOOLN = { level: 'Su terazisi', notebook: 'Ceza defteri', tray: 'Çay tepsisi', weight: 'Kantar ağırlığı', case: 'Evrak çantası', anchor: 'Demir', shears: 'Budama makası', wrench: 'İngiliz anahtarı', book: 'Kanun kitabı', axe: 'İtfaiye baltası', nozzle: 'Hortum başlığı', stamp: 'Kaşe', phone: 'Telefon', compass: 'Pergel', rod: 'Jalon', cleaver: 'Satır', shovel: 'Kürek', pan: 'Tava' };
 function mini(key, w, hgt, live) {
   var cv = h('canvas', { width: String(w * 2), height: String(hgt * 2), style: 'width:' + w + 'px;height:' + hgt + 'px' });
   GFX.preview(cv, key, 0);

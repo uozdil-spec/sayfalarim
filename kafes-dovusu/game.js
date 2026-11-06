@@ -298,13 +298,14 @@ KF.OPPS = {
   mudure: opp('mudure', 'MÜDİRE MUALLA', '💼', 1, 95, 1, { j: .3, h: .3, u: .2, k: .1, l: .1 }, [1, 1.7], .4, .2, .25, 'Gece mesaisi faturası keser. Bazen arka arkaya iki kez vurur.'),
   kaptan: opp('kaptan', 'KAPTAN KEMAL', '⚓', 5, 100, 1.05, { j: .25, h: .25, u: .25, k: .15, l: .1 }, [.95, 1.6], .45, .2, .3, 'Fırtınada bile dümen tutar. Aparkatı gemi batırır.'),
   bahcivan: opp('bahcivan', 'BAHÇIVAN BEKİR', '🌿', 9, 115, 1.1, { j: .2, h: .3, u: .25, k: .15, l: .1 }, [.9, 1.5], .5, .25, .35, 'Hasır şapkalı, çelik yumruklu. Hayvanat bahçesinin tek hâkimi.'),
+  mezarci: opp('mezarci', 'MEZARCI MEMDUH', '⚰️', 2, 118, 1.14, { j: .15, h: .3, u: .3, k: .1, l: .15 }, [1, 1.6], .45, .2, .3, 'Kimseyi aceleye getirmez, hep son sözü o söyler. Küreği her zaman hazır.'),
   kavurmaci: opp('kavurmaci', 'KAVURMACI KERİM', '🥩', 8, 125, 1.12, { j: .15, h: .3, u: .3, k: .15, l: .1 }, [.9, 1.45], .45, .25, .15, 'Sabah kavurduğu eti akşam yumruğa çevirir. Tavayı bırakınca çok daha tehlikeli.'),
   sofor: opp('sofor', 'TIR ŞOFÖRÜ TAHSİN', '🚛', 6, 135, 1.2, { j: .2, h: .25, u: .25, k: .2, l: .1 }, [.8, 1.3], .55, .3, .4, 'Kırk yıllık direksiyon, kırk ton yumruk. Final patronu.'),
   avukat: opp('avukat', 'AVUKAT ASLI', '⚖️', 6, 90, 1, { j: .35, h: .25, u: .1, k: .15, l: .15 }, [1, 1.7], .4, .15, .4, 'Her yumruğa itiraz eder, her itirazı kazanır.'),
   itfaiyeci: opp('itfaiyeci', 'İTFAİYECİ İLHAN', '🚒', 8, 110, 1.1, { j: .2, h: .3, u: .25, k: .15, l: .1 }, [.9, 1.5], .5, .2, .3, 'Ateşi söndürür, rakibi de söndürür.'),
   asci: opp('asci', 'AŞÇI ARİF', '🍳', 4, 105, 1.05, { j: .25, h: .25, u: .25, k: .15, l: .1 }, [1, 1.6], .45, .2, .3, 'Hamur gibi yoğurur, tava gibi çalar.')
 };
-KF.LADDER = ['zabita', 'cayci', 'sprinkci', 'pazarci', 'haritaci', 'trol', 'jaloncu', 'mudure', 'imzaci', 'kaptan', 'bahcivan', 'kavurmaci', 'sofor'];
+KF.LADDER = ['zabita', 'cayci', 'sprinkci', 'pazarci', 'haritaci', 'trol', 'jaloncu', 'mudure', 'imzaci', 'kaptan', 'bahcivan', 'kavurmaci', 'mezarci', 'sofor'];
 KF.DUMMY = { k: 'zabita', look: 'zabita', name: 'ÇIRAK CEMİL', av: '🥋', bg: 0, hp: 999, dm: .25, mix: { h: 1 }, gap: [2.6, 3.4], react: 0, dbl: 0, dodge: 0, desc: 'Antrenman partneri. Vurmaz, sadece öğretir.' };
 
 /* ---------- denetleyici ---------- */
