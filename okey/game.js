@@ -347,6 +347,21 @@ function freeRect(zone, obst, cell) {
   if (!best || best.area < 4) return null;
   return { x: zone.x + best.c0 * cell, y: zone.y + (best.r1 - best.hh) * cell, w: (best.c1 - best.c0) * cell, h: best.hh * cell };
 }
+function canAddNow(v) { return !!v && v.status === 'playing' && v.turn === st.me && v.phase === 'discard' && v.opened && v.opened[st.me] === 'sets'; }
+/* rafa taşı masadaki bir pere işle (sürükle-bırak ya da dokun) */
+function addToMeld(tile, meldId) {
+  var v = st.view; if (!v || !E1) return false;
+  if (!canDiscard()) { OK.sfx('err'); nudge(); return false; }
+  if (v.opened[st.me] !== 'sets') { OK.toast(t(v.opened[st.me] ? 'e_pairsonly' : 'e_notopen')); OK.sfx('err'); return false; }
+  var md = null; v.melds.forEach(function (x) { if (x.id === meldId) md = x; });
+  if (!md || md.kind === 'pair') { OK.toast(t('e_nofit')); OK.sfx('err'); return false; }
+  var opts = E1.addOptions(md, tile, v.ok);
+  if (!opts.length) { OK.toast(t('e_nofit')); OK.sfx('err'); return false; }
+  var pick = opts.filter(function (o) { return o.mode !== 'swap'; })[0] || opts[0];
+  st.sel = -1;
+  send({ t: 'add', tile: tile, meld: meldId, mode: pick.mode });
+  return true;
+}
 function seatSection(v, seat, cls) {
   var list = v.melds.filter(function (x) { return x.owner === seat; });
   if (!list.length) return null;
@@ -354,9 +369,13 @@ function seatSection(v, seat, cls) {
   var sec = h('div', { class: 'bsec' + (seat === st.me ? ' me' : '') },
     h('div', { class: 'bwho' }, h('b', null, nameOf(seat)), h('span', null, v.opened[seat] === 'pairs' ? list.length + ' ' + t('pairsWord') : meldSum(v, seat))));
   var row = h('div', { class: 'bm' });
+  var sel = canAddNow(v) ? st.sel : -1;
   list.forEach(function (md) {
-    var m = h('div', { class: 'bmeld' });
+    var opts = sel >= 0 && md.kind !== 'pair' ? E1.addOptions(md, sel, v.ok) : [];
+    var m = h('div', { class: 'bmeld' + (opts.length ? ' fit' : '') });
+    m.dataset.meld = md.id;
     md.tiles.forEach(function (id) { m.appendChild(mkTile(id, v.ok, 'mini')); });
+    if (opts.length) m.onclick = function (e) { e.stopPropagation(); addToMeld(sel, md.id); };
     row.appendChild(m);
   });
   sec.appendChild(row);
@@ -369,7 +388,7 @@ function renderBoard() {
   if (!layer) { layer = h('div', { id: 'mp101' }); felt.appendChild(layer); }
   if (!v || !is101() || v.status !== 'playing' || !v.melds || !v.melds.length) { b.style.display = 'none'; b2.style.display = 'none'; clear(layer); layer.dataset.sig = ''; b.dataset.sig = ''; return; }
   var wrap = document.body.classList.contains('tb');
-  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join() + '|' + innerWidth + 'x' + innerHeight + wrap + '|' + (st.view.turn);
+  var sig = JSON.stringify(v.melds.map(function (m) { return [m.id, m.tiles]; })) + v.opened.join() + '|' + innerWidth + 'x' + innerHeight + wrap + '|' + st.view.turn + '|' + st.view.phase + '|' + (canAddNow(v) ? st.sel : -1);
   if (layer.dataset.sig === sig) return;
   layer.dataset.sig = sig; clear(layer);
   var fr = feltRect(); if (!fr) return;
@@ -548,6 +567,8 @@ function targetAt(x, y) {
   if (!el) return null;
   var s = el.closest ? el.closest('.slot') : null;
   if (s && rackEl().contains(s)) return { type: 'slot', i: +s.dataset.i, el: s };
+  var ml = el.closest ? el.closest('.bmeld') : null;
+  if (ml && is101()) return { type: 'meld', id: +ml.dataset.meld, el: ml };
   var d0 = el.closest ? el.closest('#dp0') : null;
   if (d0) return { type: 'discard', el: d0 };
   var ind = el.closest ? el.closest('#indic') : null;
@@ -622,7 +643,7 @@ function onMove(e) {
   drag.target = tg;
   if (tg) {
     if (tg.type === 'slot') tg.el.classList.add('hover');
-    else if ((tg.type === 'discard' && canDiscard()) || (tg.type === 'finish' && canDiscard())) tg.el.classList.add('over');
+    else if ((tg.type === 'discard' && canDiscard()) || (tg.type === 'finish' && canDiscard()) || (tg.type === 'meld' && canDiscard())) tg.el.classList.add('over');
   }
 }
 function onUp(e) {
@@ -639,6 +660,7 @@ function onUp(e) {
   d.el.style.transform = '';
   if (tg && tg.type === 'slot') { moveTile(d.id, tg.i); OK.sfx('tile'); }
   else if (tg && tg.type === 'discard') { if (canDiscard()) doDiscard(d.id); else { OK.sfx('err'); nudge(); } }
+  else if (tg && tg.type === 'meld') { addToMeld(d.id, tg.id); }
   else if (tg && tg.type === 'finish') { if (canDiscard()) doFinish(d.id); else { OK.sfx('err'); nudge(); } }
   else if (d.el.animate) d.el.animate([{ transform: 'scale(1.1)' }, { transform: 'none' }], { duration: 140 });
 }
@@ -863,7 +885,8 @@ function renderTools() {
     $('#bChat').style.display = st.kind === 'off' ? 'none' : '';
     $('#indic').classList.remove('can');
     var fits = canDiscard() && st.sel >= 0 && v.opened[st.me] === 'sets' && v.melds.some(function (md) { return md.kind !== 'pair' && E1.addOptions(md, st.sel, v.ok).length; });
-    tb.classList.toggle('ready', !!fits);
+    var anyFit = canDiscard() && v.opened[st.me] === 'sets' && v.hand.some(function (id) { return !E.isJoker(id, v.ok) && v.melds.some(function (md) { return md.kind !== 'pair' && E1.addOptions(md, id, v.ok).length; }); });
+    tb.classList.toggle('ready', !!(fits || anyFit));
     return;
   }
   if (canDiscard() && v.hand.length === 15) st.fin = AI.bestFinish(v.hand, v.ok, v.moves === 0 && v.starter === st.me);

@@ -453,3 +453,7 @@ body.tb #sum101.open .lb { display: block; flex: none; font-size: 9px; } body.tb
 #mp101 .bmeld { display: flex; gap: 1px; flex: none; }
 #mp101 .tile.mini { --tw: var(--bt, 18px); }
 @media (min-height: 560px) { #mp101 .bwho b { font-size: 12px; } #mp101 .bwho span { font-size: 16px; } }
+
+/* 101: işlenebilir per vurgusu */
+.bmeld.fit { box-shadow: 0 0 0 2px var(--gold1), 0 0 12px rgba(255,214,102,.55); border-radius: 6px; cursor: pointer; animation: pl101 .9s infinite alternate; }
+.bmeld.over { box-shadow: 0 0 0 3px #fff, 0 0 16px var(--gold1); border-radius: 6px; }
