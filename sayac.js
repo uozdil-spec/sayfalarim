@@ -3,7 +3,7 @@
    Örn. adresin https://ugur.goatcounter.com ise KOD = 'ugur'.
    KOD boşken hiçbir şey çalışmaz ve hiçbir yere veri gitmez. */
 (function () {
-  var KOD = '';
+  var KOD = 'odegil';
 
   if (!KOD) return;
   window.SAYAC_KOD = KOD;
