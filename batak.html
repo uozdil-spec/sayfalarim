@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="surum" content="20261107-1218">
+<meta name="surum" content="20261107-1418">
 <meta name="apple-mobile-web-app-title" content="Batak">
-<link rel="icon" href="batak-ikon.svg?v=20261107-1218" type="image/svg+xml">
-<link rel="icon" href="batak-ikon-32.png?v=20261107-1218" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261107-1218">
+<link rel="icon" href="batak-ikon.svg?v=20261107-1418" type="image/svg+xml">
+<link rel="icon" href="batak-ikon-32.png?v=20261107-1418" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="batak-ikon-180.png?v=20261107-1418">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Batak · by uozdil</title>
 <style>
@@ -259,7 +259,7 @@ body.idle #app,body.idle #modal-in{animation:oledDrift 50s ease-in-out infinite,
   .chip{padding:4px 8px}.chip .sb{display:none}
 }
 </style>
-<script async src="sayac.js?v=20261107-1218"></script>
+<script async src="sayac.js?v=20261107-1418"></script>
 </head>
 <body>
 <div id="app">
@@ -1103,11 +1103,12 @@ function kingTable(v){
   const ki=v.kinfo,rows=[0,1,2,3].map(k=>(v.me+k)%4).map(k=>`<tr><td>${esc(k===v.me?'Sen':v.names[k])}</td><td>${ki.negN[k]}/3 · ${ki.kozN[k]}/2</td><td><b>${v.scores[k]}</b></td></tr>`).join('');
   return `<table class="res"><tr><th></th><th>CEZA · KOZ</th><th>PUAN</th></tr>${rows}</table>`;
 }
+function resumeGame(){closeModal();if(V&&(V.phase==='handEnd'||V.phase==='gameEnd'))showEnd(V)} /* çıkış/menü penceresi tur sonu sonuç ekranının üstüne açılmış olabilir: kapanınca sonuç ekranı geri gelir */
 function askLeave(){
   if(cur!=='game'||!V)return;
   const host=mode==='host',online=mode==='host'||mode==='guest';
   openModal(`<h2>OYUNDAN ÇIK?</h2><p style="text-align:center">${host?'Oda sahibi çıkarsa oyun herkes için biter.':online?'Çıkarsan yerine bilgisayar oynar.':'Oyun kaydedilmez.'}</p><button class="mbtn" id="x-stay">Oyuna Dön</button><button class="mbtn sec" id="x-go">Ana Menüye Çık</button>`);
-  $('#x-stay').onclick=closeModal;$('#x-go').onclick=leave;
+  $('#x-stay').onclick=resumeGame;$('#x-go').onclick=leave;
 }
 $('#b-back').onclick=askLeave;
 $('#b-menu').onclick=()=>{
@@ -1115,7 +1116,7 @@ $('#b-menu').onclick=()=>{
   openModal(`<h2>MENÜ</h2><p style="text-align:center"><b>${gameName(V.game)}</b><br>Bitiş: ${endText(V.settings)}${V.game==='esli'?'<br>Açık el: '+(V.settings.open?'Açık':'Kapalı'):''}</p>${V.game==='king'?kingTable(V):''}<button class="mbtn sec" id="m-rules">Nasıl Oynanır</button><button class="mbtn sec" id="m-leave">Ana Menüye Dön</button><button class="mbtn" id="m-close">Oyuna Dön</button>`);
   $('#m-rules').onclick=()=>showRules(V.game,()=>$('#b-menu').click());
   $('#m-leave').onclick=()=>{if(confirm('Oyundan çıkılsın mı?'))leave()};
-  $('#m-close').onclick=closeModal;
+  $('#m-close').onclick=resumeGame;
 };
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'&&$('#modal').dataset.end!=='1')closeModal()});
 
