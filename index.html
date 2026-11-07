@@ -1,13 +1,18 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261107-1117">
+<meta name="surum" content="20261107-1123">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Oyun Salonu · by uozdil</title>
 <meta name="description" content="Reklamsız, ücretsiz, kurulumsuz oyunlar: Okey, Tavla, Satranç, Batak, Pişti ve daha fazlası. by uozdil">
 <meta name="theme-color" content="#0a0c12">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1018'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23d8b46a'/%3E%3Ccircle cx='32' cy='32' r='15' fill='%2314110b'/%3E%3Ccircle cx='26' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='26' cy='38' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='38' r='2.6' fill='%23e6c27a'/%3E%3C/svg%3E">
+<link rel="icon" href="salon-ikon.svg?v=20261107-1123" type="image/svg+xml">
+<link rel="icon" href="salon-ikon-32.png?v=20261107-1123" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="salon-ikon-180.png?v=20261107-1123">
+<link rel="manifest" href="salon.webmanifest?v=20261107-1123">
+<meta name="apple-mobile-web-app-title" content="Oyun Salonu">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 :root{
   --bg:#0a0c12; --bg2:#10131c; --kart:#12151f; --cizgi:#232838;
@@ -27,6 +32,7 @@ body{
 }
 .kap{max-width:1040px;margin:0 auto}
 header{padding:28px 4px 18px;text-align:center}
+.logo{display:block;margin:0 auto 14px;width:76px;height:76px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.07)}
 .marka{display:inline-flex;align-items:center;gap:10px;color:var(--altin);letter-spacing:.28em;font-size:12px;font-weight:600;text-transform:uppercase}
 .marka::before,.marka::after{content:"";width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--altin))}
 .marka::after{transform:scaleX(-1)}
@@ -89,6 +95,7 @@ footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);displa
 <body>
 <div class="kap">
   <header>
+    <img class="logo" src="salon-ikon.svg" alt="" width="76" height="76">
     <div class="marka">by uozdil</div>
     <h1>Oyun Salonu</h1>
     <p class="alt">Reklamsız, ücretsiz, kurulumsuz. Telefonda ya da bilgisayarda aç, hemen oyna.</p>
@@ -111,28 +118,10 @@ footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);displa
   </footer>
 </div>
 
-<script src="sayac.js?v=20261107-1117"></script>
+<script src="sayac.js?v=20261107-1123"></script>
 <script>
 (function () {
-  var TAVLA = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1018'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23d8b46a'/%3E%3Ccircle cx='32' cy='32' r='15' fill='%2314110b'/%3E%3Ccircle cx='26' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='26' cy='38' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='38' r='2.6' fill='%23e6c27a'/%3E%3C/svg%3E";
-
-  // k: kategoriler, on: online oynanabilir mi
-  var OYUNLAR = [
-    {ad:'Okey',            yol:'okey/',                 ikon:'okey/icons/icon.svg',        not:'Bilgisayara karşı ya da 4 kişi online. Reklamsız.',         k:['Masa','Online'], on:1},
-    {ad:'Kart Salonu',     yol:'kart-salonu/',          ikon:'kart-salonu/icons/ikon.svg', not:'Pişti, Dost Kazığı ve Pis Yedili tek salonda.',             k:['Kart','Online'], on:1},
-    {ad:'Batak',           yol:'batak.html',            ikon:'batak-ikon.svg',             not:'Eşli batak; arkadaşlarınla online oyna.',                   k:['Kart','Online'], on:1},
-    {ad:'Tavla',           yol:'tavla.html',            ikon:TAVLA,                        not:'Klasik tavla; arkadaşınla online oyna.',                    k:['Masa','Online'], on:1},
-    {ad:'Satranç',         yol:'satranc/',              ikon:'satranc/ikon.svg',           not:'Satranç; arkadaşınla online oyna.',                         k:['Masa','Online'], on:1},
-    {ad:'Dokuz Taş',       yol:'dokuz-tas.html',        ikon:'dokuz-tas-ikon.svg',         not:'Dokuz Taş; arkadaşınla online oyna.',                       k:['Masa','Online'], on:1},
-    {ad:'Harf Harmanı',    yol:'harf-harmani/',         ikon:'harf-harmani/ikon.svg',      not:'Harflerden kelime üret; arkadaşlarınla çevrimiçi.',         k:['Kelime','Online'], on:1},
-    {ad:'Kafes Dövüşü',    yol:'kafes-dovusu/',         ikon:'kafes-dovusu-ikon.svg',      not:'Karakterini seç; turnuva ya da serbest maç.',               k:['Eğlence','Online'], on:1},
-    {ad:'Kelime Avı & Hafıza', yol:'kelime-avi-hafiza.html', ikon:'kelime-avi-ikon.svg',   not:'Kelime avı ve hafıza oyunları.',                            k:['Kelime','Bulmaca']},
-    {ad:'Çini',            yol:'cini/',                 ikon:'cini/ikon.svg',              not:'İznik çinisi ve Selçuklu motifleriyle eşleştirme.',         k:['Bulmaca']},
-    {ad:'Oklar',           yol:'oklar/',                ikon:'oklar/icon-192.png',         not:'Hepsini dışarı çıkar. 400 bölümlük ok labirenti.',          k:['Bulmaca']},
-    {ad:'Eksik Raylar',    yol:'eksik-raylar.html',     ikon:'eksik-raylar-ikon.svg',      not:'Eksik rayları döşe, istasyondan çıkışa hattı tamamla.',     k:['Bulmaca']},
-    {ad:'Sekiz Sıra',      yol:'sekizsira/',            ikon:'sekizsira/icons/icon.svg',   not:'Sekiz sıralı kart oyunu; OLED ekranlar için yanık korumalı.', k:['Kart']},
-    {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']}
-  ];
+  var OYUNLAR = (window.OYUNLAR || []).slice();
   var CIPLER = ['Hepsi','Online','Kart','Masa','Kelime','Bulmaca','Eğlence'];
 
   var izgara = document.getElementById('izgara'), bos = document.getElementById('bos');

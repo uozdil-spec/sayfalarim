@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a2138"/><stop offset="1" stop-color="#07090f"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3dd97"/><stop offset=".55" stop-color="#d8b46a"/><stop offset="1" stop-color="#9c7a36"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<rect x="14" y="14" width="484" height="484" rx="98" fill="none" stroke="#d8b46a" stroke-opacity=".35" stroke-width="3"/>
+<g transform="translate(256 256) scale(1) translate(-256 -256)">
+<rect x="97" y="97" width="150" height="150" rx="36" fill="url(#gold)"/>
+<rect x="97" y="97" width="150" height="75" rx="36" fill="#fff" opacity=".10"/>
+<rect x="265" y="97" width="150" height="150" rx="36" fill="url(#gold)"/>
+<rect x="265" y="97" width="150" height="75" rx="36" fill="#fff" opacity=".10"/>
+<rect x="97" y="265" width="150" height="150" rx="36" fill="url(#gold)"/>
+<rect x="97" y="265" width="150" height="75" rx="36" fill="#fff" opacity=".10"/>
+<rect x="265" y="265" width="150" height="150" rx="36" fill="url(#gold)"/>
+<rect x="265" y="265" width="150" height="75" rx="36" fill="#fff" opacity=".10"/>
+<circle cx="140" cy="140" r="15" fill="#1a1406"/>
+<circle cx="172" cy="172" r="15" fill="#1a1406"/>
+<circle cx="204" cy="204" r="15" fill="#1a1406"/>
+<polygon points="340,126 376,172 340,218 304,172" fill="#1a1406"/>
+<circle cx="172" cy="340" r="34" fill="none" stroke="#1a1406" stroke-width="16"/>
+<polygon points="340,294 380,342 354,342 354,384 326,384 326,342 300,342" fill="#1a1406"/>
+</g>
+</svg>
