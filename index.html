@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta name="surum" content="20261107-1105">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Oyun Salonu · by uozdil</title>
+<meta name="description" content="Reklamsız, ücretsiz, kurulumsuz oyunlar: Okey, Tavla, Satranç, Batak, Pişti ve daha fazlası. by uozdil">
+<meta name="theme-color" content="#0a0c12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1018'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23d8b46a'/%3E%3Ccircle cx='32' cy='32' r='15' fill='%2314110b'/%3E%3Ccircle cx='26' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='26' cy='38' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='38' r='2.6' fill='%23e6c27a'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0a0c12; --bg2:#10131c; --kart:#12151f; --cizgi:#232838;
+  --yazi:#eceef5; --soluk:#8f96ab; --altin:#d8b46a; --altin2:#f0d28f;
+  --r:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{
+  margin:0;min-height:100vh;color:var(--yazi);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:
+    radial-gradient(900px 500px at 12% -10%,rgba(216,180,106,.13),transparent 60%),
+    radial-gradient(800px 500px at 100% 0%,rgba(90,110,220,.10),transparent 60%),
+    var(--bg);
+  padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+}
+.kap{max-width:1040px;margin:0 auto}
+header{padding:28px 4px 18px;text-align:center}
+.marka{display:inline-flex;align-items:center;gap:10px;color:var(--altin);letter-spacing:.28em;font-size:12px;font-weight:600;text-transform:uppercase}
+.marka::before,.marka::after{content:"";width:28px;height:1px;background:linear-gradient(90deg,transparent,var(--altin))}
+.marka::after{transform:scaleX(-1)}
+h1{margin:12px 0 8px;font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.02em;
+  background:linear-gradient(180deg,#fff,#c9cfe3);-webkit-background-clip:text;background-clip:text;color:transparent}
+.alt{margin:0 auto;max-width:520px;color:var(--soluk);font-size:15px;line-height:1.5}
+
+.arac{display:flex;flex-direction:column;gap:12px;margin:22px 0 18px}
+.ara{position:relative}
+.ara input{
+  width:100%;padding:13px 16px 13px 44px;border-radius:14px;border:1px solid var(--cizgi);
+  background:var(--bg2);color:var(--yazi);font:inherit;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s
+}
+.ara input::placeholder{color:#6a7188}
+.ara input:focus{border-color:var(--altin);box-shadow:0 0 0 3px rgba(216,180,106,.16)}
+.ara svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--soluk);fill:none;stroke-width:2;stroke-linecap:round}
+.cipler{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none}
+.cipler::-webkit-scrollbar{display:none}
+.cip{
+  flex:none;border:1px solid var(--cizgi);background:var(--bg2);color:var(--soluk);
+  padding:8px 15px;border-radius:999px;font:inherit;font-size:13.5px;cursor:pointer;transition:all .18s
+}
+.cip:hover{color:var(--yazi);border-color:#3a4260}
+.cip[aria-pressed="true"]{background:linear-gradient(180deg,var(--altin2),var(--altin));color:#1b1405;border-color:transparent;font-weight:600}
+
+.izgara{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+@media (max-width:520px){.izgara{grid-template-columns:1fr 1fr;gap:10px}}
+.oyun{
+  position:relative;display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--r);
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0)),var(--kart);
+  border:1px solid var(--cizgi);color:inherit;text-decoration:none;overflow:hidden;
+  transition:transform .2s ease,border-color .2s,box-shadow .2s
+}
+.oyun::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:radial-gradient(260px 120px at 50% 0%,rgba(216,180,106,.16),transparent 70%)
+}
+@media (hover:hover){
+  .oyun:hover{transform:translateY(-3px);border-color:rgba(216,180,106,.55);box-shadow:0 14px 34px rgba(0,0,0,.45)}
+  .oyun:hover::after{opacity:1}
+}
+.oyun:active{transform:scale(.985)}
+.oyun:focus-visible{outline:2px solid var(--altin);outline-offset:2px}
+.ust{display:flex;align-items:center;gap:12px}
+.ikon{width:52px;height:52px;border-radius:13px;flex:none;object-fit:cover;background:#0d1018;box-shadow:0 4px 14px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.06)}
+.ad{font-size:17px;font-weight:650;letter-spacing:-.01em;line-height:1.2}
+.not{font-size:13px;line-height:1.45;color:var(--soluk);flex:1}
+.alt-satir{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:22px}
+.etiket{font-size:11px;letter-spacing:.04em;padding:3px 8px;border-radius:999px;border:1px solid var(--cizgi);color:var(--soluk)}
+.etiket.on{color:#8fe3b0;border-color:rgba(143,227,176,.35);background:rgba(143,227,176,.07)}
+.sayi{font-size:12px;color:var(--altin);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sayi:empty{display:none}
+.bos{display:none;text-align:center;color:var(--soluk);padding:40px 0}
+footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--soluk);font-size:13px;text-align:center}
+#toplam{color:var(--altin)}
+#toplam:empty{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="kap">
+  <header>
+    <div class="marka">by uozdil</div>
+    <h1>Oyun Salonu</h1>
+    <p class="alt">Reklamsız, ücretsiz, kurulumsuz. Telefonda ya da bilgisayarda aç, hemen oyna.</p>
+  </header>
+
+  <div class="arac">
+    <label class="ara">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="ara" type="search" placeholder="Oyun ara…" autocomplete="off" aria-label="Oyun ara">
+    </label>
+    <div class="cipler" id="cipler" role="group" aria-label="Kategori"></div>
+  </div>
+
+  <main class="izgara" id="izgara"></main>
+  <p class="bos" id="bos">Aramana uyan oyun bulunamadı.</p>
+
+  <footer>
+    <span id="toplam"></span>
+    <span>Arkadaşlarınla online oynamak için oyunun içinden oda bağlantısı paylaşabilirsin.</span>
+  </footer>
+</div>
+
+<script src="sayac.js?v=20261107-1105"></script>
+<script>
+(function () {
+  var TAVLA = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1018'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23d8b46a'/%3E%3Ccircle cx='32' cy='32' r='15' fill='%2314110b'/%3E%3Ccircle cx='26' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='26' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='32' cy='32' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='26' cy='38' r='2.6' fill='%23e6c27a'/%3E%3Ccircle cx='38' cy='38' r='2.6' fill='%23e6c27a'/%3E%3C/svg%3E";
+
+  // k: kategoriler, on: online oynanabilir mi
+  var OYUNLAR = [
+    {ad:'Okey',            yol:'okey/',                 ikon:'okey/icons/icon.svg',        not:'Bilgisayara karşı ya da 4 kişi online. Reklamsız.',         k:['Masa','Online'], on:1},
+    {ad:'Kart Salonu',     yol:'kart-salonu/',          ikon:'kart-salonu/icons/ikon.svg', not:'Pişti, Dost Kazığı ve Pis Yedili tek salonda.',             k:['Kart','Online'], on:1},
+    {ad:'Batak',           yol:'batak.html',            ikon:'batak-ikon.svg',             not:'Eşli batak; arkadaşlarınla online oyna.',                   k:['Kart','Online'], on:1},
+    {ad:'Tavla',           yol:'tavla.html',            ikon:TAVLA,                        not:'Klasik tavla; arkadaşınla online oyna.',                    k:['Masa','Online'], on:1},
+    {ad:'Satranç',         yol:'satranc/',              ikon:'satranc/ikon.svg',           not:'Satranç; arkadaşınla online oyna.',                         k:['Masa','Online'], on:1},
+    {ad:'Dokuz Taş',       yol:'dokuz-tas.html',        ikon:'dokuz-tas-ikon.svg',         not:'Dokuz Taş; arkadaşınla online oyna.',                       k:['Masa','Online'], on:1},
+    {ad:'Harf Harmanı',    yol:'harf-harmani/',         ikon:'harf-harmani/ikon.svg',      not:'Harflerden kelime üret; arkadaşlarınla çevrimiçi.',         k:['Kelime','Online'], on:1},
+    {ad:'Kafes Dövüşü',    yol:'kafes-dovusu/',         ikon:'kafes-dovusu-ikon.svg',      not:'Karakterini seç; turnuva ya da serbest maç.',               k:['Eğlence','Online'], on:1},
+    {ad:'Kelime Avı & Hafıza', yol:'kelime-avi-hafiza.html', ikon:'kelime-avi-ikon.svg',   not:'Kelime avı ve hafıza oyunları.',                            k:['Kelime','Bulmaca']},
+    {ad:'Çini',            yol:'cini/',                 ikon:'cini/ikon.svg',              not:'İznik çinisi ve Selçuklu motifleriyle eşleştirme.',         k:['Bulmaca']},
+    {ad:'Oklar',           yol:'oklar/',                ikon:'oklar/icon-192.png',         not:'Hepsini dışarı çıkar. 400 bölümlük ok labirenti.',          k:['Bulmaca']},
+    {ad:'Eksik Raylar',    yol:'eksik-raylar.html',     ikon:'eksik-raylar-ikon.svg',      not:'Eksik rayları döşe, istasyondan çıkışa hattı tamamla.',     k:['Bulmaca']},
+    {ad:'Sekiz Sıra',      yol:'sekizsira/',            ikon:'sekizsira/icons/icon.svg',   not:'Sekiz sıralı kart oyunu; OLED ekranlar için yanık korumalı.', k:['Kart']},
+    {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']}
+  ];
+  var CIPLER = ['Hepsi','Online','Kart','Masa','Kelime','Bulmaca','Eğlence'];
+
+  var izgara = document.getElementById('izgara'), bos = document.getElementById('bos');
+  var aktif = 'Hepsi', sorgu = '';
+
+  function norm(s){ return s.toLocaleLowerCase('tr').replace(/[&]/g,' ').trim(); }
+
+  OYUNLAR.forEach(function (o) {
+    var a = document.createElement('a');
+    a.className = 'oyun'; a.href = o.yol; a.dataset.yol = o.yol;
+    var etiket = o.on ? '<span class="etiket on">Online</span>' : '<span class="etiket">Tek kişilik</span>';
+    a.innerHTML =
+      '<div class="ust"><img class="ikon" alt="" loading="lazy" width="52" height="52" src="' + o.ikon + '">' +
+      '<div class="ad"></div></div><div class="not"></div>' +
+      '<div class="alt-satir">' + etiket + '<span class="sayi"></span></div>';
+    a.querySelector('.ad').textContent = o.ad;
+    a.querySelector('.not').textContent = o.not;
+    o.el = a; izgara.appendChild(a);
+  });
+
+  var cipKap = document.getElementById('cipler');
+  CIPLER.forEach(function (c) {
+    var b = document.createElement('button');
+    b.className = 'cip'; b.type = 'button'; b.textContent = c;
+    b.setAttribute('aria-pressed', c === aktif);
+    b.onclick = function () {
+      aktif = c;
+      [].forEach.call(cipKap.children, function (x) { x.setAttribute('aria-pressed', x === b); });
+      goster();
+    };
+    cipKap.appendChild(b);
+  });
+
+  function goster() {
+    var n = 0;
+    OYUNLAR.forEach(function (o) {
+      var kat = aktif === 'Hepsi' || o.k.indexOf(aktif) > -1;
+      var ara = !sorgu || norm(o.ad + ' ' + o.not).indexOf(sorgu) > -1;
+      var ok = kat && ara; o.el.style.display = ok ? '' : 'none'; if (ok) n++;
+    });
+    bos.style.display = n ? 'none' : 'block';
+  }
+  document.getElementById('ara').addEventListener('input', function (e) { sorgu = norm(e.target.value); goster(); });
+
+  // Sayaç göstergesi: sadece GoatCounter ayarlıysa ve "genel sayaç" açıksa görünür; yoksa sessizce gizli kalır.
+  var kod = window.SAYAC_KOD;
+  if (kod && window.fetch) {
+    var taban = 'https://' + kod + '.goatcounter.com/counter/';
+    var getir = function (yol) {
+      return fetch(taban + encodeURIComponent(yol) + '.json', {mode: 'cors'})
+        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    };
+    OYUNLAR.forEach(function (o) {
+      var yol = new URL(o.yol, location.href).pathname;
+      getir(yol).then(function (j) {
+        if (j && j.count && j.count !== '0') o.el.querySelector('.sayi').textContent = j.count + ' kez oynandı';
+      });
+    });
+    getir('TOTAL').then(function (j) {
+      if (j && j.count && j.count !== '0') document.getElementById('toplam').textContent = 'Toplam ' + j.count + ' oyun açılışı';
+    });
+  }
+})();
+</script>
+</body>
+</html>
