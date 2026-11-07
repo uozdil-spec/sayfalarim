@@ -10,6 +10,9 @@
   if (window.goatcounter && window.goatcounter.no_onload) return;   // menü sayfası kendi isteğini yönetir
   if (location.hostname === 'localhost' || location.protocol === 'file:') return;
 
+  window.goatcounter = window.goatcounter || {};
+  window.goatcounter.endpoint = 'https://' + KOD + '.goatcounter.com/count';
+
   var s = document.createElement('script');
   s.async = true;
   s.src = 'https://gc.zgo.at/count.js';

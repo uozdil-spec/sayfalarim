@@ -1,16 +1,16 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261107-1123">
+<meta name="surum" content="20261107-1135">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Oyun Salonu · by uozdil</title>
 <meta name="description" content="Reklamsız, ücretsiz, kurulumsuz oyunlar: Okey, Tavla, Satranç, Batak, Pişti ve daha fazlası. by uozdil">
 <meta name="theme-color" content="#0a0c12">
-<link rel="icon" href="salon-ikon.svg?v=20261107-1123" type="image/svg+xml">
-<link rel="icon" href="salon-ikon-32.png?v=20261107-1123" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="salon-ikon-180.png?v=20261107-1123">
-<link rel="manifest" href="salon.webmanifest?v=20261107-1123">
+<link rel="icon" href="salon-ikon.svg?v=20261107-1135" type="image/svg+xml">
+<link rel="icon" href="salon-ikon-32.png?v=20261107-1135" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="salon-ikon-180.png?v=20261107-1135">
+<link rel="manifest" href="salon.webmanifest?v=20261107-1135">
 <meta name="apple-mobile-web-app-title" content="Oyun Salonu">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
@@ -118,8 +118,8 @@ footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);displa
   </footer>
 </div>
 
-<script src="sayac.js?v=20261107-1123"></script>
-<script src="oyunlar.js?v=20261107-1123"></script>
+<script src="sayac.js?v=20261107-1135"></script>
+<script src="oyunlar.js?v=20261107-1135"></script>
 <script>
 (function () {
   var OYUNLAR = (window.OYUNLAR || []).slice();
@@ -173,16 +173,21 @@ footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);displa
     var taban = 'https://' + kod + '.goatcounter.com/counter/';
     var getir = function (yol) {
       return fetch(taban + encodeURIComponent(yol) + '.json', {mode: 'cors'})
-        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+        .then(function (r) { return r.ok ? r.json().then(function (j) { return {d: 'ok', j: j}; }) : {d: r.status}; })
+        .catch(function () { return {d: 'hata'}; });
     };
+    var toplam = document.getElementById('toplam');
     OYUNLAR.forEach(function (o) {
       var yol = new URL(o.yol, location.href).pathname;
-      getir(yol).then(function (j) {
-        if (j && j.count && j.count !== '0') o.el.querySelector('.sayi').textContent = j.count + ' kez oynandı';
+      getir(yol).then(function (x) {
+        if (x.d === 'ok' && x.j && x.j.count && x.j.count !== '0') o.el.querySelector('.sayi').textContent = x.j.count + ' kez oynandı';
       });
     });
-    getir('TOTAL').then(function (j) {
-      if (j && j.count && j.count !== '0') document.getElementById('toplam').textContent = 'Toplam ' + j.count + ' oyun açılışı';
+    getir('TOTAL').then(function (x) {
+      if (x.d === 'ok' && x.j && x.j.count && x.j.count !== '0') toplam.textContent = 'Toplam ' + x.j.count + ' oyun açılışı';
+      else if (x.d === 'ok' || x.d === 404) toplam.textContent = 'Sayaç hazır, henüz sayım yok.';
+      else if (x.d === 'hata') toplam.textContent = 'Sayaç okunamadı (bağlantı veya engelleyici).';
+      else toplam.textContent = 'Sayaç yanıtı: ' + x.d + (x.d === 403 ? ' (genel sayaç ayarı kapalı olabilir)' : '');
     });
   }
 })();
