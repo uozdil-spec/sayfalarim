@@ -17,5 +17,6 @@ window.OYUNLAR = [
     {ad:'Oklar',           yol:'oklar/',                ikon:'oklar/icon-192.png',         not:'Hepsini dışarı çıkar. 400 bölümlük ok labirenti.',          k:['Bulmaca']},
     {ad:'Eksik Raylar',    yol:'eksik-raylar.html',     ikon:'eksik-raylar-ikon.svg',      not:'Eksik rayları döşe, istasyondan çıkışa hattı tamamla.',     k:['Bulmaca']},
     {ad:'Sekiz Sıra',      yol:'sekizsira/',            ikon:'sekizsira/icons/icon.svg',   not:'Sekiz sıralı kart oyunu; OLED ekranlar için yanık korumalı.', k:['Kart']},
-    {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']}
+    {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']},
+    {ad:'Domino',          yol:'domino/',               ikon:'domino/ikon.svg',            not:'3D masa, yapay zekâ ya da arkadaşlarla online domino; sohbet, ipuçları, kılavuz.', k:['Masa','Online'], on:1}
 ];
