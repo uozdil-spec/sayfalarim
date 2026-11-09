@@ -314,14 +314,14 @@ GameUI.prototype.renderPlates = function (sc, v) {
   var html = '';
   if (v.stage === 'card' && v.contract) {
     var ct = v.contract, tk = v.tricks;
-    html = '<div class="pt">Sözleşme</div><div class="pb">' + ctText(ct) + '</div><div class="ps">' + names[ct.declarer] + '</div>' +
-      '<div class="ps">' + (ct.side === mine ? 'Biz' : 'Onlar') + ' ' + (6 + ct.level) + ' löve almalı</div>';
+    html = '<div class="pt">Sözleşme</div><div class="pb">' + ctText(ct) + '</div>' +
+      '<div class="ps">' + names[ct.declarer].slice(0, 8) + ' · ' + (6 + ct.level) + ' löve</div>';
   } else if (v.stage === 'bid') {
     html = '<div class="pt">Dağıtıcı</div><div class="pb sm">' + B.SEATN[v.dealer] + '</div><div class="ps">' + vulTxt + '</div>';
   }
   pl.innerHTML = html; pl.style.display = html && v.phase === 'play' ? '' : 'none';
   var rt = '<div class="pt">El ' + Math.min(v.deal, v.deals) + ' / ' + v.deals + '</div><div class="ps">Biz <b>' + v.scores[mine] + '</b> · Onlar <b>' + v.scores[1 - mine] + '</b></div>';
-  if (v.stage === 'card' && v.contract) rt += '<div class="ps">Löve: Biz <b>' + v.tricks[mine] + '</b> · Onlar <b>' + v.tricks[1 - mine] + '</b></div>';
+  if (v.stage === 'card' && v.contract) rt += '<div class="ps">Löve <b>' + v.tricks[mine] + '</b> – <b>' + v.tricks[1 - mine] + '</b></div>';
   pr.innerHTML = rt; pr.style.display = v.phase === 'play' ? '' : 'none';
 };
 

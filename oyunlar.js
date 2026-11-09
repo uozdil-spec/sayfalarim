@@ -5,6 +5,7 @@
 window.OYUNLAR = [
     {ad:'Okey',            yol:'okey/',                 ikon:'okey/icons/icon.svg',        not:'Bilgisayara karşı ya da 4 kişi online. Reklamsız.',         k:['Masa','Online'], on:1},
     {ad:'Kart Salonu',     yol:'kart-salonu/',          ikon:'kart-salonu/icons/ikon.svg', not:'Pişti, Dost Kazığı ve Pis Yedili tek salonda.',             k:['Kart','Online'], on:1},
+    {ad:'Briç',           yol:'bric/',                 ikon:'bric/icons/ikon.svg',        not:'Ortaklı briç; ihale, kolay kılavuz, ipucu. Online oyna.',   k:['Kart','Online'], on:1},
     {ad:'Batak',           yol:'batak.html',            ikon:'batak-ikon.svg',             not:'Eşli batak; arkadaşlarınla online oyna.',                   k:['Kart','Online'], on:1},
     {ad:'Tavla',           yol:'tavla.html',            ikon:'tavla-ikon.svg',            not:'Klasik tavla; arkadaşınla online oyna.',                    k:['Masa','Online'], on:1},
     {ad:'Satranç',         yol:'satranc/',              ikon:'satranc/ikon.svg',           not:'Satranç; arkadaşınla online oyna.',                         k:['Masa','Online'], on:1},

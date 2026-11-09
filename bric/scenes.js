@@ -51,7 +51,7 @@ SC.bric = function (v, X) {
 
   /* --- yerleşim hesabı --- */
   var topBy = 20;
-  var topHandY = topBy + 17 + (dummyShown && relOf(v.dummy) === 2 ? chd : cho) / 2;
+  var topHandY = (land ? topBy + 17 : 60) + (dummyShown && relOf(v.dummy) === 2 ? chd : cho) / 2;
   var topEnd = topHandY + (dummyShown && relOf(v.dummy) === 2 ? chd : cho) / 2;
   var handY = h - ch / 2 - 6, handTop = handY - ch / 2;
   var cy = (topEnd + (handTop - (land ? 0 : 40))) / 2;
@@ -81,7 +81,7 @@ SC.bric = function (v, X) {
     var turnMe = v.phase === 'play' && v.turn === me && v.stage === 'card';
     var canPlayD = meDecl && turnMe && v.to === v.dummy;
     if (drel === 2) {
-      var rp = rowPos(dcards, cx, topHandY, cwd, w - 16, cwd * 0.85, 0.16);
+      var rp = rowPos(dcards, cx, topHandY, cwd, land ? w - 380 : w - 16, cwd * 0.85, 0.16);
       dummyCards = dcards.map(function (c, k) { return { c: c, x: rp[k].x, y: rp[k].y, sc: sd, z: 10 + k }; });
       topSeat.dummy = true;
     } else {
