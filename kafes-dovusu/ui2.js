@@ -20,6 +20,7 @@ U.home = function () {
   rows.push(btn('Takım maçı · 3 kişi', 'wide', function () { pick(teamSheet); }));
   rows.push(btn(dailyDone() ? 'Günlük meydan ✓' : 'Günlük meydan', 'wide', function () { pick(dailySheet); }));
   rows.push(btn('Çevrimiçi düello', 'red wide', function () { pick(function () { onlineSheet(0); }); }));
+  rows.push(btn('Tüm oyunlar', 'wide', function () { location.href = '../index.html'; }));
   rows.push(row([first ? null : btn('Antrenman', 'sm', function () { pick(startTrain); }), btn('Rehber', 'sm', function () { U.helpSheet(); }), btn('Başarımlar', 'sm', achSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
   showOv([cols([h('h1', { html: 'KAFES <br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), charCard()], [h('div', { cls: 'menu hm' }, rows)])]);
   $('ticker').textContent = 'Hakem mesai kartını basıyor. Turnuva başlamak üzere.';
