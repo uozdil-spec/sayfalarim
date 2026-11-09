@@ -1,4 +1,4 @@
-/* Kart Salonu · oturum: oyunun tek "sahibi". Bot hamleleri, süre, el sonu bekleme, kayıt.
+/* Briç · oturum: oyunun tek "sahibi". Bot hamleleri, süre, el sonu bekleme, kayıt.
    Yerelde de çevrimiçinde de aynı kod çalışır; çevrimiçinde ev sahibi cihazda durur. */
 (function (root) {
 'use strict';
@@ -40,7 +40,7 @@ Session.prototype.emit = function (ev, kind) {
 };
 Session.prototype.view = function (seat) { return this.E.view(this.st, seat); };
 Session.prototype.phase = function () { return this.st.phase; };
-Session.prototype.isBotSeat = function (s) { var p = this.seats[s]; return !p.human || p.away; };
+Session.prototype.isBotSeat = function (s) { var p = this.seats[s]; return !p.human || p.away || (!!this.st.auto && !!this.st.auto[s] && this.st.stage === 'card'); };
 
 Session.prototype.start = function () {
   this.emit(this.lastEv, 'start');
@@ -86,11 +86,15 @@ Session.prototype.advance = function () {
 };
 
 Session.prototype.botDelay = function (seat) {
-  var base = 750 + BR.rnd() * 650;
-  var ev = this.lastEv, dealt = false, i;
-  for (i = 0; i < ev.length; i++) if (ev[i].t === 'deal' || ev[i].t === 'newHand') dealt = true;
-  if (dealt) base += 1100;
-  for (i = 0; i < ev.length; i++) { if (ev[i].t === 'capture') { base += ev[i].n === 5 ? 2300 : 1000; break; /* ilk eli alan kapalı kartlara bakabilsin */ } if (ev[i].t === 'give') { base += 450; break; } } // Pişti'de alınan kart görünsün diye biraz daha bekler
+  var base = 650 + BR.rnd() * 600, ev = this.lastEv, i;
+  if (this.st.stage === 'bid') base = 800 + BR.rnd() * 700;
+  for (i = 0; i < ev.length; i++) {
+    if (ev[i].t === 'newHand' || ev[i].t === 'deal') base += 1300;
+    else if (ev[i].t === 'trick') base += 1000;     // alınan el görülsün
+    else if (ev[i].t === 'contract') base += 1500;  // ihale sonucu okunsun
+    else if (ev[i].t === 'dummy') base += 1200;     // açık el incelensin
+  }
+  if (this.st.stage === 'card' && this.seats[seat].human && this.st.auto && this.st.auto[seat]) base = 500 + BR.rnd() * 300;
   return base * (BR.botMul || 1);
 };
 

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+<radialGradient id="f" cx="50%" cy="42%" r="75%"><stop offset="0" stop-color="#1f7a4a"/><stop offset="1" stop-color="#062414"/></radialGradient>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1dc9c"/><stop offset="1" stop-color="#b8892f"/></linearGradient>
+<linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf6"/><stop offset="1" stop-color="#eadfc2"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="104" fill="url(#f)"/>
+<rect x="14" y="14" width="484" height="484" rx="92" fill="none" stroke="url(#g)" stroke-width="5" opacity=".75"/>
+<g transform="translate(256 262)">
+<g transform="rotate(-16) translate(-120 -150)"><rect width="150" height="210" rx="14" fill="url(#c)" stroke="#6b5a2f" stroke-width="3"/>
+<text x="16" y="48" font-family="Georgia,serif" font-weight="700" font-size="42" fill="#c4262e">K</text>
+<path transform="translate(14 56) scale(.3)" fill="#c4262e" d="M50 94C20 70 5 52 5 33C5 18 16 8 29 8C39 8 46 14 50 22C54 14 61 8 71 8C84 8 95 18 95 33C95 52 80 70 50 94Z"/>
+<path transform="translate(35 85) scale(.8)" fill="#c4262e" d="M50 94C20 70 5 52 5 33C5 18 16 8 29 8C39 8 46 14 50 22C54 14 61 8 71 8C84 8 95 18 95 33C95 52 80 70 50 94Z"/></g>
+<g transform="rotate(12) translate(-20 -170)"><rect width="170" height="238" rx="16" fill="url(#c)" stroke="#6b5a2f" stroke-width="3"/>
+<text x="18" y="54" font-family="Georgia,serif" font-weight="700" font-size="48" fill="#15171c">A</text>
+<path transform="translate(16 62) scale(.34)" fill="#15171c" d="M50 3C60 26 93 40 93 63C93 77 82 86 70 86C62 86 56 82 53 77C54 86 58 93 67 97L33 97C42 93 46 86 47 77C44 82 38 86 30 86C18 86 7 77 7 63C7 40 40 26 50 3Z"/>
+<path transform="translate(42 80) scale(.9)" fill="#15171c" d="M50 3C60 26 93 40 93 63C93 77 82 86 70 86C62 86 56 82 53 77C54 86 58 93 67 97L33 97C42 93 46 86 47 77C44 82 38 86 30 86C18 86 7 77 7 63C7 40 40 26 50 3Z"/></g>
+</g>
+<text x="256" y="470" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="58" letter-spacing="10" fill="url(#g)">BRİÇ</text>
+</svg>

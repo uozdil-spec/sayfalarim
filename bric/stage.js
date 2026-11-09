@@ -1,4 +1,4 @@
-/* Kart Salonu · sahne: kart öğelerini yönetir, konumlar arası akıcı hareket ettirir */
+/* Briç · sahne: kart öğelerini yönetir, konumlar arası akıcı hareket ettirir */
 (function (root) {
 'use strict';
 var BR = root.BR;

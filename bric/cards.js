@@ -1,4 +1,4 @@
-/* Kart Salonu · kart yüzleri (SVG), kart arkaları, simgeler */
+/* Briç · kart yüzleri (SVG), kart arkaları, simgeler */
 (function (root) {
 'use strict';
 var BR = root.BR;
@@ -165,6 +165,7 @@ var ICONS = {
   moon: '<path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/>',
   smile: '<circle cx="12" cy="12" r="9"/><path d="M8.5 14c1 1.6 2.2 2.4 3.5 2.4s2.5-.8 3.5-2.4"/><circle cx="9" cy="9.6" r=".9" fill="currentColor"/><circle cx="15" cy="9.6" r=".9" fill="currentColor"/>',
   trophy: '<path d="M7.5 4.5h9v4.5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6H4.8c0 3 1.3 4.4 3 4.6M16.5 6h2.7c0 3-1.3 4.4-3 4.6M12 13.5v3.2M8.5 19.5h7M9.5 16.7h5"/>',
+  bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>',
   refresh: '<path d="M19.5 8A8 8 0 0 0 5 9.5M4.5 16A8 8 0 0 0 19 14.5"/><path d="M19.5 3.8V8h-4.2M4.5 20.2V16h4.2"/>'
 };
 C.icon = function (n, cls) {

@@ -1,4 +1,4 @@
-/* Kart Salonu · çekirdek: yardımcılar, ayarlar, ses, OLED koruma, tam ekran, bildirimler */
+/* Briç · çekirdek: yardımcılar, ayarlar, ses, OLED koruma, tam ekran, bildirimler */
 (function (root) {
 'use strict';
 var BR = root.BR;
@@ -52,7 +52,7 @@ BR.DEF = {
   oled: true, shiftEvery: 60, idleDim: 60, dimLevel: 75, wake: true, autofs: false,
   safeL: 0, safeR: 0, safeT: 0, safeB: 0, uiscale: 100,
   broker: 'auto', customBroker: '',
-  lastGame: 'pisti', tab: 'view'
+  lastGame: 'bric', tab: 'view', hints: true, showBidHelp: true, fastTrick: false, autoSingle: true
 };
 BR.S = {};
 BR.loadSettings = function () {
@@ -167,6 +167,9 @@ var SFX = {
   bad: function () { tone(190, 0.16, 'sawtooth', 0.09); tone(150, 0.2, 'sawtooth', 0.08, 0.1); },
   win: function () { [523, 659, 784, 1047, 1319].forEach(function (f, i) { tone(f, 0.7, 'triangle', 0.16, i * 0.11, 0.5); }); },
   lose: function () { [392, 349, 311, 262].forEach(function (f, i) { tone(f, 0.6, 'triangle', 0.13, i * 0.16, 0.4); }); },
+  bid: function () { tone(520, 0.1, 'triangle', 0.14, 0, 0.2); tone(780, 0.14, 'triangle', 0.1, 0.05, 0.25); },
+  trick: function (d) { noise(0.16, 2000, 500, 0.3, d || 0, 0.7); tone(330, 0.2, 'triangle', 0.08, (d || 0) + 0.04, 0.3); },
+  contract: function () { [392, 523, 659].forEach(function (f, i) { tone(f, 0.45, 'triangle', 0.14, i * 0.09, 0.4); }); },
   pop: function () { tone(660, 0.09, 'sine', 0.12, 0, 0.15, 990); },
   suit: function () { tone(700, 0.18, 'sine', 0.1, 0, 0.3, 1100); },
   draw: function (d) { noise(0.09, 3400, 1500, 0.3, d || 0, 1); noise(0.07, 3000, 1300, 0.2, (d || 0) + 0.06, 1); }

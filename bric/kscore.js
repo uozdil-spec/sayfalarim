@@ -1,4 +1,4 @@
-/* Kart Salonu · ortak yardımcılar. Kart numarası: 0-51 (maça, kupa, karo, sinek x A..K), 52-53 joker. */
+/* Briç · ortak yardımcılar. Kart numarası: 0-51 (maça, kupa, karo, sinek x A..K), 52-53 joker. */
 (function (root) {
 'use strict';
 var BR = root.BR = root.BR || {};

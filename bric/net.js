@@ -1,4 +1,4 @@
-/* Kart Salonu · çevrimiçi katman.
+/* Briç · çevrimiçi katman.
    Genel MQTT (WebSocket) aracıları üzerinden: arkadaşlar, davet, açık masalar, oda.
    Oyun "ev sahibi" cihazda çalışır. Kopma korumaları:
    - Her oyuncunun son durumu aracıda saklı (retained) durur; geri gelen kendini anında günceller.
@@ -393,7 +393,7 @@ RoomHost.prototype.onMsg = function (m) {
   if (m.t === 'join') {
     if (seat < 0) {
       if (this.status !== 'lobby') { this.net.pub(this.base + '/v/' + pid, { full: 1, ts: Date.now() }, { retain: true, qos: 1 }); return; }
-      for (i = 0; i < this.seats.length; i++) if (this.seats[i].open) { seat = i; break; }
+      var pref = [2, 1, 3, 0, 4, 5]; for (var q = 0; q < pref.length; q++) { i = pref[q]; if (i < this.seats.length && this.seats[i].open) { seat = i; break; } }  /* ilk gelen ortak (Kuzey) olur */
       if (seat < 0) { this.net.pub(this.base + '/v/' + pid, { full: 1, ts: Date.now() }, { retain: true, qos: 1 }); return; }
       this.seats[seat] = { human: true, open: false, name: clean(m.n, 14) || 'Oyuncu', av: clean(m.a, 4) || '🙂', pid: pid };
       if (this.lobbyCb) this.lobbyCb();
