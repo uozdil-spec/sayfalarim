@@ -72,8 +72,8 @@ body.fourc[data-face="koyu"] .face.s2 { color: #6aa5ff; } body.fourc[data-face="
 .cn b { font: 700 .27em/1 Georgia, "Times New Roman", "Noto Serif", serif; letter-spacing: -.02em; }
 .cn b.two { font-size: .23em; letter-spacing: -.07em; }
 body.bigidx .cn b { font-size: .33em; } body.bigidx .cn b.two { font-size: .28em; }
-.cn .su { width: .17em; height: .17em; margin-top: .018em; }
-body.bigidx .cn .su { width: .2em; height: .2em; }
+.cn .su { width: .115em; height: .115em; margin-top: .02em; }
+body.bigidx .cn .su { width: .135em; height: .135em; }
 .cn.br { left: auto; right: .045em; top: auto; bottom: .04em; transform: rotate(180deg); }
 .pips { position: absolute; inset: 0; }
 .pp { position: absolute; width: .2em; height: .2em; transform: translate(-50%, -50%); display: block; }
@@ -349,3 +349,6 @@ body.land .plate { top: 10px; max-width: 24%; }
 .auline { display: flex; flex-wrap: wrap; gap: .25rem .6rem; font-size: .85rem; } .auline .ai i { font-style: normal; color: var(--mut); font-size: .65rem; margin-right: .2rem; text-transform: uppercase; }
 .tbl.sc td, .tbl.sc th { font-size: .8rem; padding: .35rem .25rem; }
 .stage .seat .nm { max-width: 6.5rem; } .stage .seat .sc { white-space: normal; max-width: 6.5rem; }
+
+.stage .seat.me .sc, .stage .seat.me .nm { white-space: nowrap; max-width: none; }
+.stage .seat.me { max-width: none; }

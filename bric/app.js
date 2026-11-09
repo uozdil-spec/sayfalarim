@@ -61,6 +61,7 @@ App.home = function () {
   var S = BR.S;
   var wrap = h('div', { class: 'home' });
   var top = h('div', { class: 'top' });
+  top.appendChild(h('a', { class: 'btn ibtn', href: '../index.html', 'aria-label': 'Tüm oyunlar', title: 'Tüm oyunlar', style: { marginRight: 'auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }, html: '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4"/></svg>' }));
   if (BR.canFs()) top.appendChild(h('button', { class: 'btn ibtn', 'aria-label': 'Tam ekran', 'data-fs': '1', onclick: function () { BR.sfx('click'); BR.toggleFs(); } }, BR.ic(BR.isFs() ? 'shrink' : 'expand')));
   top.appendChild(h('button', { class: 'btn ibtn', 'aria-label': 'Kılavuz', onclick: function () { BR.sfx('click'); BR.helpSheet('basics'); } }, BR.ic('help')));
   top.appendChild(h('button', { class: 'btn ibtn', 'aria-label': 'Ayarlar', onclick: function () { BR.sfx('click'); BR.settingsSheet(); } }, BR.ic('gear')));

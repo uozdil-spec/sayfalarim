@@ -281,7 +281,7 @@ GameUI.prototype.renderOverlay = function (sc, v) {
     el.root.classList.toggle('vul', !!v.vul[s % 2]);
     el.nm.textContent = info.name + (s === me ? ' (sen)' : (s === (me + 2) % 4 ? ' · ortağın' : ''));
     var sub = sc.sub(s);
-    if (s === me && v.stage === 'bid' && BR.S.showBidHelp && v.hand.length) sub += ' · ' + hcp(v.hand) + ' puan';
+    if (s === me && v.stage === 'bid' && BR.S.showBidHelp && v.hand.length) sub = hcp(v.hand) + ' puan · ' + B.SEATN[s];
     el.sc.textContent = sub;
     el.root.classList.toggle('turn', v.phase === 'play' && focus === s && !this.hold);
     el.root.style.left = L.bx + 'px'; el.root.style.top = L.by + 'px';
@@ -294,7 +294,7 @@ GameUI.prototype.renderOverlay = function (sc, v) {
   this.say.style.display = (sc.say && !this.hold) ? '' : 'none';
   this.say.classList.toggle('me', turnMe);
   if (G.land) { this.say.style.left = (G.w - 80) + 'px'; this.say.style.top = (G.h - 24) + 'px'; this.say.style.transform = 'translate(-50%,-50%)'; this.say.style.maxWidth = '140px'; this.say.style.fontSize = '.8rem'; }
-  else { this.say.style.transform = ''; this.say.style.left = '50%'; this.say.style.maxWidth = '70%'; this.say.style.fontSize = ''; this.say.style.top = (sc.handTop - 26 - 6) + 'px'; this.say.style.marginLeft = '5.2rem'; this.say.style.marginLeft = '0'; if (G.w < 420) { this.say.style.left = (G.w / 2 + 52) + 'px'; this.say.style.maxWidth = (G.w / 2 - 40) + 'px'; this.say.style.fontSize = '.78rem'; } }
+  else { this.say.style.transform = ''; this.say.style.left = '50%'; this.say.style.maxWidth = '70%'; this.say.style.fontSize = ''; this.say.style.top = (sc.handTop - 26 - 6) + 'px'; this.say.style.marginLeft = '5.2rem'; this.say.style.marginLeft = '0'; if (true) { this.say.style.left = (G.w - 8 - Math.min(150, G.w * 0.36) / 2) + 'px'; this.say.style.maxWidth = Math.min(150, G.w * 0.36) + 'px'; this.say.style.fontSize = '.78rem'; } }
   // bilgi tabelaları
   this.renderPlates(sc, v);
   // ihale kutusu
@@ -335,8 +335,8 @@ GameUI.prototype.renderBid = function (sc, v) {
   var key = v.auction.length + ':' + turnMe + ':' + mn + ':' + (this.lvl || 0) + ':' + (this.hintBid == null ? '' : this.hintBid) + ':' + G.w + 'x' + G.h;
   el.style.display = '';
   var land = G.land;
-  var top = sc.topEnd + (land ? 26 : 48), bottom = sc.handTop - (land ? 6 : 36);
-  el.style.left = (land ? 58 : 8) + 'px'; el.style.right = (land ? 58 : 8) + 'px';
+  var top = sc.topEnd + (land ? 26 : 48), bottom = sc.handTop - (land ? 6 : 62);
+  el.style.left = (land ? 58 : 56) + 'px'; el.style.right = (land ? 58 : 56) + 'px';
   el.style.top = top + 'px'; el.style.height = Math.max(120, bottom - top) + 'px';
   el.classList.toggle('land', !!land);
   if (this.bidKey === key) return;

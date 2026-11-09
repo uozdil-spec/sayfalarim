@@ -3,7 +3,8 @@
 (function () {
   try {
     if (window.parent !== window.self) return;
-    var cs = document.currentScript, base = cs && cs.src ? new URL('./', cs.src).href : '/';
+    var cs = document.currentScript; if (cs && cs.hasAttribute('data-gizle')) return;
+    var base = cs && cs.src ? new URL('./', cs.src).href : '/';
     if (/\/(index\.html)?$/.test(location.pathname) && location.href.indexOf(base) === 0 && location.pathname === new URL(base).pathname) return; // ana sayfanın kendisi
     var st = document.createElement('style');
     st.textContent = '#salonBtn{position:fixed;left:calc(8px + env(safe-area-inset-left,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:2147483000;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,12,18,.78);border:1px solid rgba(212,175,90,.55);color:#f1dc9c;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.5);opacity:.75;transition:opacity .6s;-webkit-tap-highlight-color:transparent}#salonBtn.gizli{opacity:0;pointer-events:none}#salonBtn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}';

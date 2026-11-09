@@ -60,7 +60,7 @@ SC.bric = function (v, X) {
   var dx = cw * ts * 1.05, dy = ch * ts * 0.62;
   var TP = [{ x: cx, y: cy + dy }, { x: cx - dx, y: cy }, { x: cx, y: cy - dy }, { x: cx + dx, y: cy }];
 
-  var L = [], meL = { side: 'bottom', x: cx, y: handY, bx: land ? 8 + 74 : 8 + 74, by: land ? h - 24 : handTop - 24, sc: 1 };
+  var L = [], meL = { side: 'bottom', x: cx, y: handY, bx: 8 + 84, by: land ? h - 24 : handTop - 30, sc: 1 };
   L[me] = meL;
   function sideSeat(rel, dummy) {
     var left = rel === 1, n = v.counts[seatOf(rel)];
