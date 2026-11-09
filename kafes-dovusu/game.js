@@ -11,18 +11,20 @@ function rr(a, b) { return a + Math.random() * (b - a); }
 var AC = null;
 function ac() { try { AC = AC || new (root.AudioContext || root.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) {} return AC; }
 function tone(f, d, type, v, sl, delay) {
-  if (!KF.S.sfx || !ac()) return;
+  if (!KF.S.sfx || !ac() || (!delay && busy())) return;
   try {
     var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + (delay || 0);
     o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); if (sl) o.frequency.exponentialRampToValueAtTime(Math.max(30, f + sl), t + d);
     g.gain.setValueAtTime(v || .06, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d + .02);
   } catch (e) {}
 }
+var NB = {}, sndN = [];
+function busy() { var t = Date.now(); sndN = sndN.filter(function (x) { return t - x < 70; }); if (sndN.length >= 5) return true; sndN.push(t); return false; }
 function thud(d, v, lp) {
-  if (!KF.S.sfx || !ac()) return;
+  if (!KF.S.sfx || !ac() || busy()) return;
   try {
-    var n = Math.floor(AC.sampleRate * d), b = AC.createBuffer(1, n, AC.sampleRate), a = b.getChannelData(0), i;
-    for (i = 0; i < n; i++) a[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3);
+    var key = d.toFixed(2), b = NB[key], i;
+    if (!b) { var n = Math.floor(AC.sampleRate * d), a; b = NB[key] = AC.createBuffer(1, n, AC.sampleRate); a = b.getChannelData(0); for (i = 0; i < n; i++) a[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3); }
     var s = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
     s.buffer = b; f.type = 'lowpass'; f.frequency.value = lp || 900; g.gain.value = v || .3; s.connect(f); f.connect(g); g.connect(AC.destination); s.start();
   } catch (e) {}
@@ -381,7 +383,7 @@ function modelFromSim(s) {
 
 /* ---------- olaylar -> görsel ve ses ---------- */
 function fx(seat) { return seat === 0 ? V.a : V.b; }
-function spark(x, y, col, n) { for (var i = 0; i < n; i++) G.parts.push({ k: 'spark', x: x, y: y, vx: rr(-190, 190), vy: rr(-190, 40), g: 380, c: col, life: .4, max: .4 }); }
+function spark(x, y, col, n) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'spark', x: x, y: y, vx: rr(-190, 190), vy: rr(-190, 40), g: 380, c: col, life: .4, max: .4 }); }
 function pop(x, y, txt, col) { G.pops.push({ x: x, y: y, txt: txt, col: col, t: .9 }); }
 var SHK = { j: 2, h: 4, u: 6, k: 6, l: 3, s: 8, dp: 7, tk: 6, a: 3, pf: 3 }, FRZ = { j: .03, h: .05, u: .08, k: .08, l: .05, s: .1, dp: .09, tk: .08, a: .04, pf: .03 };
 function handleEv(e) {
@@ -408,10 +410,24 @@ function handleEv(e) {
   if (hs.ev) hs.ev(e, G);
 }
 
+/* ---------- kalite: Otomatik / Yüksek / Düşük. Düşükte parıltı, iz ve vinyet yok, parçacık yarı yarıya, 30 kare ---------- */
+G.low = false;
+function applyQuality() {
+  var S = KF.S, low = S.perf === 'low' || (S.perf === 'auto' && (G.autoLow || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) || (navigator.deviceMemory && navigator.deviceMemory <= 1)));
+  G.low = !!low; GFX.LOW = G.low;
+}
+KF.applyPerf = function () { G.autoLow = false; slowT = 0; applyQuality(); };
+var slowT = 0, lastRaw = 0;
+
 /* ---------- döngü ---------- */
 var last = 0, acc = 0, sendT = 0;
 function frame(ts) {
+  var raw = ts - lastRaw; lastRaw = ts;
+  if ((G.low || KF.S.fps30) && ts - last < 29) { requestAnimationFrame(frame); return; }
   var dt = Math.min(.05, (ts - last) / 1000 || 0); last = ts; G.tm += dt;
+  if (KF.S.perf === 'auto' && !G.low && G.mode !== 'menu' && !G.paused && G.M && G.M.ph === 'fight' && raw > 0 && raw < 250) {
+    slowT = Math.max(0, slowT + (raw > 36 ? raw / 1000 : -.02)); if (slowT > 3) { G.autoLow = true; slowT = 0; applyQuality(); if (G.hook.perf) G.hook.perf(); }
+  }
   var s = G.sim, fz = G.freeze > 0;
   if (fz) G.freeze -= dt;
   if (s && G.mode !== 'guest' && !G.paused && !fz) {
@@ -446,5 +462,5 @@ function frame(ts) {
   if (G.hook.frame) G.hook.frame(M, dt);
   requestAnimationFrame(frame);
 }
-G.start = function () { requestAnimationFrame(frame); };
+G.start = function () { applyQuality(); requestAnimationFrame(frame); };
 })(window);

@@ -16,18 +16,22 @@ KF.ks = { get: function (k, d) { return lsg('kartsalonu.' + k, d); }, set: funct
 KF.AVATARS = ['🙂', '😎', '🤠', '🦊', '🐻', '🦁', '🐯', '🐼', '🦉', '🐺', '🎩', '👑', '🌙', '⭐', '🔥', '🍀'];
 
 /* ---- profil: ad, simge ve kod Kart Salonu ile ortak ---- */
+/* sonradan eklenen ayarlar: performans, kontrol düzeni, erişilebilirlik, başarımlar */
+KF.XK = { perf: 'auto', fps30: false, swap: false, bsz: 1, bop: 1, spb: true, fz: 0, cb: false, ab: true, rng: true, ach: {}, daily: {}, skin: '', best3: 0, tot: { hit: 0, blk: 0, dg: 0, cmb: 0, kd: 0 } };
 KF.loadProfile = function () {
   var s = KF.ks.get('settings', {}), o = lsg('kafes.s', {});
   KF.S = { id: s.id || '', name: s.name || '', av: s.av || '🙂', look: o.look || 'muhendis', oled: o.oled !== false, shiftEvery: o.shiftEvery || 60,
     idleDim: o.idleDim == null ? 90 : o.idleDim, sfx: o.sfx !== false, vib: o.vib !== false, seen: !!o.seen, best: o.best || 0, wins: o.wins || 0, losses: o.losses || 0,
     dif: o.dif || 'easy', guide: o.guide !== false, trained: !!o.trained, assist: Math.max(0, Math.min(3, +o.assist || 0)), gloves: !!o.gloves, picked: !!o.picked, autofs: o.autofs !== false };
-  if (root.GFX) root.GFX.GLOVES = KF.S.gloves;
+  var k; for (k in KF.XK) KF.S[k] = o[k] !== undefined ? o[k] : (typeof KF.XK[k] === 'object' ? JSON.parse(JSON.stringify(KF.XK[k])) : KF.XK[k]);
+  if (root.GFX) { root.GFX.GLOVES = KF.S.gloves; root.GFX.CB = !!KF.S.cb; }
   if (!KF.S.id) { KF.S.id = KF.rid(8, KF.CODEA); KF.saveProfile(); }
 };
 KF.saveProfile = function () {
   var s = KF.ks.get('settings', {}), S = KF.S;
   s.id = S.id; s.name = S.name; s.av = S.av; KF.ks.set('settings', s);
   lss('kafes.s', { name: S.name, look: S.look, oled: S.oled, shiftEvery: S.shiftEvery, idleDim: S.idleDim, sfx: S.sfx, vib: S.vib, seen: S.seen, best: S.best, wins: S.wins, losses: S.losses, dif: S.dif, guide: S.guide, trained: S.trained, assist: S.assist || 0, gloves: !!S.gloves, picked: !!S.picked, autofs: S.autofs !== false });
+  var o = lsg('kafes.s', {}), k; for (k in KF.XK) o[k] = S[k]; lss('kafes.s', o);
 };
 function toStr(p) { return typeof p === 'string' ? p : (p && p.toString ? p.toString() : ''); }
 function parse(p) { try { var o = JSON.parse(toStr(p)); return o && typeof o === 'object' ? o : null; } catch (e) { return null; } }

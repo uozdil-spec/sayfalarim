@@ -9,7 +9,7 @@ KF.loadProfile();
 var IC = {
   j: '<path d="M4 12h12M12 7l5 5-5 5"/>', h: '<path d="M5 18c-1-8 4-12 12-10M13 4l5 4-4 5"/>', u: '<path d="M12 20V5M6 11l6-6 6 6"/>', k: '<path d="M9 3v9l-5 5v3h14v-4l-6-2V3z"/>', l: '<path d="M3 19h18M6 19c1-6 6-9 13-8"/>', dg: '<path d="M19 5c-7 0-12 4-12 11M3 12l4 4 4-4"/>',
   shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>', scroll: '<path d="M6 4h10a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2z"/><path d="M9 9h6M9 13h6"/>',
-  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', fs: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', fsx: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>', mb: '<path d="M19 12H6M11 7l-5 5 5 5"/>', mf: '<path d="M5 12h13M13 7l5 5-5 5"/>', jp: '<path d="M12 19V6M7 11l5-5 5 5"/>', dn: '<path d="M12 5v13M7 13l5 5 5-5"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>'
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>', fs: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', fsx: '<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>', mb: '<path d="M19 12H6M11 7l-5 5 5 5"/>', mf: '<path d="M5 12h13M13 7l5 5-5 5"/>', jp: '<path d="M12 19V6M7 11l5-5 5 5"/>', dn: '<path d="M12 5v13M7 13l5 5 5-5"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', star: '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'
 };
 var ico = U.ico = function (n) { return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>'; };
 var h = U.h = function (tag, a, kids) {
@@ -56,7 +56,7 @@ U.openSheet = function (o) {
 };
 $('shX').innerHTML = ico('x'); $('shX').onclick = U.closeSheet; document.querySelector('.shbg').onclick = U.closeSheet;
 $('menuBtn').innerHTML = ico('menu');
-[['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll'], ].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
+[['bSpb', 'star'], ['bJ', 'j'], ['bH', 'h'], ['bU', 'u'], ['bK', 'k'], ['bL', 'l'], ['bDodge', 'dg'], ['bBlock', 'shield'], ['bSpecial', 'scroll'], ].forEach(function (p) { $(p[0]).querySelector('.ic').innerHTML = ico(p[1]); });
 
 /* ---------- ticker ---------- */
 var LINES = {
@@ -118,7 +118,8 @@ function hud(M) {
   if (cache.pips !== pips) { cache.pips = pips; $('pips').innerHTML = pips; }
   var fight = M.ph === 'fight';
   setCls($('bSpecial'), 'rdy', fight && M.sp[me] >= 100); setCls($('bBlock'), 'on', M.st[me] === 'block');
-  setTxt('cmb', M.combo[me] >= 2 ? M.combo[me] + 'x KOMBO' : '');
+  setTxt('cmb', M.combo[me] >= 2 ? M.combo[me] + 'x KOMBO' : ''); var cm = $('cmb'); cm.style.transform = M.combo[me] >= 2 ? 'scale(' + Math.min(1.8, 1 + (M.combo[me] - 2) * .18).toFixed(2) + ')' : '';
+  var bz = fight && M.st[me] !== 'idle' && M.st[me] !== 'block'; ['bJ', 'bH', 'bU', 'bK', 'bL'].forEach(function (b) { setCls($(b), 'busy', bz); });
   var a = advice(M);
   if (cache.coach !== a.t + a.c) { cache.coach = a.t + a.c; var el = $('coach'); el.textContent = a.t; el.className = a.c; }
   setHint(S.guide && fight || U.lesson ? (a.b || null) : null, a.w);
@@ -128,13 +129,21 @@ function hud(M) {
 var blockDown = false;
 var playing = U.playing = function () { return G.mode === 'solo' || G.mode === 'host' || G.mode === 'guest'; };
 var dnHeld = false;
-function press(k) { if (!playing()) return; if (dnHeld && (k === 'j' || k === 'u' || k === 'k')) k = 'x' + k; G.input(k); if (U.onPress) U.onPress(k); }
+var FLB = { j: 'bJ', h: 'bH', u: 'bU', k: 'bK', l: 'bL', dg: 'bDodge', s: 'bSpecial', xj: 'bJ', xu: 'bU', xk: 'bK' }, specArm = 0, armT = null;
+function armSpec(on) { specArm = on ? 1 : 0; $('bSpb').classList.toggle('on', !!on); clearTimeout(armT); if (on) armT = setTimeout(function () { armSpec(0); }, 2200); }
+function flash(k) { var e = FLB[k] && $(FLB[k]); if (!e) return; e.classList.add('fl'); setTimeout(function () { e.classList.remove('fl'); }, 130); }
+function press(k) {
+  if (!playing()) return;
+  if ((dnHeld || specArm) && (k === 'j' || k === 'u' || k === 'k')) { k = 'x' + k; armSpec(0); }
+  flash(k); G.input(k); if (U.onPress) U.onPress(k);
+}
+$('bSpb').addEventListener('pointerdown', function (e) { e.preventDefault(); if (playing()) { KF.sfx('ui'); armSpec(!specArm); } });
 /* yön tuşu: Brawl Stars gibi sanal joystick. Sağa ileri, sola geri, yukarı zıpla, aşağı eğil (basılı) */
 function moveOn(k) { if (playing()) { G.input(k); if (U.onPress) U.onPress(k); } }
 var joy = $('joy'), knob = $('joyK'), jid = null, js = { f: 0, b: 0, u: 0, d: 0 };
 function buzz(n) { if (KF.S.vib) try { navigator.vibrate && navigator.vibrate(n); } catch (e) {} }
 function joyApply(dx, dy) {
-  var f = dx > .28 ? 1 : 0, b = dx < -.28 ? 1 : 0, u = dy < -.5 ? 1 : 0, d = dy > .5 ? 1 : 0;
+  var f = dx > (js.f ? .18 : .3) ? 1 : 0, b = dx < (js.b ? -.18 : -.3) ? 1 : 0, u = dy < (js.u ? -.35 : -.5) ? 1 : 0, d = dy > (js.d ? .35 : .5) ? 1 : 0;
   if (f !== js.f) { js.f = f; if (f) { moveOn('mf'); buzz(6); } else G.input('mfu'); }
   if (b !== js.b) { js.b = b; if (b) { moveOn('mb'); buzz(6); } else G.input('mbu'); }
   if (u && !js.u) { moveOn('jp'); buzz(10); } js.u = u;
@@ -193,7 +202,10 @@ setInterval(function () {
 U.keepAwake = function (on) {
   try { if (on && navigator.wakeLock && !wl) navigator.wakeLock.request('screen').then(function (l) { wl = l; l.addEventListener('release', function () { wl = null; }); }).catch(function () {}); else if (!on && wl) { wl.release(); wl = null; } } catch (e) {}
 };
-document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && playing()) U.keepAwake(true); });
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'hidden' && G.mode === 'solo' && G.sim && G.sim.ph === 'fight' && !U.sheet()) { G.paused = true; U.menuSheet(); }
+  if (document.visibilityState === 'visible' && playing()) U.keepAwake(true);
+});
 
 /* ---------- ayarlar ve yardım ---------- */
 function sw(label, sub, key, after) {
@@ -220,8 +232,21 @@ U.settingsSheet = function () {
     d.appendChild(U.T('div', 'grp', 'Dövüşçün'));
     d.appendChild(chips(GFX.LOOK_KEYS.map(function (k) { return [k, GFX.LOOKS[k].name]; }), S.look, function (k) { S.look = k; KF.saveProfile(); }));
     d.appendChild(U.T('div', 'grp', 'Zorluk (bilgisayara karşı)'));
-    d.appendChild(chips([['easy', 'Kolay'], ['normal', 'Normal'], ['hard', 'Zor']], S.dif, function (k) { S.dif = k; KF.saveProfile(); }));
+    d.appendChild(chips([['easy', 'Kolay · yeni başlayan'], ['normal', 'Normal'], ['hard', 'Zor · usta']], S.dif, function (k) { S.dif = k; KF.saveProfile(); }));
     d.appendChild(sw('Rehber ipuçları', 'Basman gereken düğmeyi parlatır', 'guide'));
+    d.appendChild(U.T('div', 'grp', 'Kontroller'));
+    d.appendChild(chips([[false, 'Yön tuşu solda'], [true, 'Solak: yön tuşu sağda']], !!S.swap, function (v) { S.swap = v; KF.saveProfile(); U.applyLook(); }));
+    d.appendChild(chips([[.85, 'Küçük tuşlar'], [1, 'Orta'], [1.12, 'Büyük']], S.bsz, function (v) { S.bsz = v; KF.saveProfile(); U.applyLook(); }));
+    d.appendChild(chips([[1, 'Tam görünür'], [.8, 'Hafif şeffaf'], [.6, 'Çok şeffaf']], S.bop, function (v) { S.bop = v; KF.saveProfile(); U.applyLook(); }));
+    d.appendChild(sw('Özel hareket tuşu', 'Önce ÖZEL\'e, sonra DÜZ, APARKAT ya da TEKME\'ye bas: tek parmakla özel hareket', 'spb', U.applyLook));
+    d.appendChild(sw('Geri çekilirken otomatik savunma', 'Geri tutarken gelen vuruşları savunursun (çevrimiçide herkes için açık)', 'ab'));
+    d.appendChild(sw('Menzil çizgisi', 'Rakip vuruş menzilinde mi, yerdeki çizgi gösterir', 'rng'));
+    d.appendChild(U.T('div', 'grp', 'Performans (eski telefonlar için)'));
+    d.appendChild(chips([['auto', 'Otomatik'], ['high', 'Yüksek'], ['low', 'Düşük · hafif']], S.perf, function (v) { S.perf = v; KF.saveProfile(); KF.applyPerf(); }));
+    d.appendChild(sw('30 kare sınırı', 'Pil ve ısınmayı azaltır; Düşük modda zaten açık', 'fps30'));
+    d.appendChild(U.T('div', 'grp', 'Erişilebilirlik'));
+    d.appendChild(chips([[0, 'Yazı: normal'], [1, 'Büyük'], [2, 'Çok büyük']], S.fz, function (v) { S.fz = v; KF.saveProfile(); U.applyLook(); }));
+    d.appendChild(sw('Renk körlüğü uyumlu renkler', 'Kırmızı-yeşil yerine turuncu-mavi kullanır', 'cb', U.applyLook));
     d.appendChild(sw('Otomatik tam ekran', 'Maça başlarken ekranı kaplar', 'autofs'));
     d.appendChild(sw('Boks eldiveni', 'Kapalıyken herkes kendi iş aletiyle dövüşür', 'gloves', function () { GFX.GLOVES = !!KF.S.gloves; }));
     d.appendChild(U.T('div', 'grp', 'Ekran ve ses'));
@@ -232,9 +257,9 @@ U.settingsSheet = function () {
     d.appendChild(U.T('p', 'note', 'Ad, simge ve arkadaş listen Kart Salonu ile ortaktır.'));
   } });
 };
-U.helpSheet = function () {
+U.helpSheet = function (tab) {
   if (G.mode === 'solo') G.paused = true;
-  U.openSheet({ title: 'Nasıl oynanır', f: function (d) {
+  var guideF = function (d) {
     [['Amaç', 'Rakibin canını bitir ya da süre dolunca daha çok canı olan kazanır. Solda yön topu ile savunma ve sıyrılma, sağda vuruş tuşları var.'],
      ['Taş-kâğıt-makas', 'SAVUN, düz-kroşe-tekmeyi durdurur ama aparkatı tam durduramaz. SIYRIL her vuruşu boşa çıkarır ama süpürmeye yakalanırsın. SÜPÜR, kaçanı yakalar ama savunmaya takılır. Rakibin ne yaptığına göre seç.'],
      ['DÜZ', 'En hızlı vuruş, hasarı az. Rakip kroşe ya da süpürme hazırlarken düz atarsan vuruşu keser. Aparkat ve tekmeyi kesemez.'],
@@ -249,12 +274,33 @@ U.helpSheet = function () {
      ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Bir vuruşa basıp hemen bir sonrakine basarsan sıraya girer. Takılırsan ayarlardan Kolay modu ve Rehberi aç.']
     ].forEach(function (x) { d.appendChild(h('div', { cls: 'li' }, [h('div', { cls: 'tx' }, [h('b', { text: x[0] }), h('span', { text: x[1] })])])); });
     d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter dilekçe. Oklar: sağ ileri, sol geri, yukarı zıpla, aşağı eğil (basılı tut).'));
-  } });
+  };
+  U.openSheet({ title: 'Rehber', tab: typeof tab === 'number' ? tab : 0, tabs: [{ n: 'Nasıl oynanır', f: guideF }, { n: 'Hareketler', f: U.movesF }] });
+};
+function kb(t) { return '<i class="kb">' + t + '</i>'; }
+U.movesF = function (d) {
+  var st = (KF.STATS || {})[KF.S.look] || {}, sup = (KF.SUPERS || {})[KF.S.look];
+  var L = [
+    ['Yürü · Zıpla · Eğil', kb('→') + ' ileri ' + kb('←') + ' geri ' + kb('↑') + ' zıpla ' + kb('↓') + ' eğil', 'Yön topunu kaydır. Çapraz kaydırınca zıplayarak ileri ya da geri gidersin.'],
+    ['Atılma', kb('→') + kb('→'), 'Topu hızlıca iki kez sağa it: kısa bir atılma. Dayanıklılık harcar.'],
+    ['Geri sıçrama', kb('←') + kb('←'), 'Hızlıca iki kez sola: kısa geri sıçrama, başlangıcında vuruş sana değmez.'],
+    ['Evrak topu', kb('↓') + ' + ' + kb('DÜZ') + ' &nbsp;ya da&nbsp; ' + kb('ÖZEL') + ' ' + kb('DÜZ'), 'Yerde uçan top. Zıplayan geçer, savunan tutar, sıyrılan ıskalatır.'],
+    ['Yükselen aparkat', kb('↓') + ' + ' + kb('APARKAT') + ' &nbsp;ya da&nbsp; ' + kb('ÖZEL') + ' ' + kb('APARKAT'), 'Başlarken dokunulmazdır. Havadakini ve saldıranı yakalar, rakibi yere serer.'],
+    ['Dönen tekme', kb('↓') + ' + ' + kb('TEKME') + ' &nbsp;ya da&nbsp; ' + kb('ÖZEL') + ' ' + kb('TEKME'), 'İleri kayarak vurur, menzili en uzun hareket.'],
+    ['Hava tekmesi', 'havadayken ' + kb('herhangi vuruş'), 'Zıplarken bir vuruşa bas.'],
+    ['Zincir', kb('DÜZ') + ' ' + kb('KROŞE') + ' ' + kb('APARKAT') + ' ' + kb('TEKME'), 'Vuruş isabet ederse hemen daha ağır bir vuruşa geçebilirsin. 4. vuruş rakibi yere serer.'],
+    ['İmza kombo', st.sig ? st.sig.split('').map(function (c) { return kb({ j: 'DÜZ', h: 'KROŞE', u: 'APARKAT', k: 'TEKME', l: 'SÜPÜR' }[c]); }).join(' ') : kb('?'), 'Karakterine özel üç vuruşluk dizi. Arka arkaya isabet ederse ekstra hasar ve yere serme.'],
+    ['Süper', kb(sup ? sup.n : 'SÜPER'), sup ? sup.d : 'Mavi bar dolunca.']
+  ];
+  L.forEach(function (x) { d.appendChild(h('div', { cls: 'mvl' }, [h('b', { text: x[0] }), h('div', { cls: 'kk', html: x[1] }), h('span', { text: x[2] })])); });
 };
 U.menuSheet = function () {
   if (G.mode === 'solo') G.paused = true;
-  U.openSheet({ title: 'Menü', f: function (d) {
-    d.appendChild(U.btn('Devam', 'pri', U.closeSheet)); d.appendChild(U.btn(isFs() ? 'Tam ekrandan çık' : 'Tam ekran yap', '', function () { U.closeSheet(); U.toggleFs(); })); d.appendChild(U.btn('Nasıl oynanır', '', U.helpSheet)); d.appendChild(U.btn('Ayarlar', '', U.settingsSheet));
+  var inGame = G.mode !== 'menu' && !!G.sim;
+  U.openSheet({ title: inGame ? 'Duraklatıldı' : 'Menü', f: function (d) {
+    d.appendChild(U.btn('Devam', 'pri', U.closeSheet));
+    if (G.mode === 'solo' && U.again) d.appendChild(U.btn('Yeniden başla', '', function () { var f = U.again; U.closeSheet(); f(); }));
+    d.appendChild(U.btn('Rehber ve hareketler', '', function () { U.helpSheet(1); })); d.appendChild(U.btn('Ayarlar', '', U.settingsSheet)); d.appendChild(U.btn(isFs() ? 'Tam ekrandan çık' : 'Tam ekran yap', '', function () { U.closeSheet(); U.toggleFs(); }));
     d.appendChild(U.btn(G.mode === 'menu' ? 'Ana menü' : 'Maçı bırak, ana menü', 'red', function () { U.home(); }));
   } });
 };
@@ -280,6 +326,16 @@ function onRot() {
   else if (rotPaused) { rotPaused = false; if (!U.sheet()) G.paused = false; }
 }
 if (mq) { if (mq.addEventListener) mq.addEventListener('change', onRot); else if (mq.addListener) mq.addListener(onRot); }
+
+/* ---------- kontrol düzeni ve erişilebilirlik ---------- */
+U.applyLook = function () {
+  var S = KF.S, b = document.body, r = document.documentElement;
+  b.classList.toggle('swap', !!S.swap); b.classList.toggle('nospb', S.spb === false); b.classList.toggle('cb', !!S.cb);
+  b.classList.remove('fz1', 'fz2'); if (S.fz) b.classList.add('fz' + S.fz);
+  r.style.setProperty('--bs', String(S.bsz || 1)); r.style.setProperty('--bo', String(S.bop || 1)); GFX.CB = !!S.cb;
+};
+U.applyLook();
+G.hook.perf = function () { U.toast('Oyun yavaşladı, hafif moda geçildi. Ayarlar > Performans\'tan değiştirebilirsin.'); };
 
 /* ---------- ortak olay ve kare kancaları ---------- */
 G.hook.callout = U.callout;

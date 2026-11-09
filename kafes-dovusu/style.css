@@ -79,7 +79,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .menu{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center}
 
 /* yerleşim: PlayStation gibi, yatay. Solda yön tuşları ve savunma, sağda vuruş tuşları ve omuz tuşları */
-#app{--b:min(66px,calc((100dvh - 150px)/3),max(46px,calc((100vw - 350px)/6)));max-width:none;display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"hud hud hud" "pl stage pr" "pl tick pr";gap:6px 12px}
+#app{--b:56px;max-width:none;display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"hud hud hud" "pl stage pr" "pl tick pr";gap:6px 12px}
 body{padding:max(6px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
 #hud{grid-area:hud;max-width:780px;width:100%;justify-self:center}
 #stage{grid-area:stage;width:min(calc((100vh - 112px) * 1.3333),calc(100vw - 6 * var(--b) - 84px));height:auto;align-self:start}
@@ -136,7 +136,7 @@ body{padding:max(6px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-righ
 @keyframes rd{50%{filter:brightness(1.25)}}
 .stam{position:absolute;left:10px;right:10px;bottom:6px;height:3px;background:#0b1620;border-radius:2px;overflow:hidden}
 .stam i{display:block;height:100%;width:100%;background:var(--ice)}
-#cmb{position:absolute;left:10px;top:8px;font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.1em;color:var(--gold);text-shadow:0 1px 8px #000;pointer-events:none;text-transform:uppercase}
+#cmb{transform-origin:left top;transition:transform .12s;position:absolute;left:10px;top:8px;font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.1em;color:var(--gold);text-shadow:0 1px 8px #000;pointer-events:none;text-transform:uppercase}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--s2);color:var(--dim);min-height:36px}
 .chip.on{color:var(--gold);border-color:var(--gold2);background:#17130a}
@@ -258,3 +258,33 @@ body.idle #hud,body.idle #tick{opacity:.55}
   .shb>.btn.pri.wide{position:static;box-shadow:none;min-height:38px;padding:6px 14px}
 }
 @media (orientation:landscape) and (max-height:520px){.avs{grid-template-columns:repeat(16,1fr);gap:4px}.avs button{font-size:16px;border-radius:8px}}
+
+/* ---- Tur 1: eski telefon yedekleri, kontrol düzeni, ek tuşlar ---- */
+@supports (width:min(1px,2px)){
+  #app{--b:min(calc(min(66px,calc((100vh - 150px)/3),max(46px,calc((100vw - 350px)/6))) * var(--bs,1)),calc((100vh - 150px)/3));--sw:min(calc((100vh - 112px) * 1.3333),calc(100vw - 6 * var(--b) - 84px))}
+}
+@supports (height:100dvh){
+  #app{--b:min(calc(min(66px,calc((100dvh - 150px)/3),max(46px,calc((100vw - 350px)/6))) * var(--bs,1)),calc((100dvh - 150px)/3));--sw:min(calc((100dvh - 112px) * 1.3333),calc(100vw - 6 * var(--b) - 84px))}
+}
+#stage{width:var(--sw,300px);height:calc(var(--sw,300px) * .75)}
+#tick{width:var(--sw,300px)}
+#ov,#sheet,.shbg,#dim,#rot{top:0;left:0;right:0;bottom:0}
+#pl,#pr{opacity:var(--bo,1)}
+body.swap #pl{grid-area:pr;justify-self:end}body.swap #pr{grid-area:pl;justify-self:start}
+#face #bSpb{grid-area:2/2;border-radius:50%;color:#ffe3a0;background:radial-gradient(circle at 50% 35%,#4a3410,#1c1305);border-color:#7a5a22}
+#face #bSpb .ic{font-size:calc(var(--b) * .3)}#face #bSpb .lb{font-size:min(10px,calc(var(--b) * .16));color:#ffd98a}
+#face #bSpb.on{background:radial-gradient(circle at 50% 35%,#f0c266,#b3822a);color:#1a1100;box-shadow:0 0 18px rgba(240,194,102,.8)}#face #bSpb.on .lb{color:#1a1100}
+body.nospb #bSpb{display:none}
+.act.fl{filter:brightness(1.7);box-shadow:0 0 14px rgba(255,205,120,.75)}
+#face .act.busy,.sh .act.busy:not(.blk){opacity:.6}
+#joy.af{box-shadow:inset -16px 0 22px -10px rgba(110,160,255,.65),inset 0 0 0 1.5px #2c3a63,0 6px 22px rgba(0,0,0,.7)}
+#joy.ab{box-shadow:inset 16px 0 22px -10px rgba(110,160,255,.65),inset 0 0 0 1.5px #2c3a63,0 6px 22px rgba(0,0,0,.7)}
+#joy.au{box-shadow:inset 0 16px 22px -10px rgba(110,160,255,.65),inset 0 0 0 1.5px #2c3a63,0 6px 22px rgba(0,0,0,.7)}
+#joy.ad{box-shadow:inset 0 -16px 22px -10px rgba(110,160,255,.65),inset 0 0 0 1.5px #2c3a63,0 6px 22px rgba(0,0,0,.7)}
+body.fz1 #ov p,body.fz1 .note,body.fz1 .li .tx span,body.fz1 .sw span small,body.fz1 .tipl div{font-size:15px}body.fz1 #coach{font-size:14px}body.fz1 #ticker{font-size:14px}body.fz1 .sw{font-size:16px}
+body.fz2 #ov p,body.fz2 .note,body.fz2 .li .tx span,body.fz2 .sw span small,body.fz2 .tipl div{font-size:17px}body.fz2 #coach{font-size:16px}body.fz2 #ticker{font-size:16px}body.fz2 .sw{font-size:18px}body.fz2 .nm{font-size:14px}
+body.cb{--red:#e69f00;--red2:#8a5a00;--ok:#56b4e9}body.cb #coach.warn{color:#ffb000}body.cb .btn.red{background:linear-gradient(#e69f00,#a86f00);border-color:#ffc04d;color:#1a1100}body.cb #pips i.l{background:#e69f00;border-color:#e69f00}
+.hp b{background:#ff7a5e}body.cb .hp b{background:#ffd24a}
+.kb{display:inline-block;min-width:1.6em;padding:1px 6px;margin:0 2px;border:1px solid var(--gold2);border-radius:6px;background:#17130a;color:var(--gold);font-family:var(--disp);font-size:12px;letter-spacing:.04em;text-align:center}
+.mvl{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--s2)}
+.mvl b{font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}.mvl .kk{line-height:2}.mvl span{font-size:12px;color:var(--dim)}

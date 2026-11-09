@@ -61,7 +61,7 @@ function go() { U.autoFs(); hideOv(); G.sim.ph = 'count'; U.keepAwake(true); }
 
 /* ---------- turnuva ---------- */
 function startTour(lv, hp, sp) {
-  var o = KF.OPPS[KF.LADDER[lv]]; G.solo(o, o.bg, { lv: lv, hp: hp, sp: sp }); G.sim.ph = 'wait'; U.resetBlock(); U.lesson = null;
+  var o = KF.OPPS[KF.LADDER[lv]]; U.again = function () { startTour(lv); }; G.solo(o, o.bg, { lv: lv, hp: hp, sp: sp }); G.sim.ph = 'wait'; U.resetBlock(); U.lesson = null;
   var prog = h('div', { cls: 'prog' }); KF.LADDER.forEach(function (k, i) { prog.appendChild(h('i', { cls: i < lv ? 'd' : (i === lv ? 'c' : '') })); });
   intro(o, o.bg, 'MAÇ ' + (lv + 1) + '/' + KF.LADDER.length + (lv === KF.LADDER.length - 1 ? ' · FİNAL' : ''), prog, go);
 }
@@ -77,12 +77,12 @@ function freeSheet() {
     var mekan = mk(); function mk() { return U.chips(KF.VENUES.map(function (v, i) { return [i, v]; }), FS.bg, function (i) { FS.bg = i; }); }
     d.appendChild(mekan);
     d.appendChild(T('div', 'grp', 'Zorluk'));
-    d.appendChild(U.chips([['easy', 'Kolay'], ['normal', 'Normal'], ['hard', 'Zor']], FS.dif, function (k) { FS.dif = k; }));
+    d.appendChild(U.chips([['easy', 'Kolay · yeni başlayan'], ['normal', 'Normal'], ['hard', 'Zor · usta']], FS.dif, function (k) { FS.dif = k; }));
     d.appendChild(btn('Başla', 'pri wide', function () { U.closeSheet(); startFree(); }));
   } });
 }
 function startFree() {
-  var o = KF.OPPS[FS.o]; G.solo(o, FS.bg, { lv: -1, dif: FS.dif }); G.sim.ph = 'wait'; U.resetBlock(); U.lesson = null;
+  var o = KF.OPPS[FS.o]; U.again = startFree; G.solo(o, FS.bg, { lv: -1, dif: FS.dif }); G.sim.ph = 'wait'; U.resetBlock(); U.lesson = null;
   intro(o, FS.bg, 'SERBEST MAÇ · ' + ({ easy: 'KOLAY', normal: 'NORMAL', hard: 'ZOR' })[FS.dif], null, go, freeSheetBack);
 }
 function freeSheetBack() { U.home(); freeSheet(); }
@@ -107,7 +107,7 @@ var LESS = [
 var step = 0, cnt = 0, alt = 0;
 function setLesson() { var L = LESS[step]; cnt = 0; alt = 0; U.lesson = { t: L.t, c: L.w ? 'warn' : 'info', b: L.b, w: L.w }; if (L.k === 's' && G.sim) G.sim.f[0].sp = 100; }
 function startTrain() {
-  G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; U.resetBlock(); U.resetMove(); step = 0; U.lesson = null;
+  U.again = startTrain; G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; U.resetBlock(); U.resetMove(); step = 0; U.lesson = null;
   showOv([T('span', 'tag', 'ANTRENMAN'), T('h2', '', 'Kafes Okulu'), T('p', '', 'Çırak Cemil sana vurmaz, sadece öğretir. Parlayan düğmeye bas.'), row([btn('Menü', 'sm', U.home), btn('Başla', 'pri', function () { hideOv(); setLesson(); G.sim.ph = 'count'; U.keepAwake(true); })])]);
 }
 function lessonDone() {
@@ -320,6 +320,7 @@ function wireNet() {
 }
 function boot() {
   G.start(); wireNet();
+  try { if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(function () {}); } catch (e) {}
   if (KF.ks.get('friends', null) || Object.keys(KF.ks.get('reqs', {})).length || KF.ks.get('sent', null)) setTimeout(function () { net().start().catch(function () {}); }, 1500);
   var m, hs = location.hash;
   if ((m = hs.match(/#o=([A-Za-z0-9]{5})/))) { history.replaceState(null, '', U.base()); U.home(); setTimeout(function () { var c = m[1].toUpperCase(); showOv([T('span', 'tag', 'DÜELLO DAVETİ'), T('h2', '', 'Odaya katıl'), T('div', 'code', c), row([btn('Katıl', 'red', function () { if (!KF.S.name) { toast('Önce Ayarlar\'dan bir ad yaz', true); U.settingsSheet(); return; } joinRoom(c); }), btn('Vazgeç', 'sm', U.home)])]); }, 50); }
