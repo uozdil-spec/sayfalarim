@@ -304,6 +304,12 @@ B.view = function (st, seat) {
   return v;
 };
 
+B.bot = function (st, seat, level) {
+  var v = B.view(st, seat);
+  if (st.stage === 'bid') return { t: 'bid', b: BR.bid.choose(v, level) };
+  var c = BR.play.choose(v, level);
+  return { t: 'play', c: c };
+};
 if (typeof module !== 'undefined' && module.exports) module.exports = B;
 BR.engines.bric = B;
 BR.Bridge = B;
