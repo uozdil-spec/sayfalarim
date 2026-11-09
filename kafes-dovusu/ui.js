@@ -73,7 +73,7 @@ var lastSay = 0;
 var say = U.say = function (k, force) { var n = Date.now(); if (!force && n - lastSay < 2200) return; lastSay = n; var a = LINES[k]; $('ticker').textContent = a[Math.floor(Math.random() * a.length)]; };
 
 /* ---------- HUD, rehber ve ipuçları ---------- */
-var cache = {}, ALLB = ['joy', 'bJ', 'bH', 'bU', 'bK', 'bL', 'bDodge', 'bBlock', 'bSpecial'];
+var cache = {}, ALLB = ['bSpb', 'joy', 'bJ', 'bH', 'bU', 'bK', 'bL', 'bDodge', 'bBlock', 'bSpecial'];
 function setTxt(id, v) { if (cache[id] !== v) { cache[id] = v; $(id).textContent = v; } }
 function setW(id, v) { v = Math.max(0, Math.min(100, v)).toFixed(1) + '%'; if (cache[id] !== v) { cache[id] = v; $(id).style.width = v; } }
 function setCls(el, c, on) { if (el.classList.contains(c) !== on) el.classList.toggle(c, on); }
@@ -94,7 +94,9 @@ function advice(M) {
     if (os === 'wl') return { t: 'Süpürme! SAVUN\'a bas (kaçarsan yakalanırsın)', c: 'warn', b: 'bBlock', w: 1 };
     return { t: 'Rakip vuracak! SAVUN ya da SIYRIL', c: 'warn', b: 'bBlock', w: 1 };
   }
+  if (ms === 'kd' || ms === 'gu') return { t: 'Yerdesin, kalkıyorsun', c: 'warn' };
   if (ms === 'stun' || ms === 'hit') return { t: 'Sersemledin', c: 'warn' };
+  if (os === 'kd' || os === 'gu') return { t: 'Rakip yerde: yaklaş, kalkınca vur', c: 'good' };
   if (M.sp[me] >= 100 && ms === 'idle') return { t: 'DİLEKÇE hazır, fırlat!', c: 'good', b: 'bSpecial' };
   if (os === 'dg') return { t: 'Rakip kaçıyor: SÜPÜR ile yakala', c: 'good', b: 'bL' };
   if (os === 'stun') return { t: 'Rakip sersemledi, APARKAT!', c: 'good', b: 'bU' };
@@ -123,6 +125,7 @@ function hud(M) {
   var a = advice(M);
   if (cache.coach !== a.t + a.c) { cache.coach = a.t + a.c; var el = $('coach'); el.textContent = a.t; el.className = a.c; }
   setHint(S.guide && fight || U.lesson ? (a.b || null) : null, a.w);
+  var dm = (U.lesson && U.lesson.jd) || ''; if (cache.demo !== dm) { cache.demo = dm; if (dm) joy.setAttribute('data-demo', dm); else joy.removeAttribute('data-demo'); }
 }
 
 /* ---------- düğmeler ---------- */
@@ -267,10 +270,11 @@ U.helpSheet = function (tab) {
      ['SÜPÜR', 'Alçak tekme. Orta hızda, hasarı az. Kaçan (SIYRIL) rakibi yakalar ve ekstra hasar verir.'],
      ['SAVUN', 'Basılı tut. Rakip kırmızı ünlem gösterince savunmada ol. Vuruş inmeden hemen önce savunmaya basarsan KUSURSUZ savunma olur, rakip sersemler. Savunma dayanıklılığı bitirir, uzun tutma.'],
      ['SIYRIL', 'Kısa dokun. Bir an eğilip kaçarsın. Ünlem çıkınca dokunursan rakibin vuruşu boşa gider, rakip uzun süre açık kalır ve sen can bulursun. Biraz dayanıklılık harcar. Süpürmeye karşı işe yaramaz.'],
-     ['DİLEKÇE', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca savunma tanımaz, çok sert vurur. Karşısında tek çare SIYRIL.'],
-     ['HAREKET', 'Sol alttaki yön topunu kaydır: sağa ileri, sola geri yürürsün, yukarı kaydırınca zıplarsın, aşağı kaydırıp tutunca eğilirsin (özel hareket için).'],
+     ['SÜPER', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca her karakterin kendi süperi çıkar (Rehber > Hareketler\'de seninkini gör): savunma tanımaz, kimi çok sert vurur, kimi uzaktan yakalar, kimi can çalar ya da uzun sersemletir. Karşısında tek çare SIYRIL.'],
+     ['HAREKET', 'Yön topunu kaydır: sağa ileri, sola geri yürürsün (yavaşça hızlanır, bırakınca kayarak durur). Yukarı kaydırınca zıplarsın, çapraz kaydırınca zıplayarak ilerlersin. Topu hızlıca iki kez sağa itersen ATILIRSIN, iki kez sola itersen GERİ SIÇRARSIN (başlangıcında vuruş değmez). Geri yürürken gelen vuruşları kendiliğinden savunursun (Ayarlar\'dan kapatılır).'],
+     ['ZİNCİR VE YERE SERME', 'Bir vuruş isabet edince hemen daha ağır bir vuruşa basarsan zincir olur, vuruşlar çok daha hızlı iner. 4. isabet, yükselen aparkat, dönen tekme ve süper rakibi YERE SERER: yerdeyken ve kalkarken dokunulmazdır. Her karakterin bir İMZA KOMBOSU var (Rehber > Hareketler). Ağır vuruş rakibi geri iter, köşeye sıkışan rakip seni de geri iter.'],
      ['MENZİL', ' Vuruşların menzili var: rakip uzaktaysa vuruş boşa gider (ISKA) ve açık kalırsın. Yaklaşmak ya da uzaklaşmak oyunun yarısı. ZIPLA ile havaya çıkarsın: yerdeki vuruşlar (düz, kroşe, tekme, süpürme) altından geçer, aparkat yakalar. Havadayken bir vuruş tuşuna basarsan HAVA TEKMESİ atarsın.'],
-     ['ÖZEL HAREKETLER', 'Topu aşağı tutup bir vuruşa basarsan özel hareket çıkar (dayanıklılık harcar): AŞAĞI+DÜZ = EVRAK TOPU, yerde uçar, zıplayan geçer, savunan tutar. AŞAĞI+APARKAT = YÜKSELEN APARKAT, başlarken dokunulmazdır, havadakini ve saldıranı yakalar. AŞAĞI+TEKME = DÖNEN TEKME, ileri kayarak vurur. Street Fighter sevenler için klasik yön girişleri de geçerli: aşağı, ileri, DÜZ (topu); ileri, aşağı, ileri, APARKAT; aşağı, geri, TEKME.'],
+     ['ÖZEL HAREKETLER', 'Topu aşağı tutup bir vuruşa basarsan (ya da önce ÖZEL tuşuna, sonra vuruşa basarsan) özel hareket çıkar (dayanıklılık harcar): AŞAĞI+DÜZ = EVRAK TOPU, yerde uçar, zıplayan geçer, savunan tutar. AŞAĞI+APARKAT = YÜKSELEN APARKAT, başlarken dokunulmazdır, havadakini ve saldıranı yakalar. AŞAĞI+TEKME = DÖNEN TEKME, ileri kayarak vurur. Street Fighter sevenler için klasik yön girişleri de geçerli: aşağı, ileri, DÜZ (topu); ileri, aşağı, ileri, APARKAT; aşağı, geri, TEKME.'],
      ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Bir vuruşa basıp hemen bir sonrakine basarsan sıraya girer. Takılırsan ayarlardan Kolay modu ve Rehberi aç.']
     ].forEach(function (x) { d.appendChild(h('div', { cls: 'li' }, [h('div', { cls: 'tx' }, [h('b', { text: x[0] }), h('span', { text: x[1] })])])); });
     d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter dilekçe. Oklar: sağ ileri, sol geri, yukarı zıpla, aşağı eğil (basılı tut).'));

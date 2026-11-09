@@ -27,6 +27,8 @@ var POSE = {
   hit: { lean: -11, step: -8, hd: -9, fx: 6, fy: 16, rx: 0, ry: 18, dx: -9, k: 34 },
   stun: { lean: -4, crouch: 3, step: -2, hd: -3, fx: 8, fy: 18, rx: 2, ry: 20, dx: -3, k: 10 },
   ko: { lean: -6, step: -3, hd: -3, fx: 6, fy: 16, rx: 0, ry: 18, rot: 1.48, k: 6 },
+  kd: { lean: -6, step: -3, hd: -3, fx: 6, fy: 16, rx: 0, ry: 18, rot: 1.48, k: 12 },
+  gu: { lean: -4, crouch: 14, step: -4, hd: -2, fx: 18, fy: 4, rx: 12, ry: 12, dx: -2, k: 16 },
   jp: { lean: 3, crouch: 5, step: 6, hd: 0, fx: 24, fy: -16, rx: 14, ry: -10, kx: 8, ky: -26, k: 15 }
 };
 var SOFT = { fx: 1, fy: 1, rx: 1, ry: 1, kx: 1, ky: 1 };
@@ -41,13 +43,13 @@ G.pose = function (f, dt, tm) {
     if (wk > .05) { t.step += Math.sin(wp) * 9 * wk; t.ky -= Math.max(0, Math.cos(wp)) * 10 * wk; t.kx += Math.sin(wp) * 5 * wk; t.bob += Math.abs(Math.sin(wp)) * -2.4 * wk; t.lean += dr * 3 * wk; t.rx += Math.sin(wp) * -4 * wk; t.fx += Math.sin(wp) * 3 * wk; k = 13; } }
   if (st === 'block') { t.bob = s * .8; t.crouch += s * .8; }
   if (st === 'stun') { t.lean += s2 * 5; t.hd += s2 * 4; }
-  if (st === 'ko') { t.bob = 0; }
+  if (st === 'ko' || st === 'kd') { t.bob = 0; }
   if (st !== f.pst) {
     if (st === 'hit') { V.dx -= 150; V.lean -= 110; V.hd -= 90; V.bob += 30; }
     else if (st === 'stun') { V.dx -= 70; V.lean -= 60; V.hd -= 50; }
     else if (RX.test(st)) { V.dx += 130; V.lean += 70; V.step += 60; }
     else if (st === 'dg') { V.dx -= 190; V.crouch += 80; V.lean -= 60; }
-    else if (st === 'ko') { V.dx -= 110; V.lean -= 80; }
+    else if (st === 'ko' || st === 'kd') { V.dx -= 110; V.lean -= 80; }
     else if (st === 'idle' && (f.pst === 'xk' || f.pst === 'xl' || f.pst === 'xu')) { V.dx -= 30; }
     f.pst = st;
   }
@@ -219,7 +221,7 @@ function drawFighter(c, f, dir, tm) {
   c.fillStyle = Q(L.shoe); c.beginPath(); c.ellipse(0, 0, 12.5, 6.2, 0, 0, PI * 2); c.fill();
   c.fillStyle = 'rgba(255,255,255,.2)'; c.fillRect(-4, -4.6, 9, 1.6); c.fillStyle = Q('#e8e5dc'); c.fillRect(-11, 3.6, 22, 1.6); c.restore();
   /* kafa */
-  var bw = 1 + (B - 1) * .2, ang = RW.test(st) || RX.test(st), hurtF = st === 'hit' || st === 'stun', ko = st === 'ko';
+  var bw = 1 + (B - 1) * .2, ang = RW.test(st) || RX.test(st), hurtF = st === 'hit' || st === 'stun' || st === 'kd', ko = st === 'ko';
   c.fillStyle = Q(L.skin2); c.beginPath(); c.ellipse(hd.x - 4, hd.y + 1.5, 2.4, 3.6, 0, 0, PI * 2); c.fill();
   c.fillStyle = rg(c, hd.x + 3, hd.y - 4, 17, [[0, Q(L.skin, .25, 'w')], [.55, Q(L.skin)], [1, Q(L.skin2)]]); c.beginPath(); c.ellipse(hd.x, hd.y, 10.5 * bw, 12, 0, 0, PI * 2); c.fill();
   c.fillStyle = 'rgba(0,0,0,.1)'; c.beginPath(); c.ellipse(hd.x + 1, hd.y + 8, 8.5 * bw, 5, 0, 0, PI); c.fill();
@@ -303,6 +305,13 @@ G.render = function (c, V) {
   order.sort(function (p, q) { return (RX.test(p[0].st) ? 1 : 0) - (RX.test(q[0].st) ? 1 : 0); });
   order.forEach(function (o) { drawFighter(c, o[0], o[1], V.tm); });
   (V.pj || []).forEach(function (p) { ball(c, p[1], p[2], V.tm); });
+  if (V.rng) {
+    var R = V.rng, inJ = R.dist <= R.rj, inK = R.dist <= R.rk, y0 = FY + 4;
+    c.save(); c.lineCap = 'round'; c.strokeStyle = inJ ? 'rgba(255,210,63,.8)' : (inK ? 'rgba(255,150,60,.65)' : 'rgba(215,215,230,.5)');
+    c.lineWidth = 2; c.setLineDash([4, 3]); c.beginPath(); c.moveTo(R.x0, y0); c.lineTo(R.x0 + R.dir * R.rk, y0); c.stroke(); c.setLineDash([]);
+    c.lineWidth = 3; c.beginPath(); c.moveTo(R.x0, y0); c.lineTo(R.x0 + R.dir * R.rj, y0); c.stroke();
+    c.restore();
+  }
   V.parts.forEach(function (p) { drawPart(c, p); });
   c.drawImage(G.POSTS, 0, 0);
   c.restore();

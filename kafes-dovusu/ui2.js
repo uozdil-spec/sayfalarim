@@ -97,21 +97,22 @@ var LESS = [
   { t: 'Ünlem çıkınca SAVUN\'a bas ve basılı tut', b: 'bBlock', ev: 'block', n: 1, w: 1 },
   { t: 'Kusursuz savunma: ünlemden hemen sonra SAVUN (ya da 3 savunma)', b: 'bBlock', ev: 'perfect', n: 1, w: 1, alt: 3 },
   { t: 'SIYRIL: ünlem çıkınca SIYRIL\'a bas, yumruk boşa gider', b: 'bDodge', ev: 'dodge', n: 1, w: 1 },
-  { t: 'YÜRÜ: yön topunu sağa ve sola kaydır', b: 'joy', pk: ['mf', 'mb'] },
-  { t: 'ZIPLA: topu yukarı kaydır, havadayken yerdeki vuruşlar sana değmez', b: 'joy', pk: ['jp'] },
-  { t: 'EVRAK TOPU: yön topunu aşağı tut, DÜZ\'e bas', b: 'joy', k: 'pf', n: 1 },
-  { t: 'YÜKSELEN APARKAT: topu aşağı tut + APARKAT', b: 'joy', k: 'dp', n: 1 },
-  { t: 'DÖNEN TEKME: topu aşağı tut + TEKME', b: 'joy', k: 'tk', n: 1 },
+  { t: 'YÜRÜ: yön topunu sağa ve sola kaydır', b: 'joy', jd: 'lr', pk: ['mf', 'mb'] },
+  { t: 'ATIL: topu hızlıca iki kez sağa it', b: 'joy', jd: 'dd', ev: 'dash', n: 1 },
+  { t: 'ZIPLA: topu yukarı kaydır, havadayken yerdeki vuruşlar sana değmez', b: 'joy', jd: 'u', pk: ['jp'] },
+  { t: 'EVRAK TOPU: yön topunu aşağı tut, DÜZ\'e bas', b: 'joy', jd: 'd', k: 'pf', n: 1 },
+  { t: 'ÖZEL TUŞU: önce ÖZEL\'e, sonra APARKAT\'a bas (YÜKSELEN APARKAT)', b: 'bSpb', k: 'dp', n: 1 },
+  { t: 'DÖNEN TEKME: topu aşağı tut + TEKME', b: 'joy', jd: 'd', k: 'tk', n: 1 },
   { t: 'DİLEKÇE doldu! Fırlat', b: 'bSpecial', k: 's', n: 1 }
 ];
 var step = 0, cnt = 0, alt = 0;
-function setLesson() { var L = LESS[step]; cnt = 0; alt = 0; U.lesson = { t: L.t, c: L.w ? 'warn' : 'info', b: L.b, w: L.w }; if (L.k === 's' && G.sim) G.sim.f[0].sp = 100; }
+function setLesson() { var L = LESS[step]; cnt = 0; alt = 0; U.lesson = { t: L.t, c: L.w ? 'warn' : 'info', b: L.b, w: L.w, jd: L.jd }; if (L.k === 's' && G.sim) G.sim.f[0].sp = 100; }
 function startTrain() {
   U.again = startTrain; G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; U.resetBlock(); U.resetMove(); step = 0; U.lesson = null;
   showOv([T('span', 'tag', 'ANTRENMAN'), T('h2', '', 'Kafes Okulu'), T('p', '', 'Çırak Cemil sana vurmaz, sadece öğretir. Parlayan düğmeye bas.'), row([btn('Menü', 'sm', U.home), btn('Başla', 'pri', function () { hideOv(); setLesson(); G.sim.ph = 'count'; U.keepAwake(true); })])]);
 }
 function lessonDone() {
-  step++; KF.sfx('ok'); U.callout('GÜZEL!', '#d9ab4c');
+  step++; KF.sfx('ok'); U.callout('✓ GÜZEL!', '#7be09a');
   if (step >= LESS.length) {
     U.lesson = null; KF.S.trained = true; KF.saveProfile(); G.sim.ph = 'wait'; U.resetBlock();
     showOv([T('h2', '', 'Antrenman tamam!'), T('p', '', 'Artık hazırsın. Turnuvada rakipler sırayla zorlaşır.'), h('div', { cls: 'menu' }, [btn('Turnuvaya başla', 'pri wide', function () { startTour(0); }), btn('Serbest maç', 'wide', freeSheet), btn('Ana menü', 'sm', U.home)])]);
@@ -125,6 +126,7 @@ U.onEv = function (e) {
   if (!G.train || !U.lesson || G.mode !== 'solo' || step >= LESS.length) return;
   var L = LESS[step];
   if (L.k && e.k === 'swing' && e.s === 0 && e.m === L.k) { if (++cnt >= L.n) lessonDone(); }
+  else if (L.ev === 'dash') { if (e.k === 'dash' && e.s === 0 && ++cnt >= L.n) lessonDone(); }
   else if (L.ev === 'dodge') { if (e.k === 'dodge' && e.s === 0 && ++cnt >= L.n) lessonDone(); }
   else if (L.ev && e.s === 0 && (e.k === 'block' || e.k === 'perfect')) {
     if (L.ev === 'block' || e.k === 'perfect') { if (++cnt >= L.n) lessonDone(); }

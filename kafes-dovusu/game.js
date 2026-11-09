@@ -65,6 +65,28 @@ var SM = KF.SM = {
   tk: { n: 'DÖNEN TEKME', w: .2, rec: .46, d: 14, sd: 18, hs: .5, c: 30, st: 'k' },
   a: { n: 'HAVA TEKMESİ', w: .12, rec: .2, d: 10, sd: 13, hs: .4, c: 0, st: 'k' }
 };
+/* karakter istatistikleri (yalnızca insan oyuncular için): spd yürüme, pow hasar, rng menzil, hp can; sig imza kombo */
+var STATS = KF.STATS = {
+  muhendis: { spd: 1, pow: 1, rng: 1, hp: 1, sig: 'jhu' }, zabita: { spd: 1.03, pow: .98, rng: 1.04, hp: 1, sig: 'jjk' }, cayci: { spd: 1.1, pow: .9, rng: .94, hp: .96, sig: 'jjh' },
+  pazarci: { spd: 1.06, pow: .96, rng: 1, hp: 1, sig: 'jhk' }, mudure: { spd: 1.04, pow: .98, rng: 1.03, hp: 1, sig: 'jju' }, kaptan: { spd: .96, pow: 1.06, rng: 1, hp: 1.05, sig: 'hhu' },
+  bahcivan: { spd: .94, pow: 1.06, rng: 1.06, hp: 1.06, sig: 'hhk' }, sofor: { spd: .9, pow: 1.12, rng: 1, hp: 1.12, sig: 'huk' }, avukat: { spd: 1.02, pow: .96, rng: 1.04, hp: .98, sig: 'jjj' },
+  itfaiyeci: { spd: .97, pow: 1.08, rng: 1.04, hp: 1.06, sig: 'juk' }, asci: { spd: .95, pow: 1.06, rng: .98, hp: 1.06, sig: 'hhh' }, haritaci: { spd: 1.02, pow: .98, rng: 1.06, hp: .98, sig: 'jhh' },
+  jaloncu: { spd: 1, pow: .94, rng: 1.12, hp: 1, sig: 'jhl' }, kavurmaci: { spd: .92, pow: 1.12, rng: .96, hp: 1.1, sig: 'huu' }, sprinkci: { spd: 1.04, pow: .98, rng: 1.05, hp: 1, sig: 'jjl' },
+  imzaci: { spd: 1.03, pow: 1, rng: 1, hp: 1, sig: 'jku' }, trol: { spd: 1.1, pow: .92, rng: 1.02, hp: .96, sig: 'jlk' }, mezarci: { spd: .9, pow: 1.14, rng: 1.02, hp: 1.12, sig: 'hku' }
+};
+/* süper hareketler: her karakterin kendi finali. kind: dmg ağır, reach uzun menzil, stun uzun sersemletme, drain can çalar, break dayanıklılığı sıfırlar */
+var SUPERS = KF.SUPERS = {
+  muhendis: { n: 'PROJE ONAYI', s: 'PROJE', kind: 'dmg', dmg: 26, d: 'Mühür basıldı: çok sert vurur.' }, zabita: { n: 'PARA CEZASI', s: 'CEZA', kind: 'break', dmg: 18, d: 'Hasar verir, rakibin dayanıklılığını bitirir.' },
+  cayci: { n: 'DEMLİ TEPSİ', s: 'TEPSİ', kind: 'stun', dmg: 16, stun: 1.35, d: 'Rakibi uzun süre sersemletir.' }, pazarci: { n: 'KİLO HİLESİ', s: 'KİLO', kind: 'dmg', dmg: 26, d: 'Kantar ağırlığıyla çok sert vurur.' },
+  mudure: { n: 'MESAİ FATURASI', s: 'FATURA', kind: 'drain', dmg: 18, d: 'Vurur ve rakibin canından can çalar.' }, kaptan: { n: 'DEMİR ATMA', s: 'DEMİR', kind: 'dmg', dmg: 28, reach: 150, d: 'Çok ağır, ama kısa menzilli.' },
+  bahcivan: { n: 'BUDAMA', s: 'BUDA', kind: 'reach', dmg: 20, reach: 215, d: 'Çok uzaktan yakalar.' }, sofor: { n: 'FREN BALATA', s: 'FREN', kind: 'dmg', dmg: 30, reach: 140, d: 'Kırk ton yumruk: en sert süper.' },
+  avukat: { n: 'İTİRAZ', s: 'İTİRAZ', kind: 'stun', dmg: 16, stun: 1.4, d: 'Rakibi itirazla sersemletir.' }, itfaiyeci: { n: 'BALTA DARBESİ', s: 'BALTA', kind: 'dmg', dmg: 28, d: 'Kapıyı kırar, savunmayı da.' },
+  asci: { n: 'TAVA ÇARPMASI', s: 'TAVA', kind: 'dmg', dmg: 26, d: 'Tavayla çok sert vurur.' }, haritaci: { n: 'LAZER ÖLÇÜM', s: 'LAZER', kind: 'reach', dmg: 20, reach: 215, d: 'Çok uzaktan ölçer, vurur.' },
+  jaloncu: { n: 'JALON ÇİZGİSİ', s: 'JALON', kind: 'reach', dmg: 20, reach: 220, d: 'En uzun menzilli süper.' }, kavurmaci: { n: 'SATIR İNİŞİ', s: 'SATIR', kind: 'dmg', dmg: 30, reach: 150, d: 'Çok sert ama kısa menzil.' },
+  sprinkci: { n: 'HORTUM SELİ', s: 'SU', kind: 'stun', dmg: 16, stun: 1.35, d: 'Rakibi sırılsıklam, uzun sersem bırakır.' }, imzaci: { n: 'DİLEKÇE', s: 'DİLEKÇE', kind: 'base', dmg: 22, d: 'Savunma tanımayan klasik dilekçe.' },
+  trol: { n: 'KANDIRMA', s: 'TROL', kind: 'drain', dmg: 18, d: 'Vurur ve canından can çalar. Şaka yaptım!' }, mezarci: { n: 'KÜREK İNİŞİ', s: 'KÜREK', kind: 'dmg', dmg: 30, reach: 150, d: 'Hep son sözü o söyler: çok ağır vurur.' }
+};
+var KB = { j: 6, h: 10, u: 16, k: 18, l: 8, a: 10, dp: 30, tk: 20, s: 34, pf: 8 }, RANK = { j: 1, h: 2, l: 2, u: 3, k: 3 };
 var REACH = { j: 112, h: 108, u: 104, k: 128, l: 128, a: 112, dp: 106, tk: 150, s: 170 };
 var WALL = [30, 370], MINGAP = 66;
 function MA(k) { return MV[k] || SM[k]; }
@@ -77,14 +99,28 @@ var DIF = KF.DIF = {
 KF.VENUES = ['OTOPARK', 'KÖPRÜ ALTI', 'ORMAN', 'ÇAY BAHÇESİ', 'PAZAR YERİ', 'İSKELE', 'ÇATI', 'ŞANTİYE', 'METRO PERONU', 'HAYVANAT BAHÇESİ'];
 
 /* ---------- dövüş kuralları ---------- */
-function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null, x: 0, y: 0, vy: 0, air: false, aa: false, jv: 0, md: 0, dh: [], inv: false }; }
+function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null, x: 0, y: 0, vy: 0, air: false, aa: false, jv: 0, md: 0, dh: [], inv: false, vx: 0, dsh: 0, bi: 0, lastF: -9, lastB: -9, relF: true, relB: true, chainT: 0, lr: 0, seq: '' }; }
+function isInv(f) { return f.inv || f.bi > 0 || f.st === 'kd' || f.st === 'gu'; }
 function Sim(o) {
   this.o = o; this.dif = DIF[o.dif || (o.cpu ? 'normal' : 'pvp')]; this.as = o.cpu ? Math.max(0, Math.min(3, o.assist || 0)) : 0;
-  this.f = [FS(100), FS(o.hp || 100)]; this.f[0].x = 148; this.f[1].x = 252; this.pj = []; this.pid = 0;
+  this.lk = o.looks || ['', '']; this.ab = o.cpu ? !!o.ab : true;
+  this.mkF(o.hp); this.pj = []; this.pid = 0;
   this.ev = []; this.eid = 0; this.time = o.time || 60; this.lock = o.train ? 1 : 2.4; this.lc = 4; this.ph = 'count'; this.endT = 0;
   this.cpu = o.cpu ? { t: 1.8, reacting: false, bt: 999, hold: 0, pm: null, walk: false, pr: false } : null;
   this.sc = [0, 0]; this.round = 1; this.bg = o.bg || 0; this.mw = -1; this.rw = -1;
 }
+/* insan oyuncular karakter istatistiklerini alır; bilgisayar rakipler kendi ayarlarını kullanır */
+Sim.prototype.st = function (i) { return (this.o.cpu && i === 1) ? null : STATS[this.lk[i]] || null; };
+Sim.prototype.mkF = function (hp1) {
+  var s0 = this.st(0), s1 = this.st(1);
+  this.f = [FS(Math.round(100 * (s0 ? s0.hp : 1))), FS(Math.round((hp1 || 100) * (s1 ? s1.hp : 1)))]; this.f[0].x = 148; this.f[1].x = 252;
+};
+Sim.prototype.sup = function (i) { return SUPERS[this.lk[i]] || SUPERS.imzaci; };
+Sim.prototype.autoB = function (f) { return this.ab && f.md < 0 && !f.air && f.st === 'idle' && !f.block && f.stam > 5 && f.dsh <= 0; };
+Sim.prototype.dash = function (i, dir) {
+  var f = this.f[i], s = this.st(i), sg = i ? -1 : 1; if (f.stam < 14 || f.air) return false;
+  f.stam -= 14; f.dsh = dir > 0 ? .2 : .22; f.vx = sg * dir * (dir > 0 ? 330 : 290) * (s ? s.spd : 1); if (dir < 0) f.bi = .14; this.emit('dash', i, dir, ''); return true;
+};
 Sim.prototype.motion = function (f, k) {
   var now = this.clock || 0, seq = f.dh.filter(function (e) { return now - e.t < .75; }).map(function (e) { return e.d; }).join('');
   if (k === 'j' && /d.*f$/.test(seq) && /d/.test(seq)) return 'pf';
@@ -98,13 +134,18 @@ Sim.prototype.input = function (i, k) {
   if (this.ph !== 'fight') return;
   var f = this.f[i]; if (f.st === 'ko') return;
   var mv = MV[k], sgn = i === 0 ? 1 : -1, now0 = this.clock || 0, sk = null;
-  if (k === 'mf' || k === 'mb') { f.md = k === 'mf' ? 1 : -1; f.dh.push({ d: k === 'mf' ? 'f' : 'b', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return; }
-  if (k === 'mfu') { if (f.md > 0) f.md = 0; return; }
-  if (k === 'mbu') { if (f.md < 0) f.md = 0; return; }
+  if (k === 'mf' || k === 'mb') {
+    var dr = k === 'mf' ? 1 : -1, lt = dr > 0 ? f.lastF : f.lastB, rl = dr > 0 ? f.relF : f.relB;
+    if (rl && now0 - lt < .26 && !f.air && f.st === 'idle' && f.cd <= 0 && !f.block && !f.hold) this.dash(i, dr);
+    if (dr > 0) { f.lastF = now0; f.relF = false; } else { f.lastB = now0; f.relB = false; }
+    f.md = dr; f.dh.push({ d: dr > 0 ? 'f' : 'b', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return;
+  }
+  if (k === 'mfu') { f.relF = true; if (f.md > 0) f.md = 0; return; }
+  if (k === 'mbu') { f.relB = true; if (f.md < 0) f.md = 0; return; }
   if (k === 'dn') { f.dh.push({ d: 'd', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return; }
   if (k === 'jp') {
     if (f.air || f.st !== 'idle' || f.cd > 0 || f.stam < 14) return;
-    f.stam -= 12; f.air = true; f.aa = false; f.vy = 380; f.jv = f.md * sgn * 80; this.emit('jump', i, 0, ''); return;
+    f.stam -= 12; f.air = true; f.aa = false; f.vy = 380; f.vx = 0; f.dsh = 0; f.jv = f.md * sgn * 92 * (this.st(i) ? this.st(i).spd : 1); this.emit('jump', i, 0, ''); return;
   }
   var forced = k === 'xj' || k === 'xu' || k === 'xk', k0 = k;
   if (forced) { sk = { xj: 'pf', xu: 'dp', xk: 'tk' }[k]; k = k.charAt(1); mv = MV[k]; }
@@ -130,9 +171,11 @@ Sim.prototype.input = function (i, k) {
   if (mv || k === 's') {
     if (f.st === 'rec' || RX.test(f.st)) { f.buf = { k: k, t: .3 }; return; }
     if (f.block && f.st === 'block') { f.block = false; f.st = 'idle'; }
-    if (f.st !== 'idle' || f.cd > 0) return;
+    if (f.st === 'idle' && f.cd > 0) { f.buf = { k: k, t: .3 }; return; }
+    if (f.st !== 'idle') return;
+    var cw = (f.chainT > 0 && !(this.cpu && i === 1) && (RANK[k] || 0) >= f.lr) ? .55 : 1;
     if (k === 's') { if (f.sp < 100) return; f.sp = 0; f.mv = 's'; f.st = 'sp'; f.t = .4; f.rt = .5; this.emit('swing', i, 0, 's'); }
-    else { f.mv = k; f.st = 'w' + k; f.t = mv.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = mv.rec; f.cd = .06; this.emit('swing', i, 0, k); }
+    else { f.mv = k; f.st = 'w' + k; f.t = mv.w * cw * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = mv.rec; f.cd = .06; this.emit('swing', i, 0, k); }
   } else if (k === 'bd') { f.hold = true; if (f.st === 'idle' && f.stam > 6 && !f.block) { f.block = true; f.blockT = 0; f.st = 'block'; } }
   else if (k === 'bu') { f.hold = false; if (f.block) { f.block = false; if (f.st === 'block') f.st = 'idle'; } }
 };
@@ -162,6 +205,8 @@ Sim.prototype.runCpu = function (dt) {
   if (!inc) c.pr = false;
   if (!me.block && !me.hold && c.t <= 0 && me.st === 'idle' && me.cd <= 0 && !opAtk && !me.air) {
     var dist = Math.abs(me.x - op.x), as = 1 - .3 * this.as;
+    if (op.st === 'kd' || op.st === 'gu') { c.t = .12; return; }
+    if (!c.pm && dist > 215 && me.stam > 45 && Math.random() < .03) { this.dash(1, 1); c.t = .4; return; }
     if (!c.pm) {
       if (op.air && dist < 122 && me.stam >= 32 && Math.random() < .5 * as) { this.input(1, 'xu'); c.t = rr(.5, .9); return; }
       if (dist > 165 && me.stam >= 25 && Math.random() < (.12 + (L.dodge || 0) * .7) * as) { this.input(1, 'xj'); c.t = rr(1, 1.7); return; }
@@ -170,14 +215,14 @@ Sim.prototype.runCpu = function (dt) {
     }
     var vuln = op.st === 'rec' || op.st === 'hit' || op.st === 'stun' || RX.test(op.st);
     if (!c.pm) c.pm = pick(L.mix, vuln, op.block, op.st === 'dg' || c.dodged > 0);
-    if (dist > (c.pm === 's' ? 170 : { j: 112, h: 108, u: 104, k: 128, l: 128 }[c.pm]) - 5) { if (!c.walk) { this.input(1, 'mf'); c.walk = true; } c.t = .05; return; }
+    if (dist > (c.pm === 's' ? this.sup(1).reach || 170 : { j: 112, h: 108, u: 104, k: 128, l: 128 }[c.pm]) - 5) { if (!c.walk) { this.input(1, 'mf'); c.walk = true; } c.t = .05; return; }
     if (c.walk) { this.input(1, 'mfu'); c.walk = false; }
     this.input(1, c.pm); c.pm = null;
     c.dodged = Math.max(0, (c.dodged || 0) - 1); c.t = (Math.random() < L.dbl * (1 - .3 * this.as) ? .15 : rr(L.gap[0], L.gap[1])) * d.gap * (1 + .16 * this.as) * (1 + .45 * this.mercy());
   }
 };
 Sim.prototype.resolve = function (land) {
-  var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block, bt: f.blockT, dg: f.st === 'dg', air: f.y > 22, inv: f.inv }; }), out = [], dist = Math.abs(F[1].x - F[0].x);
+  var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block || self.autoB(f), bt: f.block ? f.blockT : 99, dg: f.st === 'dg', air: f.y > 22, inv: isInv(f), kd: f.st === 'kd' || f.st === 'gu' }; }), out = [], dist = Math.abs(F[1].x - F[0].x);
   land = land.filter(function (a) {
     var A = F[a];
     if (A.mv === 'pf') { self.pj.push({ id: ++self.pid, o: a, x: A.x + (a ? -30 : 30), v: (a ? -1 : 1) * 215 }); A.st = 'spstrike'; A.t = .16; A.cd = .08; self.emit('fire', a, 0, 'pf'); return false; }
@@ -185,28 +230,39 @@ Sim.prototype.resolve = function (land) {
     return true;
   });
   land.forEach(function (a) {
-    var A = F[a], d = 1 - a, S = snap[d], sp = A.st === 'sp', m = MA(A.mv) || MV.j;
-    var mult = self.mult(a);
-    var dmg = Math.max(1, Math.round((sp ? 22 : m.d + Math.min(A.combo, 4)) * mult));
+    var A = F[a], d = 1 - a, S = snap[d], sp = A.st === 'sp', m = MA(A.mv) || MV.j, sa = self.st(a), su = sp ? self.sup(a) : null;
+    var mult = self.mult(a) * (sa ? sa.pow : 1);
+    var dmg = Math.max(1, Math.round((sp ? su.dmg : m.d + Math.min(A.combo, 4)) * mult));
     var mk = sp ? 's' : A.mv; if (S.dg && mk === 'l') dmg = Math.round(dmg * 1.4);
-    var far = dist > (REACH[mk] || 120), airMiss = S.air && !(mk === 'u' || mk === 'dp' || mk === 'a' || mk === 's');
-    out.push({ a: a, d: d, dmg: dmg, mv: mk, air: S.air, res: far ? 'whiff' : (S.inv && mk !== 's' ? 'dodge' : ((S.dg && mk !== 'l') || airMiss ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')))) });
+    var rg = ((sp && su.reach) || REACH[mk] || 120) * (sa ? sa.rng : 1);
+    var far = dist > rg, airMiss = S.air && !(mk === 'u' || mk === 'dp' || mk === 'a' || mk === 's');
+    out.push({ a: a, d: d, dmg: dmg, mv: mk, air: S.air, res: far || S.kd ? 'whiff' : (S.inv && mk !== 's' ? 'dodge' : ((S.dg && mk !== 'l') || airMiss ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')))) });
   });
   out.forEach(function (o) {
     var A = F[o.a], D = F[o.d], m = MA(o.mv) || { sd: 0, hs: .9 }, wasWind = RW.test(D.st), simult = out.some(function (q) { return q.a === o.d && q.res !== 'whiff'; });
     A.st = o.mv === 's' ? 'spstrike' : 'x' + (SM[o.mv] ? SM[o.mv].st : o.mv); A.t = .14; A.cd = .08;
+    var dir = o.d === 1 ? 1 : -1;
+    if (o.res !== 'hit' && o.res !== 'spec') { A.chainT = 0; A.seq = ''; }
     if (o.res === 'whiff') { A.rt = (m.rec || .4) + .16; A.combo = 0; self.emit('whiff', o.a, 0, o.mv); }
     else if (o.res === 'dodge') { if (self.cpu && o.a === 1) self.cpu.dodged = 3; A.rt = (m.rec || .5) + .32; A.combo = 0; D.sp = Math.min(100, D.sp + 12); D.stam = Math.min(100, D.stam + 8); self.emit('dodge', o.d, o.air ? 1 : 0, o.mv); }
     else if (o.res === 'perfect') { A.st = 'stun'; A.t = 1.0; A.combo = 0; D.sp = Math.min(100, D.sp + 18); self.emit('perfect', o.d, 0, o.mv); }
     else if (o.res === 'block') {
-      var dm = Math.max(1, Math.round(o.dmg * (m.pierce || .2))); D.hp -= dm; D.sp = Math.min(100, D.sp + 8); D.stam -= m.sd; A.combo = 0;
+      var dm = Math.max(1, Math.round(o.dmg * (m.pierce || .2))); D.hp -= dm; D.sp = Math.min(100, D.sp + 8); D.stam = Math.max(0, D.stam - m.sd); A.combo = 0; D.vx = dir * Math.sqrt(1800 * (KB[o.mv] || 8) * .4);
       if (!m.pierce) { A.st = 'stun'; A.t = .3; }
       self.emit('block', o.d, dm, o.mv);
     } else {
       D.hp -= o.dmg; D.block = false; D.combo = 0; D.comboT = 0; D.sp = Math.min(100, D.sp + 5); D.buf = null;
-      var armor = (D.st === 'sp' || D.st === 'wu' || D.st === 'wk') && o.mv === 'j' && !D.inv;
-      if (o.res === 'spec') { D.st = 'stun'; D.t = .9; } else if (!simult && !armor) { D.st = 'hit'; D.t = m.hs; }
-      A.combo++; A.comboT = 1.3; if (o.res === 'hit') A.sp = Math.min(100, A.sp + 9);
+      var armor = (D.st === 'sp' || D.st === 'wu' || D.st === 'wk') && o.mv === 'j' && !D.inv, su = o.mv === 's' ? self.sup(o.a) : null, sa = self.st(o.a);
+      A.combo++; A.comboT = 1.3; A.chainT = .45; if (RANK[o.mv]) { A.lr = RANK[o.mv]; A.seq = (A.seq + o.mv).slice(-3); }
+      var sig = !!(sa && A.seq === sa.sig); if (sig) { D.hp -= 6; A.seq = ''; self.emit('sig', o.a, 6, ''); }
+      if (su && su.kind === 'drain') A.hp = Math.min(A.max, A.hp + 9); if (su && su.kind === 'break') D.stam = 0;
+      var kdHit = D.hp > 0 && (o.mv === 'dp' || o.mv === 'tk' || A.combo >= 4 || sig || (su && su.kind !== 'stun'));
+      if (kdHit) { D.st = 'kd'; D.t = .6; D.vx = dir * Math.sqrt(1800 * 40); self.emit('kd', o.d, 0, o.mv); }
+      else {
+        if (o.res === 'spec') { D.st = 'stun'; D.t = (su && su.stun) || .9; } else if (!simult && !armor) { D.st = 'hit'; D.t = m.hs + (A.combo >= 2 ? .1 : 0); }
+        if (!armor) D.vx = dir * Math.sqrt(1800 * (KB[o.mv] || 8));
+      }
+      if (o.res === 'hit') A.sp = Math.min(100, A.sp + 9);
       self.emit(o.res, o.d, o.dmg, o.mv); if (wasWind && !simult && !armor && o.res === 'hit') self.emit('cut', o.d, 0, o.mv);
     }
   });
@@ -222,7 +278,7 @@ Sim.prototype.finish = function () {
 };
 Sim.prototype.nextRound = function () {
   this.round++; this.bg = this.o.solo ? this.bg : ((this.round - 1) * 3) % KF.VENUES.length; this.time = this.o.time || 60; this.lock = 2.4; this.lc = 4; this.ph = 'count';
-  var hp1 = this.f[1].max; this.f = [FS(100), FS(hp1)]; this.f[0].x = 148; this.f[1].x = 252; this.pj = []; if (this.cpu) this.cpu = { t: 1.8, reacting: false, bt: 999, hold: 0, pm: null, walk: false, pr: false };
+  this.mkF(this.o.hp); this.pj = []; if (this.cpu) this.cpu = { t: 1.8, reacting: false, bt: 999, hold: 0, pm: null, walk: false, pr: false };
 };
 Sim.prototype.step = function (dt) {
   var F = this.f, i, land = [];
@@ -234,24 +290,40 @@ Sim.prototype.step = function (dt) {
   if (this.cpu) this.runCpu(dt);
   for (i = 0; i < 2; i++) {
     var f = F[i]; f.cd = Math.max(0, f.cd - dt);
-    if (f.comboT > 0) { f.comboT -= dt; if (f.comboT <= 0) f.combo = 0; }
+    if (f.comboT > 0) { f.comboT -= dt; if (f.comboT <= 0) { f.combo = 0; f.seq = ''; } }
+    if (f.chainT > 0) f.chainT -= dt;
     if (f.block) { f.blockT += dt; f.stam -= this.dif.drain * dt; }
     if (f.block && f.stam <= 0) { f.stam = 0; f.block = false; f.hold = false; f.st = 'stun'; f.t = .6; this.emit('break', i); }
     else if (!f.block) f.stam = Math.min(100, f.stam + 25 * dt);
     if (RW.test(f.st)) { f.t -= dt; if (f.t <= 0) land.push(i); }
     else if (RX.test(f.st)) { f.t -= dt; if (f.t <= 0) { f.st = 'rec'; f.t = f.rt || .26; } }
     else if (f.st === 'dg') { f.t -= dt; if (f.t <= 0) { f.st = 'rec'; f.t = f.rt || .24; } }
+    else if (f.st === 'kd') { f.t -= dt; if (f.t <= 0) { f.st = 'gu'; f.t = .28; } }
+    else if (f.st === 'gu') { f.t -= dt; if (f.t <= 0) f.st = 'idle'; }
     else if (f.st === 'rec' || f.st === 'hit' || f.st === 'stun') { f.t -= dt; if (f.t <= 0) f.st = 'idle'; }
+    if (f.buf && f.st === 'rec' && f.chainT > 0 && !(this.cpu && i === 1) && (RANK[f.buf.k] || 0) >= f.lr) { f.st = 'idle'; f.cd = 0; }
     if (f.buf) { f.buf.t -= dt; if (f.buf.t <= 0) f.buf = null; else if (f.st === 'idle' && f.cd <= 0) { var b = f.buf.k; f.buf = null; this.input(i, b); } }
     if (f.hold && !f.block && f.st === 'idle' && f.stam > 12) { f.block = true; f.blockT = 0; f.st = 'block'; }
     /* hareket: yürüme, zıplama, sınırlar */
-    var sg = i ? -1 : 1;
+    var sg = i ? -1 : 1, sps = (this.st(i) || { spd: 1 }).spd, can = f.st === 'idle' && !f.block && !f.hold && f.cd <= 0;
     if (f.inv && !(f.mv === 'dp' && (f.st === 'wu' || f.st === 'xu'))) f.inv = false;
+    if (f.bi > 0) f.bi -= dt;
+    if (f.st !== 'idle' && f.dsh > 0) f.dsh = 0;
     if (f.air) {
-      f.y += f.vy * dt; f.vy -= 1150 * dt; f.x += f.jv * dt;
-      if (f.y <= 0) { f.y = 0; f.vy = 0; f.air = false; f.aa = false; f.jv = 0; f.cd = Math.max(f.cd, .09); }
-    } else if (f.md && f.st === 'idle' && !f.block && !f.hold && f.cd <= 0) f.x += sg * f.md * (f.md > 0 ? 74 : 60) * dt;
-    f.x = Math.max(WALL[0], Math.min(WALL[1], f.x));
+      f.y += f.vy * dt; f.vy -= 1150 * dt;
+      if (f.md) { var lim = 100 * sps; f.jv = Math.max(-lim, Math.min(lim, f.jv + f.md * sg * 260 * dt)); }
+      f.x += f.jv * dt;
+      if (f.y <= 0) { var hard = f.vy < -330; f.y = 0; f.vy = 0; f.air = false; f.aa = false; f.jv = 0; f.vx = 0; f.cd = Math.max(f.cd, .09); if (hard) this.emit('land', i, 0, ''); }
+    } else {
+      if (f.dsh > 0) { f.dsh -= dt; if (f.dsh <= 0) f.vx *= .25; }
+      else { var tv = (can && f.md) ? sg * f.md * (f.md > 0 ? 74 : 60) * sps : 0, dv = tv - f.vx, stp = (tv ? 1200 : 900) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
+      f.x += f.vx * dt;
+    }
+    if (f.x < WALL[0] || f.x > WALL[1]) {
+      var lw = f.x < WALL[0]; f.x = lw ? WALL[0] : WALL[1];
+      if (f.st !== 'idle' && Math.abs(f.vx) > 60 && (lw ? f.vx < 0 : f.vx > 0)) { var o2 = F[1 - i]; o2.vx = lw ? Math.max(o2.vx, -f.vx * .5) : Math.min(o2.vx, -f.vx * .5); this.emit('wall', i, 0, ''); }
+      if (lw ? f.vx < 0 : f.vx > 0) f.vx = 0;
+    }
   }
   var gap = F[1].x - F[0].x;
   if (gap < MINGAP) {
@@ -270,8 +342,8 @@ Sim.prototype.stepPj = function (dt) {
     p.x += p.v * dt; var D = F[1 - p.o], A = F[p.o];
     if (p.x < -20 || p.x > 420) return false;
     if (Math.abs(p.x - D.x) > 20) return true;
-    if (D.y > 30 || D.inv || D.st === 'dg' || D.st === 'ko') return true;
-    if (D.block) { var bd = Math.max(1, Math.round(2 * self.mult(p.o))); D.hp -= bd; D.stam -= 10; D.sp = Math.min(100, D.sp + 5); self.emit('block', 1 - p.o, bd, 'pf'); return false; }
+    if (D.y > 30 || isInv(D) || D.st === 'dg' || D.st === 'ko') return true;
+    if (D.block || self.autoB(D)) { var bd = Math.max(1, Math.round(2 * self.mult(p.o))); D.hp -= bd; D.stam = Math.max(0, D.stam - 10); D.sp = Math.min(100, D.sp + 5); self.emit('block', 1 - p.o, bd, 'pf'); return false; }
     var dm = Math.max(1, Math.round(SM.pf.d * self.mult(p.o)));
     D.hp -= dm; D.st = 'hit'; D.t = SM.pf.hs; D.block = false; D.buf = null; D.combo = 0; D.sp = Math.min(100, D.sp + 5); A.sp = Math.min(100, A.sp + 6);
     self.emit('hit', 1 - p.o, dm, 'pf'); return false;
@@ -314,6 +386,7 @@ KF.DUMMY = { k: 'zabita', look: 'zabita', name: 'ÇIRAK CEMİL', av: '🥋', bg:
 var G = KF.G = { mode: 'menu', sim: null, room: null, net: null, me: 0, M: null, parts: [], pops: [], shake: 0, freeze: 0, tm: 0, seen: 0, hook: {}, names: ['', ''], avs: ['', ''], lastPh: '', over: false, paused: false };
 var V = G.V = { a: GFX.mkF(148, GFX.LOOKS.muhendis), b: GFX.mkF(252, GFX.LOOKS.zabita), bg: 0, flip: false, parts: G.parts, pops: G.pops, shake: 0, tm: 0, warn: true };
 function setLooks(l0, l1) {
+  G.sl = [l0, l1];
   var A = GFX.LOOKS[l0] || GFX.LOOKS.muhendis, B = GFX.LOOKS[l1] || GFX.LOOKS.zabita;
   if (A === B) { var c = {}, k; for (k in B) c[k] = B[k]; c.shirt = B.pants; c.pants = B.shirt; if (B.vest) c.vest = B.pants; c.hatc = B.glove; c.glove = B.shirt; B = c; }
   V.a = GFX.mkF(148, A); V.b = GFX.mkF(252, B); V.pj = [];
@@ -332,7 +405,7 @@ G.getNet = ensureNet;
 G.solo = function (o, bg, cfg) {
   G.stop(); cfg = cfg || {};
   G.mode = 'solo'; G.opp = o; G.lv = cfg.lv == null ? -1 : cfg.lv; G.me = 0; G.train = !!cfg.train; reset();
-  var sim = G.sim = new Sim({ cpu: o, hp: o.hp, dm: o.dm, time: 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train, assist: cfg.train ? 0 : (cfg.assist != null ? cfg.assist : (KF.S.assist || 0)) });
+  var sim = G.sim = new Sim({ cpu: o, looks: [cfg.look || KF.S.look, o.look], ab: KF.S.ab !== false, hp: o.hp, dm: o.dm, time: 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train, assist: cfg.train ? 0 : (cfg.assist != null ? cfg.assist : (KF.S.assist || 0)) });
   if (cfg.hp != null) sim.f[0].hp = cfg.hp; if (cfg.sp) sim.f[0].sp = cfg.sp;
   setLooks(KF.S.look, o.look); V.bg = bg; G.names = [KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis', o.name]; G.avs = [KF.S.av, o.av || '🥊'];
 };
@@ -347,11 +420,11 @@ G.host = function (pub) {
 };
 G.hostBegin = function () {
   var h = G.room; if (!h || !h.guest) return false;
-  reset(); G.mode = 'host'; G.me = 0; G.sim = new Sim({ time: 60, bg: 0 }); h.setStatus('play');
+  reset(); G.mode = 'host'; G.me = 0; G.sim = new Sim({ time: 60, bg: 0, looks: [KF.S.look, h.guest.l] }); h.setStatus('play');
   setLooks(KF.S.look, h.guest.l); V.bg = 0; G.names = [KF.S.name || 'Oyuncu', h.guest.n]; G.avs = [KF.S.av, h.guest.a];
   return true;
 };
-G.rematch = function () { if (G.mode === 'host' && G.room && G.room.guest) { reset(); G.sim = new Sim({ time: 60, bg: 0 }); V.bg = 0; return true; } return false; };
+G.rematch = function () { if (G.mode === 'host' && G.room && G.room.guest) { reset(); G.sim = new Sim({ time: 60, bg: 0, looks: [KF.S.look, G.room.guest.l] }); V.bg = 0; return true; } return false; };
 G.join = function (code) {
   G.stop(); var net = ensureNet();
   return net.start().catch(function (e) { if (!KF.hasP2P()) throw e; }).then(function () {
@@ -384,6 +457,7 @@ function modelFromSim(s) {
 /* ---------- olaylar -> görsel ve ses ---------- */
 function fx(seat) { return seat === 0 ? V.a : V.b; }
 function spark(x, y, col, n) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'spark', x: x, y: y, vx: rr(-190, 190), vy: rr(-190, 40), g: 380, c: col, life: .4, max: .4 }); }
+function dust(x, dir, n, sz) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'dot', x: x + rr(-8, 8), y: 259 + rr(-2, 3), vx: rr(-45, 45) + dir * rr(20, 90), vy: rr(-50, -8), g: 70, c: 'rgba(214,204,182,.55)', r: (sz || 3) * rr(.7, 1.3), life: .38, max: .38 }); }
 function pop(x, y, txt, col) { G.pops.push({ x: x, y: y, txt: txt, col: col, t: .9 }); }
 var SHK = { j: 2, h: 4, u: 6, k: 6, l: 3, s: 8, dp: 7, tk: 6, a: 3, pf: 3 }, FRZ = { j: .03, h: .05, u: .08, k: .08, l: .05, s: .1, dp: .09, tk: .08, a: .04, pf: .03 };
 function handleEv(e) {
@@ -396,7 +470,7 @@ function handleEv(e) {
     var strong = mv === 'u' || mv === 'k' || mv === 's' || mv === 'dp' || mv === 'tk';
     f.flash = .13; spark(f.x + side * 10, hy, '#ffd23f', strong ? 16 : 9); G.parts.push({ k: 'ring', x: f.x + side * 14, y: hy, c: '#fff', life: .3, max: .3 });
     if (strong) G.parts.push({ k: 'burst', x: f.x + side * 12, y: hy, c: '#ffe27a', life: .22, max: .22 });
-    pop(f.x, 118, '-' + e.v, mine ? '#ff6b5e' : '#ffd23f'); G.shake = SHK[mv] || 4; G.freeze = FRZ[mv] || .04; KF.sfx(e.k === 'spec' ? 'spec' : (strong ? 'heavy' : 'hit')); if (mine) KF.buzz(strong ? 60 : 35);
+    pop(f.x, 118, '-' + e.v, mine ? '#ff6b5e' : '#ffd23f'); G.shake = SHK[mv] || 4; G.freeze = (FRZ[mv] || .04) * (1 + Math.min(.6, e.v / 40)); KF.sfx(e.k === 'spec' ? 'spec' : (strong ? 'heavy' : 'hit')); if (mine) KF.buzz(strong ? 60 : 35);
     if (e.k === 'spec') { for (var i = 0; i < 10; i++) G.parts.push({ k: 'paper', x: f.x + side * 50, y: rr(130, 190), vx: side * rr(120, 220), vy: rr(-60, 20), g: 90, rot: rr(0, 6), life: .6, max: .6 }); if (hs.callout) hs.callout('DİLEKÇE İMZALANDI!', '#d9ab4c'); }
     else if (mv === 'u' && hs.callout && !mine) hs.callout('APARKAT!', '#ffd23f');
   } else if (e.k === 'block') { spark(f.x + side * 14, 150, '#8cc8ff', 7); pop(f.x, 118, 'SAVUNDU', '#8cc8ff'); KF.sfx('block'); G.shake = 2; }
@@ -405,6 +479,11 @@ function handleEv(e) {
   else if (e.k === 'dodge') { spark(f.x - side * 6, 140, '#bfe4ff', 12); G.parts.push({ k: 'ring', x: f.x, y: 140, c: '#8cc8ff', life: .3, max: .3 }); pop(f.x, 112, e.v ? 'HAVADA!' : 'SIYRILDI!', '#8cc8ff'); KF.sfx('perfect'); G.shake = 2; if (mine && hs.callout) hs.callout('SIYRILDIN!', '#8cc8ff'); }
   else if (e.k === 'cut') pop(f.x, 100, mine ? 'KESİLDİ' : 'KESTİN!', mine ? '#ff9a5e' : '#9aff9a');
   else if (e.k === 'break') { pop(f.x, 118, 'SAVUNMA KIRILDI', '#ff9a5e'); KF.sfx('block'); }
+  else if (e.k === 'dash') { dust(f.x, -e.v * (e.s === 0 ? 1 : -1), 6, 3); KF.sfx('slip'); }
+  else if (e.k === 'land') dust(f.x, 0, 7, 3.4);
+  else if (e.k === 'wall') { spark(f.x, 150, '#fff', 8); G.shake = 5; pop(f.x, 112, 'KÖŞE!', '#ffd23f'); KF.sfx('block'); }
+  else if (e.k === 'kd') { dust(f.x, side, 12, 4.4); G.parts.push({ k: 'ring', x: f.x, y: 258, c: '#d6ccb6', life: .35, max: .35 }); G.shake = 6; G.freeze = Math.max(G.freeze, .09); KF.sfx('heavy'); pop(f.x, 104, 'YERE SERİLDİ', '#ff9a5e'); KF.buzz(70); }
+  else if (e.k === 'sig') { spark(fx(e.s).x, 150, '#ffd23f', 18); G.shake = 5; KF.sfx('perfect'); pop(fx(e.s).x, 96, 'İMZA KOMBO! +' + e.v, '#ffd23f'); if (hs.callout) hs.callout('İMZA KOMBO!', '#ffd23f'); }
   else if (e.k === 'cd') { if (hs.callout) hs.callout(e.v === 0 ? 'DÖVÜŞ!' : String(e.v), e.v === 0 ? '#d9ab4c' : '#fff'); KF.sfx(e.v === 0 ? 'go' : 'cd'); }
   else if (e.k === 'end') { if (hs.callout) hs.callout(e.v ? 'K.O.!' : 'SÜRE DOLDU', '#d9ab4c'); KF.sfx('ko'); G.shake = 6; }
   if (hs.ev) hs.ev(e, G);
@@ -450,6 +529,8 @@ function frame(ts) {
     V.a.x += (M.x[0] - V.a.x) * kk; V.b.x += (M.x[1] - V.b.x) * kk;
     if (dt > 0) { V.a.mvx = (V.a.mvx || 0) * .6 + ((V.a.x - oa) / dt) * .4; V.b.mvx = (V.b.mvx || 0) * .6 + (-(V.b.x - ob) / dt) * .4; }
     V.a.jy = M.y[0]; V.b.jy = M.y[1]; V.pj = M.pj || [];
+    var mi = G.me, rs = (KF.STATS[G.sl && G.sl[mi]] || { rng: 1 }).rng;
+    V.rng = (KF.S.rng && M.ph === 'fight' && G.mode !== 'menu') ? { x0: (mi ? V.b : V.a).x, dir: mi ? -1 : 1, rj: REACH.j * rs, rk: REACH.k * rs, dist: Math.abs(V.a.x - V.b.x) } : null;
   }
   V.a.flash = Math.max(0, V.a.flash - dt); V.b.flash = Math.max(0, V.b.flash - dt);
   if (!fz) { GFX.pose(V.a, dt, G.tm); GFX.pose(V.b, dt, G.tm); }

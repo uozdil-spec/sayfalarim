@@ -288,3 +288,14 @@ body.cb{--red:#e69f00;--red2:#8a5a00;--ok:#56b4e9}body.cb #coach.warn{color:#ffb
 .kb{display:inline-block;min-width:1.6em;padding:1px 6px;margin:0 2px;border:1px solid var(--gold2);border-radius:6px;background:#17130a;color:var(--gold);font-family:var(--disp);font-size:12px;letter-spacing:.04em;text-align:center}
 .mvl{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--s2)}
 .mvl b{font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.06em;color:var(--gold);text-transform:uppercase}.mvl .kk{line-height:2}.mvl span{font-size:12px;color:var(--dim)}
+
+/* antrenman: yön topu hareket gösterimi */
+#joy[data-demo]:not(.on) #joyK{transition:none}
+#joy[data-demo="lr"]:not(.on) #joyK{animation:dlr 1.8s ease-in-out infinite}
+#joy[data-demo="dd"]:not(.on) #joyK{animation:ddd 1.6s ease-in-out infinite}
+#joy[data-demo="u"]:not(.on) #joyK{animation:du 1.4s ease-in-out infinite}
+#joy[data-demo="d"]:not(.on) #joyK{animation:dd 1.4s ease-in-out infinite}
+@keyframes dlr{0%,100%{transform:translate(0,0)}25%{transform:translate(56%,0)}75%{transform:translate(-56%,0)}}
+@keyframes ddd{0%,60%,100%{transform:translate(0,0)}12%,36%{transform:translate(56%,0)}24%{transform:translate(0,0)}}
+@keyframes du{0%,100%{transform:translate(0,0)}50%{transform:translate(0,-56%)}}
+@keyframes dd{0%,100%{transform:translate(0,0)}50%{transform:translate(0,56%)}}
