@@ -22,5 +22,14 @@ G.LOOKS = {
   kavurmaci: { tool: 'cleaver', name: 'Kavurmacı', skin: '#cf9468', skin2: '#a26a44', hair: '#1a1410', shirt: '#d9d4c8', pants: '#3a3f4a', glove: '#7a1f1a', shoe: '#1c1c1f', hat: 'cap', hatc: '#f1efe8', must: 1, apron: '#efe8da', blood: 1, build: 1.26, sleeve: 1 },
   asci: { tool: 'pan', name: 'Aşçı', skin: '#d8a47f', skin2: '#b0795a', hair: '#222', shirt: '#f4f4f0', pants: '#3b4350', glove: '#d86a1f', shoe: '#1c1c1f', hat: 'chef', hatc: '#fbfbf8', must: 1, buttons: '#9a9a9a', build: 1.2, sleeve: 1 }
 };
+/* kilidi açılan kostüm renkleri: yalnızca renkleri değiştirir */
+var SKINS = G.SKINS = { '': 'Normal', kizil: 'Kızıl', gece: 'Gece', altin: 'Altın' };
+G.skinned = function (L, sk) {
+  if (!sk || !SKINS[sk]) return L; var c = {}, k; for (k in L) c[k] = L[k];
+  if (sk === 'kizil') { c.shirt = '#a8231c'; c.pants = '#2a1210'; if (c.vest) c.vest = '#6e1511'; c.glove = '#ffcf5a'; if (c.hatc) c.hatc = '#7a1b16'; c.stripes = c.stripes ? '#ffcf5a' : c.stripes; }
+  else if (sk === 'gece') { c.shirt = '#1b2044'; c.pants = '#0f1228'; if (c.vest) c.vest = '#12163a'; c.glove = '#5aa9e6'; if (c.hatc) c.hatc = '#12163a'; c.stripes = c.stripes ? '#5aa9e6' : c.stripes; }
+  else if (sk === 'altin') { c.shirt = '#d9ab4c'; c.pants = '#4a3716'; if (c.vest) c.vest = '#b3822a'; c.glove = '#fff2c0'; if (c.hatc) c.hatc = '#f1d27a'; c.stripes = c.stripes ? '#fff2c0' : c.stripes; }
+  return c;
+};
 G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol', 'mezarci'];
 })(window);

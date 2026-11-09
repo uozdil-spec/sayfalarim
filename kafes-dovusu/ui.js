@@ -83,6 +83,8 @@ function setHint(id, warn) {
   ALLB.forEach(function (b) { var e = $(b); e.classList.toggle('hint', b === id); e.classList.toggle('warnh', b === id && !!warn); });
 }
 U.lesson = null;
+function supName(seat) { return ((KF.SUPERS || {})[G.sl && G.sl[seat]] || { n: 'SÜPER' }).n; }
+function setLbl(t) { if (cache.sup !== t) { cache.sup = t; $('bSpecial').querySelector('.lb').textContent = t; } }
 function advice(M) {
   var me = G.me, op = 1 - me, ms = M.st[me], os = M.st[op];
   if (U.lesson) return U.lesson;
@@ -90,14 +92,14 @@ function advice(M) {
   if (M.ph !== 'fight') return { t: '', c: '' };
   if (GFX.isWind(os)) {
     if (os === 'wu') return { t: 'APARKAT geliyor! SIYRIL (savunmayı deler)', c: 'warn', b: 'bDodge', w: 1 };
-    if (os === 'sp') return { t: 'DİLEKÇE geliyor! SIYRIL, savunma işe yaramaz', c: 'warn', b: 'bDodge', w: 1 };
+    if (os === 'sp') return { t: supName(op) + ' geliyor! SIYRIL, savunma işe yaramaz', c: 'warn', b: 'bDodge', w: 1 };
     if (os === 'wl') return { t: 'Süpürme! SAVUN\'a bas (kaçarsan yakalanırsın)', c: 'warn', b: 'bBlock', w: 1 };
     return { t: 'Rakip vuracak! SAVUN ya da SIYRIL', c: 'warn', b: 'bBlock', w: 1 };
   }
   if (ms === 'kd' || ms === 'gu') return { t: 'Yerdesin, kalkıyorsun', c: 'warn' };
   if (ms === 'stun' || ms === 'hit') return { t: 'Sersemledin', c: 'warn' };
   if (os === 'kd' || os === 'gu') return { t: 'Rakip yerde: yaklaş, kalkınca vur', c: 'good' };
-  if (M.sp[me] >= 100 && ms === 'idle') return { t: 'DİLEKÇE hazır, fırlat!', c: 'good', b: 'bSpecial' };
+  if (M.sp[me] >= 100 && ms === 'idle') return { t: supName(me) + ' hazır, fırlat!', c: 'good', b: 'bSpecial' };
   if (os === 'dg') return { t: 'Rakip kaçıyor: SÜPÜR ile yakala', c: 'good', b: 'bL' };
   if (os === 'stun') return { t: 'Rakip sersemledi, APARKAT!', c: 'good', b: 'bU' };
   if (os === 'hit' || os === 'rec') return { t: 'Şimdi vur!', c: 'good', b: 'bJ' };
@@ -109,11 +111,16 @@ function hud(M) {
   var me = G.me, op = 1 - me, S = KF.S, idle = G.mode === 'menu' || !M;
   var nm = idle ? [S.name || 'SEN', 'RAKİP'] : [G.names[me], G.names[op]], av = idle ? [S.av, '🥊'] : [G.avs[me], G.avs[op]];
   setTxt('mNm', nm[0]); setTxt('oNm', nm[1]); setTxt('mAv', av[0]); setTxt('oAv', av[1]);
-  if (idle) { setW('mHp', 100); setW('oHp', 100); setW('mHpG', 100); setW('oHpG', 100); setW('mSp', 0); setW('oSp', 0); setW('stb', 100); setHint(null); setTxt('cmb', ''); return; }
+  setLbl(((KF.SUPERS || {})[idle ? S.look : G.sl && G.sl[me]] || { s: 'SÜPER' }).s);
+  if (idle) { var cb0 = $('chatBtn'); if (!cb0.hidden) cb0.hidden = true; setW('mHp', 100); setW('oHp', 100); setW('mHpG', 100); setW('oHpG', 100); setW('mSp', 0); setW('oSp', 0); setW('stb', 100); setHint(null); setTxt('cmb', ''); return; }
   setW('mHp', M.hp[me] / M.max[me] * 100); setW('mHpG', M.hp[me] / M.max[me] * 100); setW('oHp', M.hp[op] / M.max[op] * 100); setW('oHpG', M.hp[op] / M.max[op] * 100);
   setW('mSp', M.sp[me]); setW('oSp', M.sp[op]); setW('stb', M.stam[me]);
   var pvp = G.mode === 'host' || G.mode === 'guest';
-  setTxt('rnd', pvp ? 'RAUND ' + M.rn : (G.train ? 'ANTRENMAN' : (G.lv >= 0 ? 'MAÇ ' + (G.lv + 1) + '/' + KF.LADDER.length : 'SERBEST MAÇ')));
+  var png = pvp ? Math.round(G.mode === 'host' ? (G.room && G.room.rtt) || 0 : G.rt || 0) : 0;
+  if (png > 220 && !G.pw) { G.pw = 1; U.toast('Bağlantı yavaş (' + png + ' ms): vuruşlar geç gelebilir', true); }
+  if (M.ph === 'count') G.pw = 0;
+  if ($('chatBtn').hidden === pvp) $('chatBtn').hidden = !pvp;
+  setTxt('rnd', pvp ? 'RAUND ' + M.rn + (png ? ' · ' + png + ' ms' : '') : (G.train ? 'ANTRENMAN' : (G.lv >= 0 ? 'MAÇ ' + (G.lv + 1) + '/' + KF.LADDER.length : 'SERBEST MAÇ')));
   setTxt('tmr', G.train ? '∞' : String(M.tm));
   var pips = '', i;
   if (pvp) { for (i = 0; i < 2; i++) pips += '<i class="' + (i < M.sc[me] ? 'w' : '') + '"></i>'; for (i = 0; i < 2; i++) pips += '<i class="' + (i < M.sc[op] ? 'l' : '') + '"></i>'; }
@@ -343,7 +350,14 @@ G.hook.perf = function () { U.toast('Oyun yavaşladı, hafif moda geçildi. Ayar
 
 /* ---------- ortak olay ve kare kancaları ---------- */
 G.hook.callout = U.callout;
+var SHK = {};
+function shk(id) { var el = $(id); el.classList.remove('shk'); void el.offsetWidth; el.classList.add('shk'); clearTimeout(SHK[id]); SHK[id] = setTimeout(function () { el.classList.remove('shk'); }, 320); }
+$('chatBtn').textContent = '💬';
+$('chatBtn').onclick = function () {
+  U.openSheet({ title: 'Hızlı mesaj', f: function (d) { KF.CHAT.forEach(function (t, i) { d.appendChild(U.btn(t, '', function () { U.closeSheet(); G.chatOut(i); })); }); } });
+};
 G.hook.ev = function (e) {
+  if ((e.k === 'hit' || e.k === 'spec' || e.k === 'kd') && e.s >= 0) shk(e.s === G.me ? 'fcMe' : 'fcOp');
   if (e.k === 'hit') say(e.s === G.me ? 'hurt' : (e.m === 'k' ? 'kick' : 'hit')); else if (e.k === 'block') say('block'); else if (e.k === 'dodge') say('dodge', true); else if (e.k === 'perfect') say('perfect', true); else if (e.k === 'spec') say('spec', true);
   if (U.onEv) U.onEv(e);
 };

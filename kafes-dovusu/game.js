@@ -103,7 +103,7 @@ function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, 
 function isInv(f) { return f.inv || f.bi > 0 || f.st === 'kd' || f.st === 'gu'; }
 function Sim(o) {
   this.o = o; this.dif = DIF[o.dif || (o.cpu ? 'normal' : 'pvp')]; this.as = o.cpu ? Math.max(0, Math.min(3, o.assist || 0)) : 0;
-  this.lk = o.looks || ['', '']; this.ab = o.cpu ? !!o.ab : true;
+  this.lk = o.looks || ['', '']; this.ab = o.rule === 'noblock' ? false : (o.cpu ? !!o.ab : true);
   this.mkF(o.hp); this.pj = []; this.pid = 0;
   this.ev = []; this.eid = 0; this.time = o.time || 60; this.lock = o.train ? 1 : 2.4; this.lc = 4; this.ph = 'count'; this.endT = 0;
   this.cpu = o.cpu ? { t: 1.8, reacting: false, bt: 999, hold: 0, pm: null, walk: false, pr: false } : null;
@@ -133,6 +133,12 @@ Sim.prototype.emit = function (k, s, v, m) { this.eid++; this.ev.push({ id: this
 Sim.prototype.input = function (i, k) {
   if (this.ph !== 'fight') return;
   var f = this.f[i]; if (f.st === 'ko') return;
+  var ru = this.o.rule;
+  if (ru && i === 0) {
+    if (ru === 'kick' && (k === 'j' || k === 'h' || k === 'u' || k === 'xj' || k === 'xu')) return;
+    if (ru === 'nojump' && k === 'jp') return;
+    if (ru === 'noblock' && (k === 'bd' || k === 'bu')) return;
+  }
   var mv = MV[k], sgn = i === 0 ? 1 : -1, now0 = this.clock || 0, sk = null;
   if (k === 'mf' || k === 'mb') {
     var dr = k === 'mf' ? 1 : -1, lt = dr > 0 ? f.lastF : f.lastB, rl = dr > 0 ? f.relF : f.relB;
@@ -385,18 +391,25 @@ KF.DUMMY = { k: 'zabita', look: 'zabita', name: 'ÇIRAK CEMİL', av: '🥋', bg:
 /* ---------- denetleyici ---------- */
 var G = KF.G = { mode: 'menu', sim: null, room: null, net: null, me: 0, M: null, parts: [], pops: [], shake: 0, freeze: 0, tm: 0, seen: 0, hook: {}, names: ['', ''], avs: ['', ''], lastPh: '', over: false, paused: false };
 var V = G.V = { a: GFX.mkF(148, GFX.LOOKS.muhendis), b: GFX.mkF(252, GFX.LOOKS.zabita), bg: 0, flip: false, parts: G.parts, pops: G.pops, shake: 0, tm: 0, warn: true };
-function setLooks(l0, l1) {
+function setLooks(l0, l1, my) {
   G.sl = [l0, l1];
   var A = GFX.LOOKS[l0] || GFX.LOOKS.muhendis, B = GFX.LOOKS[l1] || GFX.LOOKS.zabita;
+  if (KF.S.skin && my === 0) A = GFX.skinned(A, KF.S.skin); else if (KF.S.skin && my === 1) B = GFX.skinned(B, KF.S.skin);
   if (A === B) { var c = {}, k; for (k in B) c[k] = B[k]; c.shirt = B.pants; c.pants = B.shirt; if (B.vest) c.vest = B.pants; c.hatc = B.glove; c.glove = B.shirt; B = c; }
   V.a = GFX.mkF(148, A); V.b = GFX.mkF(252, B); V.pj = [];
 }
 G.setLooks = setLooks;
-function reset() { G.seen = 0; G.parts.length = 0; G.pops.length = 0; G.over = false; G.lastPh = ''; G.M = null; G.freeze = 0; }
+function reset() { G.st = { hit: 0, blk: 0, prf: 0, dg: 0, cmb: 0, dd: 0, dt: 0, sup: 0, kd: 0, sig: 0, dsh: 0 }; G.seen = 0; G.parts.length = 0; G.pops.length = 0; G.over = false; G.lastPh = ''; G.M = null; G.freeze = 0; }
 G.stop = function () {
   if (G.room) { try { G.room.close(); } catch (e) {} G.room = null; }
   if (G.guest) { try { G.guest.leave(); G.guest.close(); } catch (e) {} G.guest = null; }
   G.sim = null; G.mode = 'menu'; V.flip = false; V.bg = 0; G.paused = false; reset();
+};
+var CHAT = KF.CHAT = ['İyi maçtı!', 'Tekrar?', 'Harika vuruş!', 'Hazır mısın?', 'Bir dakika, çay geldi', 'Şans dilerim'];
+G.chatIn = function (i, seat) { var s = Math.max(0, Math.min(CHAT.length - 1, +i || 0)); pop(fx(seat).x, 78, CHAT[s], seat === G.me ? '#ffd23f' : '#9ad0ff'); };
+G.chatOut = function (i) {
+  if (G.mode === 'host' && G.room) { G.room.send({ t: 'msg', i: i }); G.chatIn(i, 0); }
+  else if (G.mode === 'guest' && G.guest) { G.guest.send({ t: 'msg', i: i }, 1); G.chatIn(i, 1); }
 };
 function ensureNet() { if (!G.net) G.net = new KF.Net(); return G.net; }
 G.getNet = ensureNet;
@@ -405,15 +418,18 @@ G.getNet = ensureNet;
 G.solo = function (o, bg, cfg) {
   G.stop(); cfg = cfg || {};
   G.mode = 'solo'; G.opp = o; G.lv = cfg.lv == null ? -1 : cfg.lv; G.me = 0; G.train = !!cfg.train; reset();
-  var sim = G.sim = new Sim({ cpu: o, looks: [cfg.look || KF.S.look, o.look], ab: KF.S.ab !== false, hp: o.hp, dm: o.dm, time: 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train, assist: cfg.train ? 0 : (cfg.assist != null ? cfg.assist : (KF.S.assist || 0)) });
-  if (cfg.hp != null) sim.f[0].hp = cfg.hp; if (cfg.sp) sim.f[0].sp = cfg.sp;
-  setLooks(KF.S.look, o.look); V.bg = bg; G.names = [KF.S.name || (GFX.LOOKS[KF.S.look] || {}).name || 'Mühendis', o.name]; G.avs = [KF.S.av, o.av || '🥊'];
+  var sim = G.sim = new Sim({ cpu: o, looks: [cfg.look || KF.S.look, o.look], rule: cfg.rule, speed: cfg.rule === 'fast' ? 1.35 : 1, ab: KF.S.ab !== false, hp: o.hp, dm: o.dm, time: cfg.rule === 'short' ? 30 : 75, bg: bg, solo: true, dif: cfg.dif || KF.S.dif || 'easy', train: !!cfg.train, assist: cfg.train ? 0 : (cfg.assist != null ? cfg.assist : (KF.S.assist || 0)) });
+  if (cfg.hp != null) sim.f[0].hp = Math.min(sim.f[0].max, cfg.hp); if (cfg.sp) sim.f[0].sp = cfg.sp;
+  var ml = cfg.look || KF.S.look; setLooks(ml, o.look, 0); V.bg = bg; G.names = [cfg.look ? (GFX.LOOKS[ml] || {}).name : (KF.S.name || (GFX.LOOKS[ml] || {}).name || 'Mühendis'), o.name]; G.avs = [KF.S.av, o.av || '🥊'];
+  if (cfg.ohp != null) sim.f[1].hp = cfg.ohp;
+  if (cfg.rule === 'lowhp') { sim.f[0].hp = sim.f[0].max = 50; }
 };
 G.host = function (pub) {
   G.stop(); var net = ensureNet();
   return net.start().catch(function (e) { if (!KF.hasP2P()) throw e; }).then(function () {
     var h = new KF.Host(net, pub); G.room = h; G.mode = 'lobbyH';
     h.onInput = function (k) { if (G.sim) G.sim.input(1, k); };
+    h.onChat = function (i) { G.chatIn(i, 1); };
     h.onReady = function () { if (G.hook.ready) G.hook.ready(); };
     return h;
   });
@@ -421,7 +437,7 @@ G.host = function (pub) {
 G.hostBegin = function () {
   var h = G.room; if (!h || !h.guest) return false;
   reset(); G.mode = 'host'; G.me = 0; G.sim = new Sim({ time: 60, bg: 0, looks: [KF.S.look, h.guest.l] }); h.setStatus('play');
-  setLooks(KF.S.look, h.guest.l); V.bg = 0; G.names = [KF.S.name || 'Oyuncu', h.guest.n]; G.avs = [KF.S.av, h.guest.a];
+  setLooks(KF.S.look, h.guest.l, 0); V.bg = 0; G.names = [KF.S.name || 'Oyuncu', h.guest.n]; G.avs = [KF.S.av, h.guest.a];
   return true;
 };
 G.rematch = function () { if (G.mode === 'host' && G.room && G.room.guest) { reset(); G.sim = new Sim({ time: 60, bg: 0, looks: [KF.S.look, G.room.guest.l] }); V.bg = 0; return true; } return false; };
@@ -429,7 +445,7 @@ G.join = function (code) {
   G.stop(); var net = ensureNet();
   return net.start().catch(function (e) { if (!KF.hasP2P()) throw e; }).then(function () {
     var g = new KF.Guest(net, code); G.guest = g; G.mode = 'lobbyG';
-    g.onMsg = function (m) { if (m.t === 's') applySnap(m); };
+    g.onMsg = function (m) { if (m.t === 's') applySnap(m); else if (m.t === 'msg') G.chatIn(m.i, 0); };
     return g;
   });
 };
@@ -443,9 +459,10 @@ function applySnap(m) {
   var g = G.guest; if (!g) return;
   if (G.mode !== 'guest') {
     G.mode = 'guest'; G.me = 1; V.flip = true; reset(); g.state = 'play';
-    var h = g.info && g.info.h || {}; setLooks(h.l || 'muhendis', KF.S.look); G.names = [h.n || 'Rakip', KF.S.name || 'Oyuncu']; G.avs = [h.a || '🥊', KF.S.av];
+    var h = g.info && g.info.h || {}; setLooks(h.l || 'muhendis', KF.S.look, 1); G.names = [h.n || 'Rakip', KF.S.name || 'Oyuncu']; G.avs = [h.a || '🥊', KF.S.av];
     if (G.hook.guestStart) G.hook.guestStart();
   }
+  G.rt = m.rt || 0;
   G.M = { ph: m.ph, tm: m.tm, sc: m.sc, rn: m.rn, bg: m.bg, mw: m.mw, rw: m.rw, hp: [m.f[0][0], m.f[1][0]], sp: [m.f[0][1], m.f[1][1]], st: [m.f[0][2], m.f[1][2]], stam: [m.f[0][3], m.f[1][3]], combo: [m.f[0][4], m.f[1][4]], max: [m.f[0][6], m.f[1][6]], x: [m.f[0][7], m.f[1][7]], y: [m.f[0][8], m.f[1][8]], pj: m.pj || [] };
   m.ev.forEach(function (a) { if (a[0] > G.seen) { G.seen = a[0]; handleEv({ k: a[1], s: a[2], v: a[3], m: a[4] || '' }); } });
   g.lastHost = Date.now();
@@ -460,18 +477,32 @@ function spark(x, y, col, n) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; 
 function dust(x, dir, n, sz) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'dot', x: x + rr(-8, 8), y: 259 + rr(-2, 3), vx: rr(-45, 45) + dir * rr(20, 90), vy: rr(-50, -8), g: 70, c: 'rgba(214,204,182,.55)', r: (sz || 3) * rr(.7, 1.3), life: .38, max: .38 }); }
 function pop(x, y, txt, col) { G.pops.push({ x: x, y: y, txt: txt, col: col, t: .9 }); }
 var SHK = { j: 2, h: 4, u: 6, k: 6, l: 3, s: 8, dp: 7, tk: 6, a: 3, pf: 3 }, FRZ = { j: .03, h: .05, u: .08, k: .08, l: .05, s: .1, dp: .09, tk: .08, a: .04, pf: .03 };
+var FXC = { zabita: '#c9d6ff', cayci: '#c98a3a', pazarci: '#e0455f', bahcivan: '#79c45f', sofor: '#bfc3cc', itfaiyeci: '#6ec6ff', sprinkci: '#6ec6ff', asci: '#ffb347', kavurmaci: '#d0392b', mezarci: '#8a6034', imzaci: '#f7f4ea', jaloncu: '#ff6a4a', trol: '#3ee07a', kaptan: '#cdd6e8', haritaci: '#8fd0ff' };
+var FXG = { cayci: 1, pazarci: 1, bahcivan: 1, itfaiyeci: 1, sprinkci: 1, asci: 1, kavurmaci: 1, mezarci: 1, sofor: 1 };
+function chunks(x, y, col, n, dir) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'dot', x: x, y: y, vx: dir * rr(40, 210) + rr(-40, 40), vy: rr(-230, -40), g: 620, c: col, r: rr(1.6, 3.6), life: .55, max: .55 }); }
+function count(e) {
+  var me = G.me, st = G.st; if (!st) return;
+  if (e.k === 'hit' || e.k === 'spec') { if (e.s !== me) { st.hit++; st.dd += e.v; if (e.k === 'spec') st.sup++; } else st.dt += e.v; }
+  else if (e.k === 'block') { if (e.s === me) st.blk++; else st.dd += e.v; }
+  else if (e.k === 'perfect') { if (e.s === me) st.prf++; }
+  else if (e.k === 'dodge') { if (e.s === me) st.dg++; }
+  else if (e.k === 'kd') { if (e.s !== me) st.kd++; }
+  else if (e.k === 'sig') { if (e.s === me) st.sig++; }
+  else if (e.k === 'dash') { if (e.s === me) st.dsh++; }
+}
 function handleEv(e) {
-  var me = G.me, mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, hy = mv === 'k' ? 190 : (mv === 'l' ? 218 : 152), hs = G.hook;
-  if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); }
+  count(e);
+  var me = G.me, atk = e.s >= 0 ? G.sl && G.sl[1 - e.s] : '', fxc = FXC[atk] || '#ffd23f', sup = (KF.SUPERS[G.sl && G.sl[e.k === 'swing' ? e.s : 1 - e.s]] || KF.SUPERS.imzaci), mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, hy = mv === 'k' ? 190 : (mv === 'l' ? 218 : 152), hs = G.hook;
+  if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); else if (e.m === 's' && hs.callout) hs.callout(sup.n, mine ? '#ffd23f' : '#ff9a5e'); }
   else if (e.k === 'fire') KF.sfx('spec');
   else if (e.k === 'jump') KF.sfx('jump');
   else if (e.k === 'whiff') pop(f.x, 112, 'ISKA', '#9a9aa4');
   else if (e.k === 'hit' || e.k === 'spec') {
     var strong = mv === 'u' || mv === 'k' || mv === 's' || mv === 'dp' || mv === 'tk';
-    f.flash = .13; spark(f.x + side * 10, hy, '#ffd23f', strong ? 16 : 9); G.parts.push({ k: 'ring', x: f.x + side * 14, y: hy, c: '#fff', life: .3, max: .3 });
+    f.flash = .13; spark(f.x + side * 10, hy, fxc, strong ? 16 : 9); if (FXG[atk] && strong) chunks(f.x + side * 10, hy, fxc, 7, side); G.parts.push({ k: 'ring', x: f.x + side * 14, y: hy, c: '#fff', life: .3, max: .3 });
     if (strong) G.parts.push({ k: 'burst', x: f.x + side * 12, y: hy, c: '#ffe27a', life: .22, max: .22 });
     pop(f.x, 118, '-' + e.v, mine ? '#ff6b5e' : '#ffd23f'); G.shake = SHK[mv] || 4; G.freeze = (FRZ[mv] || .04) * (1 + Math.min(.6, e.v / 40)); KF.sfx(e.k === 'spec' ? 'spec' : (strong ? 'heavy' : 'hit')); if (mine) KF.buzz(strong ? 60 : 35);
-    if (e.k === 'spec') { for (var i = 0; i < 10; i++) G.parts.push({ k: 'paper', x: f.x + side * 50, y: rr(130, 190), vx: side * rr(120, 220), vy: rr(-60, 20), g: 90, rot: rr(0, 6), life: .6, max: .6 }); if (hs.callout) hs.callout('DİLEKÇE İMZALANDI!', '#d9ab4c'); }
+    if (e.k === 'spec') { if (atk === 'imzaci' || !FXC[atk]) { for (var i = 0; i < 10; i++) G.parts.push({ k: 'paper', x: f.x + side * 50, y: rr(130, 190), vx: side * rr(120, 220), vy: rr(-60, 20), g: 90, rot: rr(0, 6), life: .6, max: .6 }); } else chunks(f.x + side * 24, 150, fxc, 16, side); if (hs.callout) hs.callout(sup.n + '!', '#d9ab4c'); }
     else if (mv === 'u' && hs.callout && !mine) hs.callout('APARKAT!', '#ffd23f');
   } else if (e.k === 'block') { spark(f.x + side * 14, 150, '#8cc8ff', 7); pop(f.x, 118, 'SAVUNDU', '#8cc8ff'); KF.sfx('block'); G.shake = 2; }
   else if (e.k === 'perfect') { spark(f.x + side * 14, 150, '#6fe3ff', 16); G.parts.push({ k: 'burst', x: f.x + side * 14, y: 150, c: '#6fe3ff', life: .25, max: .25 }); G.shake = 4; G.freeze = .08; KF.sfx('perfect'); if (hs.callout) hs.callout('KUSURSUZ SAVUNMA!', '#6fe3ff'); KF.buzz(25); }
@@ -510,12 +541,12 @@ function frame(ts) {
   var s = G.sim, fz = G.freeze > 0;
   if (fz) G.freeze -= dt;
   if (s && G.mode !== 'guest' && !G.paused && !fz) {
-    acc += dt;
+    acc += dt * (s.o.speed || 1);
     while (acc >= 1 / 60) { s.step(1 / 60); acc -= 1 / 60; }
     G.M = modelFromSim(s);
     s.ev.forEach(function (e) { if (e.id > G.seen) { G.seen = e.id; handleEv(e); } });
     var now = Date.now(); s.ev = s.ev.filter(function (e) { return now - e.ts < 3000; });
-    if (G.mode === 'host' && G.room) { sendT += dt; if (sendT >= (G.room.direct() ? .05 : .08)) { sendT = 0; G.room.send(s.snap()); } }
+    if (G.mode === 'host' && G.room) { sendT += dt; if (sendT >= (G.room.direct() ? .05 : .08)) { sendT = 0; var sn = s.snap(); sn.rt = Math.round(G.room.rtt || 0); G.room.send(sn); } }
     if (s.ph === 'after') { if (s.mw >= 0) s.ph = 'over'; else s.nextRound(); }
   } else if (s && G.mode === 'host' && G.room && !G.paused) { sendT += dt; if (sendT >= .05) { sendT = 0; G.room.send(s.snap()); } }
   var M = G.M;
@@ -537,6 +568,7 @@ function frame(ts) {
   G.parts.forEach(function (p) { p.life -= dt; if (p.vx !== undefined) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.g || 0) * dt; } });
   for (var i = G.parts.length - 1; i >= 0; i--) if (G.parts[i].life <= 0) G.parts.splice(i, 1);
   for (var j = G.pops.length - 1; j >= 0; j--) { var p = G.pops[j]; p.y -= 22 * dt; p.t -= dt; if (p.t <= 0) G.pops.splice(j, 1); }
+  if (G.st && M && M.combo) G.st.cmb = Math.max(G.st.cmb, M.combo[G.me]);
   V.tm = G.tm; V.shake = G.shake; G.shake = Math.max(0, G.shake - 14 * dt);
   V.warn = G.mode !== 'menu';
   GFX.render(cx, V);

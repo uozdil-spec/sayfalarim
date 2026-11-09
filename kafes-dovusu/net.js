@@ -17,7 +17,7 @@ KF.AVATARS = ['🙂', '😎', '🤠', '🦊', '🐻', '🦁', '🐯', '🐼', '�
 
 /* ---- profil: ad, simge ve kod Kart Salonu ile ortak ---- */
 /* sonradan eklenen ayarlar: performans, kontrol düzeni, erişilebilirlik, başarımlar */
-KF.XK = { perf: 'auto', fps30: false, swap: false, bsz: 1, bop: 1, spb: true, fz: 0, cb: false, ab: true, rng: true, ach: {}, daily: {}, skin: '', best3: 0, tot: { hit: 0, blk: 0, dg: 0, cmb: 0, kd: 0 } };
+KF.XK = { perf: 'auto', fps30: false, swap: false, bsz: 1, bop: 1, spb: true, fz: 0, cb: false, ab: true, rng: true, ach: {}, daily: {}, skin: '', best3: 0, wonWith: {}, tot: { hit: 0, blk: 0, dg: 0, cmb: 0, kd: 0 } };
 KF.loadProfile = function () {
   var s = KF.ks.get('settings', {}), o = lsg('kafes.s', {});
   KF.S = { id: s.id || '', name: s.name || '', av: s.av || '🙂', look: o.look || 'muhendis', oled: o.oled !== false, shiftEvery: o.shiftEvery || 60,
@@ -288,6 +288,7 @@ Host.prototype.onMsg = function (m) {
   if (m.t === 'in' && this.onInput) this.onInput(clean(m.k, 3));
   else if (m.t === 'pong') { var r = Date.now() - (+m.ts || 0); if (r >= 0 && r < 5000) this.rtt = this.rtt ? this.rtt * .7 + r * .3 : r; }
   else if (m.t === 'rdy' && this.onReady) this.onReady();
+  else if (m.t === 'msg' && this.onChat) this.onChat(Math.max(0, Math.min(9, +m.i || 0)));
   else if (m.t === 'leave') { this.dropGuest('left'); }
 };
 Host.prototype.dropGuest = function (why) { this.guest = null; if (this.status !== 'lobby') this.status = 'lobby'; this.publishInfo(); if (this.onDrop) this.onDrop(why); };
