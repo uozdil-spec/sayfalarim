@@ -1,5 +1,5 @@
 /* Kafes Dövüşü · çevrimdışı açılış: önce ağ, yavaş ya da yoksa son kopya. */
-const C = 'kafes-20261109-1631';
+const C = 'kafes-20261109-2133';
 self.addEventListener('install', function () { self.skipWaiting(); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k !== C; }).map(function (k) { return caches.delete(k); })); }).then(function () { return self.clients.claim(); })); });
 self.addEventListener('fetch', function (e) {

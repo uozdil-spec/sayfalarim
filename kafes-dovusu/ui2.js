@@ -313,6 +313,8 @@ function netLine(d) {
   d.appendChild(h('div', { cls: 'li' }, [h('span', { cls: 'dot' + (s === 'online' ? ' on' : '') }), h('div', { cls: 'tx' }, [h('b', { text: t })])]));
 }
 function onlineSheet(tab) {
+  if ((!root.mqtt || !root.Peer) && !onlineSheet.w) { onlineSheet.w = 1; toast('Çevrimiçi bileşenler yükleniyor…'); setTimeout(function () { onlineSheet(tab); }, 1500); return; }
+  onlineSheet.w = 0;
   if (!root.mqtt) toast('Çevrimiçi mod yalnızca yayınlanmış sayfada çalışır', true);
   var N = net();
   function again() { var s = U.sheet(); if (s && s.title === 'Çevrimiçi') s.refresh(); }
