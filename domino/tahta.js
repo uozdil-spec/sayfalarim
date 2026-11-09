@@ -23,6 +23,8 @@ DM.tileById = function (id, vert, cls) { var t = DM.TILES[id]; return tileHTML(t
 /* ---------- masa: yılan düzeni ----------
    1 hücre = 40px. Yatay taş 2x1, dikey 1x2. Satır aralığı 2 hücre; satır sonunda dik "dönüş" taşı. */
 var U = 40;
+/* taş döndükçe kalınlık gölgesi ekranda hep aşağı baksın: dönüş açısı -> taşın kendi eksenindeki yön */
+var SDIR = { 0: [0, 1], 90: [1, 0], 180: [0, -1], 270: [-1, 0] };
 function walk(items, dir, vdir, edge, y, C, peek) {
   var xmax = C / 2, xmin = -C / 2, out = [], k, it, dbl, need, wrap, cx;
   var list = peek ? [peek] : items;
@@ -108,9 +110,11 @@ DM.renderBoard = function (st, show, animNew) {
     var it = lay.items[k], e = it.e; id = e.id; seen[id] = 1;
     var el = board.els[id];
     var tf = 'translate(' + (it.cx * U) + 'px,' + (it.cy * U) + 'px) rotate(' + it.rot + 'deg)';
+    var sd = SDIR[((it.rot % 360) + 360) % 360] || SDIR[0];
     if (!el) {
       el = document.createElement('div'); el.className = 'bt' + (animNew && S.anim !== 'off' && k >= 0 ? ' new' : '');
       el.innerHTML = tileHTML(it.fa, it.fb, false);
+      el.style.setProperty('--sx', sd[0]); el.style.setProperty('--sy', sd[1]);
       el.style.webkitTransition = el.style.transition = 'none'; tr(el, tf);
       ch.appendChild(el); board.els[id] = el;
       (function (x) { setTimeout(function () { x.style.webkitTransition = x.style.transition = ''; x.className = x.className.replace(' new', ''); }, 480); })(el);

@@ -17,13 +17,13 @@ DM.$ = $; DM.LS = LS; DM.rnd = rnd; DM.esc = esc; DM.tr = tr;
 var S = (function () {
   var d = { sound: true, haptic: true, anim: 'full', table: 'zumrut', tile: 'fildisi', pipc: 'klasik', tilt: 34, size: 'orta',
     oled: true, top: 0, wake: false, perf: false, name: '', coach: true, seen: {}, uid: '', friends: [], onl: false,
-    glow: true, one: true, autodraw: true, autopass: true, stats: { w: 0, l: 0, d: 0 },
+    q: 2, glow: true, one: true, autodraw: true, autopass: true, stats: { w: 0, l: 0, d: 0 },
     cfg: { opp: 1, variant: 'cek', diff: 2, target: 100, team: false }, lcfg: { n: 2, variant: 'cek', target: 100, team: false }, names: [] };
   var s = LS.get('domino.v1', {}), k;
   for (k in d) if (s[k] === undefined) s[k] = d[k];
   if (!LS.get('domino.perfset', false)) {
     var weak = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 2);
-    if (weak) s.perf = true;
+    if (weak) { s.perf = true; s.q = 0; }
     LS.set('domino.perfset', true);
   }
   return s;
@@ -95,8 +95,8 @@ DM.probeInsets = probeInsets;
 /* ---------- görünüm sınıfları ---------- */
 function applyLook() {
   var b = document.body, c = ['tb-' + S.table, 'ts-' + S.tile, 'pc-' + S.pipc];
-  b.className = b.className.replace(/\b(tb|ts|pc)-[a-z]+\b/g, '').replace(/\bperf\b/g, '').replace(/\s+/g, ' ').trim();
-  b.className += ' ' + c.join(' ') + (S.perf ? ' perf' : '');
+  b.className = b.className.replace(/\b(tb|ts|pc)-[a-z]+\b/g, '').replace(/\b(perf|q[0-9])\b/g, '').replace(/\s+/g, ' ').trim();
+  b.className += ' ' + c.join(' ') + ' q' + (S.perf ? 0 : (S.q === 1 ? 1 : 2)) + (S.perf ? ' perf' : '');
   var fe = $('#felt'); if (fe) { var a = S.tilt || 0; tr(fe, a ? 'rotateX(' + a + 'deg) scaleY(' + (1 / Math.cos(a * Math.PI / 180) * 1.04).toFixed(3) + ')' : 'none'); }
   var m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', '#000000');
 }

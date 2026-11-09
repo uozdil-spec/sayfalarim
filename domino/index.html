@@ -105,7 +105,7 @@ background:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0,rgba(255,255
 .bt.new{-webkit-animation:drop .42s ease-out;animation:drop .42s ease-out}
 @-webkit-keyframes drop{0%{opacity:0;margin-top:-26px;-webkit-filter:brightness(1.5)}100%{opacity:1;margin-top:0;-webkit-filter:none}}
 @keyframes drop{0%{opacity:0;margin-top:-26px;filter:brightness(1.5)}100%{opacity:1;margin-top:0;filter:none}}
-.bt.last .tl{box-shadow:0 0 0 2px rgba(240,212,138,.9),0 0 14px rgba(240,212,138,.6),0 3px 0 var(--tsd),0 6px 8px rgba(0,0,0,.55)}
+.bt.last .tl{box-shadow:0 0 0 2px rgba(240,212,138,.9),0 0 14px rgba(240,212,138,.6),var(--th)}
 .mk{position:absolute;left:-40px;top:-20px;width:80px;height:40px;border-radius:9px;border:2px dashed var(--gold2);background:rgba(240,212,138,.14);
 -webkit-animation:mkp 1s ease-in-out infinite;animation:mkp 1s ease-in-out infinite;z-index:5;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:var(--gold2)}
 .mk:before{content:"";position:absolute;left:-14px;top:-14px;right:-14px;bottom:-14px}
@@ -126,8 +126,8 @@ background:repeating-linear-gradient(45deg,rgba(255,255,255,.012) 0,rgba(255,255
 .hw{flex:none;margin:0 3px;padding-top:12px;transition:-webkit-transform .18s,transform .18s}
 .hw.sel{-webkit-transform:translateY(-12px);transform:translateY(-12px)}
 .hw.no .tl{-webkit-filter:brightness(.62) saturate(.7);filter:brightness(.62) saturate(.7)}
-.hw.can .tl{box-shadow:0 0 0 2px rgba(240,212,138,.85),0 0 10px rgba(240,212,138,.45),0 3px 0 var(--tsd),0 6px 8px rgba(0,0,0,.5)}
-.hw.hn .tl{box-shadow:0 0 0 3px #8fe0b0,0 0 14px rgba(143,224,176,.8),0 3px 0 var(--tsd),0 6px 8px rgba(0,0,0,.5)}
+.hw.can .tl{box-shadow:0 0 0 2px rgba(240,212,138,.85),0 0 10px rgba(240,212,138,.45),var(--th)}
+.hw.hn .tl{box-shadow:0 0 0 3px #8fe0b0,0 0 14px rgba(143,224,176,.8),var(--th)}
 .hw.shake{-webkit-animation:shk .3s;animation:shk .3s}
 @-webkit-keyframes shk{0%,100%{-webkit-transform:none}25%{-webkit-transform:translateX(-5px)}75%{-webkit-transform:translateX(5px)}}
 @keyframes shk{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
@@ -145,7 +145,7 @@ body.idle .op,body.idle .hdr,body.idle .acts,body.idle .me{opacity:.55}
 
 /* TAŞ */
 .tl{--tf1:#fffdf3;--tf2:#e9dfc4;--tp:#15120e;--tsd:#a99a72;--tdv:#b5a47a;position:relative;display:flex;flex-direction:row;width:calc(var(--u)*2);height:var(--u);border-radius:calc(var(--u)*.2);
-background:linear-gradient(135deg,var(--tf1),var(--tf2));box-shadow:0 3px 0 var(--tsd),0 6px 8px rgba(0,0,0,.55);flex:none}
+--p:calc(var(--u)*.025);--th:0 3px 0 var(--tsd),0 6px 8px rgba(0,0,0,.55);background:linear-gradient(135deg,var(--tf1),var(--tf2));box-shadow:var(--th);flex:none}
 .tl.v{flex-direction:column;width:var(--u);height:calc(var(--u)*2)}
 .tl:before{content:"";position:absolute;left:6%;top:6%;right:6%;bottom:6%;border-radius:calc(var(--u)*.15);border:1px solid rgba(255,255,255,.35);pointer-events:none}
 .hf{position:relative;width:var(--u);height:var(--u);flex:none}
@@ -166,6 +166,17 @@ body.pc-renkli .hf.n5 i{background:#1f9a55}
 body.pc-renkli .hf.n6 i{background:#111}
 body.pc-renkli.ts-oniks .hf.n6 i{background:#e9c46a}
 body.pc-renkli.ts-yakut .hf.n1 i,body.pc-renkli.ts-yakut .hf.n2 i,body.pc-renkli.ts-yakut .hf.n3 i,body.pc-renkli.ts-yakut .hf.n4 i,body.pc-renkli.ts-yakut .hf.n5 i,body.pc-renkli.ts-yakut .hf.n6 i{background:#fff4e8}
+
+/* 3D KALİTESİ: q0 sade (eski telefon), q1 dengeli, q2 zengin */
+body.q1 .tl,body.q2 .tl{background:radial-gradient(ellipse at 30% 22%,rgba(255,255,255,.4),rgba(255,255,255,0) 58%),linear-gradient(135deg,var(--tf1),var(--tf2))}
+body.q1 .tl{--th:calc(var(--sx,0)*var(--p)*1) calc(var(--sy,1)*var(--p)*1) 0 var(--tsd),calc(var(--sx,0)*var(--p)*2) calc(var(--sy,1)*var(--p)*2) 0 var(--tsd),calc(var(--sx,0)*var(--p)*3) calc(var(--sy,1)*var(--p)*3) 0 var(--tsd),calc(var(--sx,0)*var(--p)*4) calc(var(--sy,1)*var(--p)*4) 0 var(--tsd),calc(var(--sx,0)*var(--p)*7) calc(var(--sy,1)*var(--p)*8) 9px rgba(0,0,0,.5),inset calc(var(--sx,0)*var(--p)*-1) calc(var(--sy,1)*var(--p)*-1) 0 rgba(255,255,255,.7),inset calc(var(--sx,0)*var(--p)) calc(var(--sy,1)*var(--p)) 2px rgba(0,0,0,.2)}
+body.q2 .tl{--th:calc(var(--sx,0)*var(--p)*1) calc(var(--sy,1)*var(--p)*1) 0 var(--tsd),calc(var(--sx,0)*var(--p)*2) calc(var(--sy,1)*var(--p)*2) 0 var(--tsd),calc(var(--sx,0)*var(--p)*3) calc(var(--sy,1)*var(--p)*3) 0 var(--tsd),calc(var(--sx,0)*var(--p)*4) calc(var(--sy,1)*var(--p)*4) 0 var(--tsd),calc(var(--sx,0)*var(--p)*5) calc(var(--sy,1)*var(--p)*5) 0 var(--tsd),calc(var(--sx,0)*var(--p)*6) calc(var(--sy,1)*var(--p)*6) 0 var(--tsd),calc(var(--sx,0)*var(--p)*9) calc(var(--sy,1)*var(--p)*10) 12px rgba(0,0,0,.5),inset calc(var(--sx,0)*var(--p)*-1) calc(var(--sy,1)*var(--p)*-1) 0 rgba(255,255,255,.7),inset calc(var(--sx,0)*var(--p)) calc(var(--sy,1)*var(--p)) 2px rgba(0,0,0,.2)}
+body.q2 .tl:after{content:"";position:absolute;left:0;top:0;right:0;bottom:0;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.36) 0,rgba(255,255,255,.07) 30%,rgba(255,255,255,0) 46%)}
+body.q2 .hf i{box-shadow:inset calc(var(--sx,0)*var(--p)*-1.5) calc(var(--sy,1)*var(--p)*-1.5) calc(var(--p)*2) rgba(0,0,0,.65),calc(var(--sx,0)*var(--p)) calc(var(--sy,1)*var(--p)) 0 rgba(255,255,255,.4)}
+body.q1 #felt,body.q2 #felt{background:radial-gradient(ellipse at 50% 16%,rgba(255,255,255,.1),rgba(255,255,255,0) 58%),radial-gradient(ellipse at 50% 42%,var(--felt1) 0,var(--felt2) 78%);
+box-shadow:inset 0 0 36px rgba(0,0,0,.65),inset 0 3px 7px rgba(0,0,0,.5),0 0 0 6px var(--rim1),0 0 0 8px var(--rim2),0 4px 0 8px var(--rim2),0 22px 34px rgba(0,0,0,.7)}
+body.q1 #felt{box-shadow:inset 0 0 36px rgba(0,0,0,.65),0 0 0 6px var(--rim1),0 0 0 8px var(--rim2),0 22px 34px rgba(0,0,0,.7)}
+body.q2 .hw .tl{--th:calc(var(--sx,0)*var(--p)*1) calc(var(--sy,1)*var(--p)*1) 0 var(--tsd),calc(var(--sx,0)*var(--p)*2) calc(var(--sy,1)*var(--p)*2) 0 var(--tsd),calc(var(--sx,0)*var(--p)*3) calc(var(--sy,1)*var(--p)*3) 0 var(--tsd),calc(var(--sx,0)*var(--p)*4) calc(var(--sy,1)*var(--p)*4) 0 var(--tsd),calc(var(--sx,0)*var(--p)*5) calc(var(--sy,1)*var(--p)*5) 0 var(--tsd),calc(var(--sx,0)*var(--p)*6) calc(var(--sy,1)*var(--p)*6) 0 var(--tsd),calc(var(--sx,0)*var(--p)*11) calc(var(--sy,1)*var(--p)*12) 14px rgba(0,0,0,.5),inset calc(var(--sx,0)*var(--p)*-1) calc(var(--sy,1)*var(--p)*-1) 0 rgba(255,255,255,.7),inset calc(var(--sx,0)*var(--p)) calc(var(--sy,1)*var(--p)) 2px rgba(0,0,0,.2)}
 body.perf .tl{box-shadow:0 2px 0 var(--tsd)}
 body.perf #felt{box-shadow:0 0 0 6px var(--rim1)}
 .fig{display:flex;align-items:center;justify-content:center;margin:8px 0}

@@ -108,6 +108,7 @@ function sheetSettings() {
     '<div class="row"><div class="lb">Taşlar</div>' + seg('tile', [['fildisi', 'Fildişi'], ['oniks', 'Oniks'], ['yakut', 'Yakut'], ['safir', 'Safir'], ['zumrut', 'Zümrüt']], S.tile) + '</div>' +
     '<div class="row"><div class="lb">Masa</div>' + seg('table', [['zumrut', 'Yeşil'], ['gece', 'Lacivert'], ['bordo', 'Bordo'], ['kursun', 'Kurşun'], ['siyah', 'Siyah']], S.table) + '</div>' +
     '<div class="row"><div class="lb">Noktalar<small>Renkli: her sayı ayrı renk</small></div>' + seg('pipc', [['klasik', 'Klasik'], ['renkli', 'Renkli']], S.pipc) + '</div>' +
+    '<div class="row"><div class="lb">3D kalitesi<small>Sade: eski telefonlar için en akıcı</small></div>' + seg('q', [[0, 'Sade'], [1, 'Dengeli'], [2, 'Zengin']], S.perf ? 0 : (S.q === 1 ? 1 : 2)) + '</div>' +
     '<div class="row"><div class="lb">Bakış açısı</div>' + seg('tilt', [[0, 'Düz'], [20, 'Hafif'], [34, 'Eğik'], [48, 'Yüksek']], S.tilt) + '</div>' +
     '<div class="row"><div class="lb">Taş boyutu</div>' + seg('size', [['kucuk', 'Küçük'], ['orta', 'Orta'], ['buyuk', 'Büyük']], S.size) + '</div>' +
     '<h3>Oynanış</h3>' +
@@ -123,23 +124,23 @@ function sheetSettings() {
     '<div class="row"><div class="lb">OLED koruma<small>Ekran kayması, kısılan arayüz</small></div>' + seg('oled', [[1, 'Açık'], [0, 'Kapalı']], S.oled ? 1 : 0) + '</div>' +
     '<div class="row"><div class="lb">Üst boşluk<small>Kamera deliği ya da çentik için</small></div>' + seg('top', [[0, 'Yok'], [14, 'Az'], [28, 'Orta'], [44, 'Çok']], S.top) + '</div>' +
     '<div class="row"><div class="lb">Ekran açık kalsın</div>' + seg('wake', [[1, 'Evet'], [0, 'Hayır']], S.wake ? 1 : 0) + '</div>' +
-    '<div class="row"><div class="lb">Eski telefon modu<small>Daha az gölge ve katman</small></div>' + seg('perf', [[1, 'Açık'], [0, 'Kapalı']], S.perf ? 1 : 0) + '</div>' +
     '<h3>Çevrimiçi adın</h3><input class="inp nm2" id="nameIn" maxlength="14" placeholder="Oyuncu" value="' + esc(S.name) + '" autocomplete="off">' +
     '<div class="gap"></div><button class="btn sm" data-act="rules2">Kılavuz</button><div class="gap"></div><button class="btn pri sm" data-act="close">Tamam</button>' + SIG);
 }
 function applySetting(k, v) {
   var bools = { sound: 1, haptic: 1, oled: 1, wake: 1, perf: 1, coach: 1, glow: 1, one: 1, autodraw: 1, autopass: 1 };
   if (bools[k]) S[k] = v === '1';
-  else if (k === 'tilt' || k === 'top') S[k] = parseInt(v, 10);
+  else if (k === 'tilt' || k === 'top' || k === 'q') S[k] = parseInt(v, 10);
   else S[k] = v;
+  if (k === 'q') S.perf = (S.q === 0);
   if (k === 'coach') { if (S.coach) S.seen = {}; else { DM.hideCoach(); DM.closeHintPanel(); } }
   saveS();
   if (k === 'top') DM.probeInsets();
-  if (k === 'tile' || k === 'table' || k === 'pipc' || k === 'tilt' || k === 'perf') DM.applyLook();
+  if (k === 'tile' || k === 'table' || k === 'pipc' || k === 'tilt' || k === 'perf' || k === 'q') DM.applyLook();
   if (k === 'oled') DM.applyOled();
   if (k === 'wake') DM.wake();
   if (k === 'sound') SND.tock();
-  if (G.st && $('#game').className.indexOf('on') >= 0 && (k === 'size' || k === 'tilt' || k === 'glow' || k === 'top' || k === 'perf')) { DM.render(); setTimeout(DM.render, 80); }
+  if (G.st && $('#game').className.indexOf('on') >= 0 && (k === 'size' || k === 'tilt' || k === 'glow' || k === 'top' || k === 'perf' || k === 'q')) { DM.render(); setTimeout(DM.render, 80); }
   if (k === 'coach') { var h = DM.render; if (G.st) h(); }
 }
 
