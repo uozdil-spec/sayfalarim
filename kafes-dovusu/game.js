@@ -72,7 +72,9 @@ var STATS = KF.STATS = {
   bahcivan: { spd: .94, pow: 1.06, rng: 1.06, hp: 1.06, sig: 'hhk' }, sofor: { spd: .9, pow: 1.12, rng: 1, hp: 1.12, sig: 'huk' }, avukat: { spd: 1.02, pow: .96, rng: 1.04, hp: .98, sig: 'jjj' },
   itfaiyeci: { spd: .97, pow: 1.08, rng: 1.04, hp: 1.06, sig: 'juk' }, asci: { spd: .95, pow: 1.06, rng: .98, hp: 1.06, sig: 'hhh' }, haritaci: { spd: 1.02, pow: .98, rng: 1.06, hp: .98, sig: 'jhh' },
   jaloncu: { spd: 1, pow: .94, rng: 1.12, hp: 1, sig: 'jhl' }, kavurmaci: { spd: .92, pow: 1.12, rng: .96, hp: 1.1, sig: 'huu' }, sprinkci: { spd: 1.04, pow: .98, rng: 1.05, hp: 1, sig: 'jjl' },
-  imzaci: { spd: 1.03, pow: 1, rng: 1, hp: 1, sig: 'jku' }, trol: { spd: 1.1, pow: .92, rng: 1.02, hp: .96, sig: 'jlk' }, mezarci: { spd: .9, pow: 1.14, rng: 1.02, hp: 1.12, sig: 'hku' }
+  imzaci: { spd: 1.03, pow: 1, rng: 1, hp: 1, sig: 'jku' }, trol: { spd: 1.1, pow: .92, rng: 1.02, hp: .96, sig: 'jlk' }, mezarci: { spd: .9, pow: 1.14, rng: 1.02, hp: 1.12, sig: 'hku' },
+  /* sc: özel vuruşların dayanıklılık bedeli çarpanı, sn: özel vuruşların bu karaktere özel adları */
+  tasarimci: { spd: 1.08, pow: .94, rng: 1.06, hp: .95, sig: 'jlu', sc: .65, sn: { pf: 'POLİGON KÜPÜ', dp: 'YÜKSELEN EKSEN', tk: 'DÖNEN MODEL' } }
 };
 /* süper hareketler: her karakterin kendi finali. kind: dmg ağır, reach uzun menzil, stun uzun sersemletme, drain can çalar, break dayanıklılığı sıfırlar */
 var SUPERS = KF.SUPERS = {
@@ -84,7 +86,8 @@ var SUPERS = KF.SUPERS = {
   asci: { n: 'TAVA ÇARPMASI', s: 'TAVA', kind: 'dmg', dmg: 26, d: 'Tavayla çok sert vurur.' }, haritaci: { n: 'LAZER ÖLÇÜM', s: 'LAZER', kind: 'reach', dmg: 20, reach: 215, d: 'Çok uzaktan ölçer, vurur.' },
   jaloncu: { n: 'JALON ÇİZGİSİ', s: 'JALON', kind: 'reach', dmg: 20, reach: 220, d: 'En uzun menzilli süper.' }, kavurmaci: { n: 'SATIR İNİŞİ', s: 'SATIR', kind: 'dmg', dmg: 30, reach: 150, d: 'Çok sert ama kısa menzil.' },
   sprinkci: { n: 'HORTUM SELİ', s: 'SU', kind: 'stun', dmg: 16, stun: 1.35, d: 'Rakibi sırılsıklam, uzun sersem bırakır.' }, imzaci: { n: 'DİLEKÇE', s: 'DİLEKÇE', kind: 'base', dmg: 22, d: 'Savunma tanımayan klasik dilekçe.' },
-  trol: { n: 'KANDIRMA', s: 'TROL', kind: 'drain', dmg: 18, d: 'Vurur ve canından can çalar. Şaka yaptım!' }, mezarci: { n: 'KÜREK İNİŞİ', s: 'KÜREK', kind: 'dmg', dmg: 30, reach: 150, d: 'Hep son sözü o söyler: çok ağır vurur.' }
+  trol: { n: 'KANDIRMA', s: 'TROL', kind: 'drain', dmg: 18, d: 'Vurur ve canından can çalar. Şaka yaptım!' }, mezarci: { n: 'KÜREK İNİŞİ', s: 'KÜREK', kind: 'dmg', dmg: 30, reach: 150, d: 'Hep son sözü o söyler: çok ağır vurur.' },
+  tasarimci: { n: 'RENDER PATLAMASI', s: 'RENDER', kind: 'stun', dmg: 18, reach: 215, stun: 1.25, d: 'Hologramı uzaktan patlatır: hem uzun menzilli hem de rakibi uzun sersemletir.' }
 };
 var KB = { j: 6, h: 10, u: 16, k: 18, l: 8, a: 10, dp: 30, tk: 20, s: 34, pf: 8 }, RANK = { j: 1, h: 2, l: 2, u: 3, k: 3 };
 var REACH = { j: 112, h: 108, u: 104, k: 128, l: 128, a: 112, dp: 106, tk: 150, s: 170 };
@@ -96,7 +99,7 @@ var DIF = KF.DIF = {
   hard: { rd: 1.3, tell: .85, gap: .8, perf: .16, drain: 42, react: 1.25, pw: 1, dg: 1.2, dgw: .36, rt: [.07, .2] },
   pvp: { rd: 1, tell: 1, gap: 1, perf: .22, drain: 36, react: 1, pw: 1, dg: 1, dgw: .4, rt: [.1, .3] }
 };
-KF.VENUES = ['OTOPARK', 'KÖPRÜ ALTI', 'ORMAN', 'ÇAY BAHÇESİ', 'PAZAR YERİ', 'İSKELE', 'ÇATI', 'ŞANTİYE', 'METRO PERONU', 'HAYVANAT BAHÇESİ'];
+KF.VENUES = ['OTOPARK', 'KÖPRÜ ALTI', 'ORMAN', 'ÇAY BAHÇESİ', 'PAZAR YERİ', 'İSKELE', 'ÇATI', 'ŞANTİYE', 'METRO PERONU', 'HAYVANAT BAHÇESİ', 'TASARIM STÜDYOSU'];
 
 /* ---------- dövüş kuralları ---------- */
 function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null, x: 0, y: 0, vy: 0, air: false, aa: false, jv: 0, md: 0, dh: [], inv: false, vx: 0, dsh: 0, bi: 0, lastF: -9, lastB: -9, relF: true, relB: true, chainT: 0, lr: 0, seq: '' }; }
@@ -160,10 +163,10 @@ Sim.prototype.input = function (i, k) {
   if (sk) {
     if (f.st === 'rec' || RX.test(f.st)) { f.buf = { k: k0, t: .3 }; return; }
     if (f.st === 'block' || (f.block && f.st === 'idle')) { f.block = false; f.st = 'idle'; }
-    var S0 = SM[sk];
-    if (f.stam >= S0.c) {
+    var S0 = SM[sk], sc0 = S0.c * ((this.st(i) && this.st(i).sc) || 1);
+    if (f.stam >= sc0) {
       if (f.st !== 'idle' || f.cd > 0) return;
-      f.dh.length = 0; f.stam -= S0.c; f.mv = sk; f.st = S0.st === 'sp' ? 'sp' : 'w' + S0.st; f.t = S0.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = S0.rec; f.cd = .06; if (sk === 'dp') f.inv = true; this.emit('swing', i, 0, sk); return;
+      f.dh.length = 0; f.stam -= sc0; f.mv = sk; f.st = S0.st === 'sp' ? 'sp' : 'w' + S0.st; f.t = S0.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = S0.rec; f.cd = .06; if (sk === 'dp') f.inv = true; this.emit('swing', i, 0, sk); return;
     }
   }
   if (f.air && mv && f.st === 'idle' && !f.aa) { var Sa = SM.a; f.aa = true; f.mv = 'a'; f.st = 'wk'; f.t = Sa.w; f.rt = Sa.rec; f.cd = .02; this.emit('swing', i, 0, 'a'); return; }
@@ -383,9 +386,10 @@ KF.OPPS = {
   sofor: opp('sofor', 'TIR ŞOFÖRÜ TAHSİN', '🚛', 6, 135, 1.2, { j: .2, h: .25, u: .25, k: .2, l: .1 }, [.8, 1.3], .55, .3, .4, 'Kırk yıllık direksiyon, kırk ton yumruk. Final patronu.'),
   avukat: opp('avukat', 'AVUKAT ASLI', '⚖️', 6, 90, 1, { j: .35, h: .25, u: .1, k: .15, l: .15 }, [1, 1.7], .4, .15, .4, 'Her yumruğa itiraz eder, her itirazı kazanır.'),
   itfaiyeci: opp('itfaiyeci', 'İTFAİYECİ İLHAN', '🚒', 8, 110, 1.1, { j: .2, h: .3, u: .25, k: .15, l: .1 }, [.9, 1.5], .5, .2, .3, 'Ateşi söndürür, rakibi de söndürür.'),
+  tasarimci: opp('tasarimci', 'TASARIMCI TUĞÇE', '🧊', 10, 92, 1, { j: .3, h: .2, u: .15, k: .2, l: .15 }, [.95, 1.65], .42, .2, .45, 'Rakibini önce modeller, sonra render alır. Topuklu ayakkabıyla tekmesi poligon gibi keskin.'),
   asci: opp('asci', 'AŞÇI ARİF', '🍳', 4, 105, 1.05, { j: .25, h: .25, u: .25, k: .15, l: .1 }, [1, 1.6], .45, .2, .3, 'Hamur gibi yoğurur, tava gibi çalar.')
 };
-KF.LADDER = ['zabita', 'cayci', 'sprinkci', 'pazarci', 'haritaci', 'trol', 'jaloncu', 'mudure', 'imzaci', 'kaptan', 'bahcivan', 'kavurmaci', 'mezarci', 'sofor'];
+KF.LADDER = ['zabita', 'cayci', 'sprinkci', 'pazarci', 'haritaci', 'trol', 'jaloncu', 'mudure', 'tasarimci', 'imzaci', 'kaptan', 'bahcivan', 'kavurmaci', 'mezarci', 'sofor'];
 KF.DUMMY = { k: 'zabita', look: 'zabita', name: 'ÇIRAK CEMİL', av: '🥋', bg: 0, hp: 999, dm: .25, mix: { h: 1 }, gap: [2.6, 3.4], react: 0, dbl: 0, dodge: 0, desc: 'Antrenman partneri. Vurmaz, sadece öğretir.' };
 
 /* ---------- denetleyici ---------- */
@@ -477,8 +481,8 @@ function spark(x, y, col, n) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; 
 function dust(x, dir, n, sz) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'dot', x: x + rr(-8, 8), y: 259 + rr(-2, 3), vx: rr(-45, 45) + dir * rr(20, 90), vy: rr(-50, -8), g: 70, c: 'rgba(214,204,182,.55)', r: (sz || 3) * rr(.7, 1.3), life: .38, max: .38 }); }
 function pop(x, y, txt, col) { G.pops.push({ x: x, y: y, txt: txt, col: col, t: .9 }); }
 var SHK = { j: 2, h: 4, u: 6, k: 6, l: 3, s: 8, dp: 7, tk: 6, a: 3, pf: 3 }, FRZ = { j: .03, h: .05, u: .08, k: .08, l: .05, s: .1, dp: .09, tk: .08, a: .04, pf: .03 };
-var FXC = { zabita: '#c9d6ff', cayci: '#c98a3a', pazarci: '#e0455f', bahcivan: '#79c45f', sofor: '#bfc3cc', itfaiyeci: '#6ec6ff', sprinkci: '#6ec6ff', asci: '#ffb347', kavurmaci: '#d0392b', mezarci: '#8a6034', imzaci: '#f7f4ea', jaloncu: '#ff6a4a', trol: '#3ee07a', kaptan: '#cdd6e8', haritaci: '#8fd0ff' };
-var FXG = { cayci: 1, pazarci: 1, bahcivan: 1, itfaiyeci: 1, sprinkci: 1, asci: 1, kavurmaci: 1, mezarci: 1, sofor: 1 };
+var FXC = { zabita: '#c9d6ff', cayci: '#c98a3a', pazarci: '#e0455f', bahcivan: '#79c45f', sofor: '#bfc3cc', itfaiyeci: '#6ec6ff', sprinkci: '#6ec6ff', asci: '#ffb347', kavurmaci: '#d0392b', mezarci: '#8a6034', imzaci: '#f7f4ea', jaloncu: '#ff6a4a', trol: '#3ee07a', kaptan: '#cdd6e8', haritaci: '#8fd0ff', tasarimci: '#5ef2ff' };
+var FXG = { cayci: 1, pazarci: 1, bahcivan: 1, itfaiyeci: 1, sprinkci: 1, asci: 1, kavurmaci: 1, mezarci: 1, sofor: 1, tasarimci: 1 };
 function chunks(x, y, col, n, dir) { if (G.low) n = Math.ceil(n / 2); for (var i = 0; i < n; i++) G.parts.push({ k: 'dot', x: x, y: y, vx: dir * rr(40, 210) + rr(-40, 40), vy: rr(-230, -40), g: 620, c: col, r: rr(1.6, 3.6), life: .55, max: .55 }); }
 function count(e) {
   var me = G.me, st = G.st; if (!st) return;
@@ -493,7 +497,7 @@ function count(e) {
 function handleEv(e) {
   count(e);
   var me = G.me, atk = e.s >= 0 ? G.sl && G.sl[1 - e.s] : '', fxc = FXC[atk] || '#ffd23f', sup = (KF.SUPERS[G.sl && G.sl[e.k === 'swing' ? e.s : 1 - e.s]] || KF.SUPERS.imzaci), mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, hy = mv === 'k' ? 190 : (mv === 'l' ? 218 : 152), hs = G.hook;
-  if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); else if (e.m === 's' && hs.callout) hs.callout(sup.n, mine ? '#ffd23f' : '#ff9a5e'); }
+  if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(((STATS[G.sl && G.sl[e.s]] || {}).sn || {})[e.m] || SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); else if (e.m === 's' && hs.callout) hs.callout(sup.n, mine ? '#ffd23f' : '#ff9a5e'); }
   else if (e.k === 'fire') KF.sfx('spec');
   else if (e.k === 'jump') KF.sfx('jump');
   else if (e.k === 'whiff') pop(f.x, 112, 'ISKA', '#9a9aa4');

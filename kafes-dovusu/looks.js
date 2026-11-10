@@ -20,6 +20,7 @@ G.LOOKS = {
   jaloncu: { tool: 'rod', name: 'Jaloncu', skin: '#c08a60', skin2: '#946440', hair: '#14110e', shirt: '#2a2d36', vest: '#c8e03a', pants: '#3a3a44', glove: '#e8431f', shoe: '#1a1a1c', hat: 'cap', hatc: '#e9e9e4', stripes: '#dfe6ea', pole: 1, build: 1.04, sleeve: 0 },
   mezarci: { tool: 'shovel', name: 'Mezarcı', skin: '#c9a07c', skin2: '#9c7452', hair: '#1a1612', shirt: '#4a5043', pants: '#2b2d2a', glove: '#5a4630', shoe: '#1a1512', hat: 'cap', hatc: '#2a2d33', must: 1, vest: '#3a3f36', buttons: '#8a8f7a', build: 1.12, sleeve: 1 },
   kavurmaci: { tool: 'cleaver', name: 'Kavurmacı', skin: '#cf9468', skin2: '#a26a44', hair: '#1a1410', shirt: '#d9d4c8', pants: '#3a3f4a', glove: '#7a1f1a', shoe: '#1c1c1f', hat: 'cap', hatc: '#f1efe8', must: 1, apron: '#efe8da', blood: 1, build: 1.26, sleeve: 1 },
+  tasarimci: { tool: 'stylus', tool2: 'tablet', name: '3D Tasarımcı', fem: 1, holo: 1, skin: '#f2cdb0', skin2: '#d3a281', hair: '#2a1b33', hair2: '#8a4fd6', shirt: '#efe6d8', top: '#17171d', pants: '#1c1c24', glove: '#1fd6e6', shoe: '#17171d', heels: '#d9ab4c', hat: 'pony', hatc: '#35e6ff', visor: '#35e6ff', earring: '#e6c15a', lips: '#c2255c', lash: 1, watch: '#e6c15a', build: .9, sleeve: 1 },
   asci: { tool: 'pan', name: 'Aşçı', skin: '#d8a47f', skin2: '#b0795a', hair: '#222', shirt: '#f4f4f0', pants: '#3b4350', glove: '#d86a1f', shoe: '#1c1c1f', hat: 'chef', hatc: '#fbfbf8', must: 1, buttons: '#9a9a9a', build: 1.2, sleeve: 1 }
 };
 /* kilidi açılan kostüm renkleri: yalnızca renkleri değiştirir */
@@ -31,5 +32,5 @@ G.skinned = function (L, sk) {
   else if (sk === 'altin') { c.shirt = '#d9ab4c'; c.pants = '#4a3716'; if (c.vest) c.vest = '#b3822a'; c.glove = '#fff2c0'; if (c.hatc) c.hatc = '#f1d27a'; c.stripes = c.stripes ? '#fff2c0' : c.stripes; }
   return c;
 };
-G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol', 'mezarci'];
+G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol', 'mezarci', 'tasarimci'];
 })(window);

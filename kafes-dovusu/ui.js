@@ -31,8 +31,8 @@ U.base = function () { return location.href.split('#')[0].split('?')[0]; };
 
 /* ---------- ekran katmanı ---------- */
 var ov = U.ov = $('ov');
-U.showOv = function (nodes) { ov.innerHTML = ''; (Array.isArray(nodes) ? nodes : [nodes]).forEach(function (n) { if (n) ov.appendChild(typeof n === 'string' ? h('div', { html: n }) : n); }); ov.style.display = 'flex'; var ff = $('fsFloat'); if (ff && !ff.hidden) ff.style.display = 'grid'; };
-U.hideOv = function () { ov.style.display = 'none'; var ff = $('fsFloat'); if (ff) ff.style.display = 'none'; ov.innerHTML = ''; };
+U.showOv = function (nodes, cls) { ov.innerHTML = ''; ov.className = cls || ''; (Array.isArray(nodes) ? nodes : [nodes]).forEach(function (n) { if (n) ov.appendChild(typeof n === 'string' ? h('div', { html: n }) : n); }); ov.style.display = 'flex'; ov.scrollTop = 0; document.body.classList.add('inov'); var ff = $('fsFloat'); if (ff && !ff.hidden) ff.style.display = 'grid'; };
+U.hideOv = function () { ov.style.display = 'none'; document.body.classList.remove('inov'); var ff = $('fsFloat'); if (ff) ff.style.display = 'none'; ov.innerHTML = ''; };
 U.callout = function (txt, col) {
   var el = $('callout'); el.textContent = txt; el.style.color = col || '#fff'; el.style.fontSize = txt.length > 12 ? '22px' : ''; el.style.top = txt.length > 12 ? '4%' : '';
   if (el.animate) el.animate([{ opacity: 1, transform: 'scale(1.3)' }, { opacity: 1, transform: 'scale(1)', offset: .18 }, { opacity: 0, transform: 'scale(1)' }], { duration: 950, fill: 'forwards' }); else el.style.opacity = 1;
@@ -387,4 +387,15 @@ G.hook.ev = function (e) {
 };
 var idleSay = 0;
 G.hook.frame = function (M, dt) { hud(M); idleSay += dt; if (idleSay > 9 && playing() && M && M.ph === 'fight') { idleSay = 0; say('idle'); } };
+/* ---------- dik ekran: menüler dik de çalışır, dövüş yatay ister ---------- */
+(function () {
+  var mq = window.matchMedia ? window.matchMedia('(orientation:portrait) and (max-width:760px)') : null, rp = false;
+  function chk() {
+    var need = !!(mq && mq.matches) && !document.body.classList.contains('inov') && G.mode !== 'menu';
+    if (need && !rp && G.mode === 'solo' && !G.paused) { rp = true; G.paused = true; }
+    else if (!need && rp) { rp = false; if (U.sheet && !U.sheet()) G.paused = false; }
+  }
+  setInterval(chk, 400);
+  $('rotHome').onclick = function () { rp = false; U.home(); };
+})();
 })(window);

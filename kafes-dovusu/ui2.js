@@ -20,13 +20,15 @@ U.home = function () {
   rows.push(btn('Takım maçı · 3 kişi', 'wide', function () { pick(teamSheet); }));
   rows.push(btn(dailyDone() ? 'Günlük meydan ✓' : 'Günlük meydan', 'wide', function () { pick(dailySheet); }));
   rows.push(btn('Çevrimiçi düello', 'red wide', function () { pick(function () { onlineSheet(0); }); }));
-  rows.push(btn('Tüm oyunlar', 'wide', function () { location.href = '../index.html'; }));
-  rows.push(row([first ? null : btn('Antrenman', 'sm', function () { pick(startTrain); }), btn('Rehber', 'sm', function () { U.helpSheet(); }), btn('Başarımlar', 'sm', achSheet), btn('Ayarlar', 'sm', U.settingsSheet)]));
-  showOv([cols([h('h1', { html: 'KAFES <br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' }), T('p', '', stats()), charCard()], [h('div', { cls: 'menu hm' }, rows)])]);
+  var tools = h('div', { cls: 'htools' }, [first ? null : btn('Antrenman', 'sm', function () { pick(startTrain); }), btn('Rehber', 'sm', function () { U.helpSheet(); }), btn('Başarımlar', 'sm', achSheet), btn('Ayarlar', 'sm', U.settingsSheet)]);
+  var brand = h('div', { cls: 'hbrand' }, [h('img', { cls: 'hlogo', src: '../kafes-dovusu-ikon.svg', alt: '', width: '72', height: '72' }), h('h1', { html: 'KAFES <br>DÖVÜŞÜ<small>BELEDİYE PERSONELİ TURNUVASI</small>' })]);
+  var foot = h('div', { cls: 'hfoot' }, [h('a', { cls: 'hback', href: '../index.html', html: U.ico('mb') + '<span>Oyun Salonu</span>' }), h('span', { cls: 'sig', html: 'by <b>uozdil</b>' })]);
+  var turn = h('p', { cls: 'hturn', html: '<i></i>Dövüş yatay ekranda oynanır. Maç başlayınca telefonu yan çevir.' });
+  showOv([cols([brand, T('p', 'hstat', stats()), charCard()], [h('div', { cls: 'menu hm' }, rows), tools, turn]), foot], 'home');
   $('ticker').textContent = 'Hakem mesai kartını basıyor. Turnuva başlamak üzere.';
 };
 /* ---------- karakter seçimi ---------- */
-var TOOLN = { level: 'Su terazisi', notebook: 'Ceza defteri', tray: 'Çay tepsisi', weight: 'Kantar ağırlığı', case: 'Evrak çantası', anchor: 'Demir', shears: 'Budama makası', wrench: 'İngiliz anahtarı', book: 'Kanun kitabı', axe: 'İtfaiye baltası', nozzle: 'Hortum başlığı', stamp: 'Kaşe', phone: 'Telefon', compass: 'Pergel', rod: 'Jalon', cleaver: 'Satır', shovel: 'Kürek', pan: 'Tava' };
+var TOOLN = { level: 'Su terazisi', notebook: 'Ceza defteri', tray: 'Çay tepsisi', weight: 'Kantar ağırlığı', case: 'Evrak çantası', anchor: 'Demir', shears: 'Budama makası', wrench: 'İngiliz anahtarı', book: 'Kanun kitabı', axe: 'İtfaiye baltası', nozzle: 'Hortum başlığı', stamp: 'Kaşe', phone: 'Telefon', compass: 'Pergel', rod: 'Jalon', cleaver: 'Satır', shovel: 'Kürek', pan: 'Tava', stylus: 'Dijital kalem ve tablet' };
 function mini(key, w, hgt, live) {
   var cv = h('canvas', { width: String(w * 2), height: String(hgt * 2), style: 'width:' + w + 'px;height:' + hgt + 'px' });
   GFX.preview(cv, key, 0);
@@ -46,7 +48,7 @@ function charSelect(done) {
   var S = KF.S, sel = S.look, sk = skinOK(S.skin) ? (S.skin || '') : '', big = mini(myLook(sel), 96, 130, true), nm = h('b', { cls: 'cn' }), tl = h('span', { cls: 'ct' }), sp = h('span', { cls: 'ct' }), cards = [], skc = [];
   function show() {
     var L = GFX.LOOKS[sel], st = KF.STATS[sel], su = KF.SUPERS[sel];
-    nm.textContent = L.name; tl.textContent = 'Alet: ' + (TOOLN[L.tool] || '—') + ' · ' + stBars(st); sp.textContent = 'Süper: ' + su.n + ' · imza: ' + st.sig.split('').map(function (c) { return { j: 'YUMRUK', h: '→YUMRUK', u: '↓YUMRUK', k: 'TEKME', l: '↓TEKME' }[c]; }).join('-');
+    nm.textContent = L.name; tl.textContent = 'Alet: ' + (TOOLN[L.tool] || '—') + ' · ' + stBars(st); sp.textContent = 'Süper: ' + su.n + ' · imza: ' + st.sig.split('').map(function (c) { return { j: 'YUMRUK', h: '→YUMRUK', u: '↓YUMRUK', k: 'TEKME', l: '↓TEKME' }[c]; }).join('-') + (st.sc ? ' · özel vuruşları az yorar' : '');
     big._key = GFX.skinned(L, sk); cards.forEach(function (c) { c.el.classList.toggle('on', c.k === sel); }); skc.forEach(function (c) { c.el.classList.toggle('on', c.k === sk); });
   }
   var grid = h('div', { cls: 'cgrid' });
