@@ -322,7 +322,7 @@ Sim.prototype.step = function (dt) {
       if (f.y <= 0) { var hard = f.vy < -330; f.y = 0; f.vy = 0; f.air = false; f.aa = false; f.jv = 0; f.vx = 0; f.cd = Math.max(f.cd, .09); if (hard) this.emit('land', i, 0, ''); }
     } else {
       if (f.dsh > 0) { f.dsh -= dt; if (f.dsh <= 0) f.vx *= .25; }
-      else { var tv = (can && f.md) ? sg * f.md * (f.md > 0 ? 74 : 60) * sps : 0, dv = tv - f.vx, stp = (tv ? 1200 : 900) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
+      else { var tv = (can && f.md) ? sg * f.md * (f.md > 0 ? 90 : 74) * sps : 0, dv = tv - f.vx, stp = (tv ? 1200 : 900) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
       f.x += f.vx * dt;
     }
     if (f.x < WALL[0] || f.x > WALL[1]) {

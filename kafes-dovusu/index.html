@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261110-0924">
+<meta name="surum" content="20261110-1324">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest?v=20261110-0924">
+<link rel="manifest" href="manifest.webmanifest?v=20261110-1324">
 <meta name="color-scheme" content="dark">
 <title>Kafes Dövüşü</title>
-<link rel="icon" href="../kafes-dovusu-ikon.svg?v=20261110-0924" type="image/svg+xml">
-<link rel="icon" href="../kafes-dovusu-ikon-32.png?v=20261110-0924" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="../kafes-dovusu-ikon-180.png?v=20261110-0924">
+<link rel="icon" href="../kafes-dovusu-ikon.svg?v=20261110-1324" type="image/svg+xml">
+<link rel="icon" href="../kafes-dovusu-ikon-32.png?v=20261110-1324" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../kafes-dovusu-ikon-180.png?v=20261110-1324">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Oswald:wght@500;600;700&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Oswald:wght@500;600;700&display=swap"></noscript>
-<link rel="stylesheet" href="style.css?v=20261110-0924">
-<script async src="../sayac.js?v=20261110-0924"></script>
+<link rel="stylesheet" href="style.css?v=20261110-1324">
+<script async src="../sayac.js?v=20261110-1324"></script>
 </head>
 <body>
 <div id="app">
@@ -51,27 +51,17 @@
   <div id="tick"><span id="ticker">Belediye Personeli Turnuvası başlıyor.</span><button id="chatBtn" type="button" aria-label="Hızlı mesaj" hidden></button><button id="fsBtn" type="button" aria-label="Tam ekran"></button><button id="menuBtn" type="button" aria-label="Menü"></button></div>
   <div id="ctl">
     <div id="pl">
-    <div class="sh">
-      <button class="act blk" id="bBlock" type="button"><span class="ic"></span><span class="lb">SAVUN</span><span class="ht">basılı tut</span><span class="stam"><i id="stb"></i></span></button>
-      <button class="act dgb" id="bDodge" type="button"><span class="ic"></span><span class="lb">SIYRIL</span><span class="ht">kaçış</span></button>
-    </div>
-    <div id="dpad"><div id="joy" role="application" aria-label="Yön tuşu: sağa ileri, sola geri, yukarı zıpla, aşağı eğil">
+    <div id="dpad"><div id="joy" role="application" aria-label="Yön çubuğu: sağa ileri, sola geri, yukarı zıpla, aşağı eğil">
       <svg class="jb" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" class="r1"/><circle cx="50" cy="50" r="33" class="r2"/><path class="ar" d="M50 9l7 8H43zM50 91l7-8H43zM9 50l8-7v14zM91 50l-8-7v14z"/></svg>
       <div id="joyK"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7l6 7h-4v7h-4v-7h-4zM24 41l6-7h-4v-7h-4v7h-4zM7 24l7-6v4h7v4h-7v4zM41 24l-7-6v4h-7v4h7v4z"/></svg></div>
     </div></div>
     </div>
-    </div>
     <div id="pr">
-    <div class="sh">
-      <button class="act mv" id="bL" data-k="l" type="button"><span class="ic"></span><span class="lb">SÜPÜR</span><span class="ht">alçak</span></button>
-      <button class="act spc" id="bSpecial" type="button"><span class="ic"></span><span class="lb">DİLEKÇE</span><span class="ht">dolunca</span></button>
-    </div>
     <div id="face">
-      <button class="act mv" id="bU" data-k="u" type="button"><span class="ic"></span><span class="lb">APARKAT</span></button>
-      <button class="act mv" id="bK" data-k="k" type="button"><span class="ic"></span><span class="lb">TEKME</span></button>
-      <button class="act mv" id="bH" data-k="h" type="button"><span class="ic"></span><span class="lb">KROŞE</span></button>
-      <button class="act mv" id="bJ" data-k="j" type="button"><span class="ic"></span><span class="lb">DÜZ</span></button>
-      <button class="act spb" id="bSpb" type="button" aria-label="Özel hareket: önce buna, sonra bir vuruşa bas"><span class="ic"></span><span class="lb">ÖZEL</span></button>
+      <button class="act blk" id="bBlock" type="button" aria-label="Savun: basılı tut"><span class="ic"></span><span class="lb">SAVUN</span><span class="stam"><i id="stb"></i></span></button>
+      <button class="act spc" id="bSpecial" type="button" aria-label="Özel hareket; güç dolunca süper"><span class="ic"></span><span class="lb">ÖZEL</span></button>
+      <button class="act mv" id="bJ" type="button" aria-label="Yumruk"><span class="ic"></span><span class="lb">YUMRUK</span></button>
+      <button class="act mv" id="bK" type="button" aria-label="Tekme"><span class="ic"></span><span class="lb">TEKME</span></button>
     </div>
     </div>
   </div>
@@ -79,19 +69,19 @@
   <button id="fsFloat" type="button" aria-label="Tam ekran"></button>
 </div>
 <div id="sheet" hidden><div class="shbg"></div><div class="shp" role="dialog" aria-modal="true"><div class="shh"><h3 id="shT"></h3><button id="shX" type="button" aria-label="Kapat"></button></div><div class="shtabs" id="shTabs"></div><div class="shb" id="shB"></div></div></div>
-<div id="rot"><div class="ph"></div><b>Telefonu yan çevir</b><p>Kafes Dövüşü yatay oynanır: solda yön tuşları, sağda vuruşlar.</p><button class="btn pri" id="rotFs" type="button">Tam ekran yap</button></div>
+<div id="rot"><div class="ph"></div><b>Telefonu yan çevir</b><p>Kafes Dövüşü yatay oynanır: solda yön çubuğu, sağda dört düğme.</p><button class="btn pri" id="rotFs" type="button">Tam ekran yap</button></div>
 <div id="toast"></div>
 <div id="dim"></div>
-<script async src="../kart-salonu/vendor/mqtt.min.js?v=20261110-0924"></script>
-<script async src="vendor/peerjs.min.js?v=20261110-0924"></script>
-<script src="gfx.js?v=20261110-0924"></script>
-<script src="venues2.js?v=20261110-0924"></script>
-<script src="venues3.js?v=20261110-0924"></script>
-<script src="looks.js?v=20261110-0924"></script>
-<script src="fighters.js?v=20261110-0924"></script>
-<script src="net.js?v=20261110-0924"></script>
-<script src="game.js?v=20261110-0924"></script>
-<script src="ui.js?v=20261110-0924"></script>
-<script src="ui2.js?v=20261110-0924"></script>
+<script async src="../kart-salonu/vendor/mqtt.min.js?v=20261110-1324"></script>
+<script async src="vendor/peerjs.min.js?v=20261110-1324"></script>
+<script src="gfx.js?v=20261110-1324"></script>
+<script src="venues2.js?v=20261110-1324"></script>
+<script src="venues3.js?v=20261110-1324"></script>
+<script src="looks.js?v=20261110-1324"></script>
+<script src="fighters.js?v=20261110-1324"></script>
+<script src="net.js?v=20261110-1324"></script>
+<script src="game.js?v=20261110-1324"></script>
+<script src="ui.js?v=20261110-1324"></script>
+<script src="ui2.js?v=20261110-1324"></script>
 </body>
 </html>
