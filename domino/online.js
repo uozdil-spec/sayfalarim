@@ -6,7 +6,7 @@
 var DM = root.DM, $ = DM.$, S = DM.S, esc = DM.esc, UI = DM.UI, saveS = DM.saveS, toast = DM.toast;
 var openSheet = DM.openSheet, closeSheet = DM.closeSheet, seg = DM.seg;
 var PFX = 'uozdil-domino-';
-var ICE = [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }, { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }];
+var ICE = [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' }, {urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}, { urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'], username: 'openrelayproject', credential: 'openrelayproject' }];
 var ALPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 var QUICK = ['Merhaba 👋', 'İyi oyunlar!', 'Güzel hamle 👏', 'Bir el daha?', 'Biraz düşüneyim…', 'Teşekkürler'];
 DM.QUICK = QUICK;
@@ -34,7 +34,7 @@ DM.cleanCode = cleanCode; DM.ensureUid = ensureUid; DM.findFr = findFr; DM.addFr
 
 function netLoad(cb, fail) {
   if (root.Peer) return cb();
-  var urls = ['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'], i = 0;
+  var urls = ['../kafes-dovusu/vendor/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'], i = 0;
   (function next() {
     if (i >= urls.length) return fail();
     var s = document.createElement('script'); s.src = urls[i++];

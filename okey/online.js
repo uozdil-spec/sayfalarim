@@ -80,7 +80,12 @@ O.open = function (joinCode) {
     if (net && net.status === 'online') return;
     var pref = OK.lsGet('broker', '');
     net = new NetLib.Net({ lib: window.mqtt, id: myId(), name: OK.S.name, av: OK.S.av, brokers: pref ? [pref] : undefined });
-    net.cb.status = function (s) { setStatus(s); };
+    net.cb.status = function (s) {
+      setStatus(s);
+      /* Bağlantı kopup geri gelince kaçan hamleleri iste; yoksa misafirin ekranı eski kalıp sıra onda takılıyordu */
+      if (s === 'online' && wasOff) setTimeout(resyncRoom, 500);
+      wasOff = s !== 'online';
+    };
     net.cb.players = function () {
       Object.keys(friends).forEach(function (id) {
         var on = friendState(id) !== 'off';
@@ -88,7 +93,12 @@ O.open = function (joinCode) {
         if (!on) delete onlineSeen[id];
         var p = net.presence[id]; if (p && (p.n !== friends[id].n || p.a !== friends[id].a)) { friends[id].n = p.n; friends[id].a = p.a; saveFriends(); }
       });
-      if (!room && (tab === 'players' || tab === 'friends')) renderLobby(); else if (roomInfo && kind === 'host') renderRoom(); };
+      if (!room && (tab === 'players' || tab === 'friends')) renderLobby(); else if (roomInfo && kind === 'host') renderRoom();
+      else if (!room) {   /* başka sekmedeyken de "Oyuncular (n)" sayısı güncel kalsın */
+        var tb = document.querySelectorAll('#onPane .tabs button');
+        if (tb[1]) tb[1].textContent = '★ ' + t('tFriends') + ' (' + Object.keys(friends).filter(function (i) { return friendState(i) !== 'off'; }).length + ')';
+        if (tb[2]) tb[2].textContent = t('tPlayers') + ' (' + net.players().length + ')';
+      } };
     net.cb.tables = function () { if (!room && tab === 'tables') renderLobby(); };
     net.cb.chat = function (m) { pushLobbyMsg(m); };
     net.cb.invite = onInvite;
@@ -384,7 +394,10 @@ function joinRoom(code) {
     renderLobby();
   });
 }
+var wasOff = false;
+function resyncRoom() { try { if (room && kind !== 'host' && room.joined && !room.closed && room.sync) room.sync(); } catch (e) {} }
 if (typeof window !== 'undefined') window.addEventListener('online', function () { if (room && room.rejoin) room.rejoin(); });
+if (typeof document !== 'undefined') document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') setTimeout(resyncRoom, 800); });
 
 /* ---------- oda görünümü ---------- */
 function leaveRoomAsk() {

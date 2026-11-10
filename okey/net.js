@@ -118,6 +118,13 @@ Net.prototype.attach = function () {
       for (var i = 0; i < self.subs.length; i++) self.subs[i].on && self.subs[i].on();
     }
   });
+  /* Ekran yeniden açılınca / internet gelince beklemeden hemen yeniden bağlan */
+  if (!this.wakeBound && typeof document !== 'undefined') {
+    this.wakeBound = true;
+    var wake = function () { var k = self.cli; if (k && !k.connected && !k.reconnecting) { try { k.reconnect(); } catch (e) {} } };
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') wake(); });
+    window.addEventListener('online', wake); window.addEventListener('pageshow', wake);
+  }
   this.baseSubs();
   this.publishPresence();
   this.timers.push(setInterval(function () { self.publishPresence(); self.prune(); }, 30000));

@@ -16,7 +16,10 @@ function kindOf(seat) {
   return seat === G.me ? 'me' : 'other';
 }
 DM.kindOf = kindOf;
-function myTurn() { return !!(G.st && !G.st.over && G.st.turn === G.me && !G.cover && G.mode !== null); }
+/* El bittiyse (son taş kondu, sonuç ekranı gelmek üzere) artık hamle yok: o kısa arada
+   "Pas/Çek"e basılırsa el sonu sayacı sıfırlanıp oyun takılıyordu. Misafirde eller gizli olduğu için bakılmaz. */
+function roundDone() { return !!(G.st && G.mode !== 'guest' && DM.checkEnd(G.st)); }
+function myTurn() { return !!(G.st && !G.st.over && G.st.turn === G.me && !G.cover && G.mode !== null && !roundDone()); }
 DM.myTurn = myTurn;
 H.names = function () { return G.names; };
 H.inGame = function () { return !!(G.mode && G.st && !G.st.over && $('#game').className.indexOf('on') >= 0); };
@@ -389,7 +392,7 @@ function pushViews(extra) {
 DM.pushViews = pushViews;
 H.onGuestAct = function (seat, a) {
   var st = G.st;
-  if (!st || st.over || G.mode !== 'host' || st.turn !== seat) { sendCurrent(seat); return; }
+  if (!st || st.over || G.mode !== 'host' || st.turn !== seat || DM.checkEnd(st)) { sendCurrent(seat); return; }
   var ok = false;
   if (a.k === 'play') ok = doPlay(seat, a.id | 0, String(a.end));
   else if (a.k === 'draw') ok = doDraw(seat);

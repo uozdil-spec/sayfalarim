@@ -111,6 +111,7 @@ Net.prototype.ensure = function () {
   if (this.connecting) return;
   if (!this.cli) { this.start().catch(function () {}); return; }
   if (!this.cli.connected) { try { this.cli.reconnect(); } catch (e) {} }
+  else if (this.status !== 'online') this.onUp();   /* hat aslında açık: durumu düzelt */
 };
 Net.prototype.onUp = function () {
   var c = this.cli, id = KF.S.id, k, i;

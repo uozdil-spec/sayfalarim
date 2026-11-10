@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261109-2200">
+<meta name="surum" content="20261110-0924">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07070a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Satranç">
 <title>Satranç · by uozdil</title>
-<link rel="icon" type="image/png" href="ikon-32.png?v=20261109-2200">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261109-2200">
-<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261109-2200">
-<link rel="manifest" href="manifest.webmanifest?v=20261109-2200">
+<link rel="icon" type="image/png" href="ikon-32.png?v=20261110-0924">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261110-0924">
+<link rel="icon" type="image/svg+xml" href="ikon.svg?v=20261110-0924">
+<link rel="manifest" href="manifest.webmanifest?v=20261110-0924">
 <style>
 :root{--gold:#c9a45c;--gold2:#ead9ad;--txt:#ece6d8;--mut:#9a9486;--line:rgba(201,164,92,.3);--lt:#e8d3a8;--dk:#8a5a35;--f1:#52331d;--f2:#24150b;--grain:none;--bs:320px;--serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -191,8 +191,8 @@ input.fld:focus{border-color:var(--gold)}
 .addf{margin-left:10px;padding:2px 8px;border:1px solid var(--gold);border-radius:10px;color:var(--gold2);font-size:10.5px;letter-spacing:.06em;text-decoration:none;white-space:nowrap}
 
 </style>
-<script async src="../sayac.js?v=20261109-2200"></script>
-<script async src="../salon-butonu.js?v=20261109-2200" data-menu="#s-home"></script>
+<script async src="../sayac.js?v=20261110-0924"></script>
+<script async src="../salon-butonu.js?v=20261110-0924" data-menu="#s-home"></script>
 </head>
 <body>
 <div id="app">
@@ -2398,7 +2398,7 @@ var Net = (function () {
   N.start = function () {
     if (peer || !N.supported() || !S.code) return;
     var o = window.__SIGNAL || {}, k;
-    var opts = { debug: 0, config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }] } };
+    var opts = { debug: 0, config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, {urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}] } };
     for (k in o) opts[k] = o[k];
     try { peer = new Peer(id(S.code), opts); } catch (e) { N.err = 'net'; emit('status'); return; }
     peer.on('open', function () { N.ready = true; N.err = ''; N.taken = 0; clearTimeout(rtT); emit('status'); });

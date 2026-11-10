@@ -152,7 +152,8 @@ Net.prototype.baseSubs = function () {
 };
 /* Sessiz ölü bağlantıyı yakala */
 Net.prototype.watch = function () {
-  if (!this.cli) return;
+  /* Bağlantı tümden düşmüşse (istemci yok) de yeniden dene; yoksa oyun "yeniden bağlanılıyor"da takılı kalır. */
+  if (!this.cli) { if (this.wanted && !this.connecting) this.ensure(); return; }
   var idle = Date.now() - this.lastRx;
   if (this.status === 'online' && this.room && idle > 28000) this.force();
   else if (this.status === 'offline' && !this.connecting) this.ensure();
@@ -172,7 +173,8 @@ Net.prototype.ensure = function () {
     try { this.cli.reconnect(); } catch (e) {}
     var self = this, c = this.cli;
     setTimeout(function () { if (self.cli === c && !c.connected && !self.connecting) self.force(); }, 4000);
-  } else if (this.room && Date.now() - this.lastRx > 20000) this.force();
+  } else if (this.status !== 'online') this.onUp();   /* hat aslında açık: durumu düzelt */
+  else if (this.room && Date.now() - this.lastRx > 20000) this.force();
 };
 Net.prototype.start = function () { this.wanted = true; return this.connect(); };
 

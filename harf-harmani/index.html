@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261109-2200">
+<meta name="surum" content="20261110-0924">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="icon" href="ikon.svg?v=20261109-2200" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261109-2200" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261109-2200">
+<link rel="icon" href="ikon.svg?v=20261110-0924" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261110-0924" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261110-0924">
 <title>Harf Harmanı</title>
-<script async src="../sayac.js?v=20261109-2200"></script>
-<script async src="../salon-butonu.js?v=20261109-2200" data-menu="#setup"></script>
+<script async src="../sayac.js?v=20261110-0924"></script>
+<script async src="../salon-butonu.js?v=20261110-0924" data-menu="#setup"></script>
 </head>
 <body style="margin:0">
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1188,9 +1188,14 @@ function encMsg(key,obj){var iv=crypto.getRandomValues(new Uint8Array(12));retur
 function decMsg(key,str){var a=unb64(str);return crypto.subtle.decrypt({name:'AES-GCM',iv:a.slice(0,12)},key,a.slice(12)).then(function(pt){return JSON.parse(new TextDecoder().decode(pt));});}
 function loadMqtt(){return new Promise(function(res,rej){
   if(window.mqtt)return res();
-  var sc=document.createElement('script');sc.src=MQTT_SRC;
-  sc.onload=function(){window.mqtt?res():rej(new Error('lib'));};sc.onerror=function(){rej(new Error('lib'));};
-  document.head.appendChild(sc);
+  /* Önce depodaki kopya (dış siteye bağımlı kalmasın), olmazsa yedek adres */
+  var srcs=KO_CFG.src?[KO_CFG.src]:['../kart-salonu/vendor/mqtt.min.js',MQTT_SRC],i=0;
+  (function next(){
+    if(i>=srcs.length)return rej(new Error('lib'));
+    var sc=document.createElement('script');sc.src=srcs[i++];
+    sc.onload=function(){window.mqtt?res():next();};sc.onerror=next;
+    document.head.appendChild(sc);
+  })();
 });}
 function lvUI(){if(LV&&LV.ui)LV.ui();}
 function liveConnect(name){
