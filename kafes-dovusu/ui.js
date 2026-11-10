@@ -145,7 +145,7 @@ function press(k) { if (!playing()) return; flash(k); G.input(k); if (U.onPress)
 /* dört düğme, Street Fighter gibi yön + düğme: P yumruk (ileri: kroşe, aşağı: aparkat), K tekme (aşağı: süpürme),
    S özel (güç doluysa süper; aşağı: yükselen aparkat, geri: evrak topu, yoksa dönen tekme) */
 function act(b) {
-  if (!playing()) return; var M = G.M, fw = js.f || kHeld.arrowright, bk = js.b || kHeld.arrowleft;
+  if (!playing()) return; var M = G.M, fw = js.F || kHeld.arrowright, bk = js.b || kHeld.arrowleft;
   if (b === 'P') press(dnHeld ? 'u' : (fw ? 'h' : 'j'));
   else if (b === 'K') press(dnHeld ? 'l' : 'k');
   else press(M && M.sp[G.me] >= 100 ? 's' : (dnHeld ? 'xu' : (bk ? 'xj' : 'xk')));
@@ -166,10 +166,11 @@ function moveOn(k) {
   if (blockDown && (k === 'mb' || k === 'mf')) { press('dg'); setTimeout(function () { if (blockDown && playing()) G.input('bd'); }, 380); return; }
   G.input(k); if (U.onPress) U.onPress(k);
 }
-var joy = $('joy'), knob = $('joyK'), zone = $('pl'), jid = null, jc = null, js = { f: 0, b: 0, u: 0, d: 0 };
+var joy = $('joy'), knob = $('joyK'), zone = $('pl'), jid = null, jc = null, js = { f: 0, b: 0, u: 0, d: 0, F: 0 };
 function buzz(n) { if (KF.S.vib) try { navigator.vibrate && navigator.vibrate(n); } catch (e) {} }
 function joyApply(dx, dy) {
-  var f = dx > (js.f ? .18 : .3) ? 1 : 0, b = dx < (js.b ? -.18 : -.3) ? 1 : 0, u = dy < (js.u ? -.35 : -.5) ? 1 : 0, d = dy > (js.d ? .35 : .5) ? 1 : 0;
+  var f = dx > (js.f ? .1 : .2) ? 1 : 0, b = dx < (js.b ? -.1 : -.2) ? 1 : 0, u = dy < (js.u ? -.25 : -.38) ? 1 : 0, d = dy > (js.d ? .25 : .38) ? 1 : 0;
+  js.F = dx > (js.F ? .5 : .62) ? 1 : 0;
   if (f !== js.f) { js.f = f; if (f) { moveOn('mf'); buzz(6); } else G.input('mfu'); }
   if (b !== js.b) { js.b = b; if (b) { moveOn('mb'); buzz(6); } else G.input('mbu'); }
   if (u && !js.u) { moveOn('jp'); buzz(10); } js.u = u;
@@ -200,7 +201,7 @@ zone.addEventListener('pointerdown', function (e) { if (e.pointerType === 'touch
 zone.addEventListener('pointermove', function (e) { if (jid === 'm') joyMove(e.clientX, e.clientY); });
 ['pointerup', 'pointercancel'].forEach(function (n) { zone.addEventListener(n, function () { if (jid === 'm') joyEnd(); }); });
 window.addEventListener('blur', function () { joyEnd(); });
-U.resetMove = function () { jid = null; jc = null; knob.style.transform = ''; joy.style.transform = ''; js = { f: 0, b: 0, u: 0, d: 0 }; dnHeld = false; joy.className = ''; };
+U.resetMove = function () { jid = null; jc = null; knob.style.transform = ''; joy.style.transform = ''; js = { f: 0, b: 0, u: 0, d: 0, F: 0 }; dnHeld = false; joy.className = ''; };
 function blockOn() { if (!blockDown && playing()) { blockDown = true; press('bd'); } }
 function blockOff() { if (blockDown) { blockDown = false; G.input('bu'); } }
 U.resetBlock = function () { blockDown = false; };
@@ -296,7 +297,7 @@ U.helpSheet = function (tab) {
   if (G.mode === 'solo') G.paused = true;
   var guideF = function (d) {
     [['Amaç', 'Rakibin canını bitir ya da süre dolunca daha çok canı olan kazanır. Solda yön çubuğu, sağda dört düğme var: YUMRUK, TEKME, SAVUN, ÖZEL.'],
-     ['YUMRUK', 'Tek başına DÜZ: en hızlı vuruş, rakibin yavaş vuruşunu keser. Çubuğu ileri tutarken KROŞE: biraz yavaş, daha sert. Çubuğu aşağı tutarken APARKAT: yavaş ama çok sert, savunmanın çoğunu deler.'],
+     ['YUMRUK', 'Tek başına DÜZ: en hızlı vuruş, rakibin yavaş vuruşunu keser. Çubuğu sonuna kadar ileri iterken KROŞE: biraz yavaş, daha sert. Çubuğu aşağı tutarken APARKAT: yavaş ama çok sert, savunmanın çoğunu deler.'],
      ['TEKME', 'Tek başına TEKME: ağır, uzun menzilli, rakibi uzun sersemletir. Çubuğu aşağı tutarken SÜPÜRME: alçak tekme, sıyrılan rakibi yakalar. Havadayken UÇAN TEKME.'],
      ['SAVUN', 'Basılı tut. Rakip kırmızı ünlem gösterince savunmada ol. Vuruş inmeden hemen önce basarsan KUSURSUZ savunma olur, rakip sersemler. Savunma dayanıklılığı bitirir, uzun tutma. Geri yürürken gelen vuruşları kendiliğinden savunursun.'],
      ['SIYRIL', 'SAVUN basılıyken çubuğu geri (ya da ileri) çek: bir an eğilip kaçarsın. Ünlem çıkınca yaparsan rakibin vuruşu boşa gider, rakip açık kalır ve sen can bulursun. Aparkata ve süpere karşı en iyi çare. Süpürmeye karşı işe yaramaz.'],

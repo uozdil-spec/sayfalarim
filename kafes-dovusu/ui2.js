@@ -224,7 +224,7 @@ function freeSheetBack() { U.home(); freeSheet(); }
 /* ---------- antrenman ---------- */
 var LESS = [
   { t: 'YUMRUK: hızlı düz vuruş. Parlayan düğmeye 2 kez dokun', b: 'bJ', k: 'j', n: 2 },
-  { t: 'KROŞE: çubuğu ileri tut + YUMRUK. 2 kez', b: 'bJ', jd: 'f', k: 'h', n: 2 },
+  { t: 'KROŞE: çubuğu sonuna kadar ileri it + YUMRUK. 2 kez', b: 'bJ', jd: 'f', k: 'h', n: 2 },
   { t: 'APARKAT: çubuğu aşağı tut + YUMRUK. 2 kez', b: 'bJ', jd: 'd', k: 'u', n: 2 },
   { t: 'TEKME: ağır, uzun vuruş. 2 kez dokun', b: 'bK', k: 'k', n: 2 },
   { t: 'SÜPÜRME: çubuğu aşağı tut + TEKME. 2 kez', b: 'bK', jd: 'd', k: 'l', n: 2 },

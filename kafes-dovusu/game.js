@@ -166,7 +166,7 @@ Sim.prototype.input = function (i, k) {
     var S0 = SM[sk], sc0 = S0.c * ((this.st(i) && this.st(i).sc) || 1);
     if (f.stam >= sc0) {
       if (f.st !== 'idle' || f.cd > 0) return;
-      f.dh.length = 0; f.stam -= sc0; f.mv = sk; f.st = S0.st === 'sp' ? 'sp' : 'w' + S0.st; f.t = S0.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = S0.rec; f.cd = .06; if (sk === 'dp') f.inv = true; this.emit('swing', i, 0, sk); return;
+      f.dh.length = 0; f.stam -= sc0; f.mv = sk; f.st = S0.st === 'sp' ? 'sp' : 'w' + S0.st; f.t = S0.w * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw * .76); f.rt = S0.rec; f.cd = .06; if (sk === 'dp') f.inv = true; this.emit('swing', i, 0, sk); return;
     }
   }
   if (f.air && mv && f.st === 'idle' && !f.aa) { var Sa = SM.a; f.aa = true; f.mv = 'a'; f.st = 'wk'; f.t = Sa.w; f.rt = Sa.rec; f.cd = .02; this.emit('swing', i, 0, 'a'); return; }
@@ -184,7 +184,7 @@ Sim.prototype.input = function (i, k) {
     if (f.st !== 'idle') return;
     var cw = (f.chainT > 0 && !(this.cpu && i === 1) && (RANK[k] || 0) >= f.lr) ? .55 : 1;
     if (k === 's') { if (f.sp < 100) return; f.sp = 0; f.mv = 's'; f.st = 'sp'; f.t = .4; f.rt = .5; this.emit('swing', i, 0, 's'); }
-    else { f.mv = k; f.st = 'w' + k; f.t = mv.w * cw * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw); f.rt = mv.rec; f.cd = .06; this.emit('swing', i, 0, k); }
+    else { f.mv = k; f.st = 'w' + k; f.t = mv.w * cw * ((this.cpu && i === 1) ? this.dif.tell * (1 + .1 * this.as) : this.dif.pw * .76); f.rt = mv.rec; f.cd = .06; this.emit('swing', i, 0, k); }
   } else if (k === 'bd') { f.hold = true; if (f.st === 'idle' && f.stam > 6 && !f.block) { f.block = true; f.blockT = 0; f.st = 'block'; } }
   else if (k === 'bu') { f.hold = false; if (f.block) { f.block = false; if (f.st === 'block') f.st = 'idle'; } }
 };
@@ -325,7 +325,7 @@ Sim.prototype.step = function (dt) {
       if (f.y <= 0) { var hard = f.vy < -330; f.y = 0; f.vy = 0; f.air = false; f.aa = false; f.jv = 0; f.vx = 0; f.cd = Math.max(f.cd, .09); if (hard) this.emit('land', i, 0, ''); }
     } else {
       if (f.dsh > 0) { f.dsh -= dt; if (f.dsh <= 0) f.vx *= .25; }
-      else { var tv = (can && f.md) ? sg * f.md * (f.md > 0 ? 90 : 74) * sps : 0, dv = tv - f.vx, stp = (tv ? 1200 : 900) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
+      else { var kk, tv = (can && f.md) ? sg * f.md * (f.md > 0 ? 90 : 74) * sps : 0, kk = (tv && Math.abs(f.vx) < 40) ? (f.vx = tv * .55) : 0, dv = tv - f.vx, stp = (tv ? 2100 : 1700) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
       f.x += f.vx * dt;
     }
     if (f.x < WALL[0] || f.x > WALL[1]) {
@@ -575,9 +575,18 @@ function frame(ts) {
   if (G.st && M && M.combo) G.st.cmb = Math.max(G.st.cmb, M.combo[G.me]);
   V.tm = G.tm; V.shake = G.shake; G.shake = Math.max(0, G.shake - 14 * dt);
   V.warn = G.mode !== 'menu';
-  GFX.render(cx, V);
+  if (((G.fc = (G.fc || 0) + 1) % 45) === 1) fitCanvas();
+  cx.setTransform(RS, 0, 0, RS, 0, 0); GFX.render(cx, V);
   if (G.hook.frame) G.hook.frame(M, dt);
   requestAnimationFrame(frame);
 }
+/* sahne çözünürlüğü: ekrandaki gerçek boyuta göre (en çok 2.25x, düşük modda 1.25x) */
+var RS = 1;
+function fitCanvas() {
+  var r = cv.getBoundingClientRect ? cv.getBoundingClientRect() : null; if (!r || !r.width) return;
+  var w = r.width * Math.min(root.devicePixelRatio || 1, 3) / 400; w = Math.max(1, Math.min(w, G.low ? 1.25 : 2.25)); w = Math.round(w * 4) / 4;
+  if (w !== RS) { RS = w; cv.width = Math.round(400 * RS); cv.height = Math.round(300 * RS); try { cx.imageSmoothingQuality = 'high'; } catch (e) {} }
+}
+root.addEventListener('resize', fitCanvas); root.addEventListener('orientationchange', function () { setTimeout(fitCanvas, 300); });
 G.start = function () { applyQuality(); requestAnimationFrame(frame); };
 })(window);

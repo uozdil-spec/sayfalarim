@@ -3,7 +3,9 @@
 'use strict';
 var W = 400, H = 300, FY = 262, PI = Math.PI;
 function rng(s) { return function () { s = (s * 16807) % 2147483647; return s / 2147483647; }; }
-function mk(fn) { var o = document.createElement('canvas'); o.width = W; o.height = H; fn(o.getContext('2d')); return o; }
+/* arka planlar yüksek çözünürlükte çizilir (güçlü telefonlarda 1.5x); eski/az bellekli telefonlarda 1x */
+var S = (function () { try { var m = Math.min(screen.width, screen.height), mem = navigator.deviceMemory || 4; return ((root.devicePixelRatio || 1) >= 2 && m >= 340 && mem >= 3 && !/Android [2-7][.;]/.test(navigator.userAgent)) ? 1.5 : 1; } catch (e) { return 1; } })();
+function mk(fn) { var o = document.createElement('canvas'); o.width = Math.round(W * S); o.height = Math.round(H * S); var c = o.getContext('2d'); c.scale(S, S); fn(c); return o; }
 function lg(c, x0, y0, x1, y1, st) { var g = c.createLinearGradient(x0, y0, x1, y1); st.forEach(function (s) { g.addColorStop(s[0], s[1]); }); return g; }
 function rg(c, x, y, r, st) { var g = c.createRadialGradient(x, y, 0, x, y, r); st.forEach(function (s) { g.addColorStop(s[0], s[1]); }); return g; }
 function parse(s) {
