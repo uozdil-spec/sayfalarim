@@ -404,7 +404,7 @@ body.cb{--red:#e69f00;--red2:#8a5a00;--ok:#56b4e9}body.cb #coach.warn{color:#ffb
 body{padding:max(4px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}
 #app{display:block;position:relative;max-width:none;width:100%;height:100%;
   --ah:calc(100vh - max(4px,env(safe-area-inset-top)) - max(6px,env(safe-area-inset-bottom)));
-  --c:clamp(116px,16.5vw,160px);
+  --c:calc(clamp(116px,16.5vw,160px) * var(--bs,1));
   --sw:min(calc(var(--ah) * 1.3333),calc(100vw - var(--c) * 1.25 - 28px));
   --stT:calc(50% - var(--sw) * .375)}
 @supports (height:100dvh){#app{--ah:calc(100dvh - max(4px,env(safe-area-inset-top)) - max(6px,env(safe-area-inset-bottom)))}}
@@ -427,11 +427,15 @@ body{padding:max(4px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right
 #pl,#pr{position:absolute;top:0;bottom:0;margin:0;padding:0;width:max(calc((100% - var(--sw)) / 2),calc(var(--c) + 8px));align-self:auto!important;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;opacity:var(--bo,1)}
 #pl{left:0;align-items:flex-start}#pr{right:0;align-items:flex-end}
 /* başparmağın doğal duruşu için kontroller alt kenardan yukarıda */
-#dpad{position:relative;width:var(--c);height:var(--c);margin:0 0 clamp(18px,14vh,70px) 8px;grid-template-columns:none}
-#face{width:var(--c);height:var(--c);gap:6px;margin:0 8px clamp(18px,14vh,70px) 0}
+#dpad{position:relative;width:var(--c);height:var(--c);margin:0 0 clamp(6px,calc(var(--bh,14) * 1vh),150px) 8px;grid-template-columns:none}
+#face{width:var(--c);height:var(--c);gap:6px;margin:0 8px clamp(6px,calc(var(--bh,14) * 1vh),150px) 0}
 #face .act{border-radius:18px}
 #face .ic{font-size:calc(var(--c) * .2)}#face .lb{font-size:calc(var(--c) * .088);letter-spacing:.01em;white-space:nowrap}
 #face .blk .lb{margin-bottom:5px}#face .blk .stam{bottom:7px}
 #joy{touch-action:none}
 }
 @media (orientation:landscape) and (max-height:340px){#hud .av{display:none}}
+@supports (width:min(1px,2px)) and (width:max(1px,2px)){
+body.swap #pl{left:auto;right:0;align-items:flex-end}body.swap #pr{right:auto;left:0;align-items:flex-start}
+body.swap #dpad{margin:0 8px clamp(6px,calc(var(--bh,14) * 1vh),150px) 0}body.swap #face{margin:0 0 clamp(6px,calc(var(--bh,14) * 1vh),150px) 8px}
+}

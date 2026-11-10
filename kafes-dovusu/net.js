@@ -17,7 +17,7 @@ KF.AVATARS = ['🙂', '😎', '🤠', '🦊', '🐻', '🦁', '🐯', '🐼', '�
 
 /* ---- profil: ad, simge ve kod Kart Salonu ile ortak ---- */
 /* sonradan eklenen ayarlar: performans, kontrol düzeni, erişilebilirlik, başarımlar */
-KF.XK = { perf: 'auto', fps30: false, swap: false, bsz: 1, bop: 1, spb: true, fz: 0, cb: false, ab: true, rng: true, ach: {}, daily: {}, skin: '', best3: 0, wonWith: {}, tot: { hit: 0, blk: 0, dg: 0, cmb: 0, kd: 0 } };
+KF.XK = { perf: 'auto', fps30: false, swap: false, bsz: 1, bop: 1, bh: 14, spb: true, fz: 0, cb: false, ab: true, rng: true, ach: {}, daily: {}, skin: '', best3: 0, wonWith: {}, tot: { hit: 0, blk: 0, dg: 0, cmb: 0, kd: 0 } };
 KF.loadProfile = function () {
   var s = KF.ks.get('settings', {}), o = lsg('kafes.s', {});
   KF.S = { id: s.id || '', name: s.name || '', av: s.av || '🙂', look: o.look || 'muhendis', oled: o.oled !== false, shiftEvery: o.shiftEvery || 60,

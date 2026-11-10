@@ -274,6 +274,8 @@ U.settingsSheet = function () {
     d.appendChild(U.T('div', 'grp', 'Kontroller'));
     d.appendChild(chips([[false, 'Yön çubuğu solda'], [true, 'Solak: yön çubuğu sağda']], !!S.swap, function (v) { S.swap = v; KF.saveProfile(); U.applyLook(); }));
     d.appendChild(chips([[.85, 'Küçük tuşlar'], [1, 'Orta'], [1.12, 'Büyük']], S.bsz, function (v) { S.bsz = v; KF.saveProfile(); U.applyLook(); }));
+    d.appendChild(U.T('p', 'note', 'Tuşların yüksekliği: başparmağına göre ayarla.'));
+    d.appendChild(chips([[4, 'En altta'], [14, 'Biraz yukarıda'], [24, 'Yüksekte'], [34, 'Çok yüksekte']], S.bh == null ? 14 : S.bh, function (v) { S.bh = v; KF.saveProfile(); U.applyLook(); }));
     d.appendChild(chips([[1, 'Tam görünür'], [.8, 'Hafif şeffaf'], [.6, 'Çok şeffaf']], S.bop, function (v) { S.bop = v; KF.saveProfile(); U.applyLook(); }));
     d.appendChild(sw('Geri çekilirken otomatik savunma', 'Geri tutarken gelen vuruşları savunursun (çevrimiçide herkes için açık)', 'ab'));
     d.appendChild(sw('Menzil çizgisi', 'Rakip vuruş menzilinde mi, yerdeki çizgi gösterir', 'rng'));
@@ -368,7 +370,7 @@ U.applyLook = function () {
   var S = KF.S, b = document.body, r = document.documentElement;
   b.classList.toggle('swap', !!S.swap); b.classList.toggle('cb', !!S.cb);
   b.classList.remove('fz1', 'fz2'); if (S.fz) b.classList.add('fz' + S.fz);
-  r.style.setProperty('--bs', String(S.bsz || 1)); r.style.setProperty('--bo', String(S.bop || 1)); GFX.CB = !!S.cb;
+  r.style.setProperty('--bs', String(S.bsz || 1)); r.style.setProperty('--bo', String(S.bop || 1)); r.style.setProperty('--bh', String(S.bh == null ? 14 : S.bh)); GFX.CB = !!S.cb;
 };
 U.applyLook();
 G.hook.perf = function () { U.toast('Oyun yavaşladı, hafif moda geçildi. Ayarlar > Performans\'tan değiştirebilirsin.'); };
