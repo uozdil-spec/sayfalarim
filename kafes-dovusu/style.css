@@ -426,8 +426,9 @@ body{padding:max(4px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right
 #ctl{display:block}
 #pl,#pr{position:absolute;top:0;bottom:0;margin:0;padding:0;width:max(calc((100% - var(--sw)) / 2),calc(var(--c) + 8px));align-self:auto!important;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;opacity:var(--bo,1)}
 #pl{left:0;align-items:flex-start}#pr{right:0;align-items:flex-end}
-#dpad{position:relative;width:var(--c);height:var(--c);margin:0 0 4px 2px;grid-template-columns:none}
-#face{width:var(--c);height:var(--c);gap:6px;margin:0 2px 4px 0}
+/* başparmağın doğal duruşu için kontroller alt kenardan yukarıda */
+#dpad{position:relative;width:var(--c);height:var(--c);margin:0 0 clamp(18px,14vh,70px) 8px;grid-template-columns:none}
+#face{width:var(--c);height:var(--c);gap:6px;margin:0 8px clamp(18px,14vh,70px) 0}
 #face .act{border-radius:18px}
 #face .ic{font-size:calc(var(--c) * .2)}#face .lb{font-size:calc(var(--c) * .088);letter-spacing:.01em;white-space:nowrap}
 #face .blk .lb{margin-bottom:5px}#face .blk .stam{bottom:7px}

@@ -187,7 +187,7 @@ function drawFighter(c, f, dir, tm) {
   var L = f.look, P = f.p, st = f.st, B = L.build || 1, fl = f.flash > 0;
   function Q(h, a, to) { var s = a ? mix(h, a, to) : h; return fl ? mix(s, .72, 'w') : s; }
   c.save(); c.translate(f.x, FY); c.scale(dir, 1);
-  if (P.rot > .02) { c.translate(0, -3); c.rotate(-P.rot); }
+  if (P.rot > .02) { c.translate(68 * Math.min(1, P.rot / 1.48), -3); c.rotate(-P.rot); } /* yerdeki dövüşçü ekrandan taşmasın: gövde rakibe doğru kaydırılır */
   c.save(); c.translate(P.dx, 0);
   c.save(); c.scale(1, .2); if (G.LOW) { c.fillStyle = 'rgba(0,0,0,.5)'; c.beginPath(); c.arc(0, 0, 30, 0, PI * 2); c.fill(); } else { c.fillStyle = rg(c, 0, 0, 38, [[0, 'rgba(0,0,0,.65)'], [1, 'rgba(0,0,0,0)']]); c.fillRect(-38, -38, 76, 76); } c.restore();
   c.translate(0, -(f.jy || 0));

@@ -91,7 +91,7 @@ var SUPERS = KF.SUPERS = {
 };
 var KB = { j: 6, h: 10, u: 16, k: 18, l: 8, a: 10, dp: 30, tk: 20, s: 34, pf: 8 }, RANK = { j: 1, h: 2, l: 2, u: 3, k: 3 };
 var REACH = { j: 112, h: 108, u: 104, k: 128, l: 128, a: 112, dp: 106, tk: 150, s: 170 };
-var WALL = [30, 370], MINGAP = 66;
+var WALL = [64, 336], MINGAP = 66;
 function MA(k) { return MV[k] || SM[k]; }
 var DIF = KF.DIF = {
   easy: { rd: .9, tell: 1.2, gap: 1.1, perf: .28, drain: 30, react: .8, pw: .9, dg: .5, dgw: .6, rt: [.16, .38] },
