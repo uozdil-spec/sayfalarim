@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261110-0924">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
@@ -205,8 +204,6 @@ html.land #statusrow{flex-direction:column;align-items:stretch;gap:6px;min-heigh
 html.land #status{flex:none;text-align:center;align-items:center;min-height:62px;font-size:13.5px}
 html.land .mini{justify-content:space-between;gap:4px}html.land .mini .ib{flex:1;min-width:0;width:auto;height:38px}
 </style>
-<script async src="sayac.js?v=20261110-0924"></script>
-<script async src="salon-butonu.js?v=20261110-0924" data-menu="#home .homecol" data-satir></script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -915,7 +912,7 @@ async function applyAct(a,remote){
  if(remote){
   if(G.mode!=='online'||isLocalActor(G.turn))return;
   if(a.k==='roll'&&(G.phase!=='roll'||!Array.isArray(a.d)||a.d.length!==2||a.d.some(v=>!(v>=1&&v<=6))))return;
-  if(a.k!=='roll'&&G.phase!=='move')return;
+  if(a.k!=='roll'&&a.k!=='skip'&&G.phase!=='move')return;
  }
  if(a.k==='roll'){
   const d=a.d;G.dice=d.slice();G.rem=d[0]===d[1]?[d[0],d[0],d[0],d[0]]:d.slice();
@@ -934,6 +931,9 @@ async function applyAct(a,remote){
   const h=G.hist.pop();if(!h)return;
   const cur=G.state;G.state=h.state;G.rem=h.rem;G.sel=null;G.hint=null;G.legal=[];
   await animUndo(cur,h.state,h.m,G.turn);afterRoll();
+ }else if(a.k==='skip'){
+  if(G.phase!=='roll'||!fullyBlocked(G.state,G.turn)){if(remote&&G.mode==='online')Net.requestSnap();return;}
+  endTurn();
  }else if(a.k==='pass'){
   if(G.phase!=='move')return;
   if(!isLocalActor(G.turn))toast(G.names[G.turn]+' oynayamadı');
@@ -962,10 +962,17 @@ function endTurn(){
  G.turn=-G.turn;G.phase='roll';G.dice=[];G.rem=[];G.legal=[];G.hist=[];G.sel=null;G.hint=null;
  persist();drawDyn();if(isLocalActor(G.turn))Snd.turn();startTurn();
 }
+function fullyBlocked(st,c){return st.bar[ci(c)]>0&&[1,2,3,4,5,6].every(d=>movesForDie(st,c,d).length===0);}
 function startTurn(){
  updateStatus();
  if(G.phase!=='roll'||G.over)return;
  const tok=G.token;
+ if(fullyBlocked(G.state,G.turn)){
+  const t=G.turn,mine=isLocalActor(t)||G.mode==='ai';
+  toast(G.mode==='local'?`${G.names[t]}: kırık pul giremiyor, sıra geçiyor`:(isLocalActor(t)?'Kırık pulun girebileceği yer yok — sıra geçiyor':`${G.names[t]} giremiyor, sıra geçiyor`),2200);Snd.nomove();
+  setTimeout(()=>{if(tok===G.token&&G.phase==='roll'&&G.turn===t&&G.pending===0&&mine)submit({k:'skip'});},2000);
+  return;
+ }
  if(G.mode==='ai'&&G.turn!==G.me){setTimeout(()=>{if(tok===G.token&&G.phase==='roll'&&G.mode==='ai'&&G.turn!==G.me&&G.pending===0)submit({k:'roll',d:[die(),die()]});},700);}
  else if(isLocalActor(G.turn)&&S.autoRoll){setTimeout(()=>{if(tok===G.token&&G.phase==='roll')requestRoll();},600);}
 }
@@ -1362,7 +1369,7 @@ $('#saver').addEventListener('click',()=>{OLED.wake();});
 
 /* ================= ONLINE (PeerJS / WebRTC) ================= */
 const PFX='uozdil-tavla-';
-const ICE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}];
+const ICE=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}];
 const genToken=()=>Array.from({length:12},()=>ALPH[rnd(ALPH.length)]).join('');
 function showWait(t,s){$('#waitT').textContent=t;$('#waitS').textContent=s||'';openModal('wait');}
 function hideWait(){closeModal('wait');}
@@ -1374,7 +1381,7 @@ const Net={
  loadLib(){
   return new Promise((res,rej)=>{
    if(window.Peer)return res();
-   const urls=['kafes-dovusu/vendor/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'];let i=0;
+   const urls=['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'];let i=0;
    const next=()=>{if(i>=urls.length)return rej(new Error('lib'));const s=document.createElement('script');s.src=urls[i++];s.onload=()=>window.Peer?res():next();s.onerror=next;document.head.appendChild(s);};
    next();
   });
