@@ -41,8 +41,8 @@ function charCard() {
   return h('button', { cls: 'charbtn', type: 'button', onclick: function () { KF.sfx('ui'); charSelect(U.home); } }, [mini(myLook(S.look), 38, 52), h('span', { cls: 'cb', html: '<small>KARAKTERİN</small><b>' + L.name + '</b><em>' + (TOOLN[L.tool] || '') + ' · süper: ' + sp.s + '</em>' })]);
 }
 function pick(fn) { if (KF.S.picked) fn(); else charSelect(fn); }
-var SKN = { kizil: 'first', gece: 'perfect3', altin: 'tour' };
-function skinOK(k) { return !k || !!KF.S.ach[SKN[k]]; }
+var SKN = { kizil: 'first', gece: 'perfect3', neon: 'combo5', mor: 'hard', altin: 'tour' };
+function skinOK(k) { return !k || !SKN[k] || !!KF.S.ach[SKN[k]]; }
 function stBars(st) { var f = [['spd', 'Hız'], ['pow', 'Güç'], ['rng', 'Menzil'], ['hp', 'Can']]; return f.map(function (x) { var v = st[x[0]], n = Math.max(1, Math.min(5, Math.round(3 + (v - 1) * 12))); return x[1] + ' ' + '●'.repeat(n) + '○'.repeat(5 - n); }).join(' · '); }
 function charSelect(done) {
   var S = KF.S, sel = S.look, sk = skinOK(S.skin) ? (S.skin || '') : '', big = mini(myLook(sel), 96, 130, true), nm = h('b', { cls: 'cn' }), tl = h('span', { cls: 'ct' }), sp = h('span', { cls: 'ct' }), cards = [], skc = [];
@@ -90,9 +90,9 @@ function startTour(lv, hp, sp) {
 /* ---------- başarımlar ---------- */
 var ACH = [
   ['first', '🥇', 'İlk galibiyet', 'Bir maç kazan. (Kızıl kostüm)'], ['flawless', '🛡️', 'Kusursuz', 'Hiç hasar almadan kazan.'], ['comeback', '❤️', 'Son nefes', '10 can ya da altında kazan.'],
-  ['combo5', '🔥', 'Kombo ustası', 'Tek zincirde 5 isabet yap.'], ['perfect3', '💠', 'Savunma ustası', 'Bir maçta 3 kusursuz savunma yap. (Gece kostümü)'], ['dodge5', '💨', 'Kaçış ustası', 'Bir maçta 5 kez sıyrıl.'],
+  ['combo5', '🔥', 'Kombo ustası', 'Tek zincirde 5 isabet yap. (Neon kostüm)'], ['perfect3', '💠', 'Savunma ustası', 'Bir maçta 3 kusursuz savunma yap. (Gece kostümü)'], ['dodge5', '💨', 'Kaçış ustası', 'Bir maçta 5 kez sıyrıl.'],
   ['sig', '✍️', 'İmza atıldı', 'Karakterinin imza kombosunu tamamla.'], ['super', '⚡', 'Süper vuruş', 'Süperinle rakibi vur.'], ['kd3', '💥', 'Yıkıcı', 'Bir maçta rakibi 3 kez yere ser.'],
-  ['tour', '🏆', 'Şampiyon', 'Turnuvayı bitir. (Altın kostüm)'], ['hard', '🎖️', 'Usta', 'Zor modda bir maç kazan.'], ['daily', '📅', 'Günün şampiyonu', 'Günlük meydan okumayı tamamla.'],
+  ['tour', '🏆', 'Şampiyon', 'Turnuvayı bitir. (Altın kostüm)'], ['hard', '🎖️', 'Usta', 'Zor modda bir maç kazan. (Kraliyet kostümü)'], ['daily', '📅', 'Günün şampiyonu', 'Günlük meydan okumayı tamamla.'],
   ['team', '👥', 'Takım ruhu', 'Takım maçını kazan.'], ['six', '🎭', 'Çok yönlü', '6 farklı karakterle kazan.']
 ];
 function unlock(id) {

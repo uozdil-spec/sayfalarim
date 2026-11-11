@@ -24,12 +24,16 @@ G.LOOKS = {
   asci: { tool: 'pan', name: 'Aşçı', skin: '#d8a47f', skin2: '#b0795a', hair: '#222', shirt: '#f4f4f0', pants: '#3b4350', glove: '#d86a1f', shoe: '#1c1c1f', hat: 'chef', hatc: '#fbfbf8', must: 1, buttons: '#9a9a9a', build: 1.2, sleeve: 1 }
 };
 /* kilidi açılan kostüm renkleri: yalnızca renkleri değiştirir */
-var SKINS = G.SKINS = { '': 'Normal', kizil: 'Kızıl', gece: 'Gece', altin: 'Altın' };
+var SKINS = G.SKINS = { '': 'Normal', resmi: 'Resmî', buz: 'Buz', kizil: 'Kızıl', gece: 'Gece', neon: 'Neon', mor: 'Kraliyet', altin: 'Altın' };
 G.skinned = function (L, sk) {
   if (!sk || !SKINS[sk]) return L; var c = {}, k; for (k in L) c[k] = L[k];
   if (sk === 'kizil') { c.shirt = '#a8231c'; c.pants = '#2a1210'; if (c.vest) c.vest = '#6e1511'; c.glove = '#ffcf5a'; if (c.hatc) c.hatc = '#7a1b16'; c.stripes = c.stripes ? '#ffcf5a' : c.stripes; }
   else if (sk === 'gece') { c.shirt = '#1b2044'; c.pants = '#0f1228'; if (c.vest) c.vest = '#12163a'; c.glove = '#5aa9e6'; if (c.hatc) c.hatc = '#12163a'; c.stripes = c.stripes ? '#5aa9e6' : c.stripes; }
   else if (sk === 'altin') { c.shirt = '#d9ab4c'; c.pants = '#4a3716'; if (c.vest) c.vest = '#b3822a'; c.glove = '#fff2c0'; if (c.hatc) c.hatc = '#f1d27a'; c.stripes = c.stripes ? '#fff2c0' : c.stripes; }
+  else if (sk === 'resmi') { c.shirt = '#2f3542'; c.pants = '#1d212b'; if (c.vest) c.vest = '#252a35'; c.glove = '#f1eee6'; if (c.hatc) c.hatc = '#1d212b'; c.stripes = c.stripes ? '#c9ced6' : c.stripes; if (!c.top && !c.apron) c.tie = c.tie || '#8a1c1c'; }
+  else if (sk === 'buz') { c.shirt = '#dfeefa'; c.pants = '#6f93b8'; if (c.vest) c.vest = '#bcd6ee'; c.glove = '#7fd4ff'; if (c.hatc) c.hatc = '#9cc4e4'; c.stripes = c.stripes ? '#ffffff' : c.stripes; }
+  else if (sk === 'neon') { c.shirt = '#14161c'; c.pants = '#0c0d11'; if (c.vest) c.vest = '#1b1e26'; c.glove = '#39ff88'; if (c.hatc) c.hatc = '#39ff88'; c.stripes = c.stripes ? '#39ff88' : c.stripes; if (c.top) c.top = '#39ff88'; }
+  else if (sk === 'mor') { c.shirt = '#5b2a86'; c.pants = '#2a1440'; if (c.vest) c.vest = '#472068'; c.glove = '#f1c75a'; if (c.hatc) c.hatc = '#f1c75a'; c.stripes = c.stripes ? '#f1c75a' : c.stripes; }
   return c;
 };
 G.LOOK_KEYS = ['muhendis', 'zabita', 'cayci', 'pazarci', 'mudure', 'kaptan', 'bahcivan', 'sofor', 'avukat', 'itfaiyeci', 'asci', 'haritaci', 'jaloncu', 'kavurmaci', 'sprinkci', 'imzaci', 'trol', 'mezarci', 'tasarimci'];

@@ -508,6 +508,7 @@ function count(e) {
 var HY = { j: 168, h: 160, u: 150, k: 200, l: 247, a: 166, dp: 146, tk: 198, s: 180, pf: 196 };
 function handleEv(e) {
   count(e);
+  if (e.k === 'kd' || e.k === 'spec' || e.k === 'perfect' || e.k === 'sig') { V.fl = V.fl || []; for (var fi = 0; fi < 4; fi++) V.fl.push({ x: rr(24, 376), y: rr(272, 290), t0: V.tm + fi * .05 }); }
   var me = G.me, atk = e.s >= 0 ? G.sl && G.sl[1 - e.s] : '', fxc = FXC[atk] || '#ffd23f', sup = (KF.SUPERS[G.sl && G.sl[e.k === 'swing' ? e.s : 1 - e.s]] || KF.SUPERS.imzaci), mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, zn = KF.ZONE[mv] || 'b', sf = KF.SURF[zn], hy = HY[mv] || 170, hs = G.hook;
   if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(((STATS[G.sl && G.sl[e.s]] || {}).sn || {})[e.m] || SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); else if (e.m === 's' && hs.callout) hs.callout(sup.n, mine ? '#ffd23f' : '#ff9a5e'); }
   else if (e.k === 'fire') KF.sfx('spec');
@@ -528,7 +529,7 @@ function handleEv(e) {
   else if (e.k === 'cut') pop(f.x, 100, mine ? 'KESİLDİ' : 'KESTİN!', mine ? '#ff9a5e' : '#9aff9a');
   else if (e.k === 'break') { pop(f.x, 118, 'SAVUNMA KIRILDI', '#ff9a5e'); KF.sfx('block'); }
   else if (e.k === 'dash') { dust(f.x, -e.v * (e.s === 0 ? 1 : -1), 6, 3); KF.sfx('slip'); }
-  else if (e.k === 'land') dust(f.x, 0, 7, 3.4);
+  else if (e.k === 'land') { dust(f.x, 0, 7, 3.4); if (f.v) f.v.crouch += 170; }
   else if (e.k === 'wall') { spark(f.x, 150, '#fff', 8); G.shake = 5; pop(f.x, 112, 'KÖŞE!', '#ffd23f'); KF.sfx('block'); }
   else if (e.k === 'kd') { dust(f.x, side, 12, 4.4); G.parts.push({ k: 'ring', x: f.x, y: 258, c: '#d6ccb6', life: .35, max: .35 }); G.shake = 6; G.freeze = Math.max(G.freeze, .09); KF.sfx('heavy'); pop(f.x, 104, 'YERE SERİLDİ', '#ff9a5e'); KF.buzz(70); }
   else if (e.k === 'sig') { spark(fx(e.s).x, 150, '#ffd23f', 18); G.shake = 5; KF.sfx('perfect'); pop(fx(e.s).x, 96, 'İMZA KOMBO! +' + e.v, '#ffd23f'); if (hs.callout) hs.callout('İMZA KOMBO!', '#ffd23f'); }
@@ -576,7 +577,8 @@ function frame(ts) {
     var kk = Math.min(1, dt * 24), oa = V.a.x, ob = V.b.x;
     V.a.x += (M.x[0] - V.a.x) * kk; V.b.x += (M.x[1] - V.b.x) * kk;
     if (dt > 0) { V.a.mvx = (V.a.mvx || 0) * .6 + ((V.a.x - oa) / dt) * .4; V.b.mvx = (V.b.mvx || 0) * .6 + (-(V.b.x - ob) / dt) * .4; }
-    V.a.jy = M.y[0]; V.b.jy = M.y[1]; if (M.cr) { V.a.cr = M.cr[0]; V.b.cr = M.cr[1]; } V.pj = M.pj || [];
+    V.a.jy = M.y[0]; V.b.jy = M.y[1]; if (M.cr) { V.a.cr = M.cr[0]; V.b.cr = M.cr[1]; }
+    var wn = (M.ph === 'end' || M.ph === 'after' || M.ph === 'over') ? M.rw : -2; V.a.win = wn === 0; V.b.win = wn === 1; V.pj = M.pj || [];
     var mi = G.me, rs = (KF.STATS[G.sl && G.sl[mi]] || { rng: 1 }).rng;
     V.rng = (KF.S.rng && M.ph === 'fight' && G.mode !== 'menu') ? { x0: (mi ? V.b : V.a).x, dir: mi ? -1 : 1, rj: REACH.j * rs, rk: REACH.k * rs, dist: Math.abs(V.a.x - V.b.x) } : null;
   }
