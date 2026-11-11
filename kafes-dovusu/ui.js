@@ -87,7 +87,7 @@ function supName(seat) { return ((KF.SUPERS || {})[G.sl && G.sl[seat]] || { n: '
 function setLbl(t) { if (cache.sup !== t) { cache.sup = t; $('bSpecial').querySelector('.lb').textContent = t; } }
 function advice(M) {
   var me = G.me, op = 1 - me, ms = M.st[me], os = M.st[op];
-  if (U.lesson) return U.lesson;
+  if (U.lesson) { if (U.lesson.near && G.M && G.M.x && Math.abs(G.M.x[0] - G.M.x[1]) > KF.REACH.u) return { t: 'Önce yaklaş: çubuğu ileri it', c: 'info', b: 'joy' }; return U.lesson; }
   if (M.ph === 'count') return { t: 'Hazır ol', c: 'info' };
   if (M.ph !== 'fight') return { t: '', c: '' };
   if (GFX.isWind(os)) {
@@ -105,6 +105,7 @@ function advice(M) {
   if (os === 'hit' || os === 'rec') return { t: 'Şimdi vur!', c: 'good', b: 'bJ' };
   if (os === 'block') return { t: 'Rakip korumada: ↓ + YUMRUK savunmayı deler', c: 'info', b: 'bJ' };
   if (ms === 'block') return { t: 'Savunmadasın. Vurmak için bir vuruşa bas', c: 'info' };
+  if (M.x && Math.abs(M.x[0] - M.x[1]) > KF.REACH.k + 4) return { t: 'Uzaktasın: çubuğu ileri it, yaklaş', c: 'info', b: 'joy' };
   return { t: 'YUMRUK ile başla, rakibi kolla', c: '', b: 'bJ' };
 }
 function hud(M) {
@@ -174,7 +175,7 @@ function joyApply(dx, dy) {
   if (f !== js.f) { js.f = f; if (f) { moveOn('mf'); buzz(6); } else G.input('mfu'); }
   if (b !== js.b) { js.b = b; if (b) { moveOn('mb'); buzz(6); } else G.input('mbu'); }
   if (u && !js.u) { moveOn('jp'); buzz(10); } js.u = u;
-  if (d !== js.d) { js.d = d; dnHeld = !!d; if (d) { moveOn('dn'); buzz(6); } }
+  if (d !== js.d) { js.d = d; dnHeld = !!d; if (d) { moveOn('dn'); buzz(6); } else G.input('dnu'); }
   joy.classList.toggle('af', !!f); joy.classList.toggle('ab', !!b); joy.classList.toggle('au', !!u); joy.classList.toggle('ad', !!d);
 }
 /* çubuk: dairenin içine dokunursan merkez sabit; sol bölgede başka yere dokunursan çubuk parmağın altına gelir */
@@ -217,7 +218,7 @@ window.addEventListener('keydown', function (e) {
 });
 window.addEventListener('keyup', function (e) {
   var k = e.key.toLowerCase(); if (k === ' ' || k === 'shift') blockOff();
-  else if (k === 'arrowright' && kHeld[k]) { kHeld[k] = 0; G.input('mfu'); } else if (k === 'arrowleft' && kHeld[k]) { kHeld[k] = 0; G.input('mbu'); } else if (k === 'arrowdown') dnHeld = false;
+  else if (k === 'arrowright' && kHeld[k]) { kHeld[k] = 0; G.input('mfu'); } else if (k === 'arrowleft' && kHeld[k]) { kHeld[k] = 0; G.input('mbu'); } else if (k === 'arrowdown') { dnHeld = false; G.input('dnu'); }
 });
 document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
@@ -307,7 +308,8 @@ U.helpSheet = function (tab) {
      ['SÜPER', 'Mavi bar vuruş yedikçe ve savundukça dolar. Dolunca ÖZEL düğmesi parlar ve üstünde süperin adı yazar: basınca karakterinin süperi çıkar (Rehber > Hareketler). Savunma tanımaz. Karşısında tek çare SIYRIL.'],
      ['HAREKET', 'Sol tarafta nereye dokunursan yön çubuğu parmağının altına gelir. Sağa ileri, sola geri yürürsün. Yukarı zıplarsın, çapraz itersen zıplayarak ilerlersin. Hızlıca iki kez sağa itersen ATILIRSIN, iki kez sola itersen GERİ SIÇRARSIN (başlangıcında vuruş değmez).'],
      ['ZİNCİR VE YERE SERME', 'Bir vuruş isabet edince hemen daha ağır bir vuruşa geçersen zincir olur: YUMRUK, sonra ileri + YUMRUK, sonra aşağı + YUMRUK. 4. isabet, yükselen aparkat, dönen tekme ve süper rakibi YERE SERER: yerdeyken ve kalkarken dokunulmazdır. Her karakterin bir İMZA KOMBOSU var (Rehber > Hareketler).'],
-     ['MENZİL', 'Vuruşların menzili var: rakip uzaktaysa vuruş boşa gider (ISKA) ve açık kalırsın. Zıplayınca yerdeki vuruşlar altından geçer, aparkat yakalar.'],
+     ['MENZİL', 'Menzil gerçektir: vuruş ancak yumruğun ya da ayağın rakibe değdiği mesafede isabet eder. Maç başında rakip menzil dışındadır, önce yaklaş. Tekme ve süpürme yumruktan uzundur; kroşe ve aparkat için daha da sokulman gerekir. Uzaktan sallarsan ISKA olur ve açık kalırsın.'],
+     ['EĞİLME VE YÜKSEKLİK', 'Çubuğu aşağı tutunca eğilirsin: kafaya gelen düz ve kroşe üstünden geçer. Ama tekme, süpürme ve aparkat eğileni bulur. Zıplayınca süpürme ve tekme altından geçer, aparkat ve uçan tekme yakalar. Darbe nereye gelirse rakip öyle tepki verir: kafaya gelince geri savrulur, gövdeye gelince iki büklüm olur, bacağa gelince dizi çöker.'],
      ['İpucu', 'Bir vuruşun ardından toparlanırken rakip vurabilir. Ağır vuruşu rakip sersemken ya da korumada değilken at. Takılırsan ayarlardan Kolay modu ve Rehberi aç.']
     ].forEach(function (x) { d.appendChild(h('div', { cls: 'li' }, [h('div', { cls: 'tx' }, [h('b', { text: x[0] }), h('span', { text: x[1] })])])); });
     d.appendChild(U.T('p', 'note', 'Bilgisayarda: A düz, S kroşe, D aparkat, F tekme, X süpür, Z sıyrıl, Boşluk savun, Enter özel/süper. Oklar: sağ ileri, sol geri, yukarı zıpla, aşağı eğil (basılı tut).'));
@@ -318,7 +320,7 @@ function kb(t) { return '<i class="kb">' + t + '</i>'; }
 U.movesF = function (d) {
   var st = (KF.STATS || {})[KF.S.look] || {}, sup = (KF.SUPERS || {})[KF.S.look];
   var L = [
-    ['Yürü · Zıpla · Eğil', kb('→') + ' ileri ' + kb('←') + ' geri ' + kb('↑') + ' zıpla ' + kb('↓') + ' eğil', 'Sol tarafta istediğin yere dokun, çubuk parmağının altına gelir.'],
+    ['Yürü · Zıpla · Eğil', kb('→') + ' ileri ' + kb('←') + ' geri ' + kb('↑') + ' zıpla ' + kb('↓') + ' eğil', 'Eğilince düz ve kroşe üstünden geçer. Menzil gerçektir: vurmak için önce yaklaş.'],
     ['Atılma · Geri sıçrama', kb('→') + kb('→') + ' &nbsp; ' + kb('←') + kb('←'), 'Çubuğu hızlıca iki kez it. Geri sıçramanın başında vuruş değmez.'],
     ['Düz · Kroşe · Aparkat', kb('YUMRUK') + ' &nbsp; ' + kb('→') + '+' + kb('YUMRUK') + ' &nbsp; ' + kb('↓') + '+' + kb('YUMRUK'), 'Hızlıdan ağıra. Aparkat savunmayı deler.'],
     ['Tekme · Süpürme', kb('TEKME') + ' &nbsp; ' + kb('↓') + '+' + kb('TEKME'), 'Tekme uzun menzilli. Süpürme sıyrılanı yakalar.'],

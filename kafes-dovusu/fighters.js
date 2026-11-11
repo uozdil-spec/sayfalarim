@@ -10,42 +10,52 @@ G.isStrike = function (s) { return RX.test(s); };
 var BASE = { lean: 0, bob: 0, crouch: 0, step: 0, hd: 0, fx: 27, fy: -6, rx: 15, ry: 6, rot: 0, dx: 0, kx: 0, ky: 0 };
 var POSE = {
   wj: { lean: -3, crouch: 1, step: -2, hd: -1, fx: 14, fy: -2, rx: 18, ry: -4, dx: -3, k: 34 },
-  xj: { lean: 9, crouch: 2, step: 14, hd: 3, fx: 56, fy: -5, rx: 13, ry: -2, dx: 13, k: 70 },
+  xj: { lean: 9, crouch: 2, step: 14, hd: 3, fx: 56, fy: -5, rx: 13, ry: -2, dx: 14, k: 70 },
   wh: { lean: -9, crouch: 3, step: -5, hd: -2, fx: -10, fy: -12, rx: 20, ry: -6, dx: -5, k: 24 },
-  xh: { lean: 12, crouch: 3, step: 12, hd: 5, fx: 36, fy: -15, rx: 12, ry: -4, dx: 11, k: 55 },
+  xh: { lean: 13, crouch: 3, step: 13, hd: 5, fx: 38, fy: -14, rx: 12, ry: -4, dx: 12, k: 55 },
   wu: { lean: -5, crouch: 9, step: -3, hd: -2, fx: 16, fy: 28, rx: 17, ry: -6, dx: -3, k: 24 },
-  xu: { lean: 5, crouch: -2, step: 10, hd: 6, fx: 32, fy: -32, rx: 14, ry: -4, dx: 9, k: 60 },
+  xu: { lean: 8, crouch: -3, step: 16, hd: 6, fx: 32, fy: -34, rx: 14, ry: -4, dx: 18, k: 60 },
   wk: { lean: -8, crouch: 2, step: -4, hd: -2, fx: 20, fy: -10, rx: 12, ry: -2, dx: -3, kx: -8, ky: -30, k: 22 },
-  xk: { lean: -13, crouch: 0, step: 4, hd: -3, fx: 18, fy: -14, rx: 8, ry: -6, dx: 7, kx: 38, ky: -58, k: 55 },
+  xk: { lean: -14, crouch: 0, step: 10, hd: -3, fx: 18, fy: -14, rx: 8, ry: -6, dx: 21, kx: 40, ky: -60, k: 55 },
   wl: { lean: 3, crouch: 10, step: -3, hd: 1, fx: 22, fy: -12, rx: 20, ry: -4, dx: -4, kx: -14, ky: -12, k: 26 },
-  xl: { lean: -9, crouch: 14, step: 6, hd: -2, fx: 18, fy: -10, rx: 12, ry: -2, dx: 9, kx: 50, ky: -5, k: 62 },
+  xl: { lean: -9, crouch: 15, step: 8, hd: -2, fx: 18, fy: -10, rx: 12, ry: -2, dx: 16, kx: 52, ky: -4, k: 62 },
   dg: { lean: -13, crouch: 15, step: -8, hd: -10, fx: 20, fy: -18, rx: 24, ry: -10, dx: -15, k: 40 },
   sp: { lean: -7, crouch: 2, step: -5, hd: -2, fx: -2, fy: -30, rx: 24, ry: -10, k: 16 },
   spstrike: { lean: 9, crouch: 3, step: 18, hd: 3, fx: 52, fy: -2, rx: 12, ry: -8, dx: 10, k: 46 },
   block: { lean: 3, crouch: 4, step: 2, hd: -1, fx: 19, fy: -15, rx: 25, ry: -9, k: 22 },
   rec: { lean: 1, fx: 22, fy: 2, rx: 12, ry: 10, dx: 2, k: 14 },
   hit: { lean: -11, step: -8, hd: -9, fx: 6, fy: 16, rx: 0, ry: 18, dx: -9, k: 34 },
+  /* darbenin geldiği yere göre tepki: gövdeye gelince iki büklüm, bacağa gelince diz çöker; eğilme duruşu */
+  hitB: { lean: 15, crouch: 9, step: -6, hd: 7, fx: 10, fy: 26, rx: 4, ry: 28, dx: -9, k: 34 },
+  hitL: { lean: 7, crouch: 13, step: -13, hd: 3, fx: 22, fy: 4, rx: 10, ry: 14, dx: -7, kx: -4, ky: -12, k: 34 },
+  cr: { lean: 5, crouch: 22, step: 2, hd: 1, fx: 22, fy: -14, rx: 20, ry: -9, k: 30 },
   stun: { lean: -4, crouch: 3, step: -2, hd: -3, fx: 8, fy: 18, rx: 2, ry: 20, dx: -3, k: 10 },
   ko: { lean: -6, step: -3, hd: -3, fx: 6, fy: 16, rx: 0, ry: 18, rot: 1.48, k: 6 },
   kd: { lean: -6, step: -3, hd: -3, fx: 6, fy: 16, rx: 0, ry: 18, rot: 1.48, k: 12 },
   gu: { lean: -4, crouch: 14, step: -4, hd: -2, fx: 18, fy: 4, rx: 12, ry: 12, dx: -2, k: 16 },
   jp: { lean: 3, crouch: 5, step: 6, hd: 0, fx: 24, fy: -16, rx: 14, ry: -10, kx: 8, ky: -26, k: 15 }
 };
+var TLEN = { level: 36, notebook: 27, tray: 19, weight: 34, 'case': 30, anchor: 36, shears: 38, wrench: 40, book: 29, axe: 40, pan: 37, nozzle: 32, stamp: 24, phone: 28, compass: 36, rod: 52, shovel: 54, stylus: 32, cleaver: 36 };
 var SOFT = { fx: 1, fy: 1, rx: 1, ry: 1, kx: 1, ky: 1 };
 G.mkF = function (x, look) { var p = {}, v = {}, k; for (k in BASE) { p[k] = BASE[k]; v[k] = 0; } return { x: x, look: look, st: 'idle', pst: 'idle', ph: Math.random() * 6, flash: 0, hurt: 0, tr: [], p: p, v: v }; };
 /* Yay-sönüm modeli: durum değişince hız darbesi verilir, uzuvlar hedefe hafif aşıp geri oturur. Boştayken ayak ritmi, nefes ve el çemberi var. */
 G.pose = function (f, dt, tm) {
-  var st = f.st, sk = (f.jy > 3 && st === 'idle') ? 'jp' : st, B = f.look.build || 1, fr = 5.6 - (B - 1) * 2.4, s = Math.sin(tm * fr + f.ph), s2 = Math.sin(tm * fr * .5 + f.ph), c1 = Math.cos(tm * fr * .5 + f.ph * 1.3), t = {}, key, P = f.p, V = f.v, k = 14, o = POSE[sk];
+  var st = f.st, sk = (f.jy > 3 && st === 'idle') ? 'jp' : (st === 'idle' && f.cr ? 'cr' : (st === 'hit' && f.hz === 'b' ? 'hitB' : (st === 'hit' && f.hz === 'l' ? 'hitL' : st))), B = f.look.build || 1, fr = 5.6 - (B - 1) * 2.4, s = Math.sin(tm * fr + f.ph), s2 = Math.sin(tm * fr * .5 + f.ph), c1 = Math.cos(tm * fr * .5 + f.ph * 1.3), t = {}, key, P = f.p, V = f.v, k = 14, o = POSE[sk];
   for (key in BASE) t[key] = BASE[key];
   if (o) { for (key in o) if (key !== 'k') t[key] = o[key]; k = o.k || 14; }
   else { t.bob = s * 1.7; t.crouch = 2 + s * 1.5; t.step = s2 * 3.2; t.dx = s2 * 4; t.lean = 1 + c1 * 1.6; t.hd = c1 * 1.3; t.fx = 27 + c1 * 2.6; t.fy = -6 + s * 2.4; t.rx = 15 + s * 1.6; t.ry = 6 - s * 1.6; k = 11;
     var wk = Math.min(1, Math.abs(f.mvx || 0) / 50), wp = tm * 11 + f.ph, dr = (f.mvx || 0) > 0 ? 1 : -1;
     if (wk > .05) { t.step += Math.sin(wp) * 9 * wk; t.ky -= Math.max(0, Math.cos(wp)) * 10 * wk; t.kx += Math.sin(wp) * 5 * wk; t.bob += Math.abs(Math.sin(wp)) * -2.4 * wk; t.lean += dr * 3 * wk; t.rx += Math.sin(wp) * -4 * wk; t.fx += Math.sin(wp) * 3 * wk; k = 13; } }
   if (st === 'block') { t.bob = s * .8; t.crouch += s * .8; }
+  if (sk === 'cr') { t.bob = s * .6; t.fy += s * 1.2; }
+  /* alet tutan dövüşçü kolunu o kadar uzatmaz: temas eden aletin ucudur, yumruk değil */
+  if ((st === 'xj' || st === 'xh' || st === 'xu') && f.look.tool && !G.GLOVES) { var tlc = Math.min(24, Math.max(0, (TLEN[f.look.tool] || 30) - 13) * .8); t.fx -= tlc * (st === 'xu' ? .35 : 1); if (st === 'xu') t.fy += tlc * .6; }
   if (st === 'stun') { t.lean += s2 * 5; t.hd += s2 * 4; }
   if (st === 'ko' || st === 'kd') { t.bob = 0; }
   if (st !== f.pst) {
-    if (st === 'hit') { V.dx -= 150; V.lean -= 110; V.hd -= 90; V.bob += 30; }
+    if (st === 'hit' && f.hz === 'b') { V.dx -= 120; V.lean += 150; V.hd += 60; V.crouch += 70; }
+    else if (st === 'hit' && f.hz === 'l') { V.dx -= 90; V.step -= 140; V.crouch += 90; V.ky -= 60; }
+    else if (st === 'hit') { V.dx -= 150; V.lean -= 110; V.hd -= 90; V.bob += 30; }
     else if (st === 'stun') { V.dx -= 70; V.lean -= 60; V.hd -= 50; }
     else if (RX.test(st)) { V.dx += 130; V.lean += 70; V.step += 60; }
     else if (st === 'dg') { V.dx -= 190; V.crouch += 80; V.lean -= 60; }

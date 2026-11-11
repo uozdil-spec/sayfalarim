@@ -90,7 +90,13 @@ var SUPERS = KF.SUPERS = {
   tasarimci: { n: 'RENDER PATLAMASI', s: 'RENDER', kind: 'stun', dmg: 18, reach: 215, stun: 1.25, d: 'Hologramı uzaktan patlatır: hem uzun menzilli hem de rakibi uzun sersemletir.' }
 };
 var KB = { j: 6, h: 10, u: 16, k: 18, l: 8, a: 10, dp: 30, tk: 20, s: 34, pf: 8 }, RANK = { j: 1, h: 2, l: 2, u: 3, k: 3 };
-var REACH = { j: 112, h: 108, u: 104, k: 128, l: 128, a: 112, dp: 106, tk: 150, s: 170 };
+/* ANATOMİ: menzil artık çizimdeki uzuv ölçüsünden gelir.
+   TIP: vuruş anında yumruğun/ayağın ucu, dövüşçünün merkezinden ne kadar öne uzanır (fighters.js pozlarıyla ölçüldü).
+   ZONE: vuruşun geldiği yükseklik (h kafa, b gövde, l bacak). SURF: rakibin o yükseklikte öne bakan yüzeyi merkezinden ne kadar önde.
+   İsabet = uç, rakibin yüzeyine değiyorsa. HIGH: kafa hizasından gelen, eğilenin üstünden geçen vuruşlar. */
+var TIP = { j: 84, h: 79, u: 71, k: 90, l: 80, a: 86, dp: 74, tk: 92 }, ZONE = KF.ZONE = { j: 'h', h: 'h', u: 'h', k: 'b', l: 'l', a: 'h', dp: 'h', tk: 'b', s: 'b', pf: 'b' }, SURF = KF.SURF = { h: 15, b: 11, l: 24 }, HIGH = { j: 1, h: 1 };
+var REACH = KF.REACH = { s: 170 };
+Object.keys(TIP).forEach(function (k) { REACH[k] = TIP[k] + SURF[ZONE[k]]; });
 var WALL = [64, 336], MINGAP = 66;
 function MA(k) { return MV[k] || SM[k]; }
 var DIF = KF.DIF = {
@@ -102,7 +108,7 @@ var DIF = KF.DIF = {
 KF.VENUES = ['OTOPARK', 'KÖPRÜ ALTI', 'ORMAN', 'ÇAY BAHÇESİ', 'PAZAR YERİ', 'İSKELE', 'ÇATI', 'ŞANTİYE', 'METRO PERONU', 'HAYVANAT BAHÇESİ', 'TASARIM STÜDYOSU'];
 
 /* ---------- dövüş kuralları ---------- */
-function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null, x: 0, y: 0, vy: 0, air: false, aa: false, jv: 0, md: 0, dh: [], inv: false, vx: 0, dsh: 0, bi: 0, lastF: -9, lastB: -9, relF: true, relB: true, chainT: 0, lr: 0, seq: '' }; }
+function FS(hp) { return { hp: hp, max: hp, sp: 0, st: 'idle', t: 0, stam: 100, block: false, hold: false, blockT: 0, cd: 0, combo: 0, comboT: 0, mv: '', rt: .3, buf: null, x: 0, y: 0, vy: 0, air: false, aa: false, jv: 0, md: 0, dh: [], inv: false, vx: 0, dsh: 0, bi: 0, lastF: -9, lastB: -9, relF: true, relB: true, chainT: 0, lr: 0, seq: '', cr: 0 }; }
 function isInv(f) { return f.inv || f.bi > 0 || f.st === 'kd' || f.st === 'gu'; }
 function Sim(o) {
   this.o = o; this.dif = DIF[o.dif || (o.cpu ? 'normal' : 'pvp')]; this.as = o.cpu ? Math.max(0, Math.min(3, o.assist || 0)) : 0;
@@ -151,7 +157,8 @@ Sim.prototype.input = function (i, k) {
   }
   if (k === 'mfu') { f.relF = true; if (f.md > 0) f.md = 0; return; }
   if (k === 'mbu') { f.relB = true; if (f.md < 0) f.md = 0; return; }
-  if (k === 'dn') { f.dh.push({ d: 'd', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return; }
+  if (k === 'dn') { f.cr = 1; f.dh.push({ d: 'd', t: now0 }); if (f.dh.length > 8) f.dh.shift(); return; }
+  if (k === 'dnu') { f.cr = 0; return; }
   if (k === 'jp') {
     if (f.air || f.st !== 'idle' || f.cd > 0 || f.stam < 14) return;
     f.stam -= 12; f.air = true; f.aa = false; f.vy = 380; f.vx = 0; f.dsh = 0; f.jv = f.md * sgn * 92 * (this.st(i) ? this.st(i).spd : 1); this.emit('jump', i, 0, ''); return;
@@ -198,11 +205,12 @@ Sim.prototype.mercy = function () { var op = this.f[0], me = this.f[1]; return t
 Sim.prototype.runCpu = function (dt) {
   var c = this.cpu, L = this.o.cpu, d = this.dif, me = this.f[1], op = this.f[0];
   c.t -= dt; c.hold -= dt;
+  if (c.crT > 0) { c.crT -= dt; if (c.crT <= 0) this.input(1, 'dnu'); }
   var opAtk = RW.test(op.st);
   if (opAtk) { if (!c.reacting) { c.reacting = true; c.bt = Math.random() < Math.min(.95, L.react * d.react * (1 - .18 * this.as)) ? rr(d.rt[0], d.rt[1]) * (1 + .12 * this.as) : 999; } } else c.reacting = false;
   if (c.reacting && c.bt < 999) {
     c.bt -= dt;
-    if (c.bt <= 0) { c.bt = 999; if (op.mv !== 'l' && me.stam >= 30 && Math.random() < (L.dodge || 0) * d.dg * (1 - .25 * this.as)) { this.input(1, 'dg'); c.hold = 0; } else { this.input(1, 'bd'); c.hold = .5; } }
+    if (c.bt <= 0) { c.bt = 999; if (HIGH[op.mv] && !me.air && Math.random() < .2 * d.dg * (1 - .25 * this.as)) { this.input(1, 'dn'); c.crT = .42; } else if (op.mv !== 'l' && me.stam >= 30 && Math.random() < (L.dodge || 0) * d.dg * (1 - .25 * this.as)) { this.input(1, 'dg'); c.hold = 0; } else { this.input(1, 'bd'); c.hold = .5; } }
   }
   if ((me.block || me.hold) && !opAtk && c.hold <= 0) this.input(1, 'bu');
   if (opAtk && c.walk) { this.input(1, 'mfu'); c.walk = false; }
@@ -217,21 +225,22 @@ Sim.prototype.runCpu = function (dt) {
     if (op.st === 'kd' || op.st === 'gu') { c.t = .12; return; }
     if (!c.pm && dist > 215 && me.stam > 45 && Math.random() < .03) { this.dash(1, 1); c.t = .4; return; }
     if (!c.pm) {
-      if (op.air && dist < 122 && me.stam >= 32 && Math.random() < .5 * as) { this.input(1, 'xu'); c.t = rr(.5, .9); return; }
+      if (op.air && dist < REACH.dp + 14 && me.stam >= 32 && Math.random() < .5 * as) { this.input(1, 'xu'); c.t = rr(.5, .9); return; }
       if (dist > 165 && me.stam >= 25 && Math.random() < (.12 + (L.dodge || 0) * .7) * as) { this.input(1, 'xj'); c.t = rr(1, 1.7); return; }
-      if (dist > 114 && dist < 150 && me.stam >= 30 && (L.mix.k || 0) >= .1 && Math.random() < .3 * as) { this.input(1, 'xk'); c.t = rr(.8, 1.4); return; }
+      if (dist > REACH.k + 3 && dist < REACH.tk + 42 && me.stam >= 30 && (L.mix.k || 0) >= .1 && Math.random() < .3 * as) { this.input(1, 'xk'); c.t = rr(.8, 1.4); return; }
       c.pm = me.sp >= 100 && Math.random() < .7 ? 's' : null;
     }
     var vuln = op.st === 'rec' || op.st === 'hit' || op.st === 'stun' || RX.test(op.st);
     if (!c.pm) c.pm = pick(L.mix, vuln, op.block, op.st === 'dg' || c.dodged > 0);
-    if (dist > (c.pm === 's' ? this.sup(1).reach || 170 : { j: 112, h: 108, u: 104, k: 128, l: 128 }[c.pm]) - 5) { if (!c.walk) { this.input(1, 'mf'); c.walk = true; } c.t = .05; return; }
+    if (op.cr && HIGH[c.pm]) c.pm = Math.random() < .5 ? 'k' : (Math.random() < .5 ? 'l' : 'u');
+    if (dist > (c.pm === 's' ? this.sup(1).reach || 170 : REACH[c.pm]) - 4) { if (!c.walk) { this.input(1, 'mf'); c.walk = true; } c.t = .05; return; }
     if (c.walk) { this.input(1, 'mfu'); c.walk = false; }
     this.input(1, c.pm); c.pm = null;
     c.dodged = Math.max(0, (c.dodged || 0) - 1); c.t = (Math.random() < L.dbl * (1 - .3 * this.as) ? .15 : rr(L.gap[0], L.gap[1])) * d.gap * (1 + .16 * this.as) * (1 + .45 * this.mercy());
   }
 };
 Sim.prototype.resolve = function (land) {
-  var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block || self.autoB(f), bt: f.block ? f.blockT : 99, dg: f.st === 'dg', air: f.y > 22, inv: isInv(f), kd: f.st === 'kd' || f.st === 'gu' }; }), out = [], dist = Math.abs(F[1].x - F[0].x);
+  var F = this.f, self = this, snap = F.map(function (f) { return { block: f.block || self.autoB(f), bt: f.block ? f.blockT : 99, dg: f.st === 'dg', air: f.y > 22, inv: isInv(f), kd: f.st === 'kd' || f.st === 'gu', cr: !!f.cr && f.st === 'idle' && f.y <= 0 }; }), out = [], dist = Math.abs(F[1].x - F[0].x);
   land = land.filter(function (a) {
     var A = F[a];
     if (A.mv === 'pf') { self.pj.push({ id: ++self.pid, o: a, x: A.x + (a ? -30 : 30), v: (a ? -1 : 1) * 215 }); A.st = 'spstrike'; A.t = .16; A.cd = .08; self.emit('fire', a, 0, 'pf'); return false; }
@@ -245,14 +254,15 @@ Sim.prototype.resolve = function (land) {
     var mk = sp ? 's' : A.mv; if (S.dg && mk === 'l') dmg = Math.round(dmg * 1.4);
     var rg = ((sp && su.reach) || REACH[mk] || 120) * (sa ? sa.rng : 1);
     var far = dist > rg, airMiss = S.air && !(mk === 'u' || mk === 'dp' || mk === 'a' || mk === 's');
-    out.push({ a: a, d: d, dmg: dmg, mv: mk, air: S.air, res: far || S.kd ? 'whiff' : (S.inv && mk !== 's' ? 'dodge' : ((S.dg && mk !== 'l') || airMiss ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')))) });
+    var duck = S.cr && HIGH[mk] && !far;
+    out.push({ a: a, d: d, dmg: dmg, mv: mk, air: S.air, duck: duck, res: far || S.kd || duck ? 'whiff' : (S.inv && mk !== 's' ? 'dodge' : ((S.dg && mk !== 'l') || airMiss ? 'dodge' : (sp ? 'spec' : (S.block ? (S.bt <= self.dif.perf ? 'perfect' : 'block') : 'hit')))) });
   });
   out.forEach(function (o) {
     var A = F[o.a], D = F[o.d], m = MA(o.mv) || { sd: 0, hs: .9 }, wasWind = RW.test(D.st), simult = out.some(function (q) { return q.a === o.d && q.res !== 'whiff'; });
     A.st = o.mv === 's' ? 'spstrike' : 'x' + (SM[o.mv] ? SM[o.mv].st : o.mv); A.t = .14; A.cd = .08;
     var dir = o.d === 1 ? 1 : -1;
     if (o.res !== 'hit' && o.res !== 'spec') { A.chainT = 0; A.seq = ''; }
-    if (o.res === 'whiff') { A.rt = (m.rec || .4) + .16; A.combo = 0; self.emit('whiff', o.a, 0, o.mv); }
+    if (o.res === 'whiff') { A.rt = (m.rec || .4) + .16; A.combo = 0; self.emit('whiff', o.a, o.duck ? 1 : 0, o.mv); }
     else if (o.res === 'dodge') { if (self.cpu && o.a === 1) self.cpu.dodged = 3; A.rt = (m.rec || .5) + .32; A.combo = 0; D.sp = Math.min(100, D.sp + 12); D.stam = Math.min(100, D.stam + 8); self.emit('dodge', o.d, o.air ? 1 : 0, o.mv); }
     else if (o.res === 'perfect') { A.st = 'stun'; A.t = 1.0; A.combo = 0; D.sp = Math.min(100, D.sp + 18); self.emit('perfect', o.d, 0, o.mv); }
     else if (o.res === 'block') {
@@ -325,7 +335,7 @@ Sim.prototype.step = function (dt) {
       if (f.y <= 0) { var hard = f.vy < -330; f.y = 0; f.vy = 0; f.air = false; f.aa = false; f.jv = 0; f.vx = 0; f.cd = Math.max(f.cd, .09); if (hard) this.emit('land', i, 0, ''); }
     } else {
       if (f.dsh > 0) { f.dsh -= dt; if (f.dsh <= 0) f.vx *= .25; }
-      else { var kk, tv = (can && f.md) ? sg * f.md * (f.md > 0 ? 90 : 74) * sps : 0, kk = (tv && Math.abs(f.vx) < 40) ? (f.vx = tv * .55) : 0, dv = tv - f.vx, stp = (tv ? 2100 : 1700) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
+      else { var kk, tv = (can && f.md && !f.cr) ? sg * f.md * (f.md > 0 ? 90 : 74) * sps : 0, kk = (tv && Math.abs(f.vx) < 40) ? (f.vx = tv * .55) : 0, dv = tv - f.vx, stp = (tv ? 2100 : 1700) * dt; f.vx += Math.abs(dv) <= stp ? dv : (dv > 0 ? stp : -stp); }
       f.x += f.vx * dt;
     }
     if (f.x < WALL[0] || f.x > WALL[1]) {
@@ -361,7 +371,7 @@ Sim.prototype.stepPj = function (dt) {
 Sim.prototype.snap = function () {
   var now = Date.now(), F = this.f;
   return { t: 's', ph: this.ph, tm: Math.max(0, Math.ceil(this.time)), sc: this.sc, rn: this.round, bg: this.bg, mw: this.mw, rw: this.rw,
-    f: F.map(function (f) { return [Math.max(0, Math.round(f.hp)), Math.round(f.sp), f.st, Math.round(f.stam), f.combo, f.block ? 1 : 0, Math.round(f.max), Math.round(f.x), Math.round(f.y)]; }),
+    f: F.map(function (f) { return [Math.max(0, Math.round(f.hp)), Math.round(f.sp), f.st, Math.round(f.stam), f.combo, f.block ? 1 : 0, Math.round(f.max), Math.round(f.x), Math.round(f.y), f.cr && f.st === 'idle' ? 1 : 0]; }),
     pj: this.pj.map(function (p) { return [p.id, Math.round(p.x), p.o]; }),
     ev: this.ev.filter(function (e) { return now - e.ts < 1500; }).map(function (e) { return [e.id, e.k, e.s, e.v, e.m]; }) };
 };
@@ -467,12 +477,12 @@ function applySnap(m) {
     if (G.hook.guestStart) G.hook.guestStart();
   }
   G.rt = m.rt || 0;
-  G.M = { ph: m.ph, tm: m.tm, sc: m.sc, rn: m.rn, bg: m.bg, mw: m.mw, rw: m.rw, hp: [m.f[0][0], m.f[1][0]], sp: [m.f[0][1], m.f[1][1]], st: [m.f[0][2], m.f[1][2]], stam: [m.f[0][3], m.f[1][3]], combo: [m.f[0][4], m.f[1][4]], max: [m.f[0][6], m.f[1][6]], x: [m.f[0][7], m.f[1][7]], y: [m.f[0][8], m.f[1][8]], pj: m.pj || [] };
+  G.M = { cr: [m.f[0][9] || 0, m.f[1][9] || 0], ph: m.ph, tm: m.tm, sc: m.sc, rn: m.rn, bg: m.bg, mw: m.mw, rw: m.rw, hp: [m.f[0][0], m.f[1][0]], sp: [m.f[0][1], m.f[1][1]], st: [m.f[0][2], m.f[1][2]], stam: [m.f[0][3], m.f[1][3]], combo: [m.f[0][4], m.f[1][4]], max: [m.f[0][6], m.f[1][6]], x: [m.f[0][7], m.f[1][7]], y: [m.f[0][8], m.f[1][8]], pj: m.pj || [] };
   m.ev.forEach(function (a) { if (a[0] > G.seen) { G.seen = a[0]; handleEv({ k: a[1], s: a[2], v: a[3], m: a[4] || '' }); } });
   g.lastHost = Date.now();
 }
 function modelFromSim(s) {
-  var F = s.f; return { ph: s.ph, tm: Math.max(0, Math.ceil(s.time)), sc: s.sc, rn: s.round, bg: s.bg, mw: s.mw, rw: s.rw, hp: [F[0].hp, F[1].hp], sp: [F[0].sp, F[1].sp], st: [F[0].st, F[1].st], stam: [F[0].stam, F[1].stam], combo: [F[0].combo, F[1].combo], max: [F[0].max, F[1].max], x: [F[0].x, F[1].x], y: [F[0].y, F[1].y], pj: s.pj.map(function (p) { return [p.id, p.x, p.o]; }) };
+  var F = s.f; return { cr: [F[0].cr && F[0].st === 'idle' ? 1 : 0, F[1].cr && F[1].st === 'idle' ? 1 : 0], ph: s.ph, tm: Math.max(0, Math.ceil(s.time)), sc: s.sc, rn: s.round, bg: s.bg, mw: s.mw, rw: s.rw, hp: [F[0].hp, F[1].hp], sp: [F[0].sp, F[1].sp], st: [F[0].st, F[1].st], stam: [F[0].stam, F[1].stam], combo: [F[0].combo, F[1].combo], max: [F[0].max, F[1].max], x: [F[0].x, F[1].x], y: [F[0].y, F[1].y], pj: s.pj.map(function (p) { return [p.id, p.x, p.o]; }) };
 }
 
 /* ---------- olaylar -> görsel ve ses ---------- */
@@ -494,21 +504,24 @@ function count(e) {
   else if (e.k === 'sig') { if (e.s === me) st.sig++; }
   else if (e.k === 'dash') { if (e.s === me) st.dsh++; }
 }
+/* temas yüksekliği (tuval y): yumruk kafa hizası, tekme gövde, süpürme bilek */
+var HY = { j: 168, h: 160, u: 150, k: 200, l: 247, a: 166, dp: 146, tk: 198, s: 180, pf: 196 };
 function handleEv(e) {
   count(e);
-  var me = G.me, atk = e.s >= 0 ? G.sl && G.sl[1 - e.s] : '', fxc = FXC[atk] || '#ffd23f', sup = (KF.SUPERS[G.sl && G.sl[e.k === 'swing' ? e.s : 1 - e.s]] || KF.SUPERS.imzaci), mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, hy = mv === 'k' ? 190 : (mv === 'l' ? 218 : 152), hs = G.hook;
+  var me = G.me, atk = e.s >= 0 ? G.sl && G.sl[1 - e.s] : '', fxc = FXC[atk] || '#ffd23f', sup = (KF.SUPERS[G.sl && G.sl[e.k === 'swing' ? e.s : 1 - e.s]] || KF.SUPERS.imzaci), mine = e.s === me, f = e.s >= 0 ? fx(e.s) : null, mv = e.m, side = e.s === 0 ? 1 : -1, zn = KF.ZONE[mv] || 'b', sf = KF.SURF[zn], hy = HY[mv] || 170, hs = G.hook;
   if (e.k === 'swing') { KF.sfx(e.m === 'k' || e.m === 'l' || e.m === 'tk' || e.m === 'a' ? 'kick' : 'swing'); if (SM[e.m] && SM[e.m].c && hs.callout) hs.callout(((STATS[G.sl && G.sl[e.s]] || {}).sn || {})[e.m] || SM[e.m].n, mine ? '#ffd23f' : '#ff9a5e'); else if (e.m === 's' && hs.callout) hs.callout(sup.n, mine ? '#ffd23f' : '#ff9a5e'); }
   else if (e.k === 'fire') KF.sfx('spec');
   else if (e.k === 'jump') KF.sfx('jump');
-  else if (e.k === 'whiff') pop(f.x, 112, 'ISKA', '#9a9aa4');
+  else if (e.k === 'whiff') pop((e.v ? fx(1 - e.s) : f).x, e.v ? 150 : 112, e.v ? 'EĞİLDİ!' : 'ISKA', e.v ? '#8cc8ff' : '#9a9aa4');
   else if (e.k === 'hit' || e.k === 'spec') {
     var strong = mv === 'u' || mv === 'k' || mv === 's' || mv === 'dp' || mv === 'tk';
-    f.flash = .13; spark(f.x + side * 10, hy, fxc, strong ? 16 : 9); if (FXG[atk] && strong) chunks(f.x + side * 10, hy, fxc, 7, side); G.parts.push({ k: 'ring', x: f.x + side * 14, y: hy, c: '#fff', life: .3, max: .3 });
-    if (strong) G.parts.push({ k: 'burst', x: f.x + side * 12, y: hy, c: '#ffe27a', life: .22, max: .22 });
+    f.flash = .13; f.hz = zn; spark(f.x + side * sf, hy, fxc, strong ? 16 : 9); if (FXG[atk] && strong) chunks(f.x + side * sf, hy, fxc, 7, side); G.parts.push({ k: 'ring', x: f.x + side * sf, y: hy, c: '#fff', life: .3, max: .3 });
+    if (zn === 'h' && !G.low) for (var sw = 0; sw < (strong ? 7 : 4); sw++) G.parts.push({ k: 'dot', x: f.x + side * 4, y: hy - 6, vx: -side * rr(40, 190), vy: rr(-170, -30), g: 520, c: 'rgba(200,232,255,.8)', r: rr(1, 2), life: .45, max: .45 });
+    if (strong) G.parts.push({ k: 'burst', x: f.x + side * sf, y: hy, c: '#ffe27a', life: .22, max: .22 });
     pop(f.x, 118, '-' + e.v, mine ? '#ff6b5e' : '#ffd23f'); G.shake = SHK[mv] || 4; G.freeze = (FRZ[mv] || .04) * (1 + Math.min(.6, e.v / 40)); KF.sfx(e.k === 'spec' ? 'spec' : (strong ? 'heavy' : 'hit')); if (mine) KF.buzz(strong ? 60 : 35);
     if (e.k === 'spec') { if (atk === 'imzaci' || !FXC[atk]) { for (var i = 0; i < 10; i++) G.parts.push({ k: 'paper', x: f.x + side * 50, y: rr(130, 190), vx: side * rr(120, 220), vy: rr(-60, 20), g: 90, rot: rr(0, 6), life: .6, max: .6 }); } else chunks(f.x + side * 24, 150, fxc, 16, side); if (hs.callout) hs.callout(sup.n + '!', '#d9ab4c'); }
     else if (mv === 'u' && hs.callout && !mine) hs.callout('APARKAT!', '#ffd23f');
-  } else if (e.k === 'block') { spark(f.x + side * 14, 150, '#8cc8ff', 7); pop(f.x, 118, 'SAVUNDU', '#8cc8ff'); KF.sfx('block'); G.shake = 2; }
+  } else if (e.k === 'block') { spark(f.x + side * 30, zn === 'l' ? 236 : 164, '#8cc8ff', 7); pop(f.x, 118, 'SAVUNDU', '#8cc8ff'); KF.sfx('block'); G.shake = 2; }
   else if (e.k === 'perfect') { spark(f.x + side * 14, 150, '#6fe3ff', 16); G.parts.push({ k: 'burst', x: f.x + side * 14, y: 150, c: '#6fe3ff', life: .25, max: .25 }); G.shake = 4; G.freeze = .08; KF.sfx('perfect'); if (hs.callout) hs.callout('KUSURSUZ SAVUNMA!', '#6fe3ff'); KF.buzz(25); }
   else if (e.k === 'slip') { KF.sfx('slip'); }
   else if (e.k === 'dodge') { spark(f.x - side * 6, 140, '#bfe4ff', 12); G.parts.push({ k: 'ring', x: f.x, y: 140, c: '#8cc8ff', life: .3, max: .3 }); pop(f.x, 112, e.v ? 'HAVADA!' : 'SIYRILDI!', '#8cc8ff'); KF.sfx('perfect'); G.shake = 2; if (mine && hs.callout) hs.callout('SIYRILDIN!', '#8cc8ff'); }
@@ -563,7 +576,7 @@ function frame(ts) {
     var kk = Math.min(1, dt * 24), oa = V.a.x, ob = V.b.x;
     V.a.x += (M.x[0] - V.a.x) * kk; V.b.x += (M.x[1] - V.b.x) * kk;
     if (dt > 0) { V.a.mvx = (V.a.mvx || 0) * .6 + ((V.a.x - oa) / dt) * .4; V.b.mvx = (V.b.mvx || 0) * .6 + (-(V.b.x - ob) / dt) * .4; }
-    V.a.jy = M.y[0]; V.b.jy = M.y[1]; V.pj = M.pj || [];
+    V.a.jy = M.y[0]; V.b.jy = M.y[1]; if (M.cr) { V.a.cr = M.cr[0]; V.b.cr = M.cr[1]; } V.pj = M.pj || [];
     var mi = G.me, rs = (KF.STATS[G.sl && G.sl[mi]] || { rng: 1 }).rng;
     V.rng = (KF.S.rng && M.ph === 'fight' && G.mode !== 'menu') ? { x0: (mi ? V.b : V.a).x, dir: mi ? -1 : 1, rj: REACH.j * rs, rk: REACH.k * rs, dist: Math.abs(V.a.x - V.b.x) } : null;
   }

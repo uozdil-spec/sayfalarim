@@ -70,7 +70,7 @@ function tourChoice() {
 }
 
 /* ---------- ortak: maç tanıtımı ---------- */
-var TIPS = ['İpucu: Rakip kırmızı ünlem gösterince SAVUN\'u basılı tut.', 'İpucu: Aşağı + YUMRUK aparkattır, savunmayı deler.', 'İpucu: Rakip sersemken ağır vuruş at.', 'İpucu: ÖZEL parlayınca bas, süper savunma tanımaz.', 'İpucu: Düz yumruk rakibin yavaş vuruşunu hazırlanırken keser.', 'İpucu: Savunmayı uzun tutma, dayanıklılık biter.', 'İpucu: Tekme uzak ve ağırdır, bol vakit olunca kullan.', 'İpucu: Aparkat gelince SAVUN basılıyken geri çek: sıyrıl.', 'İpucu: Rakip sürekli kaçıyorsa aşağı + TEKME ile süpür.', 'İpucu: Sıyrılma başarılı olursa rakip açık kalır, hemen vur.', 'İpucu: Sol tarafta nereye dokunursan çubuk oraya gelir.'];
+var TIPS = ['İpucu: Menzil gerçek: vuruşun değmesi için rakibe yaklaş.', 'İpucu: Çubuğu aşağı tut, kafaya gelen yumruk üstünden geçsin.', 'İpucu: Rakip kırmızı ünlem gösterince SAVUN\'u basılı tut.', 'İpucu: Aşağı + YUMRUK aparkattır, savunmayı deler.', 'İpucu: Rakip sersemken ağır vuruş at.', 'İpucu: ÖZEL parlayınca bas, süper savunma tanımaz.', 'İpucu: Düz yumruk rakibin yavaş vuruşunu hazırlanırken keser.', 'İpucu: Savunmayı uzun tutma, dayanıklılık biter.', 'İpucu: Tekme uzak ve ağırdır, bol vakit olunca kullan.', 'İpucu: Aparkat gelince SAVUN basılıyken geri çek: sıyrıl.', 'İpucu: Rakip sürekli kaçıyorsa aşağı + TEKME ile süpür.', 'İpucu: Sıyrılma başarılı olursa rakip açık kalır, hemen vur.', 'İpucu: Sol tarafta nereye dokunursan çubuk oraya gelir.'];
 function intro(o, bg, tag, prog, onGo, onBack) {
   var tip = KF.S.guide ? h('div', { cls: 'tipl' }, [h('div', { html: '<b>' + TIPS[Math.floor(Math.random() * TIPS.length)].replace('İpucu: ', 'İpucu · ') + '</b>' })]) : null;
   var l0 = (G.sl && G.sl[0]) || KF.S.look, nm0 = (G.names && G.names[0]) || (GFX.LOOKS[l0] || {}).name || 'Mühendis';
@@ -234,15 +234,16 @@ var LESS = [
   { t: 'YÜRÜ: çubuğu sağa ve sola it', b: 'joy', jd: 'lr', pk: ['mf', 'mb'] },
   { t: 'ATIL: çubuğu hızlıca iki kez sağa it', b: 'joy', jd: 'dd', ev: 'dash', n: 1 },
   { t: 'ZIPLA: çubuğu yukarı it, havadayken yerdeki vuruşlar sana değmez', b: 'joy', jd: 'u', pk: ['jp'] },
+  { t: 'EĞİL: çubuğu aşağı tut, kafaya gelen yumruklar üstünden geçer', b: 'joy', jd: 'd', pk: ['dn'] },
   { t: 'ÖZEL: tek başına bas, DÖNEN TEKME çıkar', b: 'bSpecial', k: 'tk', n: 1 },
   { t: 'YÜKSELEN APARKAT: çubuğu aşağı tut + ÖZEL', b: 'bSpecial', jd: 'd', k: 'dp', n: 1 },
   { t: 'EVRAK TOPU: çubuğu geri tut + ÖZEL', b: 'bSpecial', jd: 'b', k: 'pf', n: 1 },
   { t: 'SÜPER doldu, ÖZEL parlıyor: bas!', b: 'bSpecial', k: 's', n: 1 }
 ];
 var step = 0, cnt = 0, alt = 0;
-function setLesson() { var L = LESS[step]; cnt = 0; alt = 0; U.lesson = { t: L.t, c: L.w ? 'warn' : 'info', b: L.b, w: L.w, jd: L.jd }; if (G.sim) { if (L.k === 's') G.sim.f[0].sp = 100; else if (L.k === 'tk' || L.k === 'dp' || L.k === 'pf') G.sim.f[0].sp = Math.min(G.sim.f[0].sp, 40); } }
+function setLesson() { var L = LESS[step]; cnt = 0; alt = 0; U.lesson = { t: L.t, c: L.w ? 'warn' : 'info', b: L.b, w: L.w, jd: L.jd, near: /^[jhukl]$/.test(L.k || '') }; if (G.sim) { if (L.k === 's') G.sim.f[0].sp = 100; else if (L.k === 'tk' || L.k === 'dp' || L.k === 'pf') G.sim.f[0].sp = Math.min(G.sim.f[0].sp, 40); } }
 function startTrain() {
-  MODE = 'train'; U.again = startTrain; G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; U.resetBlock(); U.resetMove(); step = 0; U.lesson = null;
+  MODE = 'train'; U.again = startTrain; G.solo(KF.DUMMY, 0, { train: true, dif: 'easy', lv: -1 }); G.sim.ph = 'wait'; G.sim.f[0].x = 164; G.sim.f[1].x = 236; U.resetBlock(); U.resetMove(); step = 0; U.lesson = null;
   showOv([T('span', 'tag', 'ANTRENMAN'), T('h2', '', 'Kafes Okulu'), T('p', '', 'Çırak Cemil sana vurmaz, sadece öğretir. Parlayan düğmeye bas, çubuğun gösterdiği yönü tut.'), row([btn('Menü', 'sm', U.home), btn('Başla', 'pri', function () { hideOv(); setLesson(); G.sim.ph = 'count'; U.keepAwake(true); })])]);
 }
 function lessonDone() {
