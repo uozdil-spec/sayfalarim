@@ -13,6 +13,7 @@ window.OYUNLAR = [
     {ad:'Satranç',         yol:'satranc/',              ikon:'satranc/ikon.svg',           not:'Satranç; arkadaşınla online oyna.',                         k:['Masa','Online'], on:1},
     {ad:'Dokuz Taş',       yol:'dokuz-tas.html',        ikon:'dokuz-tas-ikon.svg',         not:'Dokuz Taş; arkadaşınla online oyna.',                       k:['Masa','Online'], on:1},
     {ad:'Harf Harmanı',    yol:'harf-harmani/',         ikon:'harf-harmani/ikon.svg',      not:'Harflerden kelime üret; arkadaşlarınla çevrimiçi.',         k:['Kelime','Online'], on:1},
+    {ad:'Gizli Kelime',    yol:'gizli-kelime/',         ikon:'gizli-kelime/ikon.svg',      not:'6 hakta gizli kelimeyi bul; günün kelimesi, 3D tahta, arkadaşlarla online yarış ve sohbet.', k:['Kelime','Online'], on:1},
     {ad:'Kafes Dövüşü',    yol:'kafes-dovusu/',         ikon:'kafes-dovusu-ikon.svg',      not:'Karakterini seç; turnuva ya da serbest maç.',               k:['Eğlence','Online'], on:1},
     {ad:'Kelime Avı & Hafıza', yol:'kelime-avi-hafiza.html', ikon:'kelime-avi-ikon.svg',   not:'Kelime avı ve hafıza oyunları.',                            k:['Kelime','Bulmaca']},
     {ad:'Çini',            yol:'cini/',                 ikon:'cini/ikon.svg',              not:'İznik çinisi ve Selçuklu motifleriyle eşleştirme.',         k:['Bulmaca']},
