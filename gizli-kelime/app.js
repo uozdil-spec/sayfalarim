@@ -5,7 +5,7 @@
 var GK = root.GK, $ = GK.$, S = GK.S, LS = GK.LS, esc = GK.esc, rnd = GK.rnd, UI = GK.UI, Net = GK.Net, SND = GK.SND, vib = GK.vib, cls = GK.cls,
   toast = GK.toast, saveS = GK.saveS, openSheet = GK.openSheet, closeSheet = GK.closeSheet, H = GK.hooks, up = GK.up;
 
-var G = GK.G = { M: null, V: null, mode: null, buf: '', pend: false, key: '', painted: 0, rows: [], histG: false, skipPop: false, busy: 0, tick: null, dl: 0, dlT: 0, st2: '', lastSec: -1, lastTurn: -1, endKey: '', statKey: '' };
+var G = GK.G = { M: null, V: null, mode: null, sl: [], cur: 0, pend: false, key: '', painted: 0, rows: [], histG: false, skipPop: false, busy: 0, tick: null, dl: 0, dlT: 0, st2: '', lastSec: -1, lastTurn: -1, endKey: '', statKey: '' };
 var TEMPO = { race: [0, 90, 180, 300], turn: [0, 25, 45, 75] };
 GK.TEMPO = TEMPO;
 var KROWS = ['ertyuıopğü', 'asdfghjklşi', 'zcvbnmöç'];
@@ -234,13 +234,26 @@ function paintActive(pop) {
   var mb = myBoard(V), r = mb.rows.length, c = V.cfg;
   if (mb.done || r >= c.tries || V.phase !== 'play') return;
   var cells = G.rows[r].children, kn = S.ghost ? knownOf(V) : [], i, ch, act = canType();
-  if (V.first && G.buf.charAt(0) !== V.first) G.buf = V.first;
-  if (!V.first && !act) G.buf = '';
+  if (G.sl.length !== c.len || (V.first && G.sl[0] !== V.first)) resetBuf();
+  if (!act && !V.first) resetBuf();
   for (i = 0; i < c.len; i++) {
-    ch = G.buf.charAt(i);
-    if (ch) setCell(cells[i], ch, (i === 0 && V.first ? 'lk' : 'ty') + (pop && i === G.buf.length - 1 ? ' pop' : ''));
-    else setCell(cells[i], kn[i] || '', (kn[i] ? 'gh' : '') + (act && i === G.buf.length ? ' cur' : ''));
+    ch = G.sl[i];
+    if (ch) setCell(cells[i], ch, (i === 0 && V.first ? 'lk' : 'ty') + (pop === i ? ' pop' : ''));
+    else setCell(cells[i], kn[i] || '', (kn[i] ? 'gh' : '') + (act && i === G.cur ? ' cur' : ''));
   }
+}
+/* yazılan kelime: her kutu ayrı; imleç boş bir kutuyu gösterir */
+function resetBuf() {
+  var V = G.V, n = V ? V.cfg.len : 0, i;
+  G.sl = []; for (i = 0; i < n; i++) G.sl.push('');
+  if (V && V.first) G.sl[0] = V.first;
+  G.cur = V && V.first ? 1 : 0;
+}
+function nextEmpty(from) {
+  var n = G.sl.length, i;
+  for (i = from; i < n; i++) if (!G.sl[i]) return i;
+  for (i = 0; i < from; i++) if (!G.sl[i]) return i;
+  return n;
 }
 function paintKeys() {
   var V = G.V; if (!V) return;
@@ -303,12 +316,12 @@ function render() {
   var c = V.cfg, turn = c.kind === 'turn', mb = myBoard(V), fresh = false, r, d = 0;
   var key = V.id + '|' + V.round + '|' + c.len + '|' + (turn ? 't' : V.me);
   if (key !== G.key) {
-    G.key = key; G.painted = 0; G.buf = ''; G.pend = false; G.busy = 0; G.lastTurn = -1; fresh = true;
+    G.key = key; G.painted = 0; resetBuf(); G.pend = false; G.busy = 0; G.lastTurn = -1; fresh = true;
     buildBoard(c); hideCoach();
     if (UI.endOpen) closeSheet();
   }
   layout();
-  if (mb.rows.length > G.painted) { G.buf = ''; G.pend = false; }
+  if (mb.rows.length > G.painted) { resetBuf(); G.pend = false; }
   for (r = G.painted; r < mb.rows.length; r++) d = Math.max(d, paintRow(r, mb.rows[r], !fresh && r === mb.rows.length - 1));
   G.painted = mb.rows.length;
   if (d) { G.busy = Date.now() + d; setTimeout(function () { if (G.V) { paintKeys(); paintActive(); } }, d); }
@@ -331,8 +344,11 @@ function shake(msg) {
   SND.err(); vib([30, 40, 30]); if (msg) note(msg);
 }
 function submit() {
-  var V = G.V, c = V.cfg, w = G.buf, mb = myBoard(V), i, e;
-  if (w.length < c.len) { shake('Kelime ' + c.len + ' harfli olmalı'); return; }
+  var V = G.V, c = V.cfg, w, mb = myBoard(V), i, e, kn = S.ghost ? knownOf(V) : [], used = false;
+  for (i = 0; i < c.len; i++) if (!G.sl[i] && !kn[i]) { shake('Kelime ' + c.len + ' harfli olmalı'); return; }
+  for (i = 0; i < c.len; i++) if (!G.sl[i]) { G.sl[i] = kn[i]; used = true; }   /* boş bırakılan kutuya bulunmuş (soluk) harf yazılır */
+  if (used) { G.cur = c.len; paintActive(); }
+  w = G.sl.join('');
   if (!GK.isWord(w)) { shake('Bu kelime sözlükte yok'); return; }
   for (i = 0; i < mb.rows.length; i++) if (mb.rows[i].w === w) { shake('Bu kelimeyi zaten denedin'); return; }
   if (S.hard) { e = GK.hardCheck(mb.rows, w); if (e) { shake('Zor mod: ' + e); return; } }
@@ -349,10 +365,90 @@ GK.key = function (k) {
     return;
   }
   hideCoach();
-  if (k === 'del') { if (G.buf.length > (V.first ? 1 : 0)) { G.buf = G.buf.slice(0, -1); SND.del(); paintActive(); } return; }
+  var n = V.cfg.len, lo = V.first ? 1 : 0, i;
+  if (k === 'del') {
+    for (i = Math.min(G.cur, n) - 1; i >= lo; i--) if (G.sl[i]) break;
+    if (i < lo) for (i = n - 1; i >= lo; i--) if (G.sl[i]) break;
+    if (i >= lo) { G.sl[i] = ''; G.cur = i; SND.del(); paintActive(); }
+    return;
+  }
   if (k === 'ent') { submit(); return; }
-  if (G.buf.length < V.cfg.len && GK.LETTERS.indexOf(k) >= 0) { G.buf += k; SND.key(); vib(8); paintActive(true); }
+  if (GK.LETTERS.indexOf(k) < 0) return;
+  if (G.cur >= n || G.sl[G.cur]) G.cur = nextEmpty(0);
+  if (G.cur < n) { i = G.cur; G.sl[i] = k; G.cur = nextEmpty(i + 1); SND.key(); vib(8); paintActive(i); }
 };
+
+/* ---------- kutuya dokunma ve sürükle-bırak ----------
+   Harfe dokun: yalnız o harf silinir. Boş kutuya dokun: imleç oraya gider. Harfi sürükle: iki kutu yer değiştirir. */
+var DR = null;
+function cellAt(x, y, loose) {
+  var V = G.V; if (!V) return -1;
+  var r = G.rows[myBoard(V).rows.length]; if (!r) return -1;
+  var cs = r.children, i, b, pad;
+  for (i = 0; i < cs.length; i++) {
+    if (cs[i].className.indexOf('cl') < 0) continue;
+    b = cs[i].getBoundingClientRect(); pad = loose ? b.height * 1.3 : 3;
+    if (x >= b.left - 4 && x <= b.right + 4 && y >= b.top - pad && y <= b.bottom + pad) return i;
+  }
+  return -1;
+}
+function dragEnd() {
+  if (DR && DR.mv) { var cs = $('#board').querySelectorAll('.cl'), i; for (i = 0; i < cs.length; i++) { cs[i].style.opacity = ''; cls(cs[i], 'tg', false); } }
+  if (DR && DR.el && DR.el.parentNode) DR.el.parentNode.removeChild(DR.el); DR = null;
+}
+function pDown(x, y) {
+  dragEnd();
+  if (!gameOn() || $('#ov').className === 'on' || !canType() || Date.now() < G.busy || G.pend) return;
+  var i = cellAt(x, y, false); if (i < 0) return;
+  DR = { i: i, x: x, y: y, mv: false, el: null };
+}
+function pMove(x, y) {
+  if (!DR) return;
+  var V = G.V, r = G.rows[myBoard(V).rows.length], src = r.children[DR.i], b;
+  if (!DR.mv) {
+    if (Math.abs(x - DR.x) + Math.abs(y - DR.y) < 12) return;
+    if (!G.sl[DR.i] || (V.first && DR.i === 0)) { DR = null; return; }
+    DR.mv = true; b = src.getBoundingClientRect(); DR.w = b.width;
+    DR.el = src.cloneNode(true); DR.el.className = 'cl ty drg';
+    DR.el.style.cssText = 'position:fixed;left:0;top:0;margin:0;z-index:50;pointer-events:none;width:' + b.width + 'px;height:' + b.height + 'px;font-size:' + getComputedStyle(src).fontSize;
+    document.body.appendChild(DR.el); src.style.opacity = '.25'; hideCoach();
+  }
+  GK.tr(DR.el, 'translate(' + (x - DR.w / 2) + 'px,' + (y - DR.w * .95) + 'px) scale(1.15)');
+  var j = cellAt(x, y, true), cs = r.children, k;
+  for (k = 0; k < cs.length; k++) if (cs[k].className.indexOf('cl') >= 0) cls(cs[k], 'tg', k === j && k !== DR.i && !(V.first && k === 0));
+}
+function pUp(x, y) {
+  if (!DR) return;
+  var d = DR, V = G.V, r = G.rows[myBoard(V).rows.length], j, t, k;
+  dragEnd();
+  if (!r || !canType()) return;
+  for (k = 0; k < r.children.length; k++) { r.children[k].style.opacity = ''; }
+  if (!d.mv) {
+    if (V.first && d.i === 0) { note('İlk harf sabit; değiştirilemez'); return; }
+    hideCoach();
+    if (G.sl[d.i]) { G.sl[d.i] = ''; SND.del(); vib(8); }
+    G.cur = d.i; paintActive(); return;
+  }
+  j = cellAt(x, y, true);
+  if (j >= 0 && j !== d.i && !(V.first && j === 0)) { t = G.sl[j]; G.sl[j] = G.sl[d.i]; G.sl[d.i] = t; G.cur = nextEmpty(0); SND.key(); vib(10); paintActive(j); }
+  else paintActive();
+}
+(function () {
+  var b = $('#board');
+  if (root.PointerEvent) {
+    b.addEventListener('pointerdown', function (e) { if (e.button) return; pDown(e.clientX, e.clientY); });
+    document.addEventListener('pointermove', function (e) { if (DR) pMove(e.clientX, e.clientY); });
+    document.addEventListener('pointerup', function (e) { pUp(e.clientX, e.clientY); });
+    document.addEventListener('pointercancel', function () { if (DR) { dragEnd(); if (G.V) paintActive(); } });
+  } else {
+    b.addEventListener('touchstart', function (e) { var t = e.changedTouches[0]; pDown(t.clientX, t.clientY); }, false);
+    document.addEventListener('touchmove', function (e) { if (DR) { var t = e.changedTouches[0]; pMove(t.clientX, t.clientY); if (DR && DR.mv) e.preventDefault(); } }, { passive: false });
+    document.addEventListener('touchend', function (e) { if (DR) { var t = e.changedTouches[0]; pUp(t.clientX, t.clientY); e.preventDefault(); } }, false);
+    b.addEventListener('mousedown', function (e) { pDown(e.clientX, e.clientY); });
+    document.addEventListener('mousemove', function (e) { if (DR) pMove(e.clientX, e.clientY); });
+    document.addEventListener('mouseup', function (e) { pUp(e.clientX, e.clientY); });
+  }
+})();
 
 /* ---------- öğretici ipuçları ---------- */
 function coach(id, title, text) {
@@ -370,6 +466,7 @@ function coachAuto(delay) {
     if (n === 0 && c.n > 1 && c.kind === 'race' && coach('race', 'Yarış', 'Herkes aynı kelimeyi kendi tahtasında arar. Üstte rakiplerinin renklerini görürsün, harflerini göremezsin. Az tahminde bulan çok puan alır; ilk bulan +5.')) return;
     if (n === 0 && c.n > 1 && c.kind === 'turn' && coach('turn', 'Sırayla', 'Tahta ortak: herkes sırayla bir tahmin yapar ve bütün ipuçlarını birlikte görür. Kelimeyi bulan puanı alır.')) return;
     if (n === 1 && coach('colors', 'Renkler ne diyor?', '<b style="color:var(--g1)">Yeşil</b>: harf doğru yerde. <b style="color:var(--y1)">Sarı</b>: harf kelimede var, yeri yanlış. <b style="color:#aaa">Gri</b>: harf kelimede yok. Klavye de aynı renkleri alır.')) return;
+    if (n === 2 && coach('edit', 'Harfi düzeltmek kolay', 'Yanlış yazdığın <b>harfe dokun</b>: yalnız o silinir, yenisini yazarsın. Bir harfi <b>sürükleyip</b> başka kutuya bırakırsan yer değiştirir. Soluk (bulunmuş) harfleri yazmasan da olur.')) return;
     if (n === 3 && (V.mode === 'solo' || V.mode === 'daily')) coach('hint', 'Takıldın mı?', 'Alttaki <b>İpucu</b> düğmesi kaç olası kelime kaldığını söyler; istersen bir harf açar ya da kelimenin anlamını gösterir.');
   }, (delay || 0) + 350);
 }
