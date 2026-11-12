@@ -166,33 +166,63 @@ function ton(f, sure, vol, gecik) {
   } catch (e) {}
 }
 var SES = { tik: function () { ton(660, 0.18, 0.08); }, ekle: function () { ton(523, 0.25, 0.1); ton(784, 0.4, 0.1, 0.1); }, su: function () { ton(880, 0.2, 0.07); ton(1175, 0.3, 0.06, 0.07); }, kutla: function () { [523, 659, 784, 1047].forEach(function (f, i) { ton(f, 0.5, 0.1, i * 0.13); }); } };
-/* Sakin ortam müziği: yavaş açılıp kapanan akorlar ve seyrek çan sesleri */
-/* Telefon hoparlörü kalın sesleri veremez; akorlar orta perdede ve duyulur seviyede çalınır */
-var AKOR = [[261.6, 329.6, 392, 493.9], [220, 261.6, 329.6, 440], [174.6, 261.6, 349.2, 440], [196, 293.7, 392, 493.9]];
-var CAN = [523.3, 587.3, 659.3, 784, 880, 1046.5];
-function muzikCal(i) {
-  var a = AC; if (!a || !muzikG) return;
-  var t = a.currentTime;
-  AKOR[i % 4].forEach(function (f, j) {
-    var o = a.createOscillator(), g = a.createGain();
-    o.type = 'triangle'; o.frequency.value = f; o.detune.value = (j % 2 ? 5 : -5);
-    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.11, t + 3); g.gain.linearRampToValueAtTime(0.0001, t + 11.5);
-    o.connect(g); g.connect(muzikG); o.start(t); o.stop(t + 12);
-  });
-  [2.5, 6.5].forEach(function (dt) {
-    if (Math.random() < 0.3) return;
-    var o = a.createOscillator(), g = a.createGain(), s = t + dt + Math.random() * 1.5;
-    o.type = 'sine'; o.frequency.value = CAN[Math.floor(Math.random() * CAN.length)];
-    g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(0.1, s + 0.05); g.gain.exponentialRampToValueAtTime(0.0002, s + 3.5);
-    o.connect(g); g.connect(muzikG); o.start(s); o.stop(s + 3.6);
-  });
+/* Sakin piyano müziği: sekiz ölçülük akor yürüyüşü, arpej eşlik, yazılı ezgi ve salon yankısı.
+   Notalar MIDI numarasıyla yazılır (60 = orta do). */
+var TEMPO = 66, VURUS = 60 / TEMPO, OLCU = 4 * VURUS;
+var ESLIK = [[60, 64, 67, 72], [59, 62, 67, 71], [57, 60, 64, 69], [57, 60, 65, 69], [55, 60, 64, 67], [57, 60, 62, 65], [55, 60, 62, 67], [55, 59, 62, 67]];
+var BAS = [48, 47, 45, 53, 52, 50, 55, 55];
+var DESEN = [0, 1, 2, 3, 2, 1, 2, 1];
+var EZGI = [
+  [[0, 76, 1.5], [1.5, 79, 0.5], [2, 84, 2]], [[0, 83, 1.5], [1.5, 79, 0.5], [2, 74, 2]],
+  [[0, 76, 1], [1, 72, 1], [2, 76, 1], [3, 81, 1]], [[0, 81, 1.5], [1.5, 79, 0.5], [2, 77, 2]],
+  [[0, 76, 1], [1, 79, 1], [2, 84, 1.5], [3.5, 83, 0.5]], [[0, 81, 2], [2, 77, 1], [3, 74, 1]],
+  [[0, 72, 1.5], [1.5, 74, 0.5], [2, 79, 2]], [[0, 74, 3], [3, 71, 1]]
+];
+var EZGI2 = [
+  [[0, 79, 2], [2, 76, 2]], [[0, 74, 2], [2, 79, 2]], [[0, 81, 1], [1, 84, 3]], [[0, 81, 2], [2, 77, 2]],
+  [[0, 79, 1], [1, 76, 1], [2, 72, 2]], [[0, 77, 3], [3, 74, 1]], [[0, 79, 2], [2, 74, 2]], [[0, 71, 2], [2, 74, 2]]
+];
+var piyanoDalga = null, yanki = null, sonraki = 0, olcuNo = 0;
+function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+function nota(m, t, guc, sure) {
+  var a = AC, o = a.createOscillator(), g = a.createGain();
+  t += (Math.random() - 0.5) * 0.016; if (t < a.currentTime) t = a.currentTime;
+  o.setPeriodicWave(piyanoDalga); o.frequency.value = hz(m);
+  var kuyruk = sure + (m > 76 ? 1.6 : 2.4);
+  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(guc, t + 0.008);
+  g.gain.exponentialRampToValueAtTime(guc * 0.4, t + 0.35); g.gain.exponentialRampToValueAtTime(0.0006, t + kuyruk);
+  o.connect(g); g.connect(muzikG); o.start(t); o.stop(t + kuyruk + 0.05);
+}
+function olcuYaz(n, t) {
+  var i = n % 8, tur = Math.floor(n / 8) % 3, ak = ESLIK[i];
+  nota(BAS[i], t, 0.2, 3.5);
+  DESEN.forEach(function (d, k) { nota(ak[d], t + k * VURUS / 2, k % 4 === 0 ? 0.15 : 0.11, 0.6); });
+  var ez = tur === 0 ? EZGI[i] : tur === 2 ? EZGI2[i] : null;
+  if (ez) ez.forEach(function (e) { nota(e[1], t + e[0] * VURUS, 0.24, e[2] * VURUS); });
+}
+function muzikIlerle() {
+  if (!AC || !muzikG) return;
+  if (sonraki < AC.currentTime) sonraki = AC.currentTime + 0.1;
+  while (sonraki < AC.currentTime + 2.5) { olcuYaz(olcuNo++, sonraki); sonraki += OLCU; }
 }
 function muzikBasla() {
   var a = ses(); if (!a || muzikT) return;
-  muzikG = a.createGain(); muzikG.gain.setValueAtTime(0.0001, a.currentTime); muzikG.gain.linearRampToValueAtTime(1, a.currentTime + 1.5);
-  var lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
-  muzikG.connect(lp); lp.connect(a.destination);
-  var i = 0; muzikCal(i++); muzikT = setInterval(function () { muzikCal(i++); }, 8000);
+  if (!piyanoDalga) {
+    var re = new Float32Array([0, 0, 0, 0, 0, 0, 0, 0]), im = new Float32Array([0, 1, 0.42, 0.2, 0.11, 0.06, 0.03, 0.015]);
+    piyanoDalga = a.createPeriodicWave(re, im);
+    var n = Math.floor(a.sampleRate * 2.6), buf = a.createBuffer(2, n, a.sampleRate);
+    for (var c = 0; c < 2; c++) { var d = buf.getChannelData(c); for (var k = 0; k < n; k++) d[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / n, 3.2); }
+    yanki = a.createConvolver(); yanki.buffer = buf;
+    var ys = a.createGain(); ys.gain.value = 0.33;
+    var sik = a.createDynamicsCompressor(); sik.threshold.value = -14; sik.ratio.value = 4;
+    var ana = a.createGain(); ana.gain.value = 1.5;
+    yanki.connect(ys); ys.connect(sik); sik.connect(ana); ana.connect(a.destination);
+    muzikBasla.sik = sik;
+  }
+  muzikG = a.createGain(); muzikG.gain.setValueAtTime(0.0001, a.currentTime); muzikG.gain.linearRampToValueAtTime(1, a.currentTime + 0.8);
+  var lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 4200;
+  muzikG.connect(lp); lp.connect(muzikBasla.sik); lp.connect(yanki);
+  sonraki = 0; olcuNo = 0; muzikIlerle(); muzikT = setInterval(muzikIlerle, 700);
 }
 function muzikDur() {
   if (muzikT) { clearInterval(muzikT); muzikT = null; }
