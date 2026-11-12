@@ -6,6 +6,7 @@ var GK = root.GK, $ = GK.$, S = GK.S, LS = GK.LS, esc = GK.esc, rnd = GK.rnd, UI
   toast = GK.toast, saveS = GK.saveS, openSheet = GK.openSheet, closeSheet = GK.closeSheet, H = GK.hooks, up = GK.up;
 
 var G = GK.G = { M: null, V: null, mode: null, sl: [], cur: 0, pend: false, key: '', painted: 0, rows: [], histG: false, skipPop: false, busy: 0, tick: null, dl: 0, dlT: 0, st2: '', lastSec: -1, lastTurn: -1, endKey: '', statKey: '' };
+var WAIT = 30000;
 var TEMPO = { race: [0, 90, 180, 300], turn: [0, 25, 45, 75] };
 GK.TEMPO = TEMPO;
 var KROWS = ['ertyuıopğü', 'asdfghjklşi', 'zcvbnmöç'];
@@ -54,7 +55,7 @@ function view(seat) {
     rev: seat === 0 ? M.hints.rev : [], hm: seat === 0 && M.hints.mean, res: M.res,
     boards: M.boards.map(function (b, bi) {
       var own = c.kind === 'turn' || bi === seat || !play;
-      return { done: b.done, win: b.win, rows: b.rows.map(function (r) { return own ? { w: r.w, m: r.m, s: r.s } : { m: r.m }; }) };
+      return { done: b.done, win: b.win, skip: !!b.skip, rows: b.rows.map(function (r) { return own ? { w: r.w, m: r.m, s: r.s } : { m: r.m }; }) };
     }) };
 }
 function sync() {
@@ -75,19 +76,42 @@ function applyGuess(seat, w) {
   if (c.kind === 'turn' && M.turn !== seat) return false;
   if (w.length !== c.len || !GK.isWord(w) || (M.first && w.charAt(0) !== M.first)) return false;
   for (k = 0; k < b.rows.length; k++) if (b.rows[k].w === w) return false;
-  m = GK.evalGuess(w, M.secret); b.rows.push({ w: w, m: m, s: seat }); k = b.rows.length; M.to = 0;
+  place(seat, w); flow();
+  return true;
+}
+/* tahmini tahtaya işle (akışa dokunmadan) */
+function place(seat, w) {
+  var M = G.M, c = M.cfg, b = M.boards[c.kind === 'turn' ? 0 : seat], m = GK.evalGuess(w, M.secret), k, g;
+  b.rows.push({ w: w, m: m, s: seat }); k = b.rows.length; M.to = 0;
   if (w === M.secret) {
     b.done = b.win = true; g = GK.points(c.tries, k);
     if (c.kind === 'race' && c.n > 1 && M.firstSolve < 0) g += 5;
     if (M.firstSolve < 0) M.firstSolve = seat;
     M.gains[seat] = g; M.scores[seat] += g;
-    if (c.kind === 'race' && c.n > 1) { var dl = Date.now() + 60000; if (!M.deadline || M.deadline > dl) M.deadline = dl; }
+    /* biri bulunca diğerlerine 30 sn kalır */
+    if (c.kind === 'race' && c.n > 1) { var dl = Date.now() + WAIT; if (!M.deadline || M.deadline > dl) M.deadline = dl; }
   } else if (k >= c.tries) b.done = true;
-  if (c.kind === 'turn') { if (b.done) endRound(); else nextTurn(); }
-  else if (M.boards.every(function (x) { return x.done; })) endRound();
-  else sync();
-  return true;
 }
+/* tahmin / tur geçme sonrası akış */
+function flow() {
+  var M = G.M, c = M.cfg, s, b, n;
+  if (c.kind === 'turn') { if (M.boards[0].done) endRound(); else nextTurn(); return; }
+  /* yarış: bütün insanlar bitirdiyse bilgisayarlar bekletmez, kalan tahminlerini hemen yapar */
+  for (s = 0; s < c.n; s++) if (kindOf(s) !== 'bot' && !M.boards[s].done) break;
+  if (s >= c.n) for (s = 0; s < c.n; s++) { b = M.boards[s]; n = 0; while (!b.done && n++ < 8) place(s, GK.botPick(c.len, b.rows, M.first, M.diff)); b.done = true; }
+  if (M.boards.every(function (x) { return x.done; })) endRound(); else sync();
+}
+/* yarışta kelime bulunduktan sonra "turu geç" */
+function applySkip(seat) {
+  var M = G.M; if (!M || M.phase !== 'play') return;
+  var c = M.cfg, b = M.boards[seat];
+  if (c.kind !== 'race' || c.n < 2 || M.firstSolve < 0 || !b || b.done) return;
+  b.done = true; b.skip = true; flow();
+}
+GK.skipRound = function () {
+  var V = G.V; if (!V || V.phase !== 'play') return;
+  if (G.mode === 'guest') Net.sendHost({ t: 'act', a: 'skip', r: V.round }); else if (G.M) applySkip(mySeat());
+};
 function nextTurn() {
   var M = G.M, c = M.cfg;
   M.turn = (M.turn + 1) % c.n; M.botAt = {};
@@ -106,7 +130,7 @@ function endRound() {
   M.boards.forEach(function (b) { b.done = true; });
   M.res = { secret: M.secret, gains: M.gains.slice(), hints: M.hints.rev.length + (M.hints.mean ? 1 : 0) };
   if (M.mode === 'solo' || M.mode === 'daily') { bump(S.st[M.mode], M.boards[0].win, M.boards[0].rows.length, M.mode === 'daily' ? M.no : 0); saveS(); }
-  if (M.mode === 'host' && M.phase === 'rend') M.autoNext = Date.now() + 45000;
+  if (M.mode === 'host' && M.phase === 'rend') M.autoNext = Date.now() + 20000;
   sync();
 }
 GK.giveUp = function () { var M = G.M; if (M && M.phase === 'play' && M.cfg.n === 1) endRound(); };
@@ -164,7 +188,7 @@ function stopTick() { if (G.tick) { clearInterval(G.tick); G.tick = null; } }
 /* ====================== GÖRÜNÜM ====================== */
 function setView(V) {
   G.V = V;
-  if (V.left >= 0) { G.dl = Date.now() + V.left; var tot = (V.cfg.time || 60) * 1000; G.dlT = Math.max(tot, V.left); if (V.fs >= 0 && V.cfg.kind === 'race') G.dlT = Math.min(G.dlT, 60000); }
+  if (V.left >= 0) { G.dl = Date.now() + V.left; var tot = (V.cfg.time || WAIT / 1000) * 1000; G.dlT = Math.max(tot, V.left); if (V.fs >= 0 && V.cfg.kind === 'race') G.dlT = Math.min(G.dlT, WAIT); }
   else G.dl = 0;
   render();
 }
@@ -286,7 +310,7 @@ function hud() {
     t1 = V.phase !== 'play' ? 'Tur bitti' : (V.mode === 'local' ? 'Sıra: ' + V.names[V.turn] : (V.turn === V.me ? 'Sıra sende' : 'Sıra: ' + V.names[V.turn]));
     t2 = 'Tur ' + V.round + '/' + c.rounds;
   } else {
-    t1 = V.phase !== 'play' ? 'Tur bitti' : (mb.done ? (mb.win ? 'Bildin! Diğerleri bekleniyor' : 'Hakkın bitti') : 'Yarış · ' + V.scores[V.me] + ' puan');
+    t1 = V.phase !== 'play' ? 'Tur bitti' : (mb.done ? (mb.win ? 'Bildin! En çok 30 sn' : (mb.skip ? 'Turu geçtin' : 'Hakkın bitti')) : 'Yarış · ' + V.scores[V.me] + ' puan');
     t2 = 'Tur ' + V.round + '/' + c.rounds;
   }
   $('#st1').textContent = t1; G.st2 = t2;
@@ -294,6 +318,10 @@ function hud() {
   $('#chBadge').textContent = Net.unread ? String(Net.unread) : '';
   $('#aRules').style.display = online ? 'none' : '';
   $('#aScore').lastChild.nodeValue = (V.mode === 'solo' || V.mode === 'daily') ? 'İstatistik' : 'Puan';
+  var fb = $('#fsb'), fbOn = V.phase === 'play' && !turn && c.n > 1 && V.fs >= 0 && !mb.done;
+  if (fbOn) { $('#fsbT').innerHTML = '<b>' + esc(V.names[V.fs]) + '</b> kelimeyi buldu. Süre bitmeden bulursan sen de puan alırsın.'; hideCoach(); }
+  if ((fb.className === 'on') !== fbOn) { fb.className = fbOn ? 'on' : ''; layout(); }
+  if (V.fs >= 0 && V.phase === 'play' && G.fsKey !== G.key) { G.fsKey = G.key; if (V.fs !== V.me) { SND.ping(); vib([40, 50, 40]); } else if (c.n > 1 && !turn) note('İlk sen buldun! Diğerlerine 30 sn kaldı', 3000); }
   cls($('#kb'), 'off', !canType() && V.phase === 'play');
   var ent = $('#kb').querySelector('.ent'); if (ent) { ent.textContent = V.phase === 'play' ? 'GİR' : 'SONUÇ'; ent.style.fontSize = V.phase === 'play' ? '' : '10.5px'; }
   timerUI();
@@ -452,7 +480,7 @@ function pUp(x, y) {
 
 /* ---------- öğretici ipuçları ---------- */
 function coach(id, title, text) {
-  if (!S.coach || S.seen[id] || $('#coach').className === 'on' || $('#ov').className === 'on') return false;
+  if (!S.coach || S.seen[id] || $('#coach').className === 'on' || $('#fsb').className === 'on' || $('#ov').className === 'on') return false;
   G.coachId = id; $('#cTitle').textContent = title; $('#cText').innerHTML = text; $('#coach').className = 'on'; return true;
 }
 function hideCoach() { if ($('#coach').className === 'on') { $('#coach').className = ''; if (G.coachId) { S.seen[G.coachId] = 1; saveS(); } } }
@@ -463,7 +491,7 @@ function coachAuto(delay) {
     if (!G.V || G.V.phase !== 'play') return;
     if (n === 0 && coach('start', 'Nasıl oynanır?', 'Klavyeden <b>' + c.len + ' harfli</b> bir kelime yaz ve <b>GİR</b>’e bas. Harflerin rengi seni gizli kelimeye götürür. ' + c.tries + ' hakkın var.')) return;
     if (n === 0 && V.first && coach('first', 'İlk harf açık', 'Gizli kelimenin ilk harfi verildi. Bütün tahminlerin bu harfle başlamalı.')) return;
-    if (n === 0 && c.n > 1 && c.kind === 'race' && coach('race', 'Yarış', 'Herkes aynı kelimeyi kendi tahtasında arar. Üstte rakiplerinin renklerini görürsün, harflerini göremezsin. Az tahminde bulan çok puan alır; ilk bulan +5.')) return;
+    if (n === 0 && c.n > 1 && c.kind === 'race' && coach('race', 'Yarış', 'Herkes aynı kelimeyi kendi tahtasında arar. Üstte rakiplerinin renklerini görürsün, harflerini göremezsin. Az tahminde bulan çok puan alır; ilk bulan +5. Biri bulunca diğerlerine 30 sn kalır.')) return;
     if (n === 0 && c.n > 1 && c.kind === 'turn' && coach('turn', 'Sırayla', 'Tahta ortak: herkes sırayla bir tahmin yapar ve bütün ipuçlarını birlikte görür. Kelimeyi bulan puanı alır.')) return;
     if (n === 1 && coach('colors', 'Renkler ne diyor?', '<b style="color:var(--g1)">Yeşil</b>: harf doğru yerde. <b style="color:var(--y1)">Sarı</b>: harf kelimede var, yeri yanlış. <b style="color:#aaa">Gri</b>: harf kelimede yok. Klavye de aynı renkleri alır.')) return;
     if (n === 2 && coach('edit', 'Harfi düzeltmek kolay', 'Yanlış yazdığın <b>harfe dokun</b>: yalnız o silinir, yenisini yazarsın. Bir harfi <b>sürükleyip</b> başka kutuya bırakırsan yer değiştirir. Soluk (bulunmuş) harfleri yazmasan da olur.')) return;
@@ -522,11 +550,11 @@ function showEnd() {
     for (var q = 0; q < rk.length; q++) {
       s = rk[q]; var b = turn ? null : V.boards[s], g = V.res.gains[s];
       h += '<div class="sc' + (final && q === 0 ? ' win' : '') + '"><i class="av" style="background:' + GK.COLS[s % 4] + '">' + GK.initial(V.names[s]) + '</i><div class="nm"><b>' + esc(V.names[s]) + (s === V.me && V.mode !== 'local' ? ' (sen)' : '') + '</b><small>' +
-        (b ? (b.win ? b.rows.length + '. tahminde bildi' : 'Bilemedi') : (g ? 'Kelimeyi buldu' : kdLabel(V, s) || '&nbsp;')) + '</small></div><div class="pp">' + (g ? '+' + g : '') + '</div><div class="tt">' + V.scores[s] + '</div></div>';
+        (b ? (b.win ? b.rows.length + '. tahminde bildi' : (b.skip ? 'Turu geçti' : 'Bilemedi')) : (g ? 'Kelimeyi buldu' : kdLabel(V, s) || '&nbsp;')) + '</small></div><div class="pp">' + (g ? '+' + g : '') + '</div><div class="tt">' + V.scores[s] + '</div></div>';
     }
     h += '<div class="gap"></div>';
-    if (V.mode === 'guest') h += '<p class="note">' + (final ? 'Ev sahibi yeni oyun başlatabilir' : 'Ev sahibi sonraki kelimeyi başlatacak') + '<span class="dots"></span></p>';
-    else h += '<button class="btn pri sm" data-act="' + (final ? 'rematch' : 'nextRound') + '">' + (final ? 'Tekrar oyna' : 'Sonraki kelime') + '</button>';
+    if (V.mode === 'guest') h += '<p class="note">' + (final ? 'Ev sahibi yeni oyun başlatabilir' : 'Sonraki kelime birazdan başlıyor') + '<span class="dots"></span></p>';
+    else h += '<button class="btn pri sm" data-act="' + (final ? 'rematch' : 'nextRound') + '">' + (final ? 'Tekrar oyna' : 'Sonraki kelime') + '</button>' + (online && !final ? '<p class="note">Dokunmazsan 20 sn sonra kendiliğinden başlar.</p>' : '');
     if (online) h += '<div class="gap"></div><button class="btn sm" data-act="chat2">Sohbet' + (Net.unread ? ' (' + Net.unread + ')' : '') + '</button>';
   }
   h += '<div class="gap"></div><button class="btn sm" data-act="close">Tahtayı gör</button><div class="gap"></div><button class="btn sm" data-act="home2">Ana menü</button>';
@@ -592,7 +620,7 @@ GK.dailyState = function () { var no = GK.dayNo(), sv = LS.get('gizli.gun', null
 H.names = function () { return G.V ? G.V.names : []; };
 H.inGame = function () { return !!(G.V && gameOn() && G.V.phase === 'play' && G.V.cfg.n > 1); };
 H.hud = function () { if (G.V && gameOn()) hud(); };
-H.onGuestAct = function (seat, d) { var M = G.M; if (M && d.a === 'g' && d.r === M.round && typeof d.w === 'string') applyGuess(seat, GK.low(d.w).slice(0, 8)); };
+H.onGuestAct = function (seat, d) { var M = G.M; if (M && d.a === 'skip' && d.r === M.round) { applySkip(seat); return; } if (M && d.a === 'g' && d.r === M.round && typeof d.w === 'string') applyGuess(seat, GK.low(d.w).slice(0, 8)); };
 H.onSeatLost = function (seat, name, left) { toast(name + (left ? ' oyundan ayrıldı' : ' bağlantısı koptu') + '; yerine bilgisayar oynuyor', 3000); if (G.M) sync(); };
 H.onSeatBack = function (seat) { if (G.M) { toast(Net.seatName(seat) + ' geri döndü'); sync(); } };
 GK.hostStart = function (again) {

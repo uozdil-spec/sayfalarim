@@ -266,6 +266,7 @@ Net.invite = function (id) {
   refreshFr();
 };
 function onIncoming(c) {
+  c._w = 1;
   c.on('data', function (d) { route(c, d); });
   c.on('close', function () {
     if (Net.inv && Net.inv.c === c) { Net.inv = null; if (UI.invOpen) { closeSheet(); toast('Davet iptal edildi'); } }
@@ -311,6 +312,8 @@ Net.invDecline = function () {
   closeSheet();
 };
 function wireHost(c) {
+  if (c._w) return;   /* davetle gelen bağlantı zaten dinleniyor; ikinci dinleyici mesajları çiftliyordu */
+  c._w = 1;
   c.on('data', function (d) { route(c, d); });
   c.on('close', function () { connGone(c); });
   c.on('error', function () { connGone(c); });
@@ -483,8 +486,8 @@ GK.sheetChat = function (back) {
     (Net.chat.length ? Net.chat.map(msgHtml).join('') : '<p class="note" id="chEmpty" style="text-align:center">Henüz mesaj yok. Hızlı bir mesaj seç ya da yaz.</p>') + '</div>' +
     '<div class="chips">' + QUICK.map(function (q, i) { return '<button class="chip" data-act="chQ" data-i="' + i + '">' + esc(q) + '</button>'; }).join('') + '</div>' +
     '<div class="chrow"><input class="inp" id="chIn" maxlength="140" placeholder="Mesaj yaz…" autocomplete="off"><button class="btn pri sm" data-act="chSend">Gönder</button></div>';
-  if (!back) h += '<div class="gap"></div><button class="btn sm" data-act="close">Kapat</button>';
-  openSheet(h, { back: back || null, noClose: !!back });
+  h += '<div class="gap"></div><button class="btn sm" data-act="' + (back ? 'sheetBack' : 'close') + '">Kapat</button>';
+  openSheet(h, { back: back || null });
   UI.chatOpen = true;
   var el = $('#chLog'); if (el) el.scrollTop = el.scrollHeight;
 };

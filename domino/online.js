@@ -261,6 +261,7 @@ Net.invite = function (id) {
   refreshFr();
 };
 function onIncoming(c) {
+  c._w = 1;
   c.on('data', function (d) { route(c, d); });
   c.on('close', function () {
     if (Net.inv && Net.inv.c === c) { Net.inv = null; if (UI.invOpen) { closeSheet(); toast('Davet iptal edildi'); } }
@@ -306,6 +307,8 @@ Net.invDecline = function () {
   closeSheet();
 };
 function wireHost(c) {
+  if (c._w) return;   /* davetle gelen bağlantı zaten dinleniyor; ikinci dinleyici mesajları çiftliyordu */
+  c._w = 1;
   c.on('data', function (d) { route(c, d); });
   c.on('close', function () { connGone(c); });
   c.on('error', function () { connGone(c); });
@@ -325,7 +328,6 @@ function hostJoin(c, d) {
   r.seats[seat] = { kind: 'guest', name: nm, uid: uid, c: c, rx: Date.now(), lost: false };
   if (uid) addFr(uid, nm);
   if (Net.pendInv) delete Net.pendInv[uid];
-  c.on('data', function (dd) { route(c, dd); });
   sendConn(c, { t: 'welcome', seat: seat, cfg: r.cfg, names: seatsNames(), host: S.name, hostUid: S.uid, started: r.started });
   if (r.started) { if (H.onSeatBack) H.onSeatBack(seat); }
   else { lobbyBroadcast(); if (UI.lobby) { setLobbyNote(nm + ' odaya katıldı.'); DM.sheetLobby(); } }

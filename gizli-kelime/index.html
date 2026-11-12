@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261111-2209">
+<meta name="surum" content="20261112-0841">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#000000">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-title" content="Gizli Kelime">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Gizli Kelime: 6 hakta gizli kelimeyi bul. Günün kelimesi, serbest oyun, arkadaşlarla çevrimiçi yarış. by uozdil">
-<link rel="icon" href="ikon.svg?v=20261111-2209" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261111-2209" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261111-2209">
-<link rel="manifest" href="manifest.webmanifest?v=20261111-2209">
+<link rel="icon" href="ikon.svg?v=20261112-0841" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261112-0841" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261112-0841">
+<link rel="manifest" href="manifest.webmanifest?v=20261112-0841">
 <title>Gizli Kelime · by uozdil</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 <style>
@@ -185,6 +185,10 @@ body.idle .op,body.idle .hdr,body.idle .acts,body.idle #kb{opacity:.5}
 /* PANELLER */
 #coach{position:absolute;left:0;right:0;bottom:6px;display:none;z-index:20;padding:0 2px}
 #coach.on{display:block}
+#fsb{flex:none;display:none;align-items:center;justify-content:space-between;width:100%;max-width:560px;margin:2px auto 4px;padding:8px 8px 8px 14px;background:rgba(14,12,9,.96);border:1px solid var(--gold);border-radius:16px;font-size:13.5px;line-height:1.3}
+#fsb.on{display:flex}
+#fsb b{color:var(--gold2)}
+#fsb .chip{flex:none;margin:0 0 0 10px;background:linear-gradient(180deg,#e6c479,#bf9440);color:#1b1306;border-color:#e6c479;font-weight:700}
 .cw{margin:0 auto;max-width:520px;background:rgba(14,12,9,.97);border:1px solid var(--gold);border-radius:18px;padding:12px 14px;box-shadow:0 10px 40px rgba(0,0,0,.85);-webkit-animation:up .35s ease-out;animation:up .35s ease-out}
 @-webkit-keyframes up{from{opacity:0;-webkit-transform:translateY(16px)}to{opacity:1;-webkit-transform:none}}
 @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -296,8 +300,8 @@ padding:18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(var(--sal)
 }
 @media (prefers-reduced-motion:reduce){.cl{-webkit-animation:none!important;animation:none!important}}
 </style>
-<script async src="../sayac.js?v=20261111-2209"></script>
-<script async src="../salon-butonu.js?v=20261111-2209" data-menu="#home"></script>
+<script async src="../sayac.js?v=20261112-0841"></script>
+<script async src="../salon-butonu.js?v=20261112-0841" data-menu="#home"></script>
 </head>
 <body>
 <div id="app">
@@ -345,6 +349,7 @@ padding:18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(var(--sal)
      <div id="coach"><div class="cw"><div class="cc"><i class="bulb"><svg class="i"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></i><div class="ct"><b id="cTitle"></b><p id="cText"></p></div></div><div class="cb"><button class="chip" data-act="coachOk">Anladım</button><button class="lnk" data-act="coachOff">İpuçlarını kapat</button></div></div></div>
     </div>
     <div id="kbw">
+     <div id="fsb"><span id="fsbT"></span><button class="chip" data-act="skipRound">Turu geç</button></div>
      <nav class="acts">
       <button class="ab" id="aHint" data-act="hint"><svg class="i"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>İpucu</button>
       <button class="ab" id="aChat" data-act="chat" style="display:none"><svg class="i"><path d="M4 5h16v11H9l-5 4z"/></svg>Sohbet<b class="bd" id="chBadge"></b></button>
@@ -361,12 +366,12 @@ padding:18px;padding-bottom:calc(var(--sab) + 18px);padding-left:calc(var(--sal)
 <div id="ov"><div id="sheet"></div></div>
 <div id="toast"></div>
 
-<script src="sozluk.js?v=20261111-2209"></script>
-<script src="motor.js?v=20261111-2209"></script>
-<script src="ortak.js?v=20261111-2209"></script>
-<script src="online.js?v=20261111-2209"></script>
-<script src="app.js?v=20261111-2209"></script>
-<script src="menu.js?v=20261111-2209"></script>
-<script async src="anlam.js?v=20261111-2209"></script>
+<script src="sozluk.js?v=20261112-0841"></script>
+<script src="motor.js?v=20261112-0841"></script>
+<script src="ortak.js?v=20261112-0841"></script>
+<script src="online.js?v=20261112-0841"></script>
+<script src="app.js?v=20261112-0841"></script>
+<script src="menu.js?v=20261112-0841"></script>
+<script async src="anlam.js?v=20261112-0841"></script>
 </body>
 </html>
