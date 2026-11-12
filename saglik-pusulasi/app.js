@@ -167,29 +167,30 @@ function ton(f, sure, vol, gecik) {
 }
 var SES = { tik: function () { ton(660, 0.18, 0.08); }, ekle: function () { ton(523, 0.25, 0.1); ton(784, 0.4, 0.1, 0.1); }, su: function () { ton(880, 0.2, 0.07); ton(1175, 0.3, 0.06, 0.07); }, kutla: function () { [523, 659, 784, 1047].forEach(function (f, i) { ton(f, 0.5, 0.1, i * 0.13); }); } };
 /* Sakin ortam müziği: yavaş açılıp kapanan akorlar ve seyrek çan sesleri */
-var AKOR = [[130.8, 196, 246.9, 329.6], [110, 164.8, 261.6, 329.6], [87.3, 174.6, 220, 329.6], [98, 196, 246.9, 293.7]];
+/* Telefon hoparlörü kalın sesleri veremez; akorlar orta perdede ve duyulur seviyede çalınır */
+var AKOR = [[261.6, 329.6, 392, 493.9], [220, 261.6, 329.6, 440], [174.6, 261.6, 349.2, 440], [196, 293.7, 392, 493.9]];
 var CAN = [523.3, 587.3, 659.3, 784, 880, 1046.5];
 function muzikCal(i) {
   var a = AC; if (!a || !muzikG) return;
   var t = a.currentTime;
   AKOR[i % 4].forEach(function (f, j) {
     var o = a.createOscillator(), g = a.createGain();
-    o.type = j ? 'sine' : 'triangle'; o.frequency.value = f; o.detune.value = (j % 2 ? 4 : -4);
-    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(j ? 0.05 : 0.035, t + 4); g.gain.linearRampToValueAtTime(0.0001, t + 11.5);
+    o.type = 'triangle'; o.frequency.value = f; o.detune.value = (j % 2 ? 5 : -5);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.11, t + 3); g.gain.linearRampToValueAtTime(0.0001, t + 11.5);
     o.connect(g); g.connect(muzikG); o.start(t); o.stop(t + 12);
   });
   [2.5, 6.5].forEach(function (dt) {
     if (Math.random() < 0.3) return;
     var o = a.createOscillator(), g = a.createGain(), s = t + dt + Math.random() * 1.5;
     o.type = 'sine'; o.frequency.value = CAN[Math.floor(Math.random() * CAN.length)];
-    g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(0.03, s + 0.05); g.gain.exponentialRampToValueAtTime(0.0002, s + 3.5);
+    g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(0.1, s + 0.05); g.gain.exponentialRampToValueAtTime(0.0002, s + 3.5);
     o.connect(g); g.connect(muzikG); o.start(s); o.stop(s + 3.6);
   });
 }
 function muzikBasla() {
   var a = ses(); if (!a || muzikT) return;
-  muzikG = a.createGain(); muzikG.gain.value = 0.0001; muzikG.gain.linearRampToValueAtTime(1, a.currentTime + 2);
-  var lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800;
+  muzikG = a.createGain(); muzikG.gain.setValueAtTime(0.0001, a.currentTime); muzikG.gain.linearRampToValueAtTime(1, a.currentTime + 1.5);
+  var lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
   muzikG.connect(lp); lp.connect(a.destination);
   var i = 0; muzikCal(i++); muzikT = setInterval(function () { muzikCal(i++); }, 8000);
 }
@@ -585,7 +586,7 @@ function geri() {
 /* ---------- olaylar ---------- */
 var ACT = {
   kapat: panelKapat, geri: geri, tamekran: tamEkran, kilavuz: kilavuz, ipucu: ipucu, kilitle: kilitle, yedekAl: yedekAl, yedekOnay: yedekOnay,
-  muzik: function () { AY.muzik = !AY.muzik; kaydet(); if (AY.muzik) { muzikBasla(); toast('Müzik açık'); } else { muzikDur(); toast('Müzik kapalı'); } muzikGoster(); if (U && sekme === 'profil') ciz(); },
+  muzik: function () { AY.muzik = !AY.muzik; kaydet(); if (AY.muzik) { muzikBasla(); toast('Müzik açık. Duymuyorsanız telefonun medya sesini yükseltin.', 3600); } else { muzikDur(); toast('Müzik kapalı'); } muzikGoster(); if (U && sekme === 'profil') ciz(); },
   yeniProfil: function () { sihirbaz(false); },
   profilDuz: function () { sihirbaz(true); },
   sihirIleri: function () { sihirOku(); W.hata = sihirKontrol(); if (W.hata) return sihirCiz(); if (W.adim === 4) return sihirBitir(); W.adim++; sihirCiz(); },
