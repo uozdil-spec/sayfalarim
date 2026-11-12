@@ -332,3 +332,24 @@ SP.KAT_STIL = { 'Sık': ['⭐', '#6fe3b4'], 'Benim': ['📝', '#9fd0ff'], 'Kahva
   'Meyve': ['🍎', '#ff8a8a'], 'Kuruyemiş': ['🥜', '#d9a86c'], 'Tatlı ve atıştırmalık': ['🍰', '#c79bff'], 'İçecek': ['☕', '#6fd6d0'] };
 SP.KAT_KISA = { 'Sık': 'Sık yediklerim', 'Benim': 'Benim yemeklerim', 'Et, tavuk, balık': 'Et, tavuk, balık', 'Hamur işi ve hazır yemek': 'Hamur işi, hazır', 'Sebze ve baklagil': 'Sebze, baklagil', 'Pilav ve makarna': 'Pilav, makarna', 'Salata, yoğurt, süt': 'Salata, süt', 'Tatlı ve atıştırmalık': 'Tatlı, atıştırma' };
 SP.BILGI_STIL = { 'Beslenme': ['🥗', '#7ee08a'], 'Su': ['💧', '#5cc8ff'], 'Hareket': ['🚶', '#ff9d6b'], 'Uyku': ['🌙', '#a99bff'], 'Kilo': ['⚖️', '#6fe3b4'], 'Zihin': ['🧠', '#f58fc0'], 'Alışkanlık': ['🌱', '#f6c453'], 'Kontrol': ['🩺', '#ff7b6b'] };
+
+/* Her yiyeceğin kendi simgesi: ad içinde ilk eşleşen anahtar geçerlidir (= ile başlayan tam eşleşme ister). Sıra önemlidir. */
+SP.SIMGE = [
+['sandvic','🥪'],['balik ekmek','🥪'],['tost','🥪'],['cig kofte durum','🌯'],['durum','🌯'],['cig kofte','🌶️'],['doner','🥙'],
+['yesil cay','🫖'],['ihlamur','🌼'],['adacayi','🌿'],['papatya','🌸'],['kusburnu','🌹'],['nane-limon','🍋'],['rezene','🌱'],['zencefil','🫚'],['bitki cayi','🍯'],['soguk cay','🧋'],['cay (','🍵'],
+['sicak cikolata','🍫'],['turk kahvesi','☕'],['latte','🥛'],['cappuccino','☕'],['americano','☕'],['kahve','☕'],['kesme seker','🍬'],
+['portakal suyu','🍊'],['meyve suyu','🧃'],['gazli icecek','🥤'],['limonata','🍋'],['salgam','🌶️'],['maden suyu','🫧'],['salep','🥛'],['boza','🍶'],['bira','🍺'],['sarap','🍷'],['raki','🥃'],['enerji','⚡'],
+['ayran','🥛'],['kefir','🍶'],['sut (','🥛'],
+['tam bugday','🍞'],['beyaz ekmek','🥖'],['simit','🥯'],['pogaca','🥐'],['acma','🍩'],['su boregi','🧇'],['borek','🥧'],['gozleme','🫓'],['menemen','🍅'],['haslanmis yumurta','🥚'],['sucuklu yumurta','🍳'],['sahanda','🍳'],['omlet','🍳'],
+['akdeniz salata','🫒'],['hellim','🧀'],['beyaz peynir','🧀'],['kasar peynir','🧀'],['lor peynir','🧀'],['zeytinyagi','🫒'],['=zeytin','🫒'],['tereyag','🧈'],['kaymak','🧈'],['=bal','🍯'],['recel','🍓'],['tahin-pekmez','🥣'],['fistik ezmesi','🥜'],['sucuk','🌭'],['yulaf','🥣'],['gevrek','🥣'],['domates-salatalik','🥒'],
+['mercimek corba','🍲'],['ezogelin','🍲'],['yayla','🥣'],['tarhana','🥣'],['domates corba','🍅'],['tavuk corba','🐔'],['sebze corba','🥕'],['iskembe','🍲'],['kelle paca','🍖'],['corba','🍲'],
+['ton balikli salata','🐟'],['tavuklu sezar','🥗'],['tavuklu salata','🍗'],['coban salata','🥒'],['mevsim salata','🥬'],['yesil salata','🥬'],['roka','🌿'],['gavurdagi','🍅'],['piyaz','🫘'],['mercimek salata','🫘'],['nohutlu salata','🫘'],['kinoa','🌾'],['makarna salata','🍝'],['patates salata','🥔'],['semizotu','🌿'],['havuc','🥕'],['salata','🥗'],
+['izgara kofte','🧆'],['izmir kofte','🧆'],['icli kofte','🧆'],['tavuk gogsu','🍗'],['tavuk but','🍗'],['tavuk sote','🥘'],['tavuk sis','🍢'],['kuzu sis','🍢'],['kebap','🥩'],['iskender','🍛'],['et sote','🥘'],['karniyarik','🍆'],['musakka','🍆'],['etli dolma','🥘'],['manti','🥟'],['levrek','🐟'],['somon','🍣'],['hamsi','🐠'],['ton baligi','🥫'],
+['lahmacun','🫓'],['pide','🥖'],['tavuk burger','🍔'],['hamburger','🍔'],['pizza','🍕'],['patates kizartma','🍟'],['kumpir','🥔'],
+['kuru fasulye','🫘'],['nohut','🫘'],['yesil mercimek','🫘'],['barbunya','🫘'],['taze fasulye','🫛'],['bamya','🌿'],['ispanak','🥬'],['kabak cekirdegi','🎃'],['kabak','🥒'],['turlu','🥘'],['imam bayildi','🍆'],['biber dolma','🫑'],['yaprak sarma','🍃'],['mucver','🥞'],['haslanmis sebze','🥦'],
+['bulgur pilav','🌾'],['pilav','🍚'],['makarna','🍝'],['eriste','🍜'],['kisir','🥣'],['patates','🥔'],
+['cacik','🥒'],['meyveli yogurt','🍓'],['yogurt','🥣'],['haydari','🥣'],['humus','🫘'],
+['kuru kayisi','🍑'],['kuru uzum','🍇'],['kuru incir','🟤'],['kuru erik','🫐'],['elma','🍎'],['muz','🍌'],['portakal','🍊'],['mandalina','🍊'],['armut','🍐'],['seftali','🍑'],['kayisi','🍑'],['uzum','🍇'],['cilek','🍓'],['kiraz','🍒'],['karpuz','🍉'],['kavun','🍈'],['incir','🟣'],['=nar','🔴'],['hurma','🌴'],
+['ceviz','🌰'],['badem','🥜'],['findik','🌰'],['antep fistigi','🥜'],['ay cekirdegi','🌻'],['leblebi','🫘'],['kaju','🥜'],['yer fistigi','🥜'],
+['baklava','🥮'],['kunefe','🥮'],['sutlac','🍮'],['kazandibi','🍮'],['revani','🍰'],['asure','🥣'],['helva','🍘'],['lokum','🍬'],['dondurma','🍨'],['kek','🍰'],['biskuvi','🍪'],['cikolata','🍫'],['gofret','🍫'],['cips','🥨'],['misir','🍿'],['kraker','🍘'],['galeta','🍞'],['grissini','🥖'],['protein bar','💪'],['puding','🍮'],['muhallebi','🍮'],['profiterol','🧁']
+];

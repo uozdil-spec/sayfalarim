@@ -53,6 +53,18 @@ var OGUN = [['k', 'Kahvaltı', '☀️', '#f6c453'], ['o', 'Öğle', '🍽️', 
 var RK = { su: '#5cc8ff', har: '#ff9d6b', karb: '#f6b05c', pro: '#7fb4ff', yag: '#c79bff', mint: '#6fe3b4' };
 function h2(t, c, sag) { return '<h2 style="--c:' + c + '"><i class="nk"></i>' + t + (sag ? '<span>' + sag + '</span>' : '') + '</h2>'; }
 function stil(kat) { return SP.KAT_STIL[kat] || SP.KAT_STIL.Benim; }
+/* Yiyeceğin kendi simgesi ve başlığı; eski kayıtlarda başlık yoksa addan bulunur */
+var simgeBellek = {}, katBellek = null;
+function katBul(y) {
+  if (!katBellek) { katBellek = {}; SP.YEMEKLER.forEach(function (x) { katBellek[x.n] = x.kat; }); }
+  return katBellek[y.n] || y.kat || 'Benim';
+}
+function simge(y) {
+  var n = y.n; if (simgeBellek[n]) return simgeBellek[n];
+  var d = duz(n), a = duz(n.replace(/\s*\(.*$/, '')).trim(), r = '';
+  for (var i = 0; i < SP.SIMGE.length && !r; i++) { var k = SP.SIMGE[i][0]; if (k.charAt(0) === '=' ? a === k.slice(1) : d.indexOf(k) >= 0) r = SP.SIMGE[i][1]; }
+  return (simgeBellek[n] = r || stil(katBul(y))[0]);
+}
 var ETKIN = [[1.2, 'Hareketsiz', 'Masa başı iş, çok az yürüyüş'], [1.375, 'Az hareketli', 'Haftada 1–3 gün hafif egzersiz ya da günlük yürüyüş'], [1.55, 'Orta hareketli', 'Haftada 3–5 gün egzersiz'], [1.725, 'Çok hareketli', 'Haftada 6–7 gün yoğun egzersiz ya da ayakta çalışılan iş'], [1.9, 'Aşırı hareketli', 'Ağır bedensel iş ya da günde iki antrenman']];
 
 function gun(k) {
@@ -411,7 +423,7 @@ function vBugun() {
   h += '<div class="kart">' + h2('Öğünler', RK.mint, o.kcal ? say(o.kcal) + ' kcal' : '') + OGUN.map(function (g) {
     var l = d.m[g[0]], t = o.ogun[g[0]];
     return '<div class="ogun" style="--c:' + g[3] + '"><div class="bas"><span class="em">' + g[2] + '</span><b>' + g[1] + '</b><span class="num">' + (t ? say(t) + ' kcal' : '') + '</span><button class="ekle" data-act="yemekAc" data-v="' + g[0] + '">+ Ekle</button></div>' +
-      (l.length ? l.map(function (y, i) { return '<button class="satir" data-act="yemekDuz" data-m="' + g[0] + '" data-i="' + i + '"><span>' + stil(y.kat)[0] + ' ' + esc(y.n) + ' <small>' + ond(y.q) + ' × ' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal * y.q) + '</span></button>'; }).join('') : '<div class="bos">Henüz kayıt yok.</div>') +
+      (l.length ? l.map(function (y, i) { return '<button class="satir" data-act="yemekDuz" data-m="' + g[0] + '" data-i="' + i + '"><span>' + simge(y) + ' ' + esc(y.n) + ' <small>' + ond(y.q) + ' × ' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal * y.q) + '</span></button>'; }).join('') : '<div class="bos">Henüz kayıt yok.</div>') +
       (t > 0.5 * H.hedef ? '<div class="uyari">Bu öğün tek başına günlük hedefinizin yarısını geçti.</div>' : '') + '</div>';
   }).join('') + '</div>';
   var bard = '', nb = Math.max(H.su, o.su);
@@ -502,8 +514,8 @@ function vProfil() {
 var Y = { ogun: 'k', kat: 'Sık', ara: '', sec: null, q: 1, duz: null };
 function tumYemek() { return U.own.concat(SP.YEMEKLER); }
 function yemekSatir(y) {
-  var st = stil(y.kat);
-  return '<button data-act="yemekSec" data-n="' + esc(y.n) + '" style="--c:' + st[1] + '"><span class="em">' + st[0] + '</span><span>' + esc(y.n) + '<small>' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal) + ' kcal</span></button>';
+  var st = stil(katBul(y));
+  return '<button data-act="yemekSec" data-n="' + esc(y.n) + '" style="--c:' + st[1] + '"><span class="em">' + simge(y) + '</span><span>' + esc(y.n) + '<small>' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal) + ' kcal</span></button>';
 }
 function sikListe(n) { var f = U.freq; return tumYemek().filter(function (y) { return f[y.n]; }).sort(function (x, y) { return f[y.n] - f[x.n]; }).slice(0, n); }
 function yemekGovde() {
@@ -530,7 +542,7 @@ function yemekCiz() {
 }
 function porsiyonCiz() {
   var y = Y.sec, q = Y.q;
-  panel(bas(stil(y.kat)[0] + ' ' + esc(y.n)) + '<p>' + esc(y.por) + ' · ' + say(y.kcal) + ' kcal</p><div class="sayac"><button class="yuv" data-act="porEksi" aria-label="Azalt" style="color:var(--mint)">−</button><span class="num">' + ond(q) + '</span><button class="yuv" data-act="porArti" aria-label="Artır" style="color:var(--mint)">+</button></div><p style="text-align:center;color:var(--mut)">porsiyon</p>' +
+  panel(bas(simge(y) + ' ' + esc(y.n)) + '<p>' + esc(y.por) + ' · ' + say(y.kcal) + ' kcal</p><div class="sayac"><button class="yuv" data-act="porEksi" aria-label="Azalt" style="color:var(--mint)">−</button><span class="num">' + ond(q) + '</span><button class="yuv" data-act="porArti" aria-label="Artır" style="color:var(--mint)">+</button></div><p style="text-align:center;color:var(--mut)">porsiyon</p>' +
     '<div class="buyuk" style="justify-content:center"><span class="num">' + say(y.kcal * q) + '</span><small>kcal</small></div><p style="text-align:center;color:var(--mut);font-size:13.5px">Protein ' + ond(y.p * q) + ' g · Yağ ' + ond(y.f * q) + ' g · Karbonhidrat ' + ond(y.c * q) + ' g</p>' +
     '<div class="alan"><label>Öğün</label>' + seg('ogun', OGUN, Y.ogun) + '</div>' +
     '<button class="btn tam" data-act="porKaydet">' + (Y.duz ? 'Kaydet' : 'Ekle') + '</button>' + (Y.duz ? '<button class="btn kirmizi tam" data-act="porSil">Bu kaydı sil</button>' : ''), Y.duz ? null : yemekCiz);
