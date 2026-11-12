@@ -1,7 +1,7 @@
 /* OYUN LİSTESİ — menüye yeni oyun eklemek için buraya bir satır ekle.
    ad: görünen ad · yol: oyunun adresi (klasörse sonu / ile biter) · ikon: simge dosyası
    not: tek cümlelik açıklama · k: kategoriler (Kart, Masa, Kelime, Bulmaca, Eğlence, Online)
-   on:1 → online oynanabilir, yoksa "Tek kişilik" görünür. */
+   on:1 → online oynanabilir, yoksa "Tek kişilik" görünür. et: varsa etiket olarak o yazılır. */
 window.OYUNLAR = [
     {ad:'Okey',            yol:'okey/',                 ikon:'okey/icons/icon.svg',        not:'Bilgisayara karşı ya da 4 kişi online. Reklamsız.',         k:['Masa','Online'], on:1},
     {ad:'Kart Salonu',     yol:'kart-salonu/',          ikon:'kart-salonu/icons/ikon.svg', not:'Pişti, Dost Kazığı ve Pis Yedili tek salonda.',             k:['Kart','Online'], on:1},
@@ -21,5 +21,6 @@ window.OYUNLAR = [
     {ad:'Eksik Raylar',    yol:'eksik-raylar.html',     ikon:'eksik-raylar-ikon.svg',      not:'Eksik rayları döşe, istasyondan çıkışa hattı tamamla.',     k:['Bulmaca']},
     {ad:'Sekiz Sıra',      yol:'sekizsira/',            ikon:'sekizsira/icons/icon.svg',   not:'Sekiz sıralı kart oyunu; OLED ekranlar için yanık korumalı.', k:['Kart']},
     {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']},
-    {ad:'Domino',          yol:'domino/',               ikon:'domino/ikon.svg',            not:'3D masa, yapay zekâ ya da arkadaşlarla online domino; sohbet, ipuçları, kılavuz.', k:['Masa','Online'], on:1}
+    {ad:'Domino',          yol:'domino/',               ikon:'domino/ikon.svg',            not:'3D masa, yapay zekâ ya da arkadaşlarla online domino; sohbet, ipuçları, kılavuz.', k:['Masa','Online'], on:1},
+    {ad:'Sağlık Pusulası', yol:'saglik-pusulasi/',      ikon:'saglik-pusulasi/ikon.svg',   not:'Kalori, su, hareket ve kilo takibi; kişiye özel hedefler, uyarılar ve sağlıklı yaşam bilgileri.', k:['Sağlık'], et:'Kişisel'}
 ];

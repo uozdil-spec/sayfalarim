@@ -1,16 +1,16 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261112-0841">
+<meta name="surum" content="20261112-1440">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Oyun Salonu · by uozdil</title>
 <meta name="description" content="Reklamsız, ücretsiz, kurulumsuz oyunlar: Okey, Tavla, Satranç, Batak, Pişti ve daha fazlası. by uozdil">
 <meta name="theme-color" content="#0a0c12">
-<link rel="icon" href="salon-ikon.svg?v=20261112-0841" type="image/svg+xml">
-<link rel="icon" href="salon-ikon-32.png?v=20261112-0841" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="salon-ikon-180.png?v=20261112-0841">
-<link rel="manifest" href="salon.webmanifest?v=20261112-0841">
+<link rel="icon" href="salon-ikon.svg?v=20261112-1440" type="image/svg+xml">
+<link rel="icon" href="salon-ikon-32.png?v=20261112-1440" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="salon-ikon-180.png?v=20261112-1440">
+<link rel="manifest" href="salon.webmanifest?v=20261112-1440">
 <meta name="apple-mobile-web-app-title" content="Oyun Salonu">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
@@ -118,12 +118,12 @@ footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);displa
   </footer>
 </div>
 
-<script src="sayac.js?v=20261112-0841"></script>
-<script src="oyunlar.js?v=20261112-0841"></script>
+<script src="sayac.js?v=20261112-1440"></script>
+<script src="oyunlar.js?v=20261112-1440"></script>
 <script>
 (function () {
   var OYUNLAR = (window.OYUNLAR || []).slice();
-  var CIPLER = ['Hepsi','Online','Kart','Masa','Kelime','Bulmaca','Eğlence'];
+  var CIPLER = ['Hepsi','Online','Kart','Masa','Kelime','Bulmaca','Eğlence','Sağlık'];
 
   var izgara = document.getElementById('izgara'), bos = document.getElementById('bos');
   var aktif = 'Hepsi', sorgu = '';
@@ -133,7 +133,7 @@ footer{margin-top:34px;padding-top:20px;border-top:1px solid var(--cizgi);displa
   OYUNLAR.forEach(function (o) {
     var a = document.createElement('a');
     a.className = 'oyun'; a.href = o.yol; a.dataset.yol = o.yol;
-    var etiket = o.on ? '<span class="etiket on">Online</span>' : '<span class="etiket">Tek kişilik</span>';
+    var etiket = o.on ? '<span class="etiket on">Online</span>' : '<span class="etiket">' + (o.et || 'Tek kişilik') + '</span>';
     a.innerHTML =
       '<div class="ust"><img class="ikon" alt="" loading="lazy" width="52" height="52" src="' + o.ikon + '">' +
       '<div class="ad"></div></div><div class="not"></div>' +
