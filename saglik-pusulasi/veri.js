@@ -152,6 +152,15 @@ Patlamış mısır|1 kase (30 g)|130|3|6|17
 Kraker|1 küçük paket (40 g)|190|4|8|26`],
 ['İçecek', `Çay (şekersiz)|1 bardak|1|0|0|0
 Çay (1 şekerli)|1 bardak|12|0|0|3
+Yeşil çay (şekersiz)|1 fincan|2|0|0|0.3
+Ihlamur (şekersiz)|1 fincan|2|0|0|0.4
+Adaçayı (şekersiz)|1 fincan|2|0|0|0.4
+Papatya çayı (şekersiz)|1 fincan|2|0|0|0.4
+Kuşburnu çayı (şekersiz)|1 fincan|3|0|0|0.7
+Nane-limon (şekersiz)|1 fincan|3|0|0|0.7
+Rezene çayı (şekersiz)|1 fincan|2|0|0|0.4
+Zencefilli bitki çayı (şekersiz)|1 fincan|3|0|0|0.6
+Bitki çayı (1 tatlı kaşığı ballı)|1 fincan|32|0|0|8.6
 Türk kahvesi (sade)|1 fincan|5|0.2|0.2|0.5
 Türk kahvesi (orta)|1 fincan|25|0.2|0.2|5.5
 Filtre kahve (sade)|1 fincan|3|0.3|0|0
