@@ -49,7 +49,10 @@ function rasgele() { return Math.random().toString(36).slice(2, 10) + Date.now()
 
 /* ---------- durum ---------- */
 var U = null, sekme = 'bugun', sGun = bugun(), bilgiKat = 'Beslenme';
-var OGUN = [['k', 'Kahvaltı'], ['o', 'Öğle'], ['a', 'Akşam'], ['r', 'Ara öğün']];
+var OGUN = [['k', 'Kahvaltı', '☀️', '#f6c453'], ['o', 'Öğle', '🍽️', '#7ee08a'], ['a', 'Akşam', '🌙', '#a99bff'], ['r', 'Ara öğün', '🍎', '#f58fc0']];
+var RK = { su: '#5cc8ff', har: '#ff9d6b', karb: '#f6b05c', pro: '#7fb4ff', yag: '#c79bff', mint: '#6fe3b4' };
+function h2(t, c, sag) { return '<h2 style="--c:' + c + '"><i class="nk"></i>' + t + (sag ? '<span>' + sag + '</span>' : '') + '</h2>'; }
+function stil(kat) { return SP.KAT_STIL[kat] || SP.KAT_STIL.Benim; }
 var ETKIN = [[1.2, 'Hareketsiz', 'Masa başı iş, çok az yürüyüş'], [1.375, 'Az hareketli', 'Haftada 1–3 gün hafif egzersiz ya da günlük yürüyüş'], [1.55, 'Orta hareketli', 'Haftada 3–5 gün egzersiz'], [1.725, 'Çok hareketli', 'Haftada 6–7 gün yoğun egzersiz ya da ayakta çalışılan iş'], [1.9, 'Aşırı hareketli', 'Ağır bedensel iş ya da günde iki antrenman']];
 
 function gun(k) {
@@ -366,28 +369,29 @@ function vBugun() {
   var kalan = D.hedef - o.kcal;
   var h = '<div class="kart halka"><div style="position:relative"><svg viewBox="0 0 200 200" role="img" aria-label="Kalori halkası"><circle cx="100" cy="100" r="88" fill="none" stroke="#12201c" stroke-width="12"/>' + (oran > 0 ? '<circle cx="100" cy="100" r="88" fill="none" stroke="' + renk + '" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + (cev * oran).toFixed(1) + ' ' + cev.toFixed(1) + '" transform="rotate(-90 100 100)"/>' : '') + '</svg>' +
     '<div class="ic"><span class="num" style="color:' + (kalan < 0 ? renk : 'var(--ink)') + '">' + say(Math.abs(kalan)) + '</span><small>kcal ' + (kalan < 0 ? 'fazla' : 'kalan') + '</small></div></div>' +
-    '<div class="uclu"><div><span class="num">' + say(o.kcal) + '</span><small>alınan</small></div><div><span class="num">' + say(H.hedef) + '</span><small>hedef</small></div><div><span class="num">' + say(o.yak) + '</span><small>hareket</small></div></div></div>';
+    '<div class="uclu"><div><span class="num">' + say(o.kcal) + '</span><small>alınan</small></div><div><span class="num" style="--c:' + RK.mint + '">' + say(H.hedef) + '</span><small>hedef</small></div><div><span class="num" style="--c:' + RK.har + '">' + say(o.yak) + '</span><small>hareket</small></div></div></div>';
   h += '<div class="durum ' + (D.d || '') + '"><b>' + D.b + '<span class="rozet">' + D.rozet + '</span></b><p>' + D.t + '</p>' + (D.sec.length ? '<ul>' + D.sec.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ul>' : '') + '</div>';
   /* besin dağılımı: karbonhidrat %50, protein %20, yağ %30 */
-  var mk = [['Karbonhidrat', o.c, 0.5 * D.hedef / 4], ['Protein', o.p, 0.2 * D.hedef / 4], ['Yağ', o.f, 0.3 * D.hedef / 9]];
-  h += '<div class="kart"><h2>Besin dağılımı</h2><div class="makro">' + mk.map(function (m) {
+  var mk = [['Karbonhidrat', o.c, 0.5 * D.hedef / 4, RK.karb], ['Protein', o.p, 0.2 * D.hedef / 4, RK.pro], ['Yağ', o.f, 0.3 * D.hedef / 9, RK.yag]];
+  h += '<div class="kart">' + h2('Besin dağılımı', RK.pro) + '<div class="makro">' + mk.map(function (m) {
     var y = Math.min(100, 100 * m[1] / m[2]);
-    return '<div class="s"><span>' + m[0] + '</span><div class="cub"><i style="width:' + y.toFixed(0) + '%' + (m[1] > m[2] * 1.15 ? ';background:var(--amber)' : '') + '"></i></div><span>' + say(m[1]) + ' / ' + say(m[2]) + ' g</span></div>';
+    return '<div class="s"><span style="display:flex;align-items:center;gap:7px"><i class="nk" style="--c:' + m[3] + '"></i>' + m[0] + '</span><div class="cub"><i style="--c:' + m[3] + ';width:' + y.toFixed(0) + '%"></i></div><span>' + say(m[1]) + ' / ' + say(m[2]) + ' g</span></div>';
   }).join('') + '</div></div>';
-  h += '<div class="kart"><h2>Öğünler</h2>' + OGUN.map(function (g) {
+  h += '<div class="kart">' + h2('Öğünler', RK.mint, o.kcal ? say(o.kcal) + ' kcal' : '') + OGUN.map(function (g) {
     var l = d.m[g[0]], t = o.ogun[g[0]];
-    return '<div class="ogun"><div class="bas"><b>' + g[1] + '</b><span class="num">' + (t ? say(t) + ' kcal' : '') + '</span><button class="ekle" data-act="yemekAc" data-v="' + g[0] + '">+ Ekle</button></div>' +
-      (l.length ? l.map(function (y, i) { return '<button class="satir" data-act="yemekDuz" data-m="' + g[0] + '" data-i="' + i + '"><span>' + esc(y.n) + ' <small>' + ond(y.q) + ' × ' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal * y.q) + '</span></button>'; }).join('') : '<div class="bos">Henüz kayıt yok.</div>') +
+    return '<div class="ogun" style="--c:' + g[3] + '"><div class="bas"><span class="em">' + g[2] + '</span><b>' + g[1] + '</b><span class="num">' + (t ? say(t) + ' kcal' : '') + '</span><button class="ekle" data-act="yemekAc" data-v="' + g[0] + '">+ Ekle</button></div>' +
+      (l.length ? l.map(function (y, i) { return '<button class="satir" data-act="yemekDuz" data-m="' + g[0] + '" data-i="' + i + '"><span>' + stil(y.kat)[0] + ' ' + esc(y.n) + ' <small>' + ond(y.q) + ' × ' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal * y.q) + '</span></button>'; }).join('') : '<div class="bos">Henüz kayıt yok.</div>') +
       (t > 0.5 * H.hedef ? '<div class="uyari">Bu öğün tek başına günlük hedefinizin yarısını geçti.</div>' : '') + '</div>';
   }).join('') + '</div>';
   var bard = '', nb = Math.max(H.su, o.su);
   for (var i = 0; i < nb; i++) bard += '<i' + (i < o.su ? ' class="d"' : '') + '></i>';
-  h += '<div class="kart"><h2>Su<span>' + o.su + ' / ' + H.su + ' bardak · ' + ond(o.su * 0.2) + ' L</span></h2><div class="su"><button class="yuv" data-act="suEksi" aria-label="Bir bardak azalt">−</button><div class="bard">' + bard + '</div><button class="yuv" data-act="suArti" aria-label="Bir bardak su ekle">+</button></div></div>';
-  h += '<div class="kart"><h2>Hareket<span>' + (o.yak ? say(o.yak) + ' kcal' : '') + '</span></h2>' +
+  h += '<div class="kart">' + h2('Su', RK.su, o.su + ' / ' + H.su + ' bardak · ' + ond(o.su * 0.2) + ' L') + '<div class="su"><button class="yuv" data-act="suEksi" aria-label="Bir bardak azalt">−</button><div class="bard" data-act="suArti">' + bard + '</div><button class="yuv" data-act="suArti" aria-label="Bir bardak su ekle">+</button></div></div>';
+  h += '<div class="kart" style="--c:' + RK.har + '">' + h2('Hareket', RK.har, o.yak ? say(o.yak) + ' kcal' : '') +
     (d.ex.length ? d.ex.map(function (e, i) { return '<button class="satir" data-act="hareketSil" data-i="' + i + '"><span>' + esc(e.n) + ' <small>' + e.dk + ' dk</small></span><span class="k">' + say(e.kcal) + '</span></button>'; }).join('') : '<div class="bos">Bugün yaptığınız yürüyüş ya da sporu ekleyin.</div>') +
     '<div style="margin-top:12px"><button class="ekle" data-act="hareketAc">+ Hareket ekle</button></div></div>';
   var gt = gunTarih(sGun), bi = SP.BILGI[Math.floor((gt - new Date(gt.getFullYear(), 0, 0)) / 864e5) % SP.BILGI.length];
-  h += '<div class="kart bilgi"><h2>Günün bilgisi<span>' + bi[0] + '</span></h2><b>' + bi[1] + '</b><p>' + bi[2] + '</p></div>';
+  var bs = SP.BILGI_STIL[bi[0]];
+  h += '<div class="kart bilgi rk" style="--c:' + bs[1] + '">' + h2('Günün bilgisi', bs[1], bs[0] + ' ' + bi[0]) + '<b>' + bi[1] + '</b><p>' + bi[2] + '</p></div>';
   if (yedekGerek()) h += '<div class="durum sade"><b>Yedek alma zamanı</b><p>Kayıtlarınız yalnızca bu cihazda. Bir dosyaya yedekleyin ki kaybolmasın.</p><div style="margin-top:10px"><button class="ekle" data-act="yedekAl">Yedek al</button></div></div>';
   return h + IMZA;
 }
@@ -430,21 +434,22 @@ function haftaGrafik(H) {
 }
 function vIlerleme() {
   var H = hesap(), p = U.prof, v = H.vki, yer = Math.max(0, Math.min(100, (v - 15) / 20 * 100));
-  var h = '<div class="kart"><h2>Vücut kitle indeksi<span>' + vkiAd(v) + '</span></h2><div class="buyuk"><span class="num">' + ond(v) + '</span><small>' + ond(p.w) + ' kg · ' + say(p.h) + ' cm</small></div>' +
+  var h = '<div class="kart">' + h2('Vücut kitle indeksi', v < 18.5 ? RK.su : v < 25 ? RK.mint : v < 30 ? '#f2c66d' : '#ff7b6b', vkiAd(v)) + '<div class="buyuk"><span class="num">' + ond(v) + '</span><small>' + ond(p.w) + ' kg · ' + say(p.h) + ' cm</small></div>' +
     '<div class="olcek"><i style="left:' + yer.toFixed(1) + '%"></i></div><div class="olcekyazi"><span>15</span><span>18,5</span><span>25</span><span>30</span><span>35</span></div>' +
     '<p style="margin:10px 0 0;color:var(--mut);font-size:13.5px">Boyunuz için sağlıklı aralık ' + say(H.saglikMin) + '–' + say(H.saglikMax) + ' kg.</p></div>';
   var wl = U.wl, ilk = wl[0], fark = p.w - ilk.w;
-  h += '<div class="kart"><h2>Kilo<span>' + (p.tw ? 'hedef ' + ond(p.tw) + ' kg' : '') + '</span></h2><div class="buyuk"><span class="num">' + ond(p.w) + '</span><small>kg' + (wl.length > 1 ? ' · başlangıca göre ' + (fark > 0 ? '+' : '') + ond(fark) + ' kg' : '') + '</small></div>' +
+  h += '<div class="kart">' + h2('Kilo', RK.mint, p.tw ? 'hedef ' + ond(p.tw) + ' kg' : '') + '<div class="buyuk"><span class="num">' + ond(p.w) + '</span><small>kg' + (wl.length > 1 ? ' · başlangıca göre ' + (fark > 0 ? '+' : '') + ond(fark) + ' kg' : '') + '</small></div>' +
     (p.tw ? '<p style="margin:4px 0 10px;color:var(--mut);font-size:13.5px">' + (Math.abs(p.w - p.tw) < 0.3 ? 'Hedef kilonuza ulaştınız. Tebrikler.' : 'Hedefe ' + ond(Math.abs(p.w - p.tw)) + ' kg kaldı; bu hızla yaklaşık ' + Math.ceil(Math.abs(p.w - p.tw) / p.pace) + ' hafta.') + '</p>' : '<div style="height:8px"></div>') +
     cizgiGrafik(wl, p.tw) + '<div style="margin-top:12px"><button class="ekle" data-act="kiloAc">+ Kilo gir</button></div></div>';
   var t = bugun(), top = 0, n = 0, su = 0, ha = 0;
   for (var i = 0; i < 7; i++) { var d = U.days[gunKaydir(t, -i)]; if (d) { var o = ozet(d); if (o.kcal) { top += o.kcal; n++; } su += o.su; ha += o.yak; } }
-  h += '<div class="kart"><h2>Son yedi gün<span>kesik çizgi: hedef</span></h2>' + haftaGrafik(H) + '<div class="dort" style="margin-top:12px"><div><span class="num">' + (n ? say(top / n) : '–') + '</span><small>kcal günlük ortalama</small></div><div><span class="num">' + seri() + '</span><small>gün üst üste kayıt</small></div><div><span class="num">' + ond(su / 7) + '</span><small>bardak su ortalaması</small></div><div><span class="num">' + say(ha) + '</span><small>kcal hareketle</small></div></div></div>';
+  h += '<div class="kart">' + h2('Son yedi gün', RK.yag, 'kesik çizgi: hedef') + haftaGrafik(H) + '<div class="dort" style="margin-top:12px"><div><span class="num" style="--c:' + RK.mint + '">' + (n ? say(top / n) : '–') + '</span><small>kcal günlük ortalama</small></div><div><span class="num" style="--c:#f6c453">' + seri() + '</span><small>gün üst üste kayıt</small></div><div><span class="num" style="--c:' + RK.su + '">' + ond(su / 7) + '</span><small>bardak su ortalaması</small></div><div><span class="num" style="--c:' + RK.har + '">' + say(ha) + '</span><small>kcal hareketle</small></div></div></div>';
   return h + IMZA;
 }
 function vBilgi() {
-  var h = '<div class="cip">' + SP.BILGI_KAT.map(function (k) { return '<button data-act="bilgiKat" data-v="' + k + '"' + (k === bilgiKat ? ' class="on"' : '') + '>' + k + '</button>'; }).join('') + '</div>';
-  SP.BILGI.forEach(function (b) { if (b[0] === bilgiKat) h += '<div class="kart bilgi"><b>' + b[1] + '</b><p>' + b[2] + '</p></div>'; });
+  var h = '<div class="cip">' + SP.BILGI_KAT.map(function (k) { return '<button style="--c:' + SP.BILGI_STIL[k][1] + '" data-act="bilgiKat" data-v="' + k + '"' + (k === bilgiKat ? ' class="on"' : '') + '>' + SP.BILGI_STIL[k][0] + ' ' + k + '</button>'; }).join('') + '</div>';
+  var st = SP.BILGI_STIL[bilgiKat];
+  SP.BILGI.forEach(function (b) { if (b[0] === bilgiKat) h += '<div class="kart bilgi rk" style="--c:' + st[1] + '"><span class="et">' + st[0] + ' ' + b[0] + '</span><b>' + b[1] + '</b><p>' + b[2] + '</p></div>'; });
   h += '<p class="not" style="margin:4px auto">Bilgiler Dünya Sağlık Örgütü ve genel kabul görmüş halk sağlığı önerilerine dayanır; kişisel tıbbi tavsiye yerine geçmez.</p>';
   return h + IMZA;
 }
@@ -454,9 +459,9 @@ function vProfil() {
   var h = '<div class="kart"><h2>' + esc(U.name) + '<span>' + H.yas + ' yaş · ' + (p.sex === 'e' ? 'Erkek' : 'Kadın') + '</span></h2><div class="dort"><div><span class="num">' + say(H.hedef) + '</span><small>kcal günlük hedef</small></div><div><span class="num">' + say(H.tdee) + '</span><small>kcal günlük harcama</small></div><div><span class="num">' + say(H.bmr) + '</span><small>kcal dinlenirken</small></div><div><span class="num">' + H.su + '</span><small>bardak su hedefi</small></div></div>' +
     '<p style="margin:12px 0;color:var(--mut);font-size:13.5px">' + amac + (H.amac !== 'koru' ? ' · haftada ' + say(p.pace * 1000) + ' g' : '') + ' · ' + ETKIN[p.act][1].toLocaleLowerCase('tr') + (H.kisit ? '. Hedef, güvenli alt sınırda tutuluyor.' : '') + '</p><button class="btn ik tam" data-act="profilDuz">' + ic('kalem') + 'Bilgilerimi ve hedefimi düzenle</button></div>';
   function an(ad, acik, k, alt) { return '<button data-act="ayar" data-v="' + k + '">' + '<span>' + ad + '<small>' + alt + '</small></span><span class="anahtar' + (acik ? ' on' : '') + '"></span></button>'; }
-  h += '<div class="kart"><h2>Ayarlar</h2><div class="liste">' + an('Müzik', AY.muzik, 'muzik', 'Sakin ortam müziği') + an('Sesler', AY.ses, 'ses', 'Kayıt eklerken kısa sesler') + an('OLED ekran koruması', AY.oled, 'oled', 'Görüntü hafifçe kayar, beklerken kararır') +
+  h += '<div class="kart">' + h2('Ayarlar', RK.yag) + '<div class="liste">' + an('Müzik', AY.muzik, 'muzik', 'Sakin ortam müziği') + an('Sesler', AY.ses, 'ses', 'Kayıt eklerken kısa sesler') + an('OLED ekran koruması', AY.oled, 'oled', 'Görüntü hafifçe kayar, beklerken kararır') +
     '<div style="padding:13px 2px"><span>Üst boşluk<small>Kamera adası düğmeleri kapatıyorsa artırın</small></span><div style="margin-top:8px">' + seg('top', [[0, 'Yok'], [14, 'Az'], [28, 'Orta'], [42, 'Çok']], AY.top) + '</div></div></div></div>';
-  h += '<div class="kart"><h2>Kayıtlarım</h2><div class="liste"><button data-act="yedekAl">' + ic('yedek') + '<span>Yedek al<small>' + (U.bk ? 'Son yedek: ' + gunAd(U.bk).replace(/^.*· /, '') : 'Henüz yedek alınmadı') + '</small></span></button><button data-act="yedekYukle">' + ic('yukle') + '<span>Yedek yükle<small>Daha önce aldığınız dosyadan geri getirir</small></span></button><button data-act="pinDegis">' + ic('kilit') + '<span>PIN değiştir</span></button></div></div>';
+  h += '<div class="kart">' + h2('Kayıtlarım', RK.su) + '<div class="liste"><button data-act="yedekAl">' + ic('yedek') + '<span>Yedek al<small>' + (U.bk ? 'Son yedek: ' + gunAd(U.bk).replace(/^.*· /, '') : 'Henüz yedek alınmadı') + '</small></span></button><button data-act="yedekYukle">' + ic('yukle') + '<span>Yedek yükle<small>Daha önce aldığınız dosyadan geri getirir</small></span></button><button data-act="pinDegis">' + ic('kilit') + '<span>PIN değiştir</span></button></div></div>';
   h += '<div class="kart"><div class="liste"><button data-act="kilavuz">' + ic('kitap') + '<span>Kılavuz<small>Program nasıl kullanılır?</small></span></button><a href="../index.html">' + ic('salon') + '<span>Oyun Salonu’na dön<small>Tüm oyunlar ve programlar</small></span></a><button data-act="kilitle">' + ic('cikis') + '<span>Çıkış yap<small>Profili kilitler, kayıtlar durur</small></span></button><button data-act="profilSilSor" style="color:var(--red)">' + ic('cop') + '<span>Profili sil</span></button></div></div>';
   h += '<p class="not" style="margin:4px auto">Sağlık Pusulası genel bilgilendirme amaçlıdır; teşhis koymaz, tedavi önermez. Sağlık sorunlarınız için hekiminize danışın.</p>';
   return h + IMZA;
@@ -465,31 +470,36 @@ function vProfil() {
 /* ---------- yemek ekleme ---------- */
 var Y = { ogun: 'k', kat: 'Sık', ara: '', sec: null, q: 1, duz: null };
 function tumYemek() { return U.own.concat(SP.YEMEKLER); }
-function yemekListe() {
-  var l = tumYemek(), a = duz(Y.ara.trim());
-  if (a) l = l.filter(function (y) { return duz(y.n).indexOf(a) >= 0; });
-  else if (Y.kat === 'Sık') {
-    var f = U.freq; l = l.filter(function (y) { return f[y.n]; }).sort(function (x, y) { return f[y.n] - f[x.n]; }).slice(0, 15);
-    if (!l.length) return '<div class="bos">Sık yedikleriniz burada birikir. Yukarıdan arayın ya da bir başlık seçin.</div>';
-  } else if (Y.kat === 'Benim') { l = U.own; if (!l.length) return '<div class="bos">Listede olmayan yemekleri “Kendi yemeğim” ile ekleyin; burada saklanır.</div>'; }
-  else l = l.filter(function (y) { return y.kat === Y.kat; });
-  if (!l.length) return '<div class="bos">Bulunamadı. “Kendi yemeğim” ile adını ve kalorisini yazabilirsiniz.</div>';
-  return l.slice(0, 60).map(function (y) { return '<button data-act="yemekSec" data-n="' + esc(y.n) + '"><span>' + esc(y.n) + '<small>' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal) + ' kcal</span></button>'; }).join('');
+function yemekSatir(y) {
+  var st = stil(y.kat);
+  return '<button data-act="yemekSec" data-n="' + esc(y.n) + '" style="--c:' + st[1] + '"><span class="em">' + st[0] + '</span><span>' + esc(y.n) + '<small>' + esc(y.por) + '</small></span><span class="k">' + say(y.kcal) + ' kcal</span></button>';
 }
-function yemekAc(ogun) {
-  Y.ogun = ogun; Y.ara = ''; Y.duz = null; Y.kat = Object.keys(U.freq).length ? 'Sık' : 'Kahvaltılık';
-  yemekCiz();
+function sikListe(n) { var f = U.freq; return tumYemek().filter(function (y) { return f[y.n]; }).sort(function (x, y) { return f[y.n] - f[x.n]; }).slice(0, n); }
+function yemekGovde() {
+  var a = duz(Y.ara.trim()), l;
+  if (a) {
+    l = tumYemek().filter(function (y) { return duz(y.n).indexOf(a) >= 0; });
+    return '<div class="ylist">' + (l.length ? l.slice(0, 60).map(yemekSatir).join('') : '<div class="bos">Bulunamadı. Aşağıdaki düğmeyle adını ve kalorisini kendiniz yazabilirsiniz.</div>') + '</div>';
+  }
+  if (!Y.kat) {
+    var sik = sikListe(4), h = '';
+    if (sik.length) h += '<div class="altbas">Sık yedikleriniz</div><div class="ylist">' + sik.map(yemekSatir).join('') + '</div>';
+    var kats = (sik.length ? ['Sık'] : []).concat(U.own.length ? ['Benim'] : [], SP.YEMEK_KAT.map(function (k) { return k[0]; }));
+    return h + '<div class="altbas">Başlık seçin</div><div class="kgrid">' + kats.map(function (k) { var st = stil(k); return '<button data-act="yemekKat" data-v="' + k + '" style="--c:' + st[1] + '"><span>' + st[0] + '</span>' + (SP.KAT_KISA[k] || k) + '</button>'; }).join('') + '</div>';
+  }
+  l = Y.kat === 'Sık' ? sikListe(20) : Y.kat === 'Benim' ? U.own : SP.YEMEKLER.filter(function (y) { return y.kat === Y.kat; });
+  var st = stil(Y.kat);
+  return '<div class="katbas" style="--c:' + st[1] + '"><span class="em">' + st[0] + '</span>' + (SP.KAT_KISA[Y.kat] || Y.kat) + '<button class="ekle" style="--c:#86a096" data-act="yemekKat" data-v="">‹ Tüm başlıklar</button></div><div class="ylist">' + l.map(yemekSatir).join('') + '</div>';
 }
+function yemekAc(ogun) { Y.ogun = ogun; Y.ara = ''; Y.duz = null; Y.kat = ''; yemekCiz(); }
 function yemekCiz() {
-  var kats = ['Sık', 'Benim'].concat(SP.YEMEK_KAT.map(function (k) { return k[0]; }));
-  var ad = OGUN.filter(function (g) { return g[0] === Y.ogun; })[0][1];
-  panel(bas(ad + ' için ekle') + '<div class="alan"><input id="ara" type="search" placeholder="Yemek ara: mercimek, simit, elma…" autocomplete="off" aria-label="Yemek ara" value="' + esc(Y.ara) + '"></div>' +
-    '<div class="cip" id="ykat">' + kats.map(function (k) { return '<button data-act="yemekKat" data-v="' + k + '"' + (k === Y.kat ? ' class="on"' : '') + '>' + (k === 'Sık' ? 'Sık yediklerim' : k === 'Benim' ? 'Benim yemeklerim' : k) + '</button>'; }).join('') + '</div>' +
-    '<div class="ylist" id="ylist">' + yemekListe() + '</div><button class="btn ik tam" data-act="kendiAc">Kendi yemeğim: adını ve kalorisini yazayım</button>');
+  var g = OGUN.filter(function (x) { return x[0] === Y.ogun; })[0];
+  panel(bas(g[2] + ' ' + g[1] + ' için ekle') + '<div class="alan"><input id="ara" type="search" placeholder="🔍  Yemek ara: mercimek, simit, elma…" autocomplete="off" aria-label="Yemek ara" value="' + esc(Y.ara) + '"></div>' +
+    '<div id="ygovde" style="display:flex;flex-direction:column;gap:14px">' + yemekGovde() + '</div><button class="btn ik tam" data-act="kendiAc">Listede yok, kendim yazayım</button>', Y.kat ? function () { Y.kat = ''; yemekCiz(); } : null);
 }
 function porsiyonCiz() {
   var y = Y.sec, q = Y.q;
-  panel(bas(esc(y.n)) + '<p>' + esc(y.por) + ' · ' + say(y.kcal) + ' kcal</p><div class="sayac"><button class="yuv" data-act="porEksi" aria-label="Azalt" style="color:var(--mint)">−</button><span class="num">' + ond(q) + '</span><button class="yuv" data-act="porArti" aria-label="Artır" style="color:var(--mint)">+</button></div><p style="text-align:center;color:var(--mut)">porsiyon</p>' +
+  panel(bas(stil(y.kat)[0] + ' ' + esc(y.n)) + '<p>' + esc(y.por) + ' · ' + say(y.kcal) + ' kcal</p><div class="sayac"><button class="yuv" data-act="porEksi" aria-label="Azalt" style="color:var(--mint)">−</button><span class="num">' + ond(q) + '</span><button class="yuv" data-act="porArti" aria-label="Artır" style="color:var(--mint)">+</button></div><p style="text-align:center;color:var(--mut)">porsiyon</p>' +
     '<div class="buyuk" style="justify-content:center"><span class="num">' + say(y.kcal * q) + '</span><small>kcal</small></div><p style="text-align:center;color:var(--mut);font-size:13.5px">Protein ' + ond(y.p * q) + ' g · Yağ ' + ond(y.f * q) + ' g · Karbonhidrat ' + ond(y.c * q) + ' g</p>' +
     '<div class="alan"><label>Öğün</label>' + seg('ogun', OGUN, Y.ogun) + '</div>' +
     '<button class="btn tam" data-act="porKaydet">' + (Y.duz ? 'Kaydet' : 'Ekle') + '</button>' + (Y.duz ? '<button class="btn kirmizi tam" data-act="porSil">Bu kaydı sil</button>' : ''), Y.duz ? null : yemekCiz);
@@ -634,7 +644,7 @@ var ACT = {
   porKaydet: function () {
     var d = gun(sGun), y = Y.sec, once = degerlendir(ozet(d), hesap(), sGun).d;
     if (Y.duz) d.m[Y.duz.m].splice(Y.duz.i, 1); else U.freq[y.n] = (U.freq[y.n] || 0) + 1;
-    d.m[Y.ogun].push({ n: y.n, por: y.por, kcal: y.kcal, p: y.p, f: y.f, c: y.c, q: Y.q });
+    d.m[Y.ogun].push({ n: y.n, por: y.por, kcal: y.kcal, p: y.p, f: y.f, c: y.c, q: Y.q, kat: y.kat || 'Benim' });
     gunYaz(sGun, d); panelKapat(); ciz(); SES.ekle();
     var D = degerlendir(ozet(d), hesap(), sGun);
     if (D.d === 'kizil' && once !== 'kizil') toast(D.b + '. ' + D.t, 4200); else toast(say(y.kcal * Y.q) + ' kcal eklendi.');
@@ -685,7 +695,7 @@ document.addEventListener('click', function (e) {
   if (t.id === 'ov') geri();
 });
 document.addEventListener('input', function (e) {
-  if (e.target.id === 'ara') { Y.ara = e.target.value; $('#ylist').innerHTML = yemekListe(); }
+  if (e.target.id === 'ara') { Y.ara = e.target.value; $('#ygovde').innerHTML = yemekGovde(); }
 });
 document.addEventListener('change', function (e) {
   if (e.target.id === 'h_tur') { HR.i = +e.target.value; hareketCiz(); }

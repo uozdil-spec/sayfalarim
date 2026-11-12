@@ -274,8 +274,15 @@ SP.KILAVUZ = [
 ['Ekran koruması', 'OLED ekranı korumak için görüntü dakikada bir birkaç piksel kayar ve ekrana dokunmadığınızda kararır. Profil ekranından kapatabilirsiniz.']
 ];
 SP.IPUCU = {
-bugun: ['Yemeği yedikten hemen sonra kaydedin; akşama kalınca unutulur.', 'Sık yedikleriniz Ekle ekranının en üstünde çıkar.', 'Bir kayda dokunarak porsiyonunu değiştirebilir veya silebilirsiniz.', 'Üstteki oklarla dünü açıp unuttuğunuz öğünü ekleyebilirsiniz.'],
+bugun: ['Yemeği yedikten hemen sonra kaydedin; akşama kalınca unutulur.', 'Sık yedikleriniz Ekle ekranının en üstünde çıkar.', 'Bir kayda dokunarak porsiyonunu değiştirebilir veya silebilirsiniz.', 'Bardaklara dokunarak su ekleyebilirsiniz.', 'Her öğünün ve her yemek başlığının kendi rengi vardır.', 'Üstteki oklarla dünü açıp unuttuğunuz öğünü ekleyebilirsiniz.'],
 ilerleme: ['Haftada bir iki kez, sabah aç karnına tartılın.', 'Tek ölçüme değil, grafiğin gidişine bakın.', 'Yeşil kesik çizgi hedef kilonuzu gösterir.'],
 bilgi: ['Üstteki başlıklara dokunarak konuyu değiştirin.', 'Her gün Bugün ekranında yeni bir bilgi çıkar.'],
 profil: ['Ayda bir yedek alın; dosya telefonunuzun İndirilenler klasörüne iner.', 'Kilonuz değişince hedefler kendiliğinden güncellenir.', 'Kamera adası düğmeleri kapatıyorsa Üst boşluk ayarını artırın.']
 };
+
+/* Renk ve simge: her başlığın kendi rengi vardır */
+SP.KAT_STIL = { 'Sık': ['⭐', '#6fe3b4'], 'Benim': ['📝', '#9fd0ff'], 'Kahvaltılık': ['🥐', '#f6c453'], 'Çorba': ['🍲', '#ff9d6b'], 'Et, tavuk, balık': ['🍗', '#ff7b6b'],
+  'Hamur işi ve hazır yemek': ['🍕', '#f58fc0'], 'Sebze ve baklagil': ['🥦', '#7ee08a'], 'Pilav ve makarna': ['🍚', '#e8d9a8'], 'Salata, yoğurt, süt': ['🥗', '#5cc8ff'],
+  'Meyve': ['🍎', '#ff8a8a'], 'Kuruyemiş': ['🥜', '#d9a86c'], 'Tatlı ve atıştırmalık': ['🍰', '#c79bff'], 'İçecek': ['☕', '#6fd6d0'] };
+SP.KAT_KISA = { 'Sık': 'Sık yediklerim', 'Benim': 'Benim yemeklerim', 'Et, tavuk, balık': 'Et, tavuk, balık', 'Hamur işi ve hazır yemek': 'Hamur işi, hazır', 'Sebze ve baklagil': 'Sebze, baklagil', 'Pilav ve makarna': 'Pilav, makarna', 'Salata, yoğurt, süt': 'Salata, süt', 'Tatlı ve atıştırmalık': 'Tatlı, atıştırma' };
+SP.BILGI_STIL = { 'Beslenme': ['🥗', '#7ee08a'], 'Su': ['💧', '#5cc8ff'], 'Hareket': ['🚶', '#ff9d6b'], 'Uyku': ['🌙', '#a99bff'], 'Kilo': ['⚖️', '#6fe3b4'], 'Zihin': ['🧠', '#f58fc0'], 'Alışkanlık': ['🌱', '#f6c453'], 'Kontrol': ['🩺', '#ff7b6b'] };
