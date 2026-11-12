@@ -60,7 +60,8 @@ Mantı (yoğurtlu)|1 porsiyon|480|19|18|60
 Izgara levrek / çipura|1 porsiyon (200 g)|260|40|10|0
 Izgara somon|1 porsiyon (150 g)|310|33|19|0
 Hamsi tava|1 porsiyon (150 g)|330|26|19|12
-Ton balığı (konserve)|1 küçük kutu (80 g)|150|20|7.5|0`],
+Ton balığı (yağda, süzülmüş)|1 küçük kutu (80 g)|150|20|7.5|0
+Ton balığı (suda, light)|1 küçük kutu (80 g)|90|20|1|0`],
 ['Hamur işi ve hazır yemek', `Lahmacun|1 adet|270|11|9|36
 Kıymalı pide|1 porsiyon|620|28|24|72
 Kaşarlı pide|1 porsiyon|650|26|28|72
@@ -70,6 +71,7 @@ Et döner dürüm|1 adet|560|28|26|50
 Çiğ köfte dürüm|1 adet|380|9|8|68
 Balık ekmek|1 adet|420|24|16|44
 Sandviç (peynirli)|1 adet|320|13|12|40
+Ton balıklı sandviç|1 adet|350|20|13|38
 Hamburger|1 adet|500|25|25|42
 Tavuk burger|1 adet|450|22|20|45
 Pizza|1 dilim|270|11|10|33
@@ -100,6 +102,22 @@ Haşlanmış patates|1 orta boy (150 g)|130|3|0.2|30`],
 ['Salata, yoğurt, süt', `Çoban salata (yağlı)|1 porsiyon|110|2|8|8
 Mevsim salata (yağlı)|1 porsiyon|90|2|6|8
 Tavuklu sezar salata|1 porsiyon|350|25|20|15
+Yeşil salata (yağsız)|1 porsiyon|25|1.5|0.3|4.5
+Roka salatası (yağlı)|1 porsiyon|90|2|8|3
+Gavurdağı salatası|1 porsiyon|190|3|16|9
+Ton balıklı salata|1 porsiyon|250|22|14|9
+Izgara tavuklu salata|1 porsiyon|280|30|13|10
+Hellimli salata|1 porsiyon|300|14|23|9
+Beyaz peynirli Akdeniz salatası|1 porsiyon|220|8|17|9
+Piyaz (fasulye salatası)|1 porsiyon|230|9|11|24
+Mercimek salatası|1 porsiyon|220|11|8|27
+Nohutlu salata|1 porsiyon|240|9|11|27
+Kinoalı salata|1 porsiyon|260|8|11|32
+Makarna salatası|1 porsiyon|290|7|14|34
+Patates salatası|1 porsiyon|210|3.5|10|27
+Yoğurtlu semizotu|1 porsiyon|110|5|6|9
+Havuç-lahana salatası|1 porsiyon|80|1.5|5|8
+Rus (Amerikan) salatası|2 yemek kaşığı (60 g)|130|1.5|11|6
 Cacık|1 kase|90|5|4.5|7
 Yoğurt (tam yağlı)|1 kase (200 g)|130|7.5|7|10
 Yoğurt (yarım yağlı)|1 kase (200 g)|100|8|3.5|10
