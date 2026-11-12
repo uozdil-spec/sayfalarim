@@ -279,7 +279,7 @@ SP.BILGI = [
 ['Kilo', 'Doğru tartılma', 'Haftada bir iki kez, sabah aç karnına ve aynı tartıda tartılın. Gün içinde 1–2 kiloluk oynama su kaynaklıdır, normaldir. Tek ölçüme değil, eğilime bakın.'],
 ['Kilo', 'Bel çevresi', 'Bel çevresi karın yağını gösterir. Erkeklerde 94 cm, kadınlarda 80 cm üzeri artmış; 102 cm ve 88 cm üzeri yüksek risk sayılır.'],
 ['Kilo', 'Vücut kitle indeksi', '18,5–24,9 arası normal, 25–29,9 fazla kilolu, 30 ve üzeri obezite olarak sınıflanır. Çok kaslı kişilerde ve ileri yaşta yanıltıcı olabilir.'],
-['Kilo', 'Şok diyetlerden uzak durun', 'Kadınlarda günde 1.200, erkeklerde 1.500 kcal altındaki diyetler doktor ve diyetisyen gözetimi olmadan önerilmez. Program hedefinizi bu sınırların altına düşürmez.'],
+['Kilo', 'Şok diyetlerden uzak durun', 'Kadınlarda günde 1.200, erkeklerde 1.5 kcal altındaki diyetler doktor ve diyetisyen gözetimi olmadan önerilmez. Program hedefinizi bu sınırların altına düşürmez.'],
 ['Kilo', 'Duraklama normaldir', 'Kilo verirken birkaç hafta süren duraklamalar olağandır. Kayıtlarınızı gözden geçirin, hareketi biraz artırın ve sabırlı olun.'],
 ['Kilo', 'Öğün atlamayın', 'Öğün atlamak bir sonraki öğünde fazla yemeye yol açar. Öğünü atlamak yerine porsiyonu küçültmek daha sürdürülebilirdir.'],
 ['Zihin', 'Açlık mı, duygu mu?', 'Fiziksel açlık yavaş gelir ve her yemekle geçer. Duygusal açlık aniden gelir ve belirli bir yiyeceği ister. Yemeden önce kendinize “gerçekten aç mıyım?” diye sorun.'],
@@ -335,21 +335,57 @@ SP.BILGI_STIL = { 'Beslenme': ['🥗', '#7ee08a'], 'Su': ['💧', '#5cc8ff'], 'H
 
 /* Her yiyeceğin kendi simgesi: ad içinde ilk eşleşen anahtar geçerlidir (= ile başlayan tam eşleşme ister). Sıra önemlidir. */
 SP.SIMGE = [
-['sandvic','🥪'],['balik ekmek','🥪'],['tost','🥪'],['cig kofte durum','🌯'],['durum','🌯'],['cig kofte','🌶️'],['doner','🥙'],
-['yesil cay','🫖'],['ihlamur','🌼'],['adacayi','🌿'],['papatya','🌸'],['kusburnu','🌹'],['nane-limon','🍋'],['rezene','🌱'],['zencefil','🫚'],['bitki cayi','🍯'],['soguk cay','🧋'],['cay (','🍵'],
+['sandvic','🥪'],['balik ekmek','🥪'],['tost','🥪'],['cig kofte durum','🌯'],['durum','🌯'],['cig kofte','@cigkofte'],['doner','🥙'],
+['yesil cay','🍵'],['ihlamur','🌼'],['adacayi','🌿'],['papatya','🌸'],['kusburnu','🌹'],['nane-limon','🍋'],['rezene','🌱'],['zencefil','🫚'],['bitki cayi','🍯'],['soguk cay','🧋'],['cay (','@cay'],
 ['sicak cikolata','🍫'],['turk kahvesi','☕'],['latte','🥛'],['cappuccino','☕'],['americano','☕'],['kahve','☕'],['kesme seker','🍬'],
-['portakal suyu','🍊'],['meyve suyu','🧃'],['gazli icecek','🥤'],['limonata','🍋'],['salgam','🌶️'],['maden suyu','🫧'],['salep','🥛'],['boza','🍶'],['bira','🍺'],['sarap','🍷'],['raki','🥃'],['enerji','⚡'],
-['ayran','🥛'],['kefir','🍶'],['sut (','🥛'],
-['tam bugday','🍞'],['beyaz ekmek','🥖'],['simit','🥯'],['pogaca','🥐'],['acma','🍩'],['su boregi','🧇'],['borek','🥧'],['gozleme','🫓'],['menemen','🍅'],['haslanmis yumurta','🥚'],['sucuklu yumurta','🍳'],['sahanda','🍳'],['omlet','🍳'],
-['akdeniz salata','🫒'],['hellim','🧀'],['beyaz peynir','🧀'],['kasar peynir','🧀'],['lor peynir','🧀'],['zeytinyagi','🫒'],['=zeytin','🫒'],['tereyag','🧈'],['kaymak','🧈'],['=bal','🍯'],['recel','🍓'],['tahin-pekmez','🥣'],['fistik ezmesi','🥜'],['sucuk','🌭'],['yulaf','🥣'],['gevrek','🥣'],['domates-salatalik','🥒'],
-['mercimek corba','🍲'],['ezogelin','🍲'],['yayla','🥣'],['tarhana','🥣'],['domates corba','🍅'],['tavuk corba','🐔'],['sebze corba','🥕'],['iskembe','🍲'],['kelle paca','🍖'],['corba','🍲'],
+['portakal suyu','🍊'],['meyve suyu','🧃'],['gazli icecek','🥤'],['limonata','🍋'],['salgam','@salgam'],['maden suyu','🫧'],['salep','🥛'],['boza','@boza'],['bira','🍺'],['sarap','🍷'],['raki','🥃'],['enerji','@enerji'],
+['ayran','🥛'],['kefir','@kefir'],['sut (','🥛'],
+['tam bugday','🍞'],['beyaz ekmek','🥖'],['simit','🥯'],['pogaca','🥐'],['acma','@acma'],['su boregi','@suborek'],['borek','@borek'],['gozleme','🫓'],['menemen','🍅'],['haslanmis yumurta','🥚'],['sucuklu yumurta','🍳'],['sahanda','🍳'],['omlet','🍳'],
+['akdeniz salata','🫒'],['hellim','🧀'],['beyaz peynir','🧀'],['kasar peynir','🧀'],['lor peynir','🧀'],['zeytinyagi','🫒'],['=zeytin','🫒'],['tereyag','🧈'],['kaymak','🧈'],['=bal','🍯'],['recel','🍓'],['tahin-pekmez','🥣'],['fistik ezmesi','🥜'],['sucuk','@sucuk'],['yulaf','🥣'],['gevrek','🥣'],['domates-salatalik','🥒'],
+['mercimek corba','🍲'],['ezogelin','🍲'],['yayla','🥣'],['tarhana','🥣'],['domates corba','🍅'],['tavuk corba','🍲'],['sebze corba','🥕'],['iskembe','🍲'],['kelle paca','🍖'],['corba','🍲'],
 ['ton balikli salata','🐟'],['tavuklu sezar','🥗'],['tavuklu salata','🍗'],['coban salata','🥒'],['mevsim salata','🥬'],['yesil salata','🥬'],['roka','🌿'],['gavurdagi','🍅'],['piyaz','🫘'],['mercimek salata','🫘'],['nohutlu salata','🫘'],['kinoa','🌾'],['makarna salata','🍝'],['patates salata','🥔'],['semizotu','🌿'],['havuc','🥕'],['salata','🥗'],
-['izgara kofte','🧆'],['izmir kofte','🧆'],['icli kofte','🧆'],['tavuk gogsu','🍗'],['tavuk but','🍗'],['tavuk sote','🥘'],['tavuk sis','🍢'],['kuzu sis','🍢'],['kebap','🥩'],['iskender','🍛'],['et sote','🥘'],['karniyarik','🍆'],['musakka','🍆'],['etli dolma','🥘'],['manti','🥟'],['levrek','🐟'],['somon','🍣'],['hamsi','🐠'],['ton baligi','🥫'],
-['lahmacun','🫓'],['pide','🥖'],['tavuk burger','🍔'],['hamburger','🍔'],['pizza','🍕'],['patates kizartma','🍟'],['kumpir','🥔'],
-['kuru fasulye','🫘'],['nohut','🫘'],['yesil mercimek','🫘'],['barbunya','🫘'],['taze fasulye','🫛'],['bamya','🌿'],['ispanak','🥬'],['kabak cekirdegi','🎃'],['kabak','🥒'],['turlu','🥘'],['imam bayildi','🍆'],['biber dolma','🫑'],['yaprak sarma','🍃'],['mucver','🥞'],['haslanmis sebze','🥦'],
-['bulgur pilav','🌾'],['pilav','🍚'],['makarna','🍝'],['eriste','🍜'],['kisir','🥣'],['patates','🥔'],
-['cacik','🥒'],['meyveli yogurt','🍓'],['yogurt','🥣'],['haydari','🥣'],['humus','🫘'],
-['kuru kayisi','🍑'],['kuru uzum','🍇'],['kuru incir','🟤'],['kuru erik','🫐'],['elma','🍎'],['muz','🍌'],['portakal','🍊'],['mandalina','🍊'],['armut','🍐'],['seftali','🍑'],['kayisi','🍑'],['uzum','🍇'],['cilek','🍓'],['kiraz','🍒'],['karpuz','🍉'],['kavun','🍈'],['incir','🟣'],['=nar','🔴'],['hurma','🌴'],
-['ceviz','🌰'],['badem','🥜'],['findik','🌰'],['antep fistigi','🥜'],['ay cekirdegi','🌻'],['leblebi','🫘'],['kaju','🥜'],['yer fistigi','🥜'],
-['baklava','🥮'],['kunefe','🥮'],['sutlac','🍮'],['kazandibi','🍮'],['revani','🍰'],['asure','🥣'],['helva','🍘'],['lokum','🍬'],['dondurma','🍨'],['kek','🍰'],['biskuvi','🍪'],['cikolata','🍫'],['gofret','🍫'],['cips','🥨'],['misir','🍿'],['kraker','🍘'],['galeta','🍞'],['grissini','🥖'],['protein bar','💪'],['puding','🍮'],['muhallebi','🍮'],['profiterol','🧁']
+['izgara kofte','🧆'],['izmir kofte','🧆'],['icli kofte','🧆'],['tavuk gogsu','🍗'],['tavuk but','🍗'],['tavuk sote','🥘'],['tavuk sis','🍢'],['kuzu sis','🍢'],['kebap','🥩'],['iskender','🍛'],['et sote','🥘'],['karniyarik','🍆'],['musakka','🍆'],['etli dolma','🥘'],['manti','🥟'],['levrek','🐟'],['somon','🐟'],['hamsi','🐟'],['ton baligi','🥫'],
+['lahmacun','🫓'],['pide','@pide'],['tavuk burger','🍔'],['hamburger','🍔'],['pizza','🍕'],['patates kizartma','🍟'],['kumpir','🥔'],
+['kuru fasulye','🫘'],['nohut','🫘'],['yesil mercimek','🫘'],['barbunya','🫘'],['taze fasulye','🫛'],['bamya','🌿'],['ispanak','🥬'],['kabak cekirdegi','🎃'],['kabak','🥒'],['turlu','🥘'],['imam bayildi','🍆'],['biber dolma','🫑'],['yaprak sarma','🍃'],['mucver','@mucver'],['haslanmis sebze','🥦'],
+['bulgur pilav','🌾'],['pilav','🍚'],['makarna','🍝'],['eriste','🍜'],['kisir','@kisir'],['patates','🥔'],
+['cacik','🥒'],['meyveli yogurt','🍓'],['yogurt','@yogurt'],['haydari','@haydari'],['humus','@humus'],
+['kuru kayisi','🍑'],['kuru uzum','🍇'],['kuru incir','@kuruincir'],['kuru erik','🫐'],['elma','🍎'],['muz','🍌'],['portakal','🍊'],['mandalina','🍊'],['armut','🍐'],['seftali','🍑'],['kayisi','🍑'],['uzum','🍇'],['cilek','🍓'],['kiraz','🍒'],['karpuz','🍉'],['kavun','🍈'],['incir','@incir'],['=nar','@nar'],['hurma','@hurma'],
+['ceviz','@ceviz'],['badem','@badem'],['findik','@findik'],['antep fistigi','@antep'],['ay cekirdegi','🌻'],['leblebi','@leblebi'],['kaju','@kaju'],['yer fistigi','🥜'],
+['baklava','@baklava'],['kunefe','@kunefe'],['sutlac','🍮'],['kazandibi','🍮'],['revani','🍰'],['asure','🥣'],['helva','@helva'],['lokum','@lokum'],['dondurma','🍨'],['kek','🍰'],['biskuvi','🍪'],['cikolata','🍫'],['gofret','🍫'],['cips','@cips'],['misir','🍿'],['kraker','@kraker'],['galeta','🍞'],['grissini','🥖'],['protein bar','@bar'],['puding','🍮'],['muhallebi','🍮'],['profiterol','🧁']
 ];
+
+/* Uygun emojisi olmayan yiyecekler için elle çizilmiş küçük simgeler (24×24) */
+(function () {
+  function kase(ic, nokta) { return '<path d="M3 11h18c0 6-4 9-9 9s-9-3-9-9z" fill="#dfe6e3"/><path d="M4.5 11c2-4.5 13-4.5 15 0z" fill="' + ic + '"/>' + (nokta ? '<circle cx="12" cy="9.3" r="1.6" fill="' + nokta + '"/>' : ''); }
+  function bardak(ic) { return '<path d="M7 3h10l-1.4 17.5H8.4z" fill="' + ic + '"/><path d="M7 3h10l-.3 3.5H7.3z" fill="#fff" opacity=".35"/><path d="M7 3h10l-1.4 17.5H8.4z" fill="none" stroke="#e8f4ee" stroke-opacity=".55" stroke-width=".8"/>'; }
+  SP.CIZIM = {
+    ceviz: '<circle cx="12" cy="12" r="9" fill="#c89a5b"/><path d="M12 3v18" stroke="#8a5f2c" stroke-width="1.5"/><path d="M8 6.5c2.2 2 2.2 4 0 5.5s-2.2 3.5 0 5.5M16 6.5c-2.2 2-2.2 4 0 5.5s2.2 3.5 0 5.5" fill="none" stroke="#8a5f2c" stroke-width="1.2"/>',
+    findik: '<path d="M12 21.5c-5 0-8-4-8-8 0-3 3-5 8-5s8 2 8 5c0 4-3 8-8 8z" fill="#a8642a"/><path d="M5 11.5c0-4.5 3-7.5 7-7.5s7 3 7 7.5c-4-2-10-2-14 0z" fill="#dcb97f"/><path d="M12 4V2.5" stroke="#8a5f2c" stroke-width="1.6"/>',
+    badem: '<path d="M12 2.5c5 4 7 9.5 5 14.5-1 3-3 4.5-5 4.5s-4-1.5-5-4.5c-2-5 0-10.5 5-14.5z" fill="#c98b4e"/><path d="M12 7v11M9.5 10v6M14.5 10v6" stroke="#8f5a28" stroke-width=".9" fill="none"/>',
+    antep: '<path d="M3.5 13c0-5 4-8 8.5-8s8.5 3 8.5 8-4 6.5-8.5 6.5S3.5 18 3.5 13z" fill="#e6d2a8"/><path d="M5.5 13c3-2.6 10-2.6 13 0-2 3.4-11 3.4-13 0z" fill="#8bbf4f"/>',
+    kaju: '<path d="M6 5.5c5-3 12.5 0 12.5 6.5S13 21 8 19c-2.2-1-2.2-3.2 0-4 3-1 4-3 2-5-2-1.2-5 0-6-2 0-1.2 1-2 2-2.5z" fill="#e3c79a"/>',
+    leblebi: '<circle cx="8" cy="9" r="4.3" fill="#e8c860"/><circle cx="16" cy="10" r="4.3" fill="#dcb84a"/><circle cx="11.5" cy="16.5" r="4.3" fill="#f0d474"/><circle cx="7" cy="8" r="1" fill="#fff" opacity=".5"/>',
+    incir: '<path d="M12 5c5 3 8 7 8 11 0 3.5-3 5.5-8 5.5S4 19.5 4 16c0-4 3-8 8-11z" fill="#6e3f8f"/><path d="M12 5.500V2.5" stroke="#5d8a3a" stroke-width="2.2"/><path d="M9 12c-1 2-1 4 0 6" stroke="#9a6bbb" fill="none"/>',
+    kuruincir: '<ellipse cx="12" cy="14" rx="9" ry="6.5" fill="#b98a55"/><path d="M12 8V5" stroke="#7a5a30" stroke-width="2.2"/><circle cx="12" cy="14.5" r="2" fill="#8f6535"/>',
+    nar: '<circle cx="12" cy="13.5" r="8" fill="#c8283c"/><path d="M8.800 6.500l.7-3.5 2.5 2 2.500-2 .7 3.500z" fill="#a01c2e"/><circle cx="9" cy="11.5" r="1.3" fill="#ffd0d6" opacity=".7"/>',
+    hurma: '<ellipse cx="12" cy="12.5" rx="5.5" ry="9" fill="#7a4420" transform="rotate(22 12 12.500)"/><path d="M10.5 6c2 3.5 2.5 8 1 12" stroke="#b07540" fill="none"/>',
+    cay: '<path d="M8 3h8c0 3-2 4.200-2 6s3 3.200 3 7c0 3-2 4-5 4s-5-1-5-4c0-3.800 3-5.200 3-7S8 6 8 3z" fill="#b3261e"/><path d="M8 3h8c0 1-.2 1.800-.6 2.500H8.600C8.200 4.800 8 4 8 3z" fill="#fff" opacity=".45"/><path d="M8 3h8c0 3-2 4.200-2 6s3 3.200 3 7c0 3-2 4-5 4s-5-1-5-4c0-3.800 3-5.200 3-7S8 6 8 3z" fill="none" stroke="#e8f4ee" stroke-opacity=".6" stroke-width=".8"/><ellipse cx="12" cy="21.3" rx="8" ry="1.5" fill="#cfd8dc"/>',
+    baklava: '<path d="M12 2.500l9.5 9.500-9.5 9.500L2.5 12z" fill="#d99a2b"/><path d="M12 6l6 6-6 6-6-6z" fill="#f0c35a"/><circle cx="12" cy="12" r="2.3" fill="#7fb53c"/>',
+    kunefe: '<circle cx="12" cy="12" r="9.5" fill="#e08a2c"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#f6c070" stroke-width="1.5" stroke-dasharray="2 1.5"/><circle cx="12" cy="12" r="2.6" fill="#7fb53c"/>',
+    lokum: '<rect x="3" y="10" width="10" height="10" rx="2" fill="#f29bb7"/><rect x="11" y="4" width="10" height="10" rx="2" fill="#f8cbd9"/><circle cx="7" cy="14" r=".8" fill="#fff"/><circle cx="16" cy="8" r=".8" fill="#fff"/><circle cx="9.5" cy="17" r=".8" fill="#fff"/>',
+    helva: '<path d="M3 15l4-8h10l4 8z" fill="#dcc8a0"/><path d="M3 15h18v4H3z" fill="#bfa878"/><circle cx="10" cy="11" r="1" fill="#7fb53c"/><circle cx="14.5" cy="12.5" r="1" fill="#7fb53c"/>',
+    cips: '<path d="M2.5 9c4-3.5 8 3 12.5 0 2 4.5 0 10-5.5 10S1.5 14 2.5 9z" fill="#f2c94c"/><path d="M11 5c4-2 7 1 10.5 0 1 5-1.5 9.500-6 10" fill="#e0b030"/>',
+    kraker: '<rect x="4" y="4" width="16" height="16" rx="2.5" fill="#e3b56b"/><circle cx="9" cy="9" r="1" fill="#a97a35"/><circle cx="15" cy="9" r="1" fill="#a97a35"/><circle cx="9" cy="15" r="1" fill="#a97a35"/><circle cx="15" cy="15" r="1" fill="#a97a35"/>',
+    borek: '<path d="M2.5 19h19L12 4.500z" fill="#e0a83e"/><path d="M6.300 14.500h11.400M8.800 10.500h6.4" stroke="#b97a1c" stroke-width="1.3"/><circle cx="12" cy="17" r=".9" fill="#3a2a10"/>',
+    suborek: '<rect x="3.5" y="6" width="17" height="12" rx="2" fill="#f0d27a"/><path d="M3.5 10h17M3.5 14h17" stroke="#c99a2e" stroke-width="1.2"/><rect x="3.5" y="6" width="17" height="2.5" rx="1.2" fill="#d9a03a"/>',
+    acma: '<circle cx="12" cy="12" r="9" fill="#c98434"/><circle cx="12" cy="12" r="3" fill="#0b1512"/><path d="M5.5 8c3 .5 4.5 2 4.5 4M18.5 8c-3 .5-4.5 2-4.5 4M8 18.500c1-2.5 2.500-3.5 4-3.5" stroke="#8a5418" fill="none" stroke-width="1.1"/>',
+    pide: '<path d="M1.5 12c3-5.5 7-6.5 10.500-6.500S19.5 6.5 22.5 12c-3 5.500-7 6.500-10.5 6.500S4.5 17.5 1.5 12z" fill="#d9a55a"/><ellipse cx="12" cy="12" rx="7.5" ry="3.4" fill="#a8442a"/><circle cx="9.5" cy="12" r="1" fill="#7fb53c"/><circle cx="14" cy="11.5" r="1" fill="#f0d27a"/>',
+    sucuk: '<circle cx="8.5" cy="12" r="6.5" fill="#9c2f22"/><circle cx="16" cy="12" r="6.5" fill="#b83a2a"/><circle cx="14.5" cy="10" r=".9" fill="#f3d9c9"/><circle cx="17.5" cy="13.5" r=".9" fill="#f3d9c9"/><circle cx="15" cy="15" r=".7" fill="#f3d9c9"/>',
+    cigkofte: '<path d="M2.5 18.500c6 2.5 13 2.5 19 0" stroke="#7fb53c" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="8" cy="12.5" rx="5.2" ry="3.3" fill="#9a3b22" transform="rotate(-18 8 12.500)"/><ellipse cx="16" cy="11.5" rx="5.2" ry="3.3" fill="#b04a2a" transform="rotate(14 16 11.500)"/>',
+    mucver: '<ellipse cx="9" cy="10" rx="6.5" ry="4.3" fill="#b8a23a"/><ellipse cx="15" cy="15" rx="6.5" ry="4.3" fill="#c9b24a"/><circle cx="7.5" cy="9.5" r=".9" fill="#5d8a3a"/><circle cx="11" cy="11" r=".9" fill="#5d8a3a"/><circle cx="14" cy="14.5" r=".9" fill="#5d8a3a"/><circle cx="17.5" cy="16" r=".9" fill="#5d8a3a"/>',
+    kisir: kase('#d2622a', '#7fb53c'), humus: kase('#e3cfa0', '#c98b2e'), yogurt: kase('#ffffff'), haydari: kase('#ffffff', '#5d8a3a'),
+    salgam: bardak('#7b1f4b'), kefir: bardak('#f3f3ee'), boza: bardak('#e8d6a8'),
+    bar: '<rect x="2.5" y="8" width="19" height="8" rx="2" fill="#7a4a26"/><path d="M2.5 10a2 2 0 0 1 2-2H10v8H4.500a2 2 0 0 1-2-2z" fill="#d9dfe0"/><path d="M13 8v8M16.5 8v8" stroke="#5a3418"/>',
+    enerji: '<rect x="7" y="2.5" width="10" height="19" rx="2.5" fill="#3a7bd5"/><path d="M13 6.500l-3.200 5.500h2.700l-1 5.5 4.200-6.500h-2.900z" fill="#ffe14d"/>'
+  };
+})();

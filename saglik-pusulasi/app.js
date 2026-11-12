@@ -63,6 +63,7 @@ function simge(y) {
   var n = y.n; if (simgeBellek[n]) return simgeBellek[n];
   var d = duz(n), a = duz(n.replace(/\s*\(.*$/, '')).trim(), r = '';
   for (var i = 0; i < SP.SIMGE.length && !r; i++) { var k = SP.SIMGE[i][0]; if (k.charAt(0) === '=' ? a === k.slice(1) : d.indexOf(k) >= 0) r = SP.SIMGE[i][1]; }
+  if (r.charAt(0) === '@') r = '<svg class="yi" viewBox="0 0 24 24" aria-hidden="true">' + SP.CIZIM[r.slice(1)] + '</svg>';
   return (simgeBellek[n] = r || stil(katBul(y))[0]);
 }
 var ETKIN = [[1.2, 'Hareketsiz', 'Masa başı iş, çok az yürüyüş'], [1.375, 'Az hareketli', 'Haftada 1–3 gün hafif egzersiz ya da günlük yürüyüş'], [1.55, 'Orta hareketli', 'Haftada 3–5 gün egzersiz'], [1.725, 'Çok hareketli', 'Haftada 6–7 gün yoğun egzersiz ya da ayakta çalışılan iş'], [1.9, 'Aşırı hareketli', 'Ağır bedensel iş ya da günde iki antrenman']];
