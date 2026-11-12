@@ -69,6 +69,7 @@ Et döner dürüm|1 adet|560|28|26|50
 Çiğ köfte (etsiz)|1 porsiyon (100 g)|190|5|4|34
 Çiğ köfte dürüm|1 adet|380|9|8|68
 Balık ekmek|1 adet|420|24|16|44
+Sandviç (peynirli)|1 adet|320|13|12|40
 Hamburger|1 adet|500|25|25|42
 Tavuk burger|1 adet|450|22|20|45
 Pizza|1 dilim|270|11|10|33
@@ -109,6 +110,7 @@ Ayran|1 bardak (200 ml)|75|3.5|4|5.5
 Süt (tam yağlı)|1 bardak (200 ml)|125|6.5|7|9.5
 Süt (yarım yağlı)|1 bardak (200 ml)|95|6.5|3.2|9.6
 Kefir|1 bardak (200 ml)|110|6.5|6|8
+Meyveli yoğurt|1 kap (125 g)|120|4|3|19
 Zeytinyağı|1 yemek kaşığı (10 g)|90|0|10|0`],
 ['Meyve', `Elma|1 orta boy|80|0.4|0.3|21
 Muz|1 orta boy|105|1.3|0.4|27
@@ -126,13 +128,18 @@ Taze incir|2 adet|75|0.8|0.3|19
 Nar|yarım|80|1.5|1|18
 Kuru kayısı|4 adet (30 g)|72|1|0.2|19
 Hurma|3 adet (24 g)|68|0.6|0.1|18
-Kuru üzüm|1 avuç (30 g)|90|0.9|0.1|24`],
+Kuru üzüm|1 avuç (30 g)|90|0.9|0.1|24
+Kuru incir|2 adet (30 g)|75|1|0.3|19
+Kuru erik|4 adet (30 g)|72|0.7|0.1|19`],
 ['Kuruyemiş', `Ceviz|3 tam (15 g)|98|2.3|9.8|2
 Badem|10 adet (12 g)|70|2.5|6|2.6
 Fındık|10 adet (12 g)|75|1.8|7.3|2
 Antep fıstığı (iç)|1 avuç (25 g)|140|5|11|7
 Ay çekirdeği (iç)|1 avuç (30 g)|175|6|15|6
-Leblebi|1 avuç (30 g)|110|6|2|18`],
+Leblebi|1 avuç (30 g)|110|6|2|18
+Kabak çekirdeği (iç)|1 avuç (25 g)|145|7.5|12|2.5
+Kaju|1 avuç (25 g)|145|4.5|11|7.5
+Yer fıstığı|1 avuç (25 g)|150|6.5|12.5|4`],
 ['Tatlı ve atıştırmalık', `Baklava|1 dilim (40 g)|170|2.5|10|18
 Künefe|1 porsiyon|420|9|22|48
 Sütlaç|1 kase|240|6|6|40
@@ -149,7 +156,13 @@ Bitter çikolata|4 kare (25 g)|140|2|10.5|11
 Gofret|1 adet (35 g)|180|2.5|10|21
 Cips|1 küçük paket (40 g)|215|2.5|14|21
 Patlamış mısır|1 kase (30 g)|130|3|6|17
-Kraker|1 küçük paket (40 g)|190|4|8|26`],
+Kraker|1 küçük paket (40 g)|190|4|8|26
+Galeta|2 adet (20 g)|80|2.5|1.5|14
+Grissini|4 adet (20 g)|85|2.5|2|14
+Protein bar|1 adet (45 g)|180|15|6|17
+Puding|1 kase|160|4|4.5|26
+Muhallebi|1 kase|200|5|5|34
+Profiterol|1 porsiyon|330|6|18|36`],
 ['İçecek', `Çay (şekersiz)|1 bardak|1|0|0|0
 Çay (1 şekerli)|1 bardak|12|0|0|3
 Yeşil çay (şekersiz)|1 fincan|2|0|0|0.3
@@ -163,8 +176,12 @@ Zencefilli bitki çayı (şekersiz)|1 fincan|3|0|0|0.6
 Bitki çayı (1 tatlı kaşığı ballı)|1 fincan|32|0|0|8.6
 Türk kahvesi (sade)|1 fincan|5|0.2|0.2|0.5
 Türk kahvesi (orta)|1 fincan|25|0.2|0.2|5.5
+Türk kahvesi (şekerli)|1 fincan|40|0.2|0.2|9.5
 Filtre kahve (sade)|1 fincan|3|0.3|0|0
 Sütlü kahve (latte)|1 orta boy|140|8|7|11
+Cappuccino|1 orta boy|110|6|6|8
+Americano (sade)|1 orta boy|5|0.3|0|0.5
+Sıcak çikolata|1 fincan (200 ml)|190|7|7|25
 Hazır kahve (3'ü 1 arada)|1 paket|75|0.5|2|13
 Kesme şeker|1 adet|12|0|0|3
 Taze portakal suyu|1 bardak (200 ml)|90|1.4|0.4|21
@@ -172,6 +189,8 @@ Hazır meyve suyu|1 bardak (200 ml)|95|0.5|0|23
 Gazlı içecek (şekerli)|1 kutu (330 ml)|140|0|0|35
 Gazlı içecek (şekersiz)|1 kutu (330 ml)|1|0|0|0
 Limonata|1 bardak (200 ml)|100|0|0|25
+Soğuk çay (şekerli)|1 kutu (330 ml)|100|0|0|25
+Enerji içeceği|1 kutu (250 ml)|115|0|0|28
 Şalgam suyu|1 bardak (200 ml)|15|0.5|0|3
 Maden suyu (sade)|1 şişe|0|0|0|0
 Salep|1 fincan|190|6|5|30
