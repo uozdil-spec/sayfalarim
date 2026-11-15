@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f58e6"/><stop offset="1" stop-color="#14245f"/></linearGradient><clipPath id="c"><rect width="512" height="512" rx="112"/></clipPath></defs>
+<g clip-path="url(#c)"><rect width="512" height="512" fill="url(#bg)"/><g stroke="#ffffff" stroke-opacity=".10" stroke-width="2" fill="none"><path d="M64 0V512M0 64H512"/><path d="M128 0V512M0 128H512"/><path d="M192 0V512M0 192H512"/><path d="M256 0V512M0 256H512"/><path d="M320 0V512M0 320H512"/><path d="M384 0V512M0 384H512"/><path d="M448 0V512M0 448H512"/></g>
+<g transform="translate(256 256) scale(1) translate(-256 -256)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M118 372a190 190 0 0 0 276 0" stroke="#ff9a3d" stroke-width="20"/>
+<path d="M236 150L150 392M276 150l86 242" stroke="#ffffff" stroke-width="26"/>
+<path d="M196 262h120" stroke="#ffffff" stroke-opacity=".55" stroke-width="16"/>
+<circle cx="256" cy="116" r="38" fill="#14245f" stroke="#ffffff" stroke-width="24"/>
+<rect x="135" y="377" width="30" height="30" rx="5" fill="#ff9a3d" stroke="none"/>
+</g></g></svg>

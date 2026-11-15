@@ -1,6 +1,6 @@
 /* OYUN LİSTESİ — menüye yeni oyun eklemek için buraya bir satır ekle.
    ad: görünen ad · yol: oyunun adresi (klasörse sonu / ile biter) · ikon: simge dosyası
-   not: tek cümlelik açıklama · k: kategoriler (Kart, Masa, Kelime, Bulmaca, Eğlence, Online)
+   not: tek cümlelik açıklama · k: kategoriler (Kart, Masa, Kelime, Bulmaca, Eğlence, Sağlık, Araç, Online)
    on:1 → online oynanabilir, yoksa "Tek kişilik" görünür. et: varsa etiket olarak o yazılır. */
 window.OYUNLAR = [
     {ad:'Okey',            yol:'okey/',                 ikon:'okey/icons/icon.svg',        not:'Bilgisayara karşı ya da 4 kişi online. Reklamsız.',         k:['Masa','Online'], on:1},
@@ -22,5 +22,6 @@ window.OYUNLAR = [
     {ad:'Sekiz Sıra',      yol:'sekizsira/',            ikon:'sekizsira/icons/icon.svg',   not:'Sekiz sıralı kart oyunu; OLED ekranlar için yanık korumalı.', k:['Kart']},
     {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']},
     {ad:'Domino',          yol:'domino/',               ikon:'domino/ikon.svg',            not:'3D masa, yapay zekâ ya da arkadaşlarla online domino; sohbet, ipuçları, kılavuz.', k:['Masa','Online'], on:1},
-    {ad:'Sağlık Pusulası', yol:'saglik-pusulasi/',      ikon:'saglik-pusulasi/ikon.svg',   not:'Kalori, su, hareket ve kilo takibi; kişiye özel hedefler, uyarılar ve sağlıklı yaşam bilgileri.', k:['Sağlık'], et:'Kişisel'}
+    {ad:'Sağlık Pusulası', yol:'saglik-pusulasi/',      ikon:'saglik-pusulasi/ikon.svg',   not:'Kalori, su, hareket ve kilo takibi; kişiye özel hedefler, uyarılar ve sağlıklı yaşam bilgileri.', k:['Sağlık'], et:'Kişisel'},
+    {ad:'Pergel 3B Çizim', yol:'pergel/',               ikon:'pergel/ikon.svg',            not:'Tarayıcıda 3B çizim: çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Türkçe / İngilizce.', k:['Araç'], et:'Çizim'}
 ];

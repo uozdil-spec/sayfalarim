@@ -1,0 +1,17 @@
+{
+  "name": "Pergel 3B Çizim",
+  "short_name": "Pergel",
+  "description": "Tarayıcıda 3B çizim: çizgi, katı, katman, ölçü; DXF ve DWG açar. by uozdil",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#141a23",
+  "theme_color": "#16307a",
+  "icons": [
+    {"src": "ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "ikon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
