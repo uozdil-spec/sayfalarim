@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261115-2228">
+<meta name="surum" content="20261115-2254">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261115-2228" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261115-2228" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261115-2228">
-<link rel="manifest" href="manifest.webmanifest?v=20261115-2228">
+<link rel="icon" href="ikon.svg?v=20261115-2254" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261115-2254" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261115-2254">
+<link rel="manifest" href="manifest.webmanifest?v=20261115-2254">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -113,6 +113,27 @@ a.tb{text-decoration:none}
 #hud kbd{font:500 10px/1 var(--f-mono);opacity:.7}
 #toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);max-width:min(520px,calc(100% - 120px));background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:8px;font-weight:500;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s;text-align:center}
 #toast.on{opacity:1}
+#hint{position:absolute;left:10px;top:10px;max-width:min(320px,calc(100% - 200px));display:none;background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;box-shadow:var(--shadow);padding:8px 30px 9px 11px;line-height:1.4}
+#hint.on{display:block}
+#hint b{display:block;font:600 11px var(--f-cond);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+#hint span{font-size:12.5px}
+#hint button{position:absolute;right:4px;top:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--ink-2);border-radius:5px}
+#hint button:hover{background:var(--accent-soft)}
+#hint svg.i{width:14px;height:14px}
+.guide details{border:1px solid var(--rule);border-radius:8px;margin:6px 0;background:var(--sheet)}
+.guide summary{cursor:pointer;padding:9px 12px;font-weight:600;list-style-position:inside}
+.guide details[open] summary{border-bottom:1px solid var(--rule)}
+.guide ol{margin:8px 0 10px;padding:0 14px 0 30px}
+.guide li{margin:5px 0}
+kbd{font:500 11.5px var(--f-mono);background:var(--accent-soft);color:var(--ink);border-radius:4px;padding:1px 5px;white-space:nowrap}
+#tour{position:fixed;inset:0;z-index:30}
+#tourSpot{position:fixed;border-radius:10px;box-shadow:0 0 0 9999px rgba(10,14,20,.62);outline:2px solid var(--accent);transition:left .2s,top .2s,width .2s,height .2s}
+#tourCard{position:fixed;width:min(330px,calc(100vw - 24px));background:var(--panel);border:1px solid var(--rule);border-radius:12px;box-shadow:var(--shadow);padding:14px 16px 12px}
+#tourCard .n{font:500 11px var(--f-mono);color:var(--ink-2)}
+#tourCard h3{margin:2px 0 6px;font:600 15px var(--f-cond);letter-spacing:.06em;text-transform:uppercase}
+#tourCard p{margin:0 0 12px;line-height:1.5}
+#tourCard .acts{display:flex;align-items:center;gap:8px}
+#tourCard .lnk{color:var(--ink-2);font-weight:500;padding:6px 2px}
 #busy{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:color-mix(in srgb,var(--sheet) 80%,transparent);font:600 14px var(--f-cond);letter-spacing:.1em;text-transform:uppercase}
 #busy.on{display:flex}
 
@@ -210,13 +231,17 @@ button.cell kbd{font:400 9px var(--f-mono);opacity:.6;letter-spacing:0}
   #side.open{transform:none}
   #log{height:20px;padding-top:2px}
   #cmdIn{font-size:16px}
+  #cmd{flex-wrap:wrap;row-gap:4px}
+  #prompt{flex-basis:100%;max-width:none;white-space:normal}
   #hud{bottom:10px}
   #hud kbd{display:none}
   #toast{max-width:calc(100% - 24px);top:54px}
+  #hint{max-width:calc(100% - 20px);top:auto;bottom:58px}
+  #hint span{font-size:12px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
-<script async src="../sayac.js?v=20261115-2228"></script>
+<script async src="../sayac.js?v=20261115-2254"></script>
 </head>
 <body>
 <div id="app">
@@ -237,6 +262,7 @@ button.cell kbd{font:400 9px var(--f-mono);opacity:.6;letter-spacing:0}
     <canvas id="gl"></canvas>
     <canvas id="ov"></canvas>
     <div id="viewbar"></div>
+    <div id="hint"></div>
     <div id="hud"></div>
     <div id="toast" role="status"></div>
     <div id="busy"></div>
@@ -323,6 +349,7 @@ const IC={
  polygon:'<path d="M12 3.500l8.100 5.900-3.100 9.500H7l-3.100-9.500z"/>',
  ellipse:'<ellipse cx="12" cy="12" rx="9" ry="5.500"/>'+N(12,12),
  hatch:'<rect x="4" y="4" width="16" height="16"/><path d="M4 12l8-8M4 20L20 4M12 20l8-8"/>',
+ book:'<path d="M4 5.500A2.500 2.500 0 0 1 6.500 3H20v15H6.500A2.500 2.500 0 0 0 4 20.500z"/><path d="M4 20.500A2.500 2.500 0 0 0 6.500 21H20v-3M8 7.500h8M8 11h6"/>',
  theme:'<circle cx="12" cy="12" r="8.500"/><path d="M12 3.500v17a8.500 8.500 0 0 0 0-17z" fill="currentColor"/>',
  full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
  grid:'<rect x="4" y="4" width="6.500" height="6.500" rx="1.400"/><rect x="13.500" y="4" width="6.500" height="6.500" rx="1.400"/><rect x="4" y="13.500" width="6.500" height="6.500" rx="1.400"/><rect x="13.500" y="13.500" width="6.500" height="6.500" rx="1.400"/>',
@@ -406,7 +433,10 @@ const I18N={tr:{
  hTitle:'Pergel 3D · Help',
  names:{tree:'Tree',conifer:'Conifer',shrub:'Shrub',bench:'Bench',lamp:'Lamp post',bin:'Litter bin',planter:'Planter'}
 }};
-const S={lang:'tr',gridSnap:true,osnap:true,ortho:false,gridStep:10,elev:0,textH:25,persp:true,dimH:18,offD:50,filR:50,polyN:6,hPat:'lines',hGap:20,hAng:45,lts:1};
+Object.assign(I18N.tr,{"guide": "Kılavuz", "hints": "İpuçları", "on": "açık", "off": "kapalı", "hideHints": "İpuçlarını kapat", "hintsOff": "İpuçları kapatıldı. Yan paneldeki Diğer bölümünden tekrar açabilirsin.", "tourStart": "Tanıtım turunu başlat", "skip": "Atla", "next": "İleri", "back": "Geri", "done": "Bitir", "gTitle": "Pergel Kılavuzu", "tr1": "Araçlar|Çizim, ölçü, katı ve düzenleme araçları burada. Bir araca basınca ne yapacağını çizim alanındaki ipucu ve alttaki komut satırı söyler.", "tr2": "Çizim alanı|Noktaları buraya tıklayarak koyarsın. Sağ tuşla sürükleyince görünüm döner, tekerlek yakınlaştırır. Telefonda iki parmakla kaydırıp yakınlaştırırsın.", "tr3": "Görünümler|Üst, Ön, Sağ ve 3B hazır bakışlardır. Sığdır tüm çizimi ekrana getirir.", "tr4": "Panel|Katmanlar, seçili nesnenin özellikleri ve hazır nesneler burada. Telefonda bu düğmeyle açılır.", "tr5": "Komut satırı|Ölçüyü buraya yazarsın: 250 yazıp Enter’a basınca fare yönünde 250 cm çizer. Komut adı da yazabilirsin: çizgi, daire, kutu.", "tr6": "Durum çubuğu|İmlecin koordinatları, ızgara ve yakalama düğmeleri, ızgara adımı ve çalışma kotu burada.", "tr7": "Kılavuz|Adım adım anlatım burada. Bu turu kılavuz penceresinden istediğin zaman tekrar başlatabilirsin.", "h_select": "Nesneye tıkla. Boş yerde sürükle: sağa doğru içinde kalanları, sola doğru değenleri seçer. Shift ile seçime eklersin.", "h_orbit": "Sürükleyerek görünümü döndür. Bitince Esc.", "h_measure": "İki noktaya tıkla. Mesafe ve açı komut satırının üstünde yazılır.", "h_line": "Noktalara sırayla tıkla. Belirli uzunluk için fareyi yöne götür, sayıyı yaz, Enter’a bas. Boş Enter bitirir.", "h_poly": "Noktalara tıkla. K kapatır, Enter bitirir. Sonuç tek parça olur; alanı Özellikler’de görünür.", "h_rect": "İki karşı köşeye tıkla. Ölçüyle çizmek için ilk köşeden sonra @en,boy yaz (örn. @500,300).", "h_circle": "Merkeze tıkla, sonra yarıçapı tıkla ya da yaz.", "h_arc": "Üç nokta: başlangıç, yay üzerinde bir nokta, bitiş.", "h_polygon": "Kenar sayısını yaz, merkeze tıkla, sonra köşe mesafesini tıkla ya da yaz.", "h_ellipse": "Merkeze, birinci eksenin ucuna tıkla; sonra ikinci yarı ekseni tıkla ya da yaz.", "h_text": "Konuma tıkla, yazıyı alttaki satıra yazıp Enter’a bas.", "h_hatch": "Kapalı çoklu çizgi veya daire seç, Enter’a bas. Deseni, açıyı ve aralığı Özellikler’den değiştir.", "h_dimlin": "Ölçülecek iki noktaya, sonra ölçü çizgisinin duracağı yere tıkla. Yere göre yatay ya da dikey ölçer.", "h_dimali": "İki noktaya ve ölçü çizgisinin yerine tıkla. İki nokta arasındaki gerçek mesafeyi yazar.", "h_dimang": "Köşe noktasına, iki kolun üzerine ve yayın duracağı yere tıkla.", "h_dimrad": "Daire ya da yayın üzerine tıkla, sonra yazının duracağı yere tıkla.", "h_dimdia": "Daire ya da yayın üzerine tıkla, sonra yazının duracağı yere tıkla.", "h_box": "Tabanın iki köşesine tıkla, sonra yüksekliği yaz ya da fareyi yukarı çek.", "h_cyl": "Merkeze tıkla, yarıçapı ver, sonra yüksekliği yaz ya da fareyi yukarı çek.", "h_cone": "Merkeze tıkla, yarıçapı ver, sonra yüksekliği yaz ya da fareyi yukarı çek.", "h_sphere": "Merkeze tıkla, yarıçapı tıkla ya da yaz. Küre çalışma düzlemine oturur.", "h_extrude": "Kapalı çoklu çizgi veya daire seç, Enter’a bas, yüksekliği yaz.", "h_move": "Nesneleri seç, Enter. Taban noktasına, sonra hedefe tıkla.", "h_copy": "Nesneleri seç, Enter. Taban noktasına, sonra her kopya için hedefe tıkla. Enter bitirir.", "h_rotate": "Nesneleri seç, Enter. Dönme merkezine tıkla, açıyı derece olarak yaz.", "h_scale": "Nesneleri seç, Enter. Sabit kalacak noktaya tıkla, katsayıyı yaz (2 = iki katı, 0.5 = yarısı).", "h_mirror": "Nesneleri seç, Enter. Ayna ekseninin iki noktasına tıkla. Asıl nesne yerinde kalır.", "h_array": "Nesneleri seç, Enter. Sütun ve satır sayısını, sonra sütun ve satır aralığını yaz.", "h_offset": "Mesafeyi yaz, nesneye tıkla, sonra hangi tarafa olacağına tıkla.", "h_trim": "Silinecek parçaya tıkla. Parça en yakın kesişim noktalarından kesilir.", "h_extend": "Çizginin uzatılacak ucuna yakın tıkla. Karşılaştığı ilk nesneye kadar uzar.", "h_fillet": "Yarıçapı yaz, sonra iki çizgiye tıkla. 0 yazarsan keskin köşe yapar.", "h_insert": "Yerleştirmek için tıkla. Ölçek ve açıyı Özellikler’den değiştir. Enter bitirir."});
+Object.assign(I18N.en,{"guide": "Guide", "hints": "Tips", "on": "on", "off": "off", "hideHints": "Hide tips", "hintsOff": "Tips are off. Turn them back on under More in the side panel.", "tourStart": "Start the tour", "skip": "Skip", "next": "Next", "back": "Back", "done": "Finish", "gTitle": "Pergel Guide", "tr1": "Tools|Drawing, dimension, solid and editing tools live here. After you pick one, the tip in the drawing area and the command line below tell you what to do.", "tr2": "Drawing area|Click here to place points. Drag with the right button to orbit, use the wheel to zoom. On a phone, pan and zoom with two fingers.", "tr3": "Views|Top, Front, Right and 3D are ready-made views. Fit brings the whole drawing into view.", "tr4": "Panel|Layers, the properties of the selected object and the ready-made objects. On a phone this button opens it.", "tr5": "Command line|Type sizes here: type 250 and press Enter to draw 250 cm towards the cursor. You can also type a command name: line, circle, box.", "tr6": "Status bar|Cursor coordinates, the grid and snap switches, the grid step and the working elevation.", "tr7": "Guide|Step-by-step instructions are here. You can restart this tour from the guide window at any time.", "h_select": "Click an object. Drag on empty space: to the right selects what is fully inside, to the left what it touches. Shift adds to the selection.", "h_orbit": "Drag to orbit the view. Press Esc when done.", "h_measure": "Click two points. Distance and angle appear above the command line.", "h_line": "Click points in turn. For an exact length, aim the cursor, type the number and press Enter. An empty Enter finishes.", "h_poly": "Click points. C closes, Enter finishes. The result is one object; its area shows in Properties.", "h_rect": "Click two opposite corners. For exact size, type @width,depth after the first corner (e.g. @500,300).", "h_circle": "Click the centre, then click or type the radius.", "h_arc": "Three points: start, a point on the arc, end.", "h_polygon": "Type the number of sides, click the centre, then click or type the corner distance.", "h_ellipse": "Click the centre and the end of the first axis; then click or type the second half axis.", "h_text": "Click the position, type the text in the line below and press Enter.", "h_hatch": "Select a closed polyline or circle and press Enter. Change pattern, angle and spacing in Properties.", "h_dimlin": "Click the two points to measure, then where the dimension line should sit. It measures horizontally or vertically depending on that position.", "h_dimali": "Click two points and the dimension line position. It shows the true distance between the points.", "h_dimang": "Click the corner point, a point on each leg, and where the arc should sit.", "h_dimrad": "Click on a circle or arc, then where the text should sit.", "h_dimdia": "Click on a circle or arc, then where the text should sit.", "h_box": "Click two corners of the base, then type the height or drag upwards.", "h_cyl": "Click the centre, give the radius, then type the height or drag upwards.", "h_cone": "Click the centre, give the radius, then type the height or drag upwards.", "h_sphere": "Click the centre, then click or type the radius. The sphere sits on the working plane.", "h_extrude": "Select a closed polyline or circle, press Enter, type the height.", "h_move": "Select objects, Enter. Click a base point, then the target.", "h_copy": "Select objects, Enter. Click a base point, then a target for each copy. Enter finishes.", "h_rotate": "Select objects, Enter. Click the rotation centre, type the angle in degrees.", "h_scale": "Select objects, Enter. Click the fixed point, type the factor (2 = double, 0.5 = half).", "h_mirror": "Select objects, Enter. Click two points of the mirror axis. The original stays.", "h_array": "Select objects, Enter. Type the number of columns and rows, then the column and row spacing.", "h_offset": "Type the distance, click the object, then click the side.", "h_trim": "Click the part to remove. It is cut at the nearest intersections.", "h_extend": "Click near the end of the line to extend. It grows to the first object it meets.", "h_fillet": "Type the radius, then click two lines. 0 makes a sharp corner.", "h_insert": "Click to place. Change scale and angle in Properties. Enter finishes."});
+const GUIDE={"tr": [["1 · İlk çizim", ["Soldaki araçlardan <b>Çizgi</b>’ye bas (ya da klavyeden <kbd>L</kbd> yazıp Enter).", "Çizim alanında bir noktaya, sonra ikinci noktaya tıkla. Tıklamaya devam ettikçe çizgi uzar.", "<kbd>Enter</kbd> zinciri bitirir, <kbd>Esc</kbd> araçtan çıkar.", "Yanlış olduysa <kbd>Ctrl+Z</kbd> geri alır.", "Telefonda parmağını basılı sürükle, doğru yere gelince bırak; nokta bıraktığın yere konur."]], ["2 · Ölçüyle çizim", ["İlk noktayı koy, fareyi gideceğin yöne götür, <kbd>250</kbd> yazıp Enter’a bas: o yönde 250 cm çizer.", "Son noktaya göre: <kbd>@200,0</kbd> sağa 200 cm, <kbd>@0,-150</kbd> aşağı 150 cm.", "Uzunluk ve açı: <kbd>@200&lt;45</kbd> 200 cm, 45°.", "Belirli bir yere: <kbd>100,50</kbd> (X,Y). Ondalık için nokta kullan: <kbd>12.5</kbd>.", "Dikdörtgende ilk köşeden sonra <kbd>@500,300</kbd> yazarsan 5 × 3 m olur.", "<b>Dik</b> (<kbd>F8</kbd>) çizgiyi yatay ya da dikeye kilitler. <b>Izgara</b> noktaları adım aralığına oturtur; serbest çizmek için kapat."]], ["3 · Görünümü yönetme", ["<b>Sağ tuşla sürükle</b>: görünümü döndürür. <b>Orta tuşla sürükle</b>: kaydırır. <b>Tekerlek</b>: yakınlaştırır.", "Sağ üstteki <b>Üst / Ön / Sağ / 3B</b> hazır bakışlardır. Plan çizerken Üst’ü kullan.", "<b>Sığdır</b> tüm çizimi ekrana getirir. Çizimi kaybedersen buna bas.", "Telefonda iki parmakla kaydırıp yakınlaştır. Döndürmek için <b>Döndürerek bak</b> aracını seç ve tek parmakla sürükle."]], ["4 · 3B katılar", ["<b>Kutu</b>: tabanın iki köşesine tıkla, yüksekliği yaz (örn. <kbd>90</kbd>).", "<b>Silindir / Koni</b>: merkez, yarıçap, yükseklik. <b>Küre</b>: merkez ve yarıçap.", "<b>Yükselt</b>: kapalı bir çoklu çizgi ya da daire seç, Enter’a bas, yüksekliği yaz. Duvar, havuz, kasa gibi şekiller böyle yapılır.", "Bir şeyi yukarıda çizmek için durum çubuğundaki <b>Kot</b> değerini değiştir (örn. 100). Çizilmiş bir nesneyi yükseltmek için Özellikler’deki <b>Kot (Z)</b> alanını kullan."]], ["5 · Ölçülendirme", ["<b>Doğrusal ölçü</b>: iki noktaya tıkla, sonra ölçü çizgisinin duracağı yere. Üste ya da alta çekersen yatay, yana çekersen dikey ölçer.", "<b>Hizalı ölçü</b>: eğik bir kenarın gerçek uzunluğunu yazar.", "<b>Açı ölçüsü</b>: köşe, birinci kol, ikinci kol, sonra yayın yeri.", "<b>Yarıçap / Çap</b>: daireye tıkla, yazının yerini göster.", "Yazı küçük ya da büyükse: hiçbir şey seçili değilken Özellikler’deki <b>Ölçü yazı yüks.</b> değerini değiştir. Tek bir ölçünün yazısını seçip Özellikler’den değiştirebilirsin.", "Sadece ölçmek istiyorsan <b>Ölç</b> aracını kullan; çizime bir şey eklemez."]], ["6 · Seçme ve düzenleme", ["<b>Seçme</b>: nesneye tıkla. Sürükleyerek kutu aç: sağa doğru yalnızca içinde kalanlar, sola doğru değenler seçilir. <kbd>Shift</kbd> seçime ekler, <kbd>Del</kbd> siler.", "<b>Taşı / Kopyala</b>: seç, Enter, taban noktası, hedef.", "<b>Döndür</b>: merkez ve açı. <b>Ölçekle</b>: sabit nokta ve katsayı.", "<b>Aynala</b>: iki noktayla eksen göster. <b>Dizi</b>: sütun, satır ve aralıkları yaz.", "<b>Ötele</b>: mesafeyi yaz, nesneye ve tarafa tıkla. Yol kenarı, bordür gibi paralel çizgiler için.", "<b>Buda</b>: fazlalık parçaya tıkla. <b>Uzat</b>: kısa kalan uca yakın tıkla.", "<b>Köşe yuvarla</b>: yarıçapı yaz, iki çizgiye tıkla."]], ["7 · Katmanlar, renk ve çizgi tipi", ["Sağ panelde <b>Ekle</b> ile katman aç, adına çift tıklayarak değiştir.", "Katmanın adına tıklayınca <b>etkin</b> olur; yeni çizdiklerin o katmana gider.", "Göz simgesi gizler, kilit düzenlemeyi kapatır, renk kutusu rengi değiştirir.", "Hiçbir şey seçili değilken Özellikler’de etkin katmanın <b>çizgi tipini</b> ve <b>kalınlığını</b> ayarlarsın.", "Tek bir nesneye farklı renk ya da çizgi tipi vermek için onu seç ve Özellikler’den değiştir.", "Kesikli çizgiler çok sık ya da seyrekse <b>Çizgi tipi ölçeği</b> değerini değiştir."]], ["8 · Tarama ve hazır nesneler", ["<b>Tarama</b>: kapalı bir şekli seç, Tarama aracına bas, Enter. Deseni (çizgili, çapraz, dolu), açıyı ve aralığı Özellikler’den değiştir. Alanı m² olarak görünür.", "<b>Hazır nesneler</b>: sağ panelden ağaç, bank, aydınlatma gibi bir nesne seç ve çizimde tıkla. Ölçek ve açıyı Özellikler’den ayarla."]], ["9 · Dosyalar", ["<b>Kaydet</b>: çizimin tamamını Pergel dosyası (.json) olarak indirir. Katılar ve ölçüler düzenlenebilir kalır. Üstteki ad kutusuna dosya adını yaz.", "<b>Aç</b>: Pergel, DXF ya da DWG dosyası açar. Dosyayı çizim alanına sürükleyip bırakabilirsin.", "<b>DXF</b>: başka CAD programları için dışa aktarır. Katılar yüzey ağı, ölçüler çizgi ve yazı olarak gider.", "Çizim ayrıca bu tarayıcıda otomatik saklanır; yine de önemli işleri <b>Kaydet</b> ile dosyaya al."]], ["10 · Sık karşılaşılanlar", ["<b>Nokta istediğim yere gitmiyor</b>: Izgara ya da Yakala açıktır. Durum çubuğundan kapat.", "<b>Çizim ekranda yok</b>: Sığdır’a bas.", "<b>Nesneyi seçemiyorum</b>: katmanı kilitli ya da gizli olabilir.", "<b>Araç bir şey yapmıyor</b>: komut satırındaki mavi yazı sıradaki adımı söyler.", "<b>Yükseklik fareyle olmuyor</b>: Üst görünümde yükseklik görünmez; sayıyı yaz ya da 3B görünüme geç.", "<b>DWG açılmadı</b>: dosyayı kaynağında DXF olarak kaydedip onu aç."]]], "en": [["1 · First drawing", ["Pick <b>Line</b> from the tools on the left (or type <kbd>L</kbd> and press Enter).", "Click a point in the drawing area, then a second one. Keep clicking to continue the chain.", "<kbd>Enter</kbd> ends the chain, <kbd>Esc</kbd> leaves the tool.", "<kbd>Ctrl+Z</kbd> undoes a mistake.", "On a phone, press and drag, then release at the right spot; the point lands where you release."]], ["2 · Drawing to size", ["Place the first point, aim the cursor, type <kbd>250</kbd> and press Enter: it draws 250 cm that way.", "Relative to the last point: <kbd>@200,0</kbd> is 200 cm right, <kbd>@0,-150</kbd> is 150 cm down.", "Length and angle: <kbd>@200&lt;45</kbd> is 200 cm at 45°.", "An exact place: <kbd>100,50</kbd> (X,Y). Use a dot for decimals: <kbd>12.5</kbd>.", "In Rectangle, typing <kbd>@500,300</kbd> after the first corner gives 5 × 3 m.", "<b>Ortho</b> (<kbd>F8</kbd>) locks lines to horizontal or vertical. <b>Grid</b> snaps points to the step; turn it off to draw freely."]], ["3 · Moving around", ["<b>Right-drag</b> orbits. <b>Middle-drag</b> pans. The <b>wheel</b> zooms.", "<b>Top / Front / Right / 3D</b> at the top right are ready-made views. Use Top for plans.", "<b>Fit</b> shows the whole drawing. Press it if you lose the drawing.", "On a phone, pan and zoom with two fingers. To orbit, pick <b>Orbit view</b> and drag with one finger."]], ["4 · 3D solids", ["<b>Box</b>: click two corners of the base, type the height (e.g. <kbd>90</kbd>).", "<b>Cylinder / Cone</b>: centre, radius, height. <b>Sphere</b>: centre and radius.", "<b>Extrude</b>: select a closed polyline or circle, press Enter, type the height. Good for walls, pools and planters.", "To draw higher up, change <b>Elev</b> in the status bar (e.g. 100). To lift an existing object, use <b>Elevation (Z)</b> in Properties."]], ["5 · Dimensions", ["<b>Linear</b>: click two points, then where the dimension line sits. Pull it above or below for horizontal, sideways for vertical.", "<b>Aligned</b>: shows the true length of a slanted edge.", "<b>Angle</b>: corner, first leg, second leg, then the arc position.", "<b>Radius / Diameter</b>: click the circle, then the text position.", "If the text is too small or large, change <b>Dimension text ht.</b> in Properties with nothing selected. Select a single dimension to change its text.", "To just measure, use <b>Measure</b>; it adds nothing to the drawing."]], ["6 · Selecting and editing", ["<b>Select</b>: click an object. Drag a box: to the right takes only what is inside, to the left what it touches. <kbd>Shift</kbd> adds, <kbd>Del</kbd> deletes.", "<b>Move / Copy</b>: select, Enter, base point, target.", "<b>Rotate</b>: centre and angle. <b>Scale</b>: fixed point and factor.", "<b>Mirror</b>: show the axis with two points. <b>Array</b>: type columns, rows and spacings.", "<b>Offset</b>: type the distance, click the object and the side. Good for kerbs and path edges.", "<b>Trim</b>: click the surplus part. <b>Extend</b>: click near the short end.", "<b>Fillet</b>: type the radius, click two lines."]], ["7 · Layers, colour and line type", ["Use <b>Add</b> in the side panel to create a layer; double-click its name to rename.", "Click a layer name to make it <b>active</b>; new objects go there.", "The eye hides, the lock prevents editing, the swatch changes colour.", "With nothing selected, Properties sets the active layer’s <b>line type</b> and <b>weight</b>.", "To give one object its own colour or line type, select it and change it in Properties.", "If dashes look too dense or sparse, change <b>Line type scale</b>."]], ["8 · Hatch and ready-made objects", ["<b>Hatch</b>: select a closed shape, pick Hatch, press Enter. Change pattern (lines, cross, solid), angle and spacing in Properties. The area shows in m².", "<b>Ready-made objects</b>: pick a tree, bench or lamp post in the side panel and click in the drawing. Set scale and angle in Properties."]], ["9 · Files", ["<b>Save</b> downloads the whole drawing as a Pergel file (.json). Solids and dimensions stay editable. Type the file name in the box at the top.", "<b>Open</b> loads a Pergel, DXF or DWG file. You can also drop a file onto the drawing area.", "<b>DXF</b> exports for other CAD programs. Solids go as face meshes, dimensions as lines and text.", "The drawing is also kept in this browser automatically; still, use <b>Save</b> for anything important."]], ["10 · Common snags", ["<b>The point will not go where I want</b>: Grid or Snap is on. Turn it off in the status bar.", "<b>The drawing is gone</b>: press Fit.", "<b>I cannot select an object</b>: its layer may be locked or hidden.", "<b>The tool does nothing</b>: the blue text in the command line tells you the next step.", "<b>Height by mouse does not work</b>: height is invisible in Top view; type the number or switch to 3D.", "<b>A DWG did not open</b>: save it as DXF at the source and open that."]]]};
+const S={hints:true,tour:false,lang:'tr',gridSnap:true,osnap:true,ortho:false,gridStep:10,elev:0,textH:25,persp:true,dimH:18,offD:50,filR:50,polyN:6,hPat:'lines',hGap:20,hAng:45,lts:1};
 try{const s=JSON.parse(localStorage.getItem('pergel.set')||'null');if(s)Object.assign(S,s);}catch(_){}
 function saveSet(){try{localStorage.setItem('pergel.set',JSON.stringify(S));}catch(_){}}
 function L(k){let s=I18N[S.lang][k];if(s==null)s=I18N.en[k]||k;for(let i=1;i<arguments.length;i++)s=s.replace('{'+(i-1)+'}',arguments[i]);return s;}
@@ -1146,6 +1176,7 @@ gl.addEventListener('pointerleave',e=>{if(!drag&&e.pointerType==='mouse'){cur.ha
 gl.addEventListener('wheel',e=>{e.preventDefault();const p=lp(e);zoomAt(p.x,p.y,Math.exp((e.deltaMode?e.deltaY*30:e.deltaY)*.0012));if(cur.has)updateCursor(p.x,p.y);},{passive:false});
 const cmdIn=$('#cmdIn');
 document.addEventListener('keydown',e=>{
+  if(tourI>=0){if(e.key==='Escape')tourEnd();else if(e.key==='ArrowRight'){e.preventDefault();tourShow(tourI+1);}else if(e.key==='ArrowLeft'){e.preventDefault();tourShow(tourI-1);}return;}
   if($('#modal').classList.contains('on')){if(e.key==='Escape')closeModal(false);return;}
   const tg=e.target,inField=(tg.tagName==='INPUT'||tg.tagName==='SELECT'||tg.tagName==='TEXTAREA')&&tg!==cmdIn;
   const mod=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();
@@ -1177,7 +1208,7 @@ const CMDS={line:['line','l','cizgi'],poly:['polyline','pl','pline','coklu','cok
  undo:['undo','u','geri'],redo:['redo','ileri','yinele'],fit:['fit','z','zoom','sigdir'],top:['top','ust'],front:['front','on'],right:['right','sag'],iso:['iso','3b','3d'],
  polygon:['polygon','pol','cokgen'],ellipse:['ellipse','el','elips'],hatch:['hatch','h','tara','tarama'],dimlin:['dim','dimlin','olcu'],dimali:['dimali','dal','hizali'],dimang:['dimang','dan','aciolcu'],dimrad:['dimrad','dra','yaricap'],dimdia:['dimdia','ddi','cap'],
  offset:['offset','o','otele'],trim:['trim','tr','buda'],extend:['extend','ex','uzat'],fillet:['fillet','f','yuvarla'],mirror:['mirror','mi','aynala'],array:['array','ar','dizi'],
- elev:['elev','kot'],grid:['grid','izgara','adim'],help:['help','?','yardim'],select:['select','sec']};
+ guide:['guide','kilavuz'],elev:['elev','kot'],grid:['grid','izgara','adim'],help:['help','?','yardim'],select:['select','sec']};
 const CMAP={};for(const k in CMDS)for(const a of CMDS[k])CMAP[a]=k;
 function log(msg,cls){const d=el('div',{className:cls||''});d.textContent=msg;const lg=$('#log');lg.appendChild(d);while(lg.children.length>60)lg.removeChild(lg.firstChild);lg.scrollTop=lg.scrollHeight;}
 function parsePoint(s,last){
@@ -1196,6 +1227,7 @@ function runCmd(str){
     case 'elev':if(isFinite(n)){S.elev=n;saveSet();uiStatus();}break;
     case 'grid':if(n>0){S.gridStep=n;saveSet();uiStatus();}break;
     case 'help':showHelp();break;
+    case 'guide':showGuide();break;
     default:setTool(k);
   }
   return true;
@@ -1274,8 +1306,8 @@ function buildStatic(){
   $('#brand').innerHTML=`<svg class="i" viewBox="0 0 24 24">${IC.logo}</svg><span>Pergel</span><small>${S.lang==='tr'?'3B':'3D'}</small><em>by uozdil</em>`;
   {const salon=document.querySelector('meta[name=salon]'),sl=salon?`<a class="tb icon" href="${salon.content}" title="${L('salon')}" aria-label="${L('salon')}">${ico('grid')}<span>${L('salon')}</span></a>`:'';
    const bt=(a,i,k)=>`<button type="button" class="tb icon" data-act="${a}" title="${L(k)}" aria-label="${L(k)}">${ico(i)}<span>${L(k)}</span></button>`;
-   $('#topMore').innerHTML=sl+bt('theme','theme','theme')+bt('full','full','full');
-   $('#more').innerHTML=(sl+bt('theme','theme','theme')+bt('full','full','full')+bt('help','help','help')).replace(/class="tb icon"/g,'class="tb"');}
+   $('#topMore').innerHTML=sl+bt('guide','book','guide')+bt('theme','theme','theme')+bt('full','full','full');
+   $('#more').innerHTML=(sl+bt('guide','book','guide')+bt('help','help','help')+bt('theme','theme','theme')+bt('full','full','full')+`<button type="button" class="tb icon" data-act="hints">${ico('check')}<span>${L('hints')}: ${S.hints===false?L('off'):L('on')}</span></button>`).replace(/class="tb icon"/g,'class="tb"');}
   $('#fileBtns').innerHTML=[['new','new'],['open','open'],['save','save'],['dxf','exp']].map(([k,i])=>`<button type="button" class="tb" data-act="${k}" title="${L(k)}">${ico(i)}<span>${L(k)}</span></button>`).join('');
   $('#histBtns').innerHTML=`<button type="button" class="tb icon" data-act="undo" title="${L('undo')} (Ctrl+Z)" aria-label="${L('undo')}">${ico('undo')}</button><button type="button" class="tb icon" data-act="redo" title="${L('redo')} (Ctrl+Y)" aria-label="${L('redo')}">${ico('redo')}</button>`;
   $('#helpBtn').innerHTML=ico('help');$('#helpBtn').title=L('help');$('#helpBtn').setAttribute('aria-label',L('help'));
@@ -1304,6 +1336,7 @@ function uiTool(){
   $('#hud').classList.toggle('on',!!tool);
   gl.className=tool?(tool.name==='orbit'?'orbit':tool.selecting?'':'draw'):'';
   if(tool&&tool.wantText)cmdIn.focus();
+  uiHint();
 }
 function uiCoords(){const c=$('#status');if(!c._x)return;c._x.textContent=fmt(cur.p[0]);c._y.textContent=fmt(cur.p[1]);c._z.textContent=fmt(cur.p[2]);}
 function uiStatus(){
@@ -1404,6 +1437,40 @@ function openModal(title,bodyHtml,btns){
   return new Promise(r=>modalRes=r);
 }
 const ask=msg=>openModal('Pergel',`<p>${esc(msg)}</p>`,[{label:L('no'),val:false},{label:L('yes'),val:true,pri:true}]);
+function uiHint(){
+  const h=$('#hint'),n=tool?tool.name:null,txt=n&&S.hints!==false?(I18N[S.lang]['h_'+n]||I18N.en['h_'+n]):null;
+  if(!txt){h.classList.remove('on');return;}
+  const nm=n==='insert'?I18N[S.lang].names[tool.arg]:L('t_'+n);
+  h.innerHTML=`<b>${esc(nm)}</b><span>${esc(txt)}</span><button type="button" data-act="hintoff" title="${esc(L('hideHints'))}" aria-label="${esc(L('hideHints'))}">${ico('x')}</button>`;h.classList.add('on');
+}
+function showGuide(){
+  const g=GUIDE[S.lang]||GUIDE.en;
+  openModal(L('gTitle'),'<div class="guide">'+g.map((q,i)=>`<details${i?'':' open'}><summary>${q[0]}</summary><ol>${q[1].map(x=>'<li>'+x+'</li>').join('')}</ol></details>`).join('')+'</div><div class="sign">Pergel · by uozdil</div>',
+    [{label:L('tourStart'),fn:()=>{closeModal(true);tourShow(0);}},{label:L('ok'),val:true,pri:true}]);
+}
+/* first-run tour: a spotlight walks through the parts of the screen */
+let tourI=-1;
+function tourSteps(){const m=matchMedia('(max-width:820px)').matches;return [['#rail','tr1'],['#gl','tr2'],['#viewbar','tr3'],[m?'#panelBtn':'#side','tr4'],['#cmd','tr5'],['#status','tr6'],[m?'#panelBtn':'#topMore [data-act=guide]','tr7']];}
+function tourShow(i){
+  const st=tourSteps();if(i<0)i=0;if(i>=st.length)return tourEnd();tourI=i;setTool(null);$('#side').classList.remove('open');
+  let box=$('#tour');if(!box){box=el('div',{id:'tour'});box.innerHTML='<div id="tourSpot"></div><div id="tourCard" role="dialog" aria-modal="true"></div>';document.body.appendChild(box);}
+  const t=document.querySelector(st[i][0]),W=innerWidth,H=innerHeight,r=t?t.getBoundingClientRect():{left:W/2-60,top:H/2-60,right:W/2+60,bottom:H/2+60},big=st[i][0]==='#gl',pad=big?-Math.min(60,(r.right-r.left)/6):5;
+  const x0=Math.max(4,r.left-pad),y0=Math.max(4,r.top-pad),x1=Math.min(W-4,r.right+pad),y1=Math.min(H-4,r.bottom+pad),sp=$('#tourSpot'),cd=$('#tourCard');
+  sp.style.left=x0+'px';sp.style.top=y0+'px';sp.style.width=(x1-x0)+'px';sp.style.height=(y1-y0)+'px';
+  const [ti,tx]=L(st[i][1]).split('|'),last=i===st.length-1;
+  cd.innerHTML=`<div class="n">${i+1} / ${st.length}</div><h3>${esc(ti)}</h3><p>${esc(tx)}</p><div class="acts"><button type="button" class="lnk" data-tour="skip">${L('skip')}</button><span class="sp"></span>${i?`<button type="button" class="btn" data-tour="back">${L('back')}</button>`:''}<button type="button" class="btn pri" data-tour="next">${L(last?'done':'next')}</button></div>`;
+  const cw=cd.offsetWidth,ch=cd.offsetHeight;let cx,cy;
+  if(big){cx=(x0+x1-cw)/2;cy=(y0+y1-ch)/2;}
+  else if(y1+12+ch<=H-8){cx=x0;cy=y1+12;}
+  else if(y0-12-ch>=8){cx=x0;cy=y0-12-ch;}
+  else if(x1+12+cw<=W-8){cx=x1+12;cy=y0;}
+  else if(x0-12-cw>=8){cx=x0-12-cw;cy=y0;}
+  else{cx=(W-cw)/2;cy=(H-ch)/2;}
+  cd.style.left=Math.max(12,Math.min(W-cw-12,cx))+'px';cd.style.top=Math.max(12,Math.min(H-ch-12,cy))+'px';
+  const nb=cd.querySelector('[data-tour=next]');if(nb)nb.focus();
+}
+function tourEnd(){tourI=-1;const b=$('#tour');if(b)b.remove();if(!S.tour){S.tour=true;saveSet();}}
+window.addEventListener('resize',()=>{if(tourI>=0)tourShow(tourI);});
 function showHelp(){
   const tr=S.lang==='tr';
   const rows=a=>'<table>'+a.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')+'</table>';
@@ -1422,6 +1489,7 @@ function showHelp(){
 /* delegated clicks */
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.tour){const k=b.dataset.tour;if(k==='skip')tourEnd();else tourShow(tourI+(k==='back'?-1:1));return;}
   if(b.dataset.tool){setTool(b.dataset.tool);}
   else if(b.dataset.lib){setTool('insert',b.dataset.lib);$('#side').classList.remove('open');}
   else if(b.dataset.view){const v=b.dataset.view;if(v==='fit')zoomFit();else if(v==='persp'){S.persp=!S.persp;b.setAttribute('aria-pressed',S.persp);saveSet();requestRender();}else setView(v);}
@@ -1435,6 +1503,9 @@ document.addEventListener('click',e=>{
     else if(a==='save')saveProject();
     else if(a==='dxf')exportDXF();
     else if(a==='help'){$('#side').classList.remove('open');showHelp();}
+    else if(a==='guide'){$('#side').classList.remove('open');showGuide();}
+    else if(a==='hintoff'){S.hints=false;saveSet();buildStatic();toast(L('hintsOff'),5000);}
+    else if(a==='hints'){S.hints=S.hints===false;saveSet();buildStatic();}
     else if(a==='theme'){const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;S.theme=dark?'light':'dark';document.documentElement.dataset.theme=S.theme;saveSet();}
     else if(a==='full'){try{const d=document;if(d.fullscreenElement)d.exitFullscreen();else{const p=d.documentElement.requestFullscreen&&d.documentElement.requestFullscreen();if(p&&p.catch)p.catch(()=>{});}}catch(_){}}}
   else if(b.id==='helpBtn')showHelp();
@@ -1740,7 +1811,8 @@ function start(data){
   new MutationObserver(()=>{applyTheme();requestRender();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{for(const e of doc.entities)if(e.t==='text')delete e._w;requestRender();});
   try{if(window.claude&&window.claude.hot&&window.claude.hot.snapshot)window.claude.hot.snapshot(()=>({doc:JSON.parse(JSON.stringify(doc,(k,v)=>k==='_w'||k==='_wt'?undefined:v)),view:{x:V.t.x,y:V.t.y,z:V.t.z,d:V.d,az:V.az,el:V.el}}));}catch(_){}
-  window.pergel={scr:(x,y,z)=>{const o={x:0,y:0};return toScr(x,y,z||0,o)?o:null;},touch,byId,doc:()=>doc,cmd:submitCmd,dxf:dxfString,importDXF:t=>importRaw(parseDXF(t)),load:loadDoc,zip:zipStore,openFile,view:V,render,sel:()=>sel};
+  if(!S.tour)setTimeout(()=>{if(tourI<0&&!$('#modal').classList.contains('on'))tourShow(0);},700);
+  window.pergel={tourEnd,tourShow,scr:(x,y,z)=>{const o={x:0,y:0};return toScr(x,y,z||0,o)?o:null;},touch,byId,doc:()=>doc,cmd:submitCmd,dxf:dxfString,importDXF:t=>importRaw(parseDXF(t)),load:loadDoc,zip:zipStore,openFile,view:V,render,sel:()=>sel};
 }
 if(window.claude&&window.claude.hot&&window.claude.hot.ready)window.claude.hot.ready(start);else start((window.claude&&window.claude.hot&&window.claude.hot.data)||{});
 })();
