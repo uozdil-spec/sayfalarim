@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261116-1609">
+<meta name="surum" content="20261116-1613">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261116-1609" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261116-1609" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261116-1609">
-<link rel="manifest" href="manifest.webmanifest?v=20261116-1609">
+<link rel="icon" href="ikon.svg?v=20261116-1613" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261116-1613" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261116-1613">
+<link rel="manifest" href="manifest.webmanifest?v=20261116-1613">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -296,7 +296,7 @@ button.cell b{color:var(--ink-2)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
-<script async src="../sayac.js?v=20261116-1609"></script>
+<script async src="../sayac.js?v=20261116-1613"></script>
 </head>
 <body>
 <div id="app">
@@ -814,6 +814,9 @@ const sun=new THREE.DirectionalLight(0xffffff,.5);sun.position.set(-.45,-.75,1);
 const arrowG=new THREE.Group();arrowG.visible=false;
 {const m=new THREE.MeshLambertMaterial({color:0xffc400,depthTest:false,transparent:true}),sh=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.68,18),m),hd=new THREE.Mesh(new THREE.ConeGeometry(.16,.34,22),m);
  sh.rotation.x=Math.PI/2;sh.position.z=.34;hd.rotation.x=Math.PI/2;hd.position.z=.83;sh.renderOrder=50;hd.renderOrder=51;arrowG.add(sh,hd);arrowG.userData.m=m;scene.add(arrowG);}
+/* highlight of the selected face: drawn in the scene so the arrow stays in front of it */
+const faceHL=new THREE.Mesh(new THREE.BufferGeometry(),new THREE.MeshBasicMaterial({color:0x12b5cb,transparent:true,opacity:.36,depthTest:false,side:THREE.DoubleSide}));
+faceHL.geometry.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(12),3));faceHL.geometry.setIndex([0,1,2,0,2,3]);faceHL.frustumCulled=false;faceHL.renderOrder=40;faceHL.visible=false;scene.add(faceHL);
 const objMap=new Map();
 let wiresDirty=true,selDirty=true,snapDirty=true,cntDirty=true,rq=0,gridKey='',lblList=null,nLabel=0;
 const TH={};let dcache={},lineMats={},meshMats={},fatMats={},edgeMat,pvLine,pvMesh,selLine,gMinor,gMajor,gX,gY;
@@ -1150,7 +1153,8 @@ function subArrow(){if(!sub||sub.k!=='f')return null;const e=byId(sub.id);if(!e|
   const fi=sub.k==='f'?sub.i:edgeFace(sub.i,sub.t),f=BOX_F[fi],P=boxGeo(e),c=Math.cos((e.rot||0)*RAD),s=Math.sin((e.rot||0)*RAD),n=f.ax===2?[0,0,f.sg]:f.ax?[-s*f.sg,c*f.sg,0]:[c*f.sg,s*f.sg,0];let p=[0,0,0];
   if(sub.k==='f'){for(const i of f.c)for(let k=0;k<3;k++)p[k]+=P[i][k]/4;}else{const ed=BOX_E[sub.i];p=P[sub.t>.5?ed[1]:ed[0]].slice();}
   return {p,n,fi};}
-function updArrow(){const a=subArrow();if(!a){arrowG.visible=false;return;}
+function updArrow(){const a=subArrow();if(!a){arrowG.visible=false;faceHL.visible=false;return;}
+  {const e=byId(sub.id),P=boxGeo(e),q=faceHL.geometry.attributes.position;BOX_F[sub.i].c.forEach((ci,i)=>q.setXYZ(i,P[ci][0]-O[0],P[ci][1]-O[1],P[ci][2]-O[2]));q.needsUpdate=true;faceHL.material.opacity=drag&&drag.type==='sub'?.22:.36;faceHL.visible=true;}
   const push=drag&&drag.type==='sub'&&drag.dd<0,v=new THREE.Vector3(a.p[0]-O[0],a.p[1]-O[1],a.p[2]-O[2]),w=(S.persp?cam.position.distanceTo(v)*2*HALF/vh:wpp())*92;
   arrowG.position.copy(v);arrowG.scale.setScalar(w);arrowG.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(a.n[0],a.n[1],a.n[2]).multiplyScalar(push?-1:1));
   arrowG.userData.m.color.set(push?0xff4d2e:0xffc400);arrowG.userData.m.emissive.set(push?0x8a1f0c:0x7a5a00);arrowG.userData.len=w;arrowG.visible=true;}
@@ -1182,7 +1186,7 @@ function drawSub(c){
     const e=byId(s.id);if(!e||e.t!=='box'||(strong&&!(sel.size===1&&sel.has(s.id)))){if(strong)setSub(null);else hsub=null;continue;}
     const all=boxScr(e);if(!all)continue;const q=(s.k==='e'?BOX_E[s.i].slice(0,2):BOX_F[s.i].c).map(i=>all[i]);
     c.beginPath();q.forEach((o,i)=>i?c.lineTo(o.x,o.y):c.moveTo(o.x,o.y));c.strokeStyle=SUBC;c.lineCap='round';c.lineJoin='round';
-    if(s.k==='f'){c.closePath();c.globalAlpha=strong?(drag&&drag.type==='sub'?.2:.34):.2;c.fillStyle=SUBC;c.fill();c.globalAlpha=1;c.lineWidth=strong?2.5:1.5;c.stroke();}
+    if(s.k==='f'){c.closePath();if(!strong){c.globalAlpha=.2;c.fillStyle=SUBC;c.fill();c.globalAlpha=1;}c.lineWidth=strong?2.5:1.5;c.stroke();}
     else{c.globalAlpha=strong?1:.75;c.lineWidth=strong?6:4;c.stroke();c.globalAlpha=1;}
     if(strong){let x=0,y=0;for(const o of q){x+=o.x;y+=o.y;}x/=q.length;y/=q.length;const h=$('#subHud'),w=h.offsetWidth||200,hh=h.offsetHeight||70;
       if(hudPos){x=hudPos.x-18;y=hudPos.y-18;}h.style.transform=`translate(${Math.round(Math.max(8,Math.min(vw-w-8,x+18)))}px,${Math.round(Math.max(8,Math.min(vh-hh-8,y+18)))}px)`;}}
