@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261118-0030">
+<meta name="surum" content="20261118-0045">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261118-0030" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261118-0030" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261118-0030">
-<link rel="manifest" href="manifest.webmanifest?v=20261118-0030">
+<link rel="icon" href="ikon.svg?v=20261118-0045" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261118-0045" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261118-0045">
+<link rel="manifest" href="manifest.webmanifest?v=20261118-0045">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -383,7 +383,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261118-0030"></script>
+<script async src="../sayac.js?v=20261118-0045"></script>
 </head>
 <body>
 <div id="app">
@@ -2303,15 +2303,28 @@ function jointApply(e,o,kind,a,b,unite){const J=jointOf(e,o);if(!J){toast(L('jNo
 const meC=new WeakMap();let ME=null;
 function meshChains(e){const ck=meC.get(e);if(ck&&ck.v===e.v&&ck.f===e.f)return ck.ch;const V=e.v,F=e.f,K=i=>Math.round(V[i*3]*1e3)+','+Math.round(V[i*3+1]*1e3)+','+Math.round(V[i*3+2]*1e3),P=new Map(),idx=[];
   for(let i=0;i<V.length/3;i++){const k=K(i);if(!P.has(k))P.set(k,[V[i*3],V[i*3+1],V[i*3+2]]);idx.push(k);}
+  /* weld near-duplicate points left by repeated booleans (else T-junction splitting can ping-pong between them) */
+  {let lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(const p of P.values())for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}
+    const wd=Math.hypot(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2])*3e-5+1e-3,G=new Map(),rep=new Map(),cl=p=>p.map(x=>Math.floor(x/wd));
+    for(const [k,p] of P){const c=cl(p);let r=null;for(let x=-1;x<=1&&!r;x++)for(let y=-1;y<=1&&!r;y++)for(let z=-1;z<=1&&!r;z++)for(const k2 of G.get((c[0]+x)+','+(c[1]+y)+','+(c[2]+z))||[]){const q=P.get(k2);if(Math.hypot(p[0]-q[0],p[1]-q[1],p[2]-q[2])<wd){r=k2;break;}}
+      if(r)rep.set(k,r);else{const h=c.join(',');if(!G.has(h))G.set(h,[]);G.get(h).push(k);}}
+    if(rep.size){for(let i=0;i<idx.length;i++){const r=rep.get(idx[i]);if(r)idx[i]=r;}for(const k of rep.keys())P.delete(k);}}
   /* boolean results have T-junctions (a vertex lying on a neighbour's edge): split those triangles so every edge has two sides */
   let TR=[];for(let t=0;t<F.length;t+=3){const q=[idx[F[t]],idx[F[t+1]],idx[F[t+2]]];if(q[0]!==q[1]&&q[1]!==q[2]&&q[0]!==q[2])TR.push(q);}
   {const keys=[...P.keys()];let lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(const k of keys){const p=P.get(k);for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}}
-    const dg=Math.hypot(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2])||1,cs=dg/48,tol=dg*1e-6+1e-6,G=new Map(),ck=(x,y,z)=>x+','+y+','+z,cell=p=>[0,1,2].map(i=>Math.floor((p[i]-lo[i])/cs));
+    const dg=Math.hypot(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2])||1,cs=dg/48,tol=dg*1e-5+1e-6,G=new Map(),ck=(x,y,z)=>x+','+y+','+z,cell=p=>[0,1,2].map(i=>Math.floor((p[i]-lo[i])/cs));
     for(const k of keys){const c=cell(P.get(k)),h=ck(...c);if(!G.has(h))G.set(h,[]);G.get(h).push(k);}
-    const onEdge=(a,b)=>{const A=P.get(a),B=P.get(b),c0=cell(A),c1=cell(B),d=[B[0]-A[0],B[1]-A[1],B[2]-A[2]],L2=d[0]*d[0]+d[1]*d[1]+d[2]*d[2];if(!L2)return null;let best=null,bt=2;
+    const onEdge=(a,b)=>{const A=P.get(a),B=P.get(b),c0=cell(A),c1=cell(B),d=[B[0]-A[0],B[1]-A[1],B[2]-A[2]],L2=d[0]*d[0]+d[1]*d[1]+d[2]*d[2],r=[];if(!L2)return r;
       for(let x=Math.min(c0[0],c1[0]);x<=Math.max(c0[0],c1[0]);x++)for(let y=Math.min(c0[1],c1[1]);y<=Math.max(c0[1],c1[1]);y++)for(let z=Math.min(c0[2],c1[2]);z<=Math.max(c0[2],c1[2]);z++)for(const k of G.get(ck(x,y,z))||[]){if(k===a||k===b)continue;const V2=P.get(k),w=[V2[0]-A[0],V2[1]-A[1],V2[2]-A[2]],t=(w[0]*d[0]+w[1]*d[1]+w[2]*d[2])/L2;if(t<=1e-6||t>=1-1e-6)continue;
-        const q=[w[0]-d[0]*t,w[1]-d[1]*t,w[2]-d[2]*t];if(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]<tol*tol&&t<bt){bt=t;best=k;}}return best;};
-    if(keys.length<20000){const out=[];let st=TR.slice(),g=0;while(st.length&&g++<400000){const q=st.pop();let sp=false;for(let i=0;i<3;i++){const a=q[i],b=q[(i+1)%3],c=q[(i+2)%3],v=onEdge(a,b);if(v){st.push([a,v,c],[v,b,c]);sp=true;break;}}if(!sp)out.push(q);}TR=out;}}
+        const q=[w[0]-d[0]*t,w[1]-d[1]*t,w[2]-d[2]*t];if(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]<tol*tol)r.push([t,k]);}return r.sort((p,q)=>p[0]-q[0]).map(x=>x[1]);};
+    /* drop zero-area slivers (three collinear points): their neighbour gets split instead */
+    const hgt=q=>{const A=P.get(q[0]),B=P.get(q[1]),C=P.get(q[2]),u=[B[0]-A[0],B[1]-A[1],B[2]-A[2]],v=[C[0]-A[0],C[1]-A[1],C[2]-A[2]],w=[C[0]-B[0],C[1]-B[1],C[2]-B[2]],cx=Math.hypot(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]),L=Math.max(Math.hypot(...u),Math.hypot(...v),Math.hypot(...w))||1;return cx/L;};
+    TR=TR.filter(q=>hgt(q)>tol*4);
+    /* each triangle: its corners plus every point lying on its edges, fanned from the centre (one pass, no recursion) */
+    if(keys.length<20000){const EC=new Map(),eg=(a,b)=>{const k=a<b?a+'|'+b:b+'|'+a;let r=EC.get(k);if(!r){r=onEdge(a<b?a:b,a<b?b:a);EC.set(k,r);}return a<b?r:r.slice().reverse();},out=[];let nc=0;
+      for(const q of TR){const ring=[];for(let i=0;i<3;i++){ring.push(q[i]);ring.push(...eg(q[i],q[(i+1)%3]));}if(ring.length===3){out.push(q);continue;}
+        const A=P.get(q[0]),B=P.get(q[1]),C=P.get(q[2]),cn='m'+(nc++);P.set(cn,[(A[0]+B[0]+C[0])/3,(A[1]+B[1]+C[1])/3,(A[2]+B[2]+C[2])/3]);for(let i=0;i<ring.length;i++)out.push([ring[i],ring[(i+1)%ring.length],cn]);}
+      TR=out;}}
   const tn=[],tc=[],E=new Map();for(let t3=0;t3<TR.length;t3++){const t=t3*3,a=P.get(TR[t3][0]),b=P.get(TR[t3][1]),c=P.get(TR[t3][2]),u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],v=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]],l=Math.hypot(...n);
     const ti=t3;tn[ti]=l>1e-12?n.map(x=>x/l):null;tc[ti]=[(a[0]+b[0]+c[0])/3,(a[1]+b[1]+c[1])/3,(a[2]+b[2]+c[2])/3];if(!tn[ti])continue;const Q=TR[t3];
     for(const [p,q] of [[Q[0],Q[1]],[Q[1],Q[2]],[Q[2],Q[0]]]){if(p===q)continue;const k=p<q?p+'|'+q:q+'|'+p;let r=E.get(k);if(!r)E.set(k,r={a:p<q?p:q,b:p<q?q:p,t:[]});r.t.push(ti);}}
@@ -2324,6 +2337,9 @@ function meshChains(e){const ck=meC.get(e);if(ck&&ck.v===e.v&&ck.f===e.f)return 
     const closed=pts.length>3&&pts[0]===pts[pts.length-1];if(closed)pts.pop();
     const perp=(j,ti)=>{const a=P.get(feat[j].a),b=P.get(feat[j].b),c=tc[ti],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],ul=Math.hypot(...u)||1,w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],k=(w[0]*u[0]+w[1]*u[1]+w[2]*u[2])/(ul*ul),q=[w[0]-u[0]*k,w[1]-u[1]*k,w[2]-u[2]*k],ql=Math.hypot(...q)||1;return q.map(x=>x/ql);};
     ch.push({pts:pts.map(k=>P.get(k)),segs:segs.map(j=>({n:[tn[feat[j].t[0]],tn[feat[j].t[1]]],c:[tc[feat[j].t[0]],tc[feat[j].t[1]]],s:[perp(j,feat[j].t[0]),perp(j,feat[j].t[1])]})),closed});}
+  {let lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(const p of P.values())for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}const mn=Math.hypot(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2])*.006;
+    /* tiny two-point crease bits left on curved boolean surfaces are noise, not edges */
+    for(let i=ch.length-1;i>=0;i--){const c=ch[i];if(c.pts.length===2&&Math.hypot(c.pts[0][0]-c.pts[1][0],c.pts[0][1]-c.pts[1][1],c.pts[0][2]-c.pts[1][2])<mn)ch.splice(i,1);}}
   meC.set(e,{v:e.v,f:e.f,ch});return ch;}
 function meshEdgeAt(e,sx,sy,tol){const ch=meshChains(e),o={x:0,y:0},p={x:0,y:0};let best=null,bd=tol*tol;
   ch.forEach((c,ci)=>{const n=c.pts.length,m=c.closed?n:n-1;for(let i=0;i<m;i++){const a=c.pts[i],b=c.pts[(i+1)%n];if(!toScr(a[0],a[1],a[2],o)||!toScr(b[0],b[1],b[2],p))continue;const d=segDist2(sx,sy,o.x,o.y,p.x,p.y);if(d<bd){bd=d;best=ci;}}});
