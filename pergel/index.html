@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261117-1104">
+<meta name="surum" content="20261117-1109">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261117-1104" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261117-1104" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261117-1104">
-<link rel="manifest" href="manifest.webmanifest?v=20261117-1104">
+<link rel="icon" href="ikon.svg?v=20261117-1109" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261117-1109" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261117-1109">
+<link rel="manifest" href="manifest.webmanifest?v=20261117-1109">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -353,7 +353,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261117-1104"></script>
+<script async src="../sayac.js?v=20261117-1109"></script>
 </head>
 <body>
 <div id="app">
@@ -3060,11 +3060,13 @@ function dxfString(){
   w(0,'TABLE');w(2,'STYLE');w(70,1);w(0,'STYLE');w(2,'STANDARD');w(70,0);w(40,0);w(41,1);w(50,0);w(71,0);w(42,2.5);w(3,'arial.ttf');w(4,'');w(0,'ENDTAB');
   w(0,'TABLE');w(2,'LAYER');w(70,doc.layers.length);
   for(const ly of doc.layers){w(0,'LAYER');w(2,names.get(ly.id));w(70,ly.lock?4:0);w(62,(ly.on?1:-1)*nearestAci(ly.color));w(6,LTN[ly.lt]||'CONTINUOUS');}
-  w(0,'ENDTAB');w(0,'ENDSEC');w(0,'SECTION');w(2,'BLOCKS');w(0,'ENDSEC');w(0,'SECTION');w(2,'ENTITIES');
-  const head=(type,e)=>{w(0,type);w(8,names.get(e.l)||'0');if(e.lt&&LTN[e.lt])w(6,LTN[e.lt]);if(e.col)w(62,nearestAci(e.col));};
+  w(0,'ENDTAB');w(0,'ENDSEC');
+  let L0=null;const head=(type,e)=>{w(0,type);w(8,L0||names.get(e.l)||'0');if(e.lt&&LTN[e.lt])w(6,LTN[e.lt]);if(e.col)w(62,nearestAci(e.col));};
   const pairs=e=>{const a=wirePts(e).a;for(let k=0;k+5<a.length;k+=6){head('LINE',e);w(10,nf(a[k]));w(20,nf(a[k+1]));w(30,nf(a[k+2]));w(11,nf(a[k+3]));w(21,nf(a[k+4]));w(31,nf(a[k+5]));}};
   const pt=(i,p)=>{w(10+i,nf(p[0]));w(20+i,nf(p[1]));w(30+i,nf(p[2]||0));};
-  for(const e of flatIns(doc.entities)){
+  /* blocks (ready-made objects and the user's own) go out as real DXF blocks, placed with INSERT */
+  const bnames=new Map(),bused=new Set(),need=l=>{for(const e of l)if(e.t==='ins'&&doc.blocks&&doc.blocks[e.b]&&!bnames.has(e.b)){const B=doc.blocks[e.b];let n=String(B.name||e.b).replace(/[çÇşŞğĞüÜöÖıİ]/g,ch=>tmap[ch]).replace(/[^A-Za-z0-9_$-]/g,'_').slice(0,31)||'B';let k=n,i=2;while(bused.has(k.toUpperCase()))k=n+'_'+(i++);bused.add(k.toUpperCase());bnames.set(e.b,k);need(B.ents||[]);}};need(doc.entities);
+  const wEnt=e=>{if(e.t==='ins'){const bn=bnames.get(e.b);if(!bn)return;const sc=e.s||1;head('INSERT',e);w(2,bn);pt(0,e.p);w(41,nf(sc));w(42,nf(e.mx?-sc:sc));w(43,nf(sc));if(e.rot)w(50,nf(e.rot));if(!L0){const lb=insLabel(e);if(lb)wEnt(lb);}return;}
     switch(e.t){
       case 'line':head('LINE',e);pt(0,e.p1);pt(1,e.p2);break;
       case 'circle':head('CIRCLE',e);pt(0,e.c);w(40,nf(e.r));break;
@@ -3078,11 +3080,13 @@ function dxfString(){
       default:{const g=buildObj(e,false);g.updateMatrixWorld(true);const v=new THREE.Vector3();
         g.traverse(o=>{if(!o.isMesh)return;const pos=o.geometry.attributes.position,idx=o.geometry.index,n=idx?idx.count:pos.count;
           const col=e.t==='prefab'?nearestAci('#'+o.material.color.getHexString()):null;
-          for(let i=0;i+2<n;i+=3){w(0,'3DFACE');w(8,names.get(e.l)||'0');if(col)w(62,col);else if(e.col)w(62,nearestAci(e.col));
+          for(let i=0;i+2<n;i+=3){w(0,'3DFACE');w(8,L0||names.get(e.l)||'0');if(col)w(62,col);else if(e.col)w(62,nearestAci(e.col));
             for(let k=0;k<4;k++){const j=Math.min(k,2),vi=idx?idx.getX(i+j):i+j;v.fromBufferAttribute(pos,vi).applyMatrix4(o.matrixWorld);pt(k,[v.x+O[0],v.y+O[1],v.z+O[2]]);}}});
         dispose(g);}
-    }
-  }
+    }};
+  w(0,'SECTION');w(2,'BLOCKS');for(const [id,bn] of bnames){const B=doc.blocks[id];w(0,'BLOCK');w(8,'0');w(2,bn);w(70,0);pt(0,[0,0,0]);w(3,bn);L0='0';for(const e of B.ents||[])wEnt(e);L0=null;w(0,'ENDBLK');w(8,'0');}w(0,'ENDSEC');
+  w(0,'SECTION');w(2,'ENTITIES');
+  for(const e of doc.entities){const ly=LM.get(e.l);if(ly)wEnt(e);}
   w(0,'ENDSEC');w(0,'EOF');
   let s='';for(let i=0;i<out.length;i+=2)s+=out[i]+'\r\n'+out[i+1]+'\r\n';return s;
 }
