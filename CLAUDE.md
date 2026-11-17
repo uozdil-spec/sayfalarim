@@ -25,6 +25,6 @@ Ana sayfa (`index.html`) tüm oyunların menüsüdür; liste `oyunlar.js` içind
   katılarda yüz çekme + pah/yuvarlatma (kutu, silindir, koni, küre, yükseltilmiş şekil), birleştir/çıkar/kesiştir,
   yüze dikdörtgen/daire ile oyuk-çıkıntı, metraj (CSV), pafta ve Yazdır/PDF, görüntü kalitesi ayarı,
   döndürerek katı ve yol boyunca süpürme, telefonda dosya adı düğmesi, katılarda taşı/döndür/aynala/yuvarlat/ötele,
-  bloklar (oluştur, yerleştir, yerinde düzenle, patlat; doc.blocks + 'ins' nesnesi).
+  bloklar (oluştur, yerleştir, yerinde düzenle, patlat; doc.blocks + 'ins' nesnesi); hazır nesneler de blok (pf_<tür>).
 - Sıradaki öneriler (sırayla): kesit görünümü;
   eksik düzenleme araçları (yayda kırpma, dairesel çoğaltma, germe); ön/yan görünüş çıktısı.
