@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261117-1345">
+<meta name="surum" content="20261117-1347">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261117-1345" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261117-1345" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261117-1345">
-<link rel="manifest" href="manifest.webmanifest?v=20261117-1345">
+<link rel="icon" href="ikon.svg?v=20261117-1347" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261117-1347" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261117-1347">
+<link rel="manifest" href="manifest.webmanifest?v=20261117-1347">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -353,7 +353,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261117-1345"></script>
+<script async src="../sayac.js?v=20261117-1347"></script>
 </head>
 <body>
 <div id="app">
@@ -3355,7 +3355,7 @@ function importRaw(R,name){
   const layer=nm=>{let id=lid.get(nm);if(id)return id;id=d.layers.length+1;d.layers.push({id,name:nm,color:'#ffffff',on:true,lock:false});lid.set(nm,id);return id;};
   for(const l of R.layers){if(!l.name||lid.has(l.name))continue;const id=layer(l.name),ly=d.layers[id-1];ly.color=colOf(l)||'#ffffff';ly.on=!l.off;ly.lock=!!l.lock;const t=ltMap(l.lt);if(t)ly.lt=t;if(l.lw>0)ly.lw=l.lw/100;}
   layer('0');
-  const out=[],meshes=new Map(),skipped={};let nskip=0;const v3=new THREE.Vector3();
+  let out=[],meshes=new Map();const skipped={},bmap=new Map();let nskip=0;const v3=new THREE.Vector3();d.blocks=d.blocks||{};
   const ocs=n=>{const N=new THREE.Vector3(n[0],n[1],n[2]);if(N.lengthSq()<1e-12)return null;N.normalize();if(Math.abs(N.x)<1e-9&&Math.abs(N.y)<1e-9&&N.z>0)return null;
     const ax=(Math.abs(N.x)<1/64&&Math.abs(N.y)<1/64)?new THREE.Vector3(0,1,0).cross(N):new THREE.Vector3(0,0,1).cross(N);ax.normalize();const ay=N.clone().cross(ax).normalize();return new THREE.Matrix4().makeBasis(ax,ay,N);};
   const emit=(r,M,depth,inh)=>{
@@ -3402,7 +3402,12 @@ function importRaw(R,name){
         else{const ln=r.lines||[],a0=ln.length?ln[0][0]:45;let g0=ln.length?ln[0][1]:0;if(!(g0>0)){let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity;for(const q of lp[0]){x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1]);}g0=Math.hypot(x1-x0,y1-y0)/40/sc;}
           o.pat=ln.length>1&&Math.abs(Math.abs(((ln[1][0]-a0)%180+180)%180)-90)<1?'cross':'lines';o.ang=a0+rz;o.gap=g0*sc;}
         push(o);break;}
-      case 'INSERT':{const b=R.blocks[r.name];if(!b||depth>8)break;const m=new THREE.Matrix4().makeTranslation(r.p[0],r.p[1],r.p[2]).multiply(new THREE.Matrix4().makeRotationZ(r.rot*RAD)).multiply(new THREE.Matrix4().makeScale(r.sx||1,r.sy||1,r.sz||1)).multiply(new THREE.Matrix4().makeTranslation(-b.base[0],-b.base[1],-b.base[2]));
+      case 'INSERT':{const b=R.blocks[r.name];if(!b||depth>8)break;
+        /* a plain top-level insert stays a block in Pergel (uniform scale, flat, maybe mirrored) */
+        {const ax=Math.abs(r.sx||1),ok=depth===0&&!M&&(!r.ext||!ocs(r.ext))&&r.name&&r.name[0]!=='*'&&ax>1e-12&&Math.abs(Math.abs(r.sy||1)-ax)<1e-9*ax&&Math.abs(Math.abs(r.sz||1)-ax)<1e-9*ax;
+          if(ok){let bid=bmap.get(r.name);if(bid===undefined){const so=out,sm=meshes;out=[];meshes=new Map();const mb=new THREE.Matrix4().makeTranslation(-b.base[0],-b.base[1],-b.base[2]);for(const c of b.ents)emit(c,mb,1,null);for(const m2 of meshes.values())out.push(m2);
+              const ents=out.map(q=>{const c=Object.assign({},q);delete c.id;return c;});out=so;meshes=sm;bid=ents.length?'dx_'+r.name:null;if(bid)d.blocks[bid]={name:r.name,ents,v:1};bmap.set(r.name,bid);}
+            if(bid){const nx=(r.sx||1)<0,ny=(r.sy||1)<0;push({t:'ins',b:bid,p:r.p.slice(),s:ax,rot:(r.rot||0)+(nx?180:0),mx:nx!==ny});break;}}}const m=new THREE.Matrix4().makeTranslation(r.p[0],r.p[1],r.p[2]).multiply(new THREE.Matrix4().makeRotationZ(r.rot*RAD)).multiply(new THREE.Matrix4().makeScale(r.sx||1,r.sy||1,r.sz||1)).multiply(new THREE.Matrix4().makeTranslation(-b.base[0],-b.base[1],-b.base[2]));
         const M2=M?M.clone().multiply(m):m;for(const c of b.ents)emit(c,M2,depth+1,{layer:lname,col});break;}
       default:nskip++;skipped[r.type]=1;
     }
