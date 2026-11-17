@@ -23,6 +23,7 @@ Ana sayfa (`index.html`) tüm oyunların menüsüdür; liste `oyunlar.js` içind
 - Büyük işlerde önce plan sun, onay al. Küçük adımlarla ilerle; her adımı tarayıcıda dene.
 - Yapılanlar: 2B çizim ve ölçülendirme, ölçü stili, birimler, katmanlar, DXF/DWG açma, DXF kaydetme,
   katılarda yüz çekme + pah/yuvarlatma (kutu, silindir, koni, küre, yükseltilmiş şekil), birleştir/çıkar/kesiştir,
-  yüze dikdörtgen/daire ile oyuk-çıkıntı, metraj (CSV), pafta ve Yazdır/PDF, görüntü kalitesi ayarı.
-- Sıradaki öneriler (sırayla): döndürerek katı ve yol boyunca süpürme; blok/bileşen; kesit görünümü;
+  yüze dikdörtgen/daire ile oyuk-çıkıntı, metraj (CSV), pafta ve Yazdır/PDF, görüntü kalitesi ayarı,
+  döndürerek katı ve yol boyunca süpürme, telefonda dosya adı düğmesi.
+- Sıradaki öneriler (sırayla): blok/bileşen; kesit görünümü;
   eksik düzenleme araçları (yayda kırpma, dairesel çoğaltma, germe); ön/yan görünüş çıktısı.
