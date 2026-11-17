@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261117-1604">
+<meta name="surum" content="20261117-1616">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261117-1604" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261117-1604" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261117-1604">
-<link rel="manifest" href="manifest.webmanifest?v=20261117-1604">
+<link rel="icon" href="ikon.svg?v=20261117-1616" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261117-1616" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261117-1616">
+<link rel="manifest" href="manifest.webmanifest?v=20261117-1616">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -354,7 +354,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261117-1604"></script>
+<script async src="../sayac.js?v=20261117-1616"></script>
 </head>
 <body>
 <div id="app">
@@ -1902,10 +1902,11 @@ function solModel(e){
   }
   smc.set(e,{key,M});return M;}
 /* which visible edge (within 9 px) or face of this solid is under the pointer */
+let subTouch=false;const subTol=()=>subTouch?400:169;
 function subOf(sx,sy,e){const M=solModel(e);if(!M)return null;
   const FS=M.F.map(f=>f.polys.map(q=>{const s2=[];for(const w of q){const o={x:0,y:0};if(!toScr(w[0],w[1],w[2],o))return null;s2.push(o);}let a=0;for(let i=0;i<s2.length;i++){const u=s2[i],v=s2[(i+1)%s2.length];a+=u.x*v.y-v.x*u.y;}s2.front=a<-.02;return s2;}));
   const fr=ad=>{const q=FS[ad[0]]&&FS[ad[0]][ad[1]];return !!(q&&q.front);};
-  let best=81,hit=null;const A={x:0,y:0},B={x:0,y:0};
+  let best=subTol(),hit=null;const A={x:0,y:0},B={x:0,y:0};
   M.E.forEach((E,i)=>{for(const sg of E.segs){if(!sg.adj.some(fr))continue;if(!toScr(sg.a[0],sg.a[1],sg.a[2],A)||!toScr(sg.b[0],sg.b[1],sg.b[2],B))continue;const d=segDist2(sx,sy,A.x,A.y,B.x,B.y);
       if(d<best){best=d;const dx=B.x-A.x,dy=B.y-A.y,l=dx*dx+dy*dy;hit={id:e.id,k:'e',i,t:E.segs.length===1&&l?Math.max(0,Math.min(1,((sx-A.x)*dx+(sy-A.y)*dy)/l)):.5,d};}}});
   if(hit)return hit;
@@ -1994,7 +1995,10 @@ function drawSub(c){
         c.moveTo(u.x,u.y);if(g){c.lineTo(u.x+(v.x-u.x)*(.5-g),u.y+(v.y-u.y)*(.5-g));c.moveTo(u.x+(v.x-u.x)*(.5+g),u.y+(v.y-u.y)*(.5+g));}c.lineTo(v.x,v.y);}
       c.globalAlpha=strong?1:.75;c.lineWidth=strong?(lines.length>1?4:6):4;c.stroke();c.globalAlpha=1;}
     if(strong){const an=s.k==='f'?o.cn().c:o.mid().p,sp={x:0,y:0};let px=vw/2,py=vh/2;if(toScr(an[0],an[1],an[2],sp)){px=sp.x;py=sp.y;}const h=$('#subHud'),w=h.offsetWidth||200,hh=h.offsetHeight||70;
-      if(hudPos){px=hudPos.x-18;py=hudPos.y-18;}h.style.transform=`translate(${Math.round(Math.max(8,Math.min(vw-w-8,px+18)))}px,${Math.round(Math.max(8,Math.min(vh-hh-8,py+18)))}px)`;}}
+      let X=px+18,Y=py+18;if(hudPos){X=hudPos.x;Y=hudPos.y;}else{{let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;const t={x:0,y:0};
+          for(const f of x.M.F)for(const q of f.polys)for(const w of q)if(toScr(w[0],w[1],w[2],t)){x0=Math.min(x0,t.x);y0=Math.min(y0,t.y);x1=Math.max(x1,t.x);y1=Math.max(y1,t.y);}
+          if(isFinite(x0)){const g=26;Y=py-hh/2;if(x1+g+w<=vw-8)X=x1+g;else if(x0-g-w>=8)X=x0-g-w;else{X=px-w/2;Y=y1+g+hh<=vh-8?y1+g:Math.max(8,y0-g-hh);}}}}
+      h.style.transform=`translate(${Math.round(Math.max(8,Math.min(vw-w-8,X)))}px,${Math.round(Math.max(8,Math.min(vh-hh-8,Y)))}px)`;}}
   if(tool&&tool.flab&&cur.has){c.font='600 12px ui-monospace,Menlo,Consolas,monospace';const w=c.measureText(tool.flab).width+14,xx=Math.min(vw-w-6,cur.sx+16),y=Math.max(6,cur.sy-34);
     c.fillStyle=SUBC;c.beginPath();c.rect(xx,y,w,22);c.fill();c.fillStyle='#04262b';c.textAlign='left';c.textBaseline='middle';c.fillText(tool.flab,xx+7,y+11.5);}
   if(drag&&(drag.type==='sub'||drag.type==='ih')&&drag.lab){c.font='600 12px ui-monospace,Menlo,Consolas,monospace';const w=c.measureText(drag.lab).width+14,xx=Math.min(vw-w-6,drag.lx+16),y=Math.max(6,drag.ly-34);
@@ -2501,7 +2505,7 @@ gl.addEventListener('pointerdown',e=>{
   else if(!tool||tool.selecting){const le=!tool&&!e.shiftKey?labelHit(p.x,p.y):null,pp=le?pickPlane(p.x,p.y):null;drag=le&&pp?{type:'label',e:le,q:pp.p,ox:le.ox||0,oy:le.oy||0}:{type:'box',shift:e.shiftKey};
     const ig=!tool&&!le&&!e.shiftKey?insGripHit(p.x,p.y):null;if(ig){const q=insSel()[0];drag={type:'ih',mode:ig,id:q.id,z:q.p[2]||0};}
     else if(!tool&&!le&&!e.shiftKey&&sel.size===1&&insSel().length===1&&pickAt(p.x,p.y)===insSel()[0].id){const q=insSel()[0];drag={type:'ih',mode:'move',id:q.id,z:q.p[2]||0,body:true};}
-    else if(!tool&&!le&&!e.shiftKey){let s=subHit(p.x,p.y);if(s){const pk=pickAt(p.x,p.y);if(pk!==s.id&&!(s.k==='e'&&pk==null))s=null;}const same=!!(s&&sub&&s.id===sub.id&&s.k===sub.k&&s.i===sub.i),onA=!!sub&&arrowHit(p.x,p.y);
+    else if(!tool&&!le&&!e.shiftKey){subTouch=!mouse;let s=subHit(p.x,p.y);subTouch=false;if(s){const pk=pickAt(p.x,p.y),pe=pk!=null&&byId(pk);if(pk!==s.id&&!(s.k==='e'&&(pk==null||!isSolid(pe))))s=null;}const same=!!(s&&sub&&s.id===sub.id&&s.k===sub.k&&s.i===sub.i),onA=!!sub&&arrowHit(p.x,p.y);
       if(sub&&(!s||same||onA))drag=sub.k==='f'?{type:'sub',s:{id:sub.id,k:'f',i:sub.i,touch:!mouse},keep:sub,pull:true,free:!same&&!onA}:{type:'sub',s:sub,keep:sub,pull:true,cham:true,free:!same&&!onA};
       else if(s){s.touch=!mouse;drag={type:'sub',s,pull:sel.size===1&&sel.has(s.id)&&s.k==='f',cham:s.k==='e'};}}}
   else{drag={type:'tap'};updateCursor(p.x,p.y);}
