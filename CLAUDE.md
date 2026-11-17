@@ -28,4 +28,4 @@ Ana sayfa (`index.html`) tüm oyunların menüsüdür; liste `oyunlar.js` içind
   bloklar (oluştur, yerleştir, yerinde düzenle, patlat; doc.blocks + 'ins' nesnesi); hazır nesneler de blok (pf_<tür>);
   blok tutamaçları + küçük menü (#insHud), kesit görünümü (#secHud, yalnızca görünüm).
 - Sıradaki öneriler (sırayla):
-  eksik düzenleme araçları (yayda/dairede kırpma, germe; dairesel çoğaltma yapıldı); ön/yan görünüş çıktısı.
+  ön/yan görünüş çıktısı (dairesel çoğalt, ger, yayda uzat yapıldı).
