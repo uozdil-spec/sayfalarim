@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261121-0036">
+<meta name="surum" content="20261121-0044">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261121-0036" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261121-0036" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261121-0036">
-<link rel="manifest" href="manifest.webmanifest?v=20261121-0036">
+<link rel="icon" href="ikon.svg?v=20261121-0044" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261121-0044" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261121-0044">
+<link rel="manifest" href="manifest.webmanifest?v=20261121-0044">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -383,7 +383,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261121-0036"></script>
+<script async src="../sayac.js?v=20261121-0044"></script>
 </head>
 <body>
 <div id="app">
@@ -1444,9 +1444,10 @@ function tiltEnts(list,ax,b,a){const c=Math.cos(a*RAD),s=Math.sin(a*RAD),R=p=>{c
     case 'poly':if(!e.pts.some(q=>q[3])){out.push(keep(e,{t:'poly',pts:e.pts.map(R),closed:!!e.closed}));break;}
     case 'circle':case 'arc':case 'ellipse':{const F=cFr(e),c=R(e.c),V=w=>{const q=R([e.c[0]+w[0],e.c[1]+w[1],e.c[2]+w[2]]);return nrm3([q[0]-c[0],q[1]-c[1],q[2]-c[2]]);},u=V(F.u),v=V(F.v),n=JSON.parse(JSON.stringify(e));delete n.id;delete n._w;n.c=c;n.u=u;n.n=cross3(u,v);out.push(n);break;}
     case 'sphere':out.push(Object.assign(cloneEnt(e),{c:R(e.c)}));break;
-    case 'mesh':{const n=cloneEnt(e);for(let i=0;i+2<n.v.length;i+=3){const q=R([n.v[i],n.v[i+1],n.v[i+2]]);n.v[i]=q[0];n.v[i+1]=q[1];n.v[i+2]=q[2];}out.push(n);break;}
+    case 'mesh':{if(e.br&&OK){try{const h=OK.rotate(occShape(e),{point:V3(b),direction:V3(ax==='x'?[1,0,0]:[0,1,0])},a*RAD),m=occEnt(h,e.l,e.col);if(m){for(const k2 of ['mat','lt','lw'])if(e[k2]!=null)m[k2]=e[k2];out.push(m);break;}}catch(err){log(String(err&&err.message||err),'e');}}const n=cloneEnt(e);for(let i=0;i+2<n.v.length;i+=3){const q=R([n.v[i],n.v[i+1],n.v[i+2]]);n.v[i]=q[0];n.v[i+1]=q[1];n.v[i+2]=q[2];}out.push(n);break;}
     case 'ins':for(const q of explodeIns([e]))one(q);break;
-    case 'box':case 'cyl':case 'cone':case 'extrude':case 'prefab':{const T=solTris(e).map(t=>t.map(R)),m=T.length&&trisToMesh(T,e.l);if(m){if(e.col)m.col=e.col;out.push(m);}else skip.push(e);break;}
+    case 'box':case 'cyl':case 'cone':case 'extrude':if(OK){try{const h=OK.rotate(occShape(e),{point:V3(b),direction:V3(ax==='x'?[1,0,0]:[0,1,0])},a*RAD),m=occEnt(h,e.l,e.col);if(m){for(const k2 of ['mat','lt','lw'])if(e[k2]!=null)m[k2]=e[k2];out.push(m);break;}}catch(err){log(String(err&&err.message||err),'e');}}
+    case 'prefab':{const T=solTris(e).map(t=>t.map(R)),m=T.length&&trisToMesh(T,e.l);if(m){if(e.col)m.col=e.col;out.push(m);}else skip.push(e);break;}
     default:skip.push(e);}};
   for(const e of list)one(e);return {out,skip};}
 function solTris(e){const q=S.gq;S.gq='fast';let g;try{g=buildObj(e,false);}finally{S.gq=q;}g.updateMatrixWorld(true);const out=[],v=new THREE.Vector3();
@@ -1644,8 +1645,11 @@ function occShape(e){if(!OK||!e)return null;const key=e.br?e.br:JSON.stringify([
       if(e.ch)for(const ki of ['b','t']){const c=e.ch[ki];if(!c||!(c.a>0))continue;const z=e.c[2]+(ki==='t'?e.h:0),E2=k.getSubShapes(h,'edge'),hit=occEdgeNear(E2,[e.c[0]+e.r,e.c[1],z],true);if(hit==null)continue;
         h=occSolid(c.k==='r'?k.fillet(h,[E2[hit]],c.a):k.chamfer(h,[E2[hit]],c.b&&Math.abs(c.b-c.a)>1e-12?{distance1:c.a,distance2:c.b}:c.a));}break;}
     case 'sphere':h=k.translate(k.makeSphere(e.r),e.c[0],e.c[1],e.c[2]);break;
-    case 'extrude':{if(e.ch&&Object.keys(e.ch).length){h=occFromTris(solTris(e));break;}const P=e.pts.map(q=>[q[0],q[1],e.z]),E=[];for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];if(Math.hypot(b[0]-a[0],b[1]-a[1])>1e-12)E.push(k.makeLineEdge(V3(a),V3(b)));}
-      h=k.extrude(k.makeFace(k.makeWire(E)),0,0,e.h);break;}
+    case 'extrude':{const P=e.pts.map(q=>[q[0],q[1],e.z]),E=[];for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];if(Math.hypot(b[0]-a[0],b[1]-a[1])>1e-12)E.push(k.makeLineEdge(V3(a),V3(b)));}
+      h=occSolid(k.extrude(k.makeFace(k.makeWire(E)),0,0,e.h));
+      /* rounded/chamfered upright corners: the true edges at those corners */
+      if(e.ch)for(const ki in e.ch){const c=e.ch[ki],i=+String(ki).slice(1);if(!c||!(c.a>0)||!P[i])continue;const E2=k.getSubShapes(h,'edge'),hit=occEdgeNear(E2,[P[i][0],P[i][1],e.z+e.h/2]);if(hit==null)continue;
+        h=occSolid(c.k==='r'?k.fillet(h,[E2[hit]],c.a):k.chamfer(h,[E2[hit]],c.b&&Math.abs(c.b-c.a)>1e-12?{distance1:c.a,distance2:c.b}:c.a));}break;}
   }}catch(err){log(String(err&&err.message||err),'e');h=null;}
   if(h!=null)okc.set(e,{key,h});return h;}
 /* nearest edge to a point (by the edge's own midpoint, or any point on a closed curve) */
@@ -1696,6 +1700,31 @@ function occEdgeTool(e,ei,kind,a,b,x0,x1){x0=x0||0;x1=x1||0;const x=e.ex[ei];if(
     w=k.makeWire([k.makeLineEdge(V3(P),V3(T1)),k.makeArcEdge(V3(T1),V3(M),V3(T2)),k.makeLineEdge(V3(T2),V3(P))]);}
   else{const A1=ad(P,d1,a),B1=ad(P,d2,b);w=k.makeWire([k.makeLineEdge(V3(P),V3(A1)),k.makeLineEdge(V3(A1),V3(B1)),k.makeLineEdge(V3(B1),V3(P))]);}
   const L2=Math.hypot(E0[0]-S0[0],E0[1]-S0[1],E0[2]-S0[2])+x0+x1;w=k.translate(w,-tv[0]*x0,-tv[1]*x0,-tv[2]*x0);return {T:k.extrude(k.makeFace(w),tv[0]*L2,tv[1]*L2,tv[2]*L2)};}
+/* a drawn curve as exact kernel edges (lines, true circles/arcs/ellipses, a smooth curve through its points) */
+function occEdges(e){const k=OK,E=[],L=(a,b)=>{if(Math.hypot(b[0]-a[0],b[1]-a[1],(b[2]||0)-(a[2]||0))>1e-12)E.push(k.makeLineEdge(V3([a[0],a[1],a[2]||0]),V3([b[0],b[1],b[2]||0])));};let closed=false;
+  switch(e.t){case 'line':L(e.p1,e.p2);break;
+    case 'poly':if(fitOk(e)){E.push(k.interpolatePoints(e.fit.map(q=>V3([q[0],q[1],q[2]||0])),!!e.closed));closed=!!e.closed;}else{for(let i=0;i+1<e.pts.length;i++)L(e.pts[i],e.pts[i+1]);if(e.closed&&e.pts.length>2){L(e.pts[e.pts.length-1],e.pts[0]);closed=true;}}break;
+    case 'circle':E.push(k.makeCircleEdge(V3(e.c),V3(cFr(e).n),e.r));closed=true;break;
+    case 'arc':{const sp=arcSpan(e);E.push(k.makeArcEdge(V3(cPt(e,e.a1*RAD,e.r)),V3(cPt(e,(e.a1+sp/2)*RAD,e.r)),V3(cPt(e,(e.a1+sp)*RAD,e.r))));break;}
+    case 'ellipse':{const F=cFr(e),big=e.rx>=e.ry;E.push(k.makeEllipseArc(V3(e.c),V3(F.n),big?e.rx:e.ry,big?e.ry:e.rx,0,2*Math.PI,V3(big?F.u:F.v)));closed=true;break;}
+    default:return null;}
+  return E.length?{E,closed}:null;}
+/* revolve a profile exactly; an open profile is closed back to the axis (a vase from its outline) */
+function revolveExact(prof,A,B,ang){const k=OK,W=occEdges(prof);if(!W)return null;const ax=nrm3([B[0]-A[0],B[1]-A[1],B[2]-A[2]]);let E=W.E.slice();
+  if(!W.closed){const cp=curvePts(prof).pts,p0=cp[0],p1=cp[cp.length-1],pj=q=>{const w=[q[0]-A[0],q[1]-A[1],q[2]-A[2]],t=dt3(w,ax);return [A[0]+ax[0]*t,A[1]+ax[1]*t,A[2]+ax[2]*t];},a1=pj(p1),a0=pj(p0),Lq=(a,b)=>{if(Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2])>1e-9)E.push(k.makeLineEdge(V3(a),V3(b)));};Lq(p1,a1);Lq(a1,a0);Lq(a0,p0);}
+  let h=k.revolve(k.makeFace(k.makeWire(E)),{point:V3(A),direction:V3(ax)},Math.max(-2*Math.PI,Math.min(2*Math.PI,ang*RAD)));h=occSolid(h);
+  /* a profile drawn flat on the plan with a level axis is stood up: the axis turns upright and the solid rests on the drawing level */
+  const P=curvePts(prof).pts;if(Math.abs(ax[2])<.1&&P.every(q=>Math.abs((q[2]||0)-(P[0][2]||0))<1e-9)){const r=nrm3(cross3(ax,[0,0,1])),an=Math.acos(Math.max(-1,Math.min(1,dt3(ax,[0,0,1]))));h=k.rotate(h,{point:V3(A),direction:V3(r)},an);const bb=k.getBoundingBox(h);h=k.translate(h,0,0,(P[0][2]||0)-bb.zmin);}
+  return occEnt(h,prof.l,prof.col);}
+/* sweep a closed section along a path exactly, mitred at sharp corners; the section stands on the path (a circle is centred, a pipe) */
+function sweepExact(prof,path){const k=OK,W=occEdges(prof),S2=occEdges(path);if(!W||!W.closed||!S2)return null;const pr=curvePts(prof),pa=curvePts(path);if(pr.pts.length<2||pa.pts.length<2)return null;
+  const F=prof.t==='circle'||prof.t==='ellipse'?Object.assign({c:prof.c},cFr(prof)):loopFrame(pr.pts),loc=pr.pts.map(p=>{const w=[p[0]-F.c[0],p[1]-F.c[1],p[2]-F.c[2]];return [dt3(w,F.u),dt3(w,F.v)];});
+  let ax=0,ay=0;if(prof.t!=='circle'){let x0=Infinity,x1=-Infinity,y0=Infinity;for(const q of loc){x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);}ax=(x0+x1)/2;ay=y0;}
+  const E0=S2.E[0],pr0=k.curveParameters(E0),Q=[A3(k.curvePointAtParam(E0,pr0.first))],T0=nrm3(A3(k.curveTangent(E0,pr0.first))),up=Math.abs(T0[2])>.95?[1,0,0]:[0,0,1],Nv=nrm3(cross3(up,T0)),Bv=nrm3(cross3(T0,Nv)),n=cross3(F.u,F.v);
+  /* p' = start + Nv*((p-c)·u-ax) + Bv*((p-c)·v-ay) + T0*((p-c)·n) */
+  const c=F.c,o=[Q[0][0]-Nv[0]*(dt3(c,F.u)+ax)-Bv[0]*(dt3(c,F.v)+ay)-T0[0]*dt3(c,n),Q[0][1]-Nv[1]*(dt3(c,F.u)+ax)-Bv[1]*(dt3(c,F.v)+ay)-T0[1]*dt3(c,n),Q[0][2]-Nv[2]*(dt3(c,F.u)+ax)-Bv[2]*(dt3(c,F.v)+ay)-T0[2]*dt3(c,n)];
+  const M=[0,1,2].flatMap(r=>[Nv[r]*F.u[0]+Bv[r]*F.v[0]+T0[r]*n[0],Nv[r]*F.u[1]+Bv[r]*F.v[1]+T0[r]*n[1],Nv[r]*F.u[2]+Bv[r]*F.v[2]+T0[r]*n[2],o[r]]);
+  const w=k.transform(k.makeWire(W.E),M);let h=k.sweep(w,k.makeWire(S2.E),1);h=occSolid(h);if(!k.getSubShapes(h,'solid').length){try{h=occSolid(k.makeSolid(h));}catch(_){return null;}}return occEnt(h,prof.l,prof.col);}
 /* exact round / chamfer of the chosen edges; a smooth run onto other edges is included only when asked (tg) */
 /* edge rounds/chamfers are kept as a short list over the solid as it was before them (like a feature list),
    and rebuilt together each time: corners where several rounded edges meet come out exactly as if chosen at once */
@@ -1820,6 +1849,10 @@ function boolRun(op,base,others){
 function shellPoly(P,t){let A=0;for(let i=0;i<P.length;i++){const a=P[i],b=P[(i+1)%P.length];A+=a[0]*b[1]-b[0]*a[1];}const sg=A>0?1:-1,n=P.length,out=[];
   for(let i=0;i<n;i++){const a=P[(i-1+n)%n],b=P[i],c=P[(i+1)%n],e1=[b[0]-a[0],b[1]-a[1]],e2=[c[0]-b[0],c[1]-b[1]],l1=Math.hypot(...e1)||1,l2=Math.hypot(...e2)||1,n1=[-e1[1]/l1*sg,e1[0]/l1*sg],n2=[-e2[1]/l2*sg,e2[0]/l2*sg],m=[n1[0]+n2[0],n1[1]+n2[1]],d=1+n1[0]*n2[0]+n1[1]*n2[1];
     if(d<1e-6)return null;out.push([b[0]+m[0]*t/d,b[1]+m[1]*t/d]);}return out;}
+/* hollow an exact solid, open at its top (its highest flat faces looking up) */
+function occShellTop(e,t){if(!okNeed())return null;if(!e.ft)occDress(e);const h=occShape(e),F=OK.getSubShapes(h,'face'),bb=OK.getBoundingBox(h),zt=bb.zmax,tol=occEdgeSize(h)*1e-7+1e-9,top=[];
+  F.forEach((f,i)=>{const n=occFaceN(e,i);if(n&&n[2]>1-1e-9&&Math.abs(OK.getBoundingBox(f).zmax-zt)<tol)top.push(f);});if(!top.length)return null;
+  let r;try{r=OK.shell(h,top,t,1e-6);}catch(err){log(String(err&&err.message||err),'e');return null;}const en=occEnt(r,e.l,e.col);if(!en)return null;pushUndo();removeIds([e.id]);addEnt(en);return en;}
 function shellInner(e,t){switch(e.t){
   case 'box':return e.sx>2*t&&e.sy>2*t&&e.sz>t?{t:'box',l:e.l,p:[e.p[0],e.p[1],e.p[2]+t],sx:e.sx-2*t,sy:e.sy-2*t,sz:e.sz,rot:e.rot||0}:null;
   case 'cyl':return e.r>t&&e.h>t?{t:'cyl',l:e.l,c:[e.c[0],e.c[1],e.c[2]+t],r:e.r-t,h:e.h}:null;
@@ -2509,7 +2542,17 @@ function jointRing(J,kind,a,b){if(!(b>0))b=a;const n=J.n,{u,v}=wpBasis(n),o=J.c,
   const T=[],m=P.length;for(let k=0;k<K;k++)for(let i=0;i<m;i++){const j=(i+1)%m,A1=Ro[k],B1=Ro[k+1],C1=Ri[k],D1=Ri[k+1];T.push([A1[i],A1[j],B1[j]],[A1[i],B1[j],B1[i]]);T.push([C1[i],D1[j],C1[j]],[C1[i],D1[i],D1[j]]);}
   for(let i=0;i<m;i++){const j=(i+1)%m;T.push([Ro[0][i],Ri[0][j],Ro[0][j]],[Ro[0][i],Ri[0][i],Ri[0][j]]);}
   let vol=0;for(const [p0,p1,p2] of T)vol+=(p0[0]*(p1[1]*p2[2]-p1[2]*p2[1])-p0[1]*(p1[0]*p2[2]-p1[2]*p2[0])+p0[2]*(p1[0]*p2[1]-p1[1]*p2[0]))/6;if(vol<0)for(const t of T){const x=t[1];t[1]=t[2];t[2]=x;}return T;}
-function jointApply(e,o,kind,a,b,unite){const J=jointOf(e,o);if(!J){toast(L('jNo'));return;}if(!(a>0)||(kind==='c'&&!(b>0))){toast(L('bxBad'));return;}const T=jointTris(J,kind,a,b);if(!T){toast(L('foBad'));return;}
+/* exact weld-like round/chamfer where a solid stands on another: join them, round the meeting line, keep the added ring as its own piece (or keep it joined) */
+function jointExact(e,J,kind,a,b,unite){const k=OK,A=occShape(e),B=occShape(J.base);if(A==null||B==null)return false;const U=occSolid(k.fuse(A,B)),dg=occEdgeSize(U),tol=dg*1e-7+1e-9,n=J.n,c=J.c,onP=q=>Math.abs((q[0]-c[0])*n[0]+(q[1]-c[1])*n[1]+(q[2]-c[2])*n[2])<dg*1e-6+1e-9;
+  const E=[];for(const ed of k.getSubShapes(A,'edge')){const pr=k.curveParameters(ed),ps=[pr.first,(pr.first+pr.last)/2,pr.last].map(t=>A3(k.curvePointAtParam(ed,t)));if(!ps.every(onP))continue;const m=ps[1],u=occFindEdge(U,m,dg);if(u!=null&&!E.includes(u))E.push(u);}
+  if(!E.length)return false;let R;
+  if(kind==='r')R=occSolid(k.fillet(U,E,a));
+  else{const pf=k.getSubShapes(U,'face').filter(f=>{try{if(k.surfaceType(f)!=='plane')return false;const pr=k.curveParameters(E[0]),m=A3(k.curvePointAtParam(E[0],(pr.first+pr.last)/2)),q=A3(k.projectPointOnFace(f,V3(m)));if(Math.hypot(q[0]-m[0],q[1]-m[1],q[2]-m[2])>tol*10)return false;const uv=k.uvFromPoint(f,V3(m)),nn=A3(k.surfaceNormal(f,uv.u,uv.v));return Math.abs(Math.abs(dt3(nn,n))-1)<1e-6;}catch(_){return false;}});
+    R=occSolid(k.chamfer(U,E,E.map(()=>pf.length?{distance1:a,distance2:b,referenceFace:pf[0]}:{distance1:a,distance2:b})));}
+  if(unite){const en=occEnt(R,J.base.l,J.base.col);if(!en)return false;pushUndo();removeIds([e.id,J.base.id]);addEnt(en);sel.clear();sel.add(en.id);selChanged();toast(L('jDone',fmt(a)+' '+uL()),6000);return true;}
+  const ring=occSolid(k.cut(R,U)),en=occEnt(ring,e.l,e.col);if(!en)return false;if(e.mat)en.mat=e.mat;pushUndo();addEnt(en);sel.clear();sel.add(en.id);selChanged();toast(L('jDoneSep',fmt(a)+' '+uL()),7000);requestRender();return true;}
+function jointApply(e,o,kind,a,b,unite){const J=jointOf(e,o);if(!J){toast(L('jNo'));return;}if(!(a>0)||(kind==='c'&&!(b>0))){toast(L('bxBad'));return;}
+  if(OK){setSub(null);try{if(jointExact(e,J,kind,a,b,unite))return;}catch(err){log(String(err&&err.message||err),'e');toast(L('okEdgeFail'),7000);return;}}const T=jointTris(J,kind,a,b);if(!T){toast(L('foBad'));return;}
   setSub(null);if(unite){const r=boolRun('u',J.base,[e,T]);if(r)toast(L('jDone',fmt(a)+' '+uL()),6000);return;}
   const R2=jointRing(J,kind,a,b);if(!R2){toast(L('foBad'));return;}const vv=[],ff=[];for(const t of R2)for(const w of t){ff.push(vv.length/3);vv.push(w[0],w[1],w[2]);}
   pushUndo();const en={t:'mesh',l:e.l,v:vv,f:ff,ne:1};if(e.col)en.col=e.col;if(e.mat)en.mat=e.mat;addEnt(en);sel.clear();sel.add(en.id);selChanged();toast(L('jDoneSep',fmt(a)+' '+uL()),7000);requestRender();}
@@ -2838,12 +2881,12 @@ function mk(name,arg){
     T.begin=()=>{const e=profileEnt();if(!e){log(L('rvBad'),'e');toast(L('rvBad'));setTool(null);return;}T.pid=e.id;T.pts=[];T.step=0;};
     T.last=()=>T.pts[T.pts.length-1]||null;
     T.point=p=>{if(T.step===0){T.pts=[p];T.step=1;}else if(T.step===1){if(Math.hypot(p[0]-T.pts[0][0],p[1]-T.pts[0][1],p[2]-T.pts[0][2])<1e-9){toast(L('rvAxis'));return;}T.pts.push(p);T.step=2;}};
-    T.run=ang=>{const e=byId(T.pid);if(!e){setTool(null);return;}const m=revolveMesh(e,T.pts[0],T.pts[1],ang);if(!m){toast(L('rvBad'));return;}pushUndo();if(e.col)m.col=e.col;removeIds([e.id]);addEnt(m);sel.clear();sel.add(m.id);selChanged();toast(L('rvDone'));setTool(null);};
+    T.run=ang=>{const e=byId(T.pid);if(!e){setTool(null);return;}let m=null;if(OK){try{m=revolveExact(e,T.pts[0],T.pts[1],ang);}catch(err){log(String(err&&err.message||err),'e');}}if(!m)m=revolveMesh(e,T.pts[0],T.pts[1],ang);if(!m){toast(L('rvBad'));return;}pushUndo();if(e.col)m.col=e.col;removeIds([e.id]);addEnt(m);sel.clear();sel.add(m.id);selChanged();toast(L('rvDone'));setTool(null);};
     T.number=n=>{if(T.step!==2)return false;if(Math.abs(n)>1e-9)T.run(Math.max(-360,Math.min(360,n)));return true;};
     T.enter=()=>{if(T.step===2)T.run(360);else setTool(null);};
     T.preview=p=>{if(T.step===1)return [{t:'line',p1:T.pts[0],p2:p}];if(T.step===2){const e=byId(T.pid),m=e&&revolveMesh(e,T.pts[0],T.pts[1],360,true);return [{t:'line',p1:T.pts[0],p2:T.pts[1]}].concat(m?[m]:[]);}return [];};break;
   case 'sweep':T.needSel=true;T.selPrompt='pSwSel';T.prompt=()=>L('pSwPath');T.last=()=>null;T.enter=()=>setTool(null);
-    T.run=(pr,pa)=>{const m=sweepMesh(pr,pa);if(!m){toast(L('swBad'));return false;}pushUndo();if(pr.col)m.col=pr.col;removeIds([pr.id]);addEnt(m);sel.clear();sel.add(m.id);selChanged();toast(L('rvDone'));setTool(null);return true;};
+    T.run=(pr,pa)=>{let m=null;if(OK){try{m=sweepExact(pr,pa);}catch(err){log(String(err&&err.message||err),'e');}}if(!m)m=sweepMesh(pr,pa);if(!m){toast(L('swBad'));return false;}pushUndo();if(pr.col)m.col=pr.col;removeIds([pr.id]);addEnt(m);sel.clear();sel.add(m.id);selChanged();toast(L('rvDone'));setTool(null);return true;};
     T.begin=()=>{const pr=profileEnt('closed');if(!pr){log(L('swBad'),'e');toast(L('swBad'));setTool(null);return;}const other=selEnts().filter(e=>PROFT[e.t]&&e.id!==pr.id);
       if(other.length){T.run(pr,other[0]);return;}T.pid=pr.id;sel.clear();sel.add(pr.id);selChanged();};
     T.point=()=>{const pr=byId(T.pid);if(!pr){setTool(null);return;}const pa=byId(pickAt(cur.sx,cur.sy));if(!pa||!PROFT[pa.t]){toast(L('swPathBad'));return;}if(pa.id===pr.id){toast(L('swSame'));return;}T.run(pr,pa);};
@@ -2932,9 +2975,10 @@ function mk(name,arg){
   case 'sunstudy':T.begin=null;setTimeout(()=>{setTool(null);sunToggle(!(SUNS&&SUNS.on));},0);T.prompt=()=>'';T.point=()=>{};T.last=()=>null;T.enter=()=>setTool(null);break;
   case 'qselect':setTimeout(()=>{setTool(null);showQSel();},0);T.prompt=()=>'';T.point=()=>{};T.last=()=>null;T.enter=()=>setTool(null);break;
   case 'shell':T.needSel=true;T.selPrompt='pShSel';T.prompt=()=>L('pShT');T.last=()=>null;T.point=()=>{};T.enter=()=>setTool(null);
-    T.begin=()=>{if(!selEnts().some(e=>e.t==='box'||e.t==='cyl'||e.t==='extrude')){toast(L('shNone'),5000);setTool(null);}};
-    T.number=n=>{if(!(n>0))return false;const src=selEnts().filter(e=>e.t==='box'||e.t==='cyl'||e.t==='extrude');let ok=0,bad=0;const ids=[];
-      for(const e of src){const inn=shellInner(e,n);if(!inn){bad++;continue;}const r=boolRun('s',e,[solTris(inn)]);if(r){ok++;ids.push(r.id);}else bad++;}
+    const shOk=e=>e.t==='box'||e.t==='cyl'||e.t==='extrude'||(e.t==='mesh'&&e.br);
+    T.begin=()=>{if(!selEnts().some(shOk)){toast(L('shNone'),5000);setTool(null);}};
+    T.number=n=>{if(!(n>0))return false;const src=selEnts().filter(shOk);let ok=0,bad=0;const ids=[];
+      for(const e of src){if(e.br){const r=occShellTop(e,n);if(r){ok++;ids.push(r.id);}else bad++;continue;}const inn=shellInner(e,n);if(!inn){bad++;continue;}const r=boolRun('s',e,[OK?{occ:occShape(inn)}:solTris(inn)]);if(r){ok++;ids.push(r.id);}else bad++;}
       sel=new Set(ids);selChanged();toast(L('shDone',ok)+(bad?' · '+L('shBad',bad):''),5000);setTool(null);return true;};break;
   case 'bsub':T.needSel=true;T.selPrompt='pSubSel';T.prompt=()=>L('pSubPick');T.last=()=>null;T.enter=()=>setTool(null);
     T.begin=()=>{const ss=selEnts().filter(isSolid);if(!ss.length){log(L('boNoSolid'),'e');toast(L('boNoSolid'));setTool(null);return;}T.baseId=ss[0].id;sel.clear();sel.add(T.baseId);selChanged();};
