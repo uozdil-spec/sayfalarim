@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261120-2354">
+<meta name="surum" content="20261120-2358">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261120-2354" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261120-2354" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261120-2354">
-<link rel="manifest" href="manifest.webmanifest?v=20261120-2354">
+<link rel="icon" href="ikon.svg?v=20261120-2358" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261120-2358" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261120-2358">
+<link rel="manifest" href="manifest.webmanifest?v=20261120-2358">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -383,7 +383,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261120-2354"></script>
+<script async src="../sayac.js?v=20261120-2358"></script>
 </head>
 <body>
 <div id="app">
@@ -1149,7 +1149,7 @@ function xfEnt(e,op){
       if(e.k==='lin'){tp(e.a);tp(e.b);tp(e.d);if(e.ax!=='a'&&(op.k==='r'||mir)){const m=(((op.k==='r'?op.a:ph2/2)%90)+90)%90;if(m>1e-6&&90-m>1e-6)e.ax='a';else if(op.k==='r'&&Math.abs((((op.a%180)+180)%180)-90)<1e-6)e.ax=e.ax==='h'?'v':'h';}}
       else{tp(e.c);e.r*=f;if(e.k==='ang'){if(mir){const k=e.a1;e.a1=ph2-e.a2;e.a2=ph2-k;}else{e.a1+=da;e.a2+=da;}}else e.ang=mir?ph2-e.ang:e.ang+da;}break;
     case 'mesh':{if(e.br&&OK){const o=[0,0,0],X=[1,0,0],Y=[0,1,0],Z=[0,0,1];[o,X,Y,Z].forEach(tp);const M=[X[0]-o[0],Y[0]-o[0],Z[0]-o[0],o[0],X[1]-o[1],Y[1]-o[1],Z[1]-o[1],o[1],X[2]-o[2],Y[2]-o[2],Z[2]-o[2],o[2]];
-        try{const h2=OK.transform(occShape(e),M);e.br=b64e(OK.toBREPBinary(h2));occDress(e,h2);okc.set(e,{key:e.br,h:h2});break;}catch(err){log(String(err&&err.message||err),'e');}}
+        try{const h2=OK.transform(occShape(e),M);e.br=b64e(OK.toBREPBinary(h2));occDress(e,h2);okc.set(e,{key:e.br,h:h2});if(e.fb){try{e.fb=b64e(OK.toBREPBinary(OK.transform(OK.fromBREPBinary(b64d(e.fb)),M)));for(const f of e.fe||[])tp(f.m);}catch(_){delete e.fb;delete e.fe;}}break;}catch(err){log(String(err&&err.message||err),'e');}}
       const t=[0,0,0];for(let i=0;i<e.v.length;i+=3){t[0]=e.v[i];t[1]=e.v[i+1];t[2]=e.v[i+2];tp(t);e.v[i]=t[0];e.v[i+1]=t[1];e.v[i+2]=t[2];}
       if(mir||f<0)for(let i=0;i+2<e.f.length;i+=3){const x=e.f[i+1];e.f[i+1]=e.f[i+2];e.f[i+2]=x;}break;}
   }
@@ -1697,7 +1697,22 @@ function occEdgeTool(e,ei,kind,a,b,x0,x1){x0=x0||0;x1=x1||0;const x=e.ex[ei];if(
   else{const A1=ad(P,d1,a),B1=ad(P,d2,b);w=k.makeWire([k.makeLineEdge(V3(P),V3(A1)),k.makeLineEdge(V3(A1),V3(B1)),k.makeLineEdge(V3(B1),V3(P))]);}
   const L2=Math.hypot(E0[0]-S0[0],E0[1]-S0[1],E0[2]-S0[2])+x0+x1;w=k.translate(w,-tv[0]*x0,-tv[1]*x0,-tv[2]*x0);return {T:k.extrude(k.makeFace(w),tv[0]*L2,tv[1]*L2,tv[2]*L2)};}
 /* exact round / chamfer of the chosen edges; a smooth run onto other edges is included only when asked (tg) */
+/* edge rounds/chamfers are kept as a short list over the solid as it was before them (like a feature list),
+   and rebuilt together each time: corners where several rounded edges meet come out exactly as if chosen at once */
+function occEdgeSize(h){const bb=OK.getBoundingBox(h);return Math.hypot(bb.xmax-bb.xmin,bb.ymax-bb.ymin,bb.zmax-bb.zmin)||1;}
+function occFindEdge(h,m,dg){const E=OK.getSubShapes(h,'edge');let best=null,bd=dg*1e-7+1e-9;E.forEach((ed,i)=>{try{const q=A3(OK.projectPointOnEdge(ed,V3(m)).point),d=Math.hypot(q[0]-m[0],q[1]-m[1],q[2]-m[2]);if(d<bd){bd=d;best=i;}}catch(_){}});return best==null?null:E[best];}
+function occApplyFeats(B,fe){const dg=occEdgeSize(B);let h=B;const ch=fe.filter(f=>f.k==='c'),fl=fe.filter(f=>f.k==='r');
+  if(ch.length){const E=ch.map(f=>occFindEdge(h,f.m,dg));if(E.some(x=>x==null))return null;h=occSolid(OK.chamfer(h,E,ch.map(f=>Math.abs((f.b||f.a)-f.a)>1e-12?{distance1:f.a,distance2:f.b}:f.a)));}
+  if(fl.length){const E=fl.map(f=>occFindEdge(h,f.m,dg));if(E.some(x=>x==null))return null;h=occSolid(OK.fillet(h,E,fl.map(f=>f.a)));}return h;}
+/* the edge of the base solid a current edge sits on (its middle lies on it) */
+function occBaseEdgeMid(B,cur){const pr=OK.curveParameters(cur),m=A3(OK.curvePointAtParam(cur,(pr.first+pr.last)/2)),dg=occEdgeSize(B),ed=occFindEdge(B,m,dg*1e3);if(ed==null)return null;
+  const q=A3(OK.projectPointOnEdge(ed,V3(m)).point);if(Math.hypot(q[0]-m[0],q[1]-m[1],q[2]-m[2])>dg*1e-7+1e-9)return null;const p2=OK.curveParameters(ed);return A3(OK.curvePointAtParam(ed,(p2.first+p2.last)/2));}
 function occEdgeOp(e,eis,kind,a,b,tg){if(!okNeed())return null;if(!Array.isArray(eis))eis=[eis];const h=occShape(e);if(h==null)return null;const E=OK.getSubShapes(h,'edge'),eds=eis.map(i=>E[i]);if(eds.some(x=>x==null)){toast(L('meNo'));return null;}
+  /* with a feature list: map the chosen edges back to the base solid and rebuild everything together */
+  {let B=null,fe=null;try{B=e.fb?OK.fromBREPBinary(b64d(e.fb)):h;fe=(e.fb&&e.fe?e.fe:[]).map(f=>Object.assign({},f));const ms=eds.map(ed=>occBaseEdgeMid(B,ed));
+    if(ms.every(Boolean)){const dg=occEdgeSize(B);for(const m of ms){const i=fe.findIndex(f=>Math.hypot(f.m[0]-m[0],f.m[1]-m[1],f.m[2]-m[2])<dg*1e-7+1e-9);const nf={m,k:kind,a,b:kind==='c'?b:a};if(i>=0)fe[i]=nf;else fe.push(nf);}
+      const r2=occApplyFeats(B,fe);if(r2!=null){const en=occEnt(r2,e.l,e.col);if(en){en.fb=e.fb||e.br;en.fe=fe;pushUndo();removeIds([e.id]);addEnt(en);sel.clear();sel.add(en.id);selChanged();return en;}}}}
+    catch(err){log(String(err&&err.message||err),'e');}}
   let r;try{const extra=tg?[]:occTanRun(e,eis);
     if(extra.length){const T=[];for(const i of eis){const q=occEdgeTool(e,i,kind,a,b,occEndRun(e,i,0),occEndRun(e,i,1));if(!q||q.err){toast(L(q&&q.err?q.err:'meOnlyNo'),8000);return null;}T.push(q.T);}r=OK.cutAll(h,T);}
     else r=kind==='r'?OK.fillet(h,eds,a):OK.chamfer(h,eds,Math.abs(b-a)>1e-12?{distance1:a,distance2:b}:a);}catch(err){toast(L('okEdgeFail'),7000);log(String(err&&err.message||err),'e');return null;}
