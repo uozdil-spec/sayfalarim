@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261120-2351">
+<meta name="surum" content="20261120-2354">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261120-2351" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261120-2351" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261120-2351">
-<link rel="manifest" href="manifest.webmanifest?v=20261120-2351">
+<link rel="icon" href="ikon.svg?v=20261120-2354" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261120-2354" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261120-2354">
+<link rel="manifest" href="manifest.webmanifest?v=20261120-2354">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -383,7 +383,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261120-2351"></script>
+<script async src="../sayac.js?v=20261120-2354"></script>
 </head>
 <body>
 <div id="app">
@@ -1679,21 +1679,27 @@ function occTanRun(e,eis){if(OK&&e.br&&!e.ft)occDress(e);const X=e.ex||[],tol=((
   const ends=i=>{const x=X[i];if(!x||x.c||!x.t0||!x.t1)return [];const p=x.p,n=p.length;return [{q:[p[0],p[1],p[2]],d:x.t0},{q:[p[n-3],p[n-2],p[n-1]],d:x.t1.map(v=>-v)}];};
   const got=new Set(eis),st=eis.slice();while(st.length){const i=st.pop();for(const a of ends(i))X.forEach((y,j)=>{if(got.has(j)||!y)return;for(const b of ends(j))if(Math.hypot(a.q[0]-b.q[0],a.q[1]-b.q[1],a.q[2]-b.q[2])<tol&&dt3(a.d,b.d)<-cs){got.add(j);st.push(j);break;}});}
   return [...got].filter(i=>!eis.includes(i));}
+/* from one end of an edge, the length of the curved edges that carry it on smoothly (the turn of an earlier round): the new round must reach through them to meet that round like a true corner */
+function occEndRun(e,ei,end){const X=e.ex,tol=1e-5*Math.max(1,...e.v.slice(0,3000).map(Math.abs)),cs=Math.cos(1*RAD),pE=x=>{const p=x.p,n=p.length;return [{q:[p[0],p[1],p[2]],d:x.t0},{q:[p[n-3],p[n-2],p[n-1]],d:x.t1.map(v=>-v)}];};
+  let cur=ei,side=end,len=0;const seen=new Set([ei]);for(let g=0;g<20;g++){const x=X[cur];if(!x||!x.t0)break;const a=pE(x)[side];let nx=null,ns=0;
+    X.forEach((y,j)=>{if(nx!=null||seen.has(j)||!y||y.c||!y.t0)return;pE(y).forEach((b,k)=>{if(nx==null&&Math.hypot(a.q[0]-b.q[0],a.q[1]-b.q[1],a.q[2]-b.q[2])<tol&&dt3(a.d,b.d)<-cs){nx=j;ns=1-k;}});});
+    if(nx==null||X[nx].t==='line')break;const p=X[nx].p;for(let i=3;i<p.length;i+=3)len+=Math.hypot(p[i]-p[i-3],p[i+1]-p[i-2],p[i+2]-p[i-1]);seen.add(nx);cur=nx;side=ns;}
+  return len;}
 /* outward normal of a flat face (from its own triangles) */
 function occFaceN(e,fi){if(!e.ft||!e.ft[fi])return null;for(let t=0;t<e.fi.length;t++)if(e.fi[t]===fi){const j=e.f[t*3]*3;return nrm3([e.nm[j],e.nm[j+1],e.nm[j+2]]);}return null;}
 /* only this straight edge between two flat faces: a prism of the corner profile, exactly as long as the edge */
-function occEdgeTool(e,ei,kind,a,b){const x=e.ex[ei];if(!x||x.t!=='line'||!x.fa||x.fa.length!==2)return null;const nA=occFaceN(e,x.fa[0]),nB=occFaceN(e,x.fa[1]);if(!nA||!nB)return null;
+function occEdgeTool(e,ei,kind,a,b,x0,x1){x0=x0||0;x1=x1||0;const x=e.ex[ei];if(!x||x.t!=='line'||!x.fa||x.fa.length!==2)return null;const nA=occFaceN(e,x.fa[0]),nB=occFaceN(e,x.fa[1]);if(!nA||!nB)return null;
   const p=x.p,S0=[p[0],p[1],p[2]],E0=[p[p.length-3],p[p.length-2],p[p.length-1]],tv=nrm3([E0[0]-S0[0],E0[1]-S0[1],E0[2]-S0[2]]);
   let d1=nrm3(cross3(tv,nA)),d2=nrm3(cross3(tv,nB));if(dt3(d1,nB)>0)d1=d1.map(v=>-v);if(dt3(d2,nA)>0)d2=d2.map(v=>-v);
   if(dt3(d1,nB)>-1e-6||dt3(d2,nA)>-1e-6)return {err:'meConcave'};const k=OK,P=S0,ad=(q,d,s)=>[q[0]+d[0]*s,q[1]+d[1]*s,q[2]+d[2]*s];let w;
   if(kind==='r'){const th=Math.acos(Math.max(-1,Math.min(1,dt3(d1,d2)))),tl=a/Math.tan(th/2),bis=nrm3([d1[0]+d2[0],d1[1]+d2[1],d1[2]+d2[2]]),C=ad(P,bis,a/Math.sin(th/2)),T1=ad(P,d1,tl),T2=ad(P,d2,tl),M=ad(C,bis,-a);
     w=k.makeWire([k.makeLineEdge(V3(P),V3(T1)),k.makeArcEdge(V3(T1),V3(M),V3(T2)),k.makeLineEdge(V3(T2),V3(P))]);}
   else{const A1=ad(P,d1,a),B1=ad(P,d2,b);w=k.makeWire([k.makeLineEdge(V3(P),V3(A1)),k.makeLineEdge(V3(A1),V3(B1)),k.makeLineEdge(V3(B1),V3(P))]);}
-  const L2=Math.hypot(E0[0]-S0[0],E0[1]-S0[1],E0[2]-S0[2]);return {T:k.extrude(k.makeFace(w),tv[0]*L2,tv[1]*L2,tv[2]*L2)};}
+  const L2=Math.hypot(E0[0]-S0[0],E0[1]-S0[1],E0[2]-S0[2])+x0+x1;w=k.translate(w,-tv[0]*x0,-tv[1]*x0,-tv[2]*x0);return {T:k.extrude(k.makeFace(w),tv[0]*L2,tv[1]*L2,tv[2]*L2)};}
 /* exact round / chamfer of the chosen edges; a smooth run onto other edges is included only when asked (tg) */
 function occEdgeOp(e,eis,kind,a,b,tg){if(!okNeed())return null;if(!Array.isArray(eis))eis=[eis];const h=occShape(e);if(h==null)return null;const E=OK.getSubShapes(h,'edge'),eds=eis.map(i=>E[i]);if(eds.some(x=>x==null)){toast(L('meNo'));return null;}
   let r;try{const extra=tg?[]:occTanRun(e,eis);
-    if(extra.length){const T=[];for(const i of eis){const q=occEdgeTool(e,i,kind,a,b);if(!q||q.err){toast(L(q&&q.err?q.err:'meOnlyNo'),8000);return null;}T.push(q.T);}r=OK.cutAll(h,T);}
+    if(extra.length){const T=[];for(const i of eis){const q=occEdgeTool(e,i,kind,a,b,occEndRun(e,i,0),occEndRun(e,i,1));if(!q||q.err){toast(L(q&&q.err?q.err:'meOnlyNo'),8000);return null;}T.push(q.T);}r=OK.cutAll(h,T);}
     else r=kind==='r'?OK.fillet(h,eds,a):OK.chamfer(h,eds,Math.abs(b-a)>1e-12?{distance1:a,distance2:b}:a);}catch(err){toast(L('okEdgeFail'),7000);log(String(err&&err.message||err),'e');return null;}
   const en=occEnt(r,e.l,e.col);if(!en){toast(L('okEdgeFail'),7000);return null;}pushUndo();removeIds([e.id]);addEnt(en);sel.clear();sel.add(en.id);selChanged();return en;}
 function boolRunExact(op,base,others){const k=OK;let h=occShape(base);if(h==null)return undefined;const used=[];const v0=Math.abs(k.getVolume(h));
