@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261120-2347">
+<meta name="surum" content="20261120-2351">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261120-2347" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261120-2347" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261120-2347">
-<link rel="manifest" href="manifest.webmanifest?v=20261120-2347">
+<link rel="icon" href="ikon.svg?v=20261120-2351" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261120-2351" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261120-2351">
+<link rel="manifest" href="manifest.webmanifest?v=20261120-2351">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -383,7 +383,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261120-2347"></script>
+<script async src="../sayac.js?v=20261120-2351"></script>
 </head>
 <body>
 <div id="app">
@@ -1624,7 +1624,7 @@ function xfCenter(e){switch(e.t){case 'line':return [(e.p1[0]+e.p2[0])/2,(e.p1[1
 /* ---------- exact geometry kernel (OpenCascade via occt-wasm): solids are stored as true B-rep, not triangles ---------- */
 const OCCV='5.17.2',OCCU='https://cdn.jsdelivr.net/npm/occt-wasm@'+OCCV+'/dist/';let OK=null,okP=null,okErr=null;
 function occLoad(){if(OK)return Promise.resolve(OK);if(okP)return okP;
-  okP=import(OCCU+'index.js').then(m=>m.OcctKernel.init({wasm:OCCU+'occt-wasm.wasm'})).then(k=>{OK=k;okErr=null;for(const e of doc.entities)if(e.br&&!e.ex)occDress(e);rebuildAll();requestRender();return k;})
+  okP=import(OCCU+'index.js').then(m=>m.OcctKernel.init({wasm:OCCU+'occt-wasm.wasm'})).then(k=>{OK=k;okErr=null;for(const e of doc.entities)if(e.br&&(!e.ex||!e.ft))occDress(e);rebuildAll();requestRender();return k;})
     .catch(err=>{okP=null;okErr=err;log(L('okFail')+' '+String(err&&err.message||err),'e');throw err;});return okP;}
 const okReady=()=>!!OK;
 function okNeed(){if(OK)return true;toast(L(okErr?'okFail':'okWait'),5000);occLoad().catch(()=>{});return false;}
@@ -1675,7 +1675,7 @@ const okVol=e=>{const h=occShape(e);return h==null?null:Math.abs(OK.getVolume(h)
 const okch=new WeakMap();
 function occChains(e){const c0=okch.get(e);if(c0&&c0.ex===e.ex)return c0.ch;const ch=[];(e.ex||[]).forEach((x,i)=>{if(!x)return;const pts=[];for(let j=0;j<x.p.length;j+=3)pts.push([x.p[j],x.p[j+1],x.p[j+2]]);if(x.c&&pts.length>2)pts.pop();ch.push({pts,closed:!!x.c,ei:i,segs:[]});});okch.set(e,{ex:e.ex,ch});return ch;}
 /* edges that run on tangentially from the given ones (the kernel always rounds such a smooth run as one) */
-function occTanRun(e,eis){const X=e.ex||[],tol=(()=>{let s=0;for(let i=0;i+2<e.v.length;i+=300)s=Math.max(s,Math.abs(e.v[i]),Math.abs(e.v[i+1]),Math.abs(e.v[i+2]));return Math.max(s*1e-7,1e-7);})(),cs=Math.cos(1*RAD);
+function occTanRun(e,eis){if(OK&&e.br&&!e.ft)occDress(e);const X=e.ex||[],tol=(()=>{const lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(let i=0;i+2<e.v.length;i+=3)for(let k=0;k<3;k++){lo[k]=Math.min(lo[k],e.v[i+k]);hi[k]=Math.max(hi[k],e.v[i+k]);}return Math.max(Math.hypot(hi[0]-lo[0],hi[1]-lo[1],hi[2]-lo[2])*1e-6,1e-5);})(),cs=Math.cos(1*RAD);
   const ends=i=>{const x=X[i];if(!x||x.c||!x.t0||!x.t1)return [];const p=x.p,n=p.length;return [{q:[p[0],p[1],p[2]],d:x.t0},{q:[p[n-3],p[n-2],p[n-1]],d:x.t1.map(v=>-v)}];};
   const got=new Set(eis),st=eis.slice();while(st.length){const i=st.pop();for(const a of ends(i))X.forEach((y,j)=>{if(got.has(j)||!y)return;for(const b of ends(j))if(Math.hypot(a.q[0]-b.q[0],a.q[1]-b.q[1],a.q[2]-b.q[2])<tol&&dt3(a.d,b.d)<-cs){got.add(j);st.push(j);break;}});}
   return [...got].filter(i=>!eis.includes(i));}
@@ -2517,7 +2517,7 @@ function meshEdgeCutter(e,ci,kind,a,b){const C=meshChains(e)[ci];if(!C)return {e
 function meOpen(e,ci,sx,sy){if(ME&&ME.id===e.id&&e.br&&$('#subHud').classList.contains('on')&&$('#meOk')){const i=ME.set.indexOf(ci);if(i>=0){if(ME.set.length>1)ME.set.splice(i,1);}else ME.set.push(ci);ME.ci=ci;meInfo(e);requestOverlay();return;}
   ME={id:e.id,ci,set:[ci]};const h=$('#subHud'),u=uL(),K=S.meK||'c',A=S.meA||Math.round(2*ucm()),R=(id,lab,val,un,hid)=>`<div class="r" id="r_${id}"${hid?' hidden':''}><span>${esc(lab)}</span><input id="${id}" type="text" inputmode="decimal" autocomplete="off" value="${val}"><span class="muted">${un}</span></div>`;
   h.innerHTML=`<label>${esc(L('meT'))}</label>`+(e.br?`<div class="muted" id="meN" style="font-size:12px;margin:-2px 0 6px"></div>`:'')+`<div class="r"><span>${esc(L('chKind'))}</span><select id="meK"><option value="c"${K==='c'?' selected':''}>${esc(L('chC'))}</option><option value="r"${K==='r'?' selected':''}>${esc(L('chR'))}</option></select><span></span></div>`+
-    R('meA',L(K==='r'?'chRad':'chA'),fmt(A),u)+R('meB',L('chB'),fmt(S.meB||A),u,K==='r')+(e.br?`<label class="chk" id="meTgR" hidden style="display:flex;gap:6px;align-items:center;margin:4px 0;font-size:12.5px"><input type="checkbox" id="meTg"${S.meTg?' checked':''}><span id="meTgL"></span></label>`:'')+`<button type="button" class="btn sm pri" id="meOk">${esc(L('ok'))}</button><button type="button" class="cls" id="meX" aria-label="${esc(L('close'))}">${ico('x')}</button>`;
+    R('meA',L(K==='r'?'chRad':'chA'),fmt(A),u)+R('meB',L('chB'),fmt(S.meB||A),u,K==='r')+(e.br?`<label class="chk" id="meTgR" style="display:none;gap:6px;align-items:center;margin:4px 0;font-size:12.5px"><input type="checkbox" id="meTg"${S.meTg?' checked':''}><span id="meTgL"></span></label>`:'')+`<button type="button" class="btn sm pri" id="meOk">${esc(L('ok'))}</button><button type="button" class="cls" id="meX" aria-label="${esc(L('close'))}">${ico('x')}</button>`;
   h.classList.add('on');const w=h.offsetWidth||240,hh=h.offsetHeight||150;h.style.transform=`translate(${Math.round(Math.max(8,Math.min(vw-w-8,sx+24)))}px,${Math.round(Math.max(8,Math.min(vh-hh-8,sy-hh/2)))}px)`;
   const close=()=>{ME=null;h.classList.remove('on');h.innerHTML='';requestOverlay();};$('#meX').onclick=close;
   if(e.br){meInfo(e);$('#meTg').onchange=()=>{S.meTg=$('#meTg').checked;saveSet();requestOverlay();};}
@@ -2526,7 +2526,7 @@ function meOpen(e,ci,sx,sy){if(ME&&ME.id===e.id&&e.br&&$('#subHud').classList.co
     const q=byId(ME&&ME.id);if(!q){close();return;}if(q.br){const CH=occChains(q),eis=ME.set.map(ci=>CH[ci]&&CH[ci].ei).filter(x=>x!=null);close();const en=occEdgeOp(q,eis,k,a,k==='c'?b:a,!!S.meTg);if(en)toast(L('meDone',fmt(a)+' '+uL()));return;}const r=meshEdgeCutter(q,ME.ci,k,a,k==='c'?b:a);if(r.err){toast(L(r.err),6000);return;}close();const en=boolRun('s',q,[r.T]);if(en)toast(L('meDone',fmt(a)+' '+uL()));};
   $('#meOk').onclick=go;for(const id of ['meA','meB'])$('#'+id).onkeydown=ev=>{ev.stopPropagation();if(ev.key==='Enter'){ev.preventDefault();go();}};requestOverlay();}
 function meInfo(e){if(!ME)return;const CH=occChains(e),eis=ME.set.map(ci=>CH[ci]&&CH[ci].ei).filter(x=>x!=null),ex=occTanRun(e,eis);ME.run=ex;const n=$('#meN');if(n)n.textContent=L('meSel',ME.set.length);
-  const r=$('#meTgR');if(r){r.hidden=!ex.length;$('#meTgL').textContent=L('meTg',ex.length);}}
+  const r=$('#meTgR');if(r){r.style.display=ex.length?'flex':'none';$('#meTgL').textContent=L('meTg',ex.length);}}
 function drawME(c){const e=sel.size===1&&byId([...sel][0]);if(!e||e.t!=='mesh'||tool)return;const ch=meshChains(e);if(ch.length>600)return;const PR=q=>{const o={x:0,y:0};return toScr(q[0],q[1],q[2],o)?o:null;};
   c.save();const run=ME&&ME.id===e.id&&ME.run&&S.meTg?new Set(ME.run):null;ch.forEach((C,ci)=>{const on=ME&&ME.id===e.id&&(ME.set?ME.set.includes(ci):ME.ci===ci),rn=!on&&run&&run.has(C.ei);c.strokeStyle=on||rn?'#e8590c':SUBC;c.globalAlpha=on?1:rn?.6:.55;c.lineWidth=on?4:rn?3:1.6;if(c.setLineDash)c.setLineDash(rn?[6,4]:[]);c.beginPath();let st=false;const n=C.pts.length;
     for(let i=0;i<=(C.closed?n:n-1);i++){const p=PR(C.pts[i%n]);if(!p){st=false;continue;}if(st)c.lineTo(p.x,p.y);else{c.moveTo(p.x,p.y);st=true;}}c.stroke();});if(c.setLineDash)c.setLineDash([]);c.restore();}
