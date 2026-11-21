@@ -20,6 +20,13 @@ Ana sayfa (`index.html`) tüm oyunların menüsüdür; liste `oyunlar.js` içind
 ## Pergel (pergel/) — devam notu
 ### AKTİF YAPILACAKLAR (güncel liste, 21.11.2026; yeni oturum BURADAN başlar)
 Kurallar: kısa, Türkçe, teknik olmayan rapor; büyük işte önce kısa plan + onay ("Devam/Evet" = onay); adım adım; her adımda tarayıcıda dene (bilgisayar + telefon 390px), benzer hataları sorulmadan bul ve düzelt; kılavuzu TR+EN güncelle; her özellik SpaceClaim/SolidWorks (hangisi kolay/iyiyse) gibi; adlar rakiplerle uyumlu; tüm geometri kesin (OCCT B-rep), hacim/ölçü formülle doğrulanır; her değişiklikten sonra damga.py + commit + push + Claude artifact (slug 09b60b75-f288-47c3-afa2-fbb897322523) güncelle.
+OTOMATİK HATA AVI (kullanıcı: "bu tip hataları sen söylemeden de düzeltebilirsin", "bu tarz hataları öngör ve otomatik düzelt"): her işten sonra sorulmadan şunları dene, bulduğunu düzelt ve raporda kısaca söyle:
+ - Benzer durumlar: köşe/kenar birleşimleri, işlem sırası, taşı/döndür/aynala/ölçekle sonrası, eğik yüz, çoklu seçim, geri al/yinele, kaydet-aç.
+ - Ekranlar: bilgisayar (1360px) + telefon (390px, dokunma), açık/koyu tema, EN dil (metin taşması), WebGL kapalı tarayıcı, ilk açılış (başlangıç penceresi + tur).
+ - Pencere/panel çakışması: küçük pencereler, seçim şeridi, sağ tık menüsü, ipucu kartı üst üste binmesin; her pencerede × ve Esc çalışsın; düğmeler tıklanabilsin.
+ - Kod: aynı adlı iki fonksiyon kontrolü (`grep -o '^function [A-Za-z0-9_]*' | sort | uniq -d`), node --check, tarayıcı hata kaydı boş olmalı.
+ - Hesap: hacim/alan/debi gibi sayıları formülle karşılaştır; tutmuyorsa düzelt.
+ - Ayarlar: yeni eklenen her ayar "Varsayılana dön"e ve kılavuza eklensin.
 1. SULAMA (onaylı plan, 1. adım bitti):
    2) Vana + kontrol ünitesi + PE boru: ana hat / yan hat çizimi, başlık ve vanalar boruya kendiliğinden bağlanır, her vana grubu ayrı renk.
    3) Damla sulama: tek damla hattı + alanı sıra aralığıyla doldurma (damlatıcı aralığı, debi).
