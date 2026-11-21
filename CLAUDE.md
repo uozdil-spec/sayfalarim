@@ -18,6 +18,22 @@ Ana sayfa (`index.html`) tüm oyunların menüsüdür; liste `oyunlar.js` içind
 - Kullanıcı teknik olmayan, sade çözümleri tercih eder; komut satırı istemeyin.
 
 ## Pergel (pergel/) — devam notu
+### AKTİF YAPILACAKLAR (güncel liste, 21.11.2026; yeni oturum BURADAN başlar)
+Kurallar: kısa, Türkçe, teknik olmayan rapor; büyük işte önce kısa plan + onay ("Devam/Evet" = onay); adım adım; her adımda tarayıcıda dene (bilgisayar + telefon 390px), benzer hataları sorulmadan bul ve düzelt; kılavuzu TR+EN güncelle; her özellik SpaceClaim/SolidWorks (hangisi kolay/iyiyse) gibi; adlar rakiplerle uyumlu; tüm geometri kesin (OCCT B-rep), hacim/ölçü formülle doğrulanır; her değişiklikten sonra damga.py + commit + push + Claude artifact (slug 09b60b75-f288-47c3-afa2-fbb897322523) güncelle.
+1. SULAMA (onaylı plan, 1. adım bitti):
+   2) Vana + kontrol ünitesi + PE boru: ana hat / yan hat çizimi, başlık ve vanalar boruya kendiliğinden bağlanır, her vana grubu ayrı renk.
+   3) Damla sulama: tek damla hattı + alanı sıra aralığıyla doldurma (damlatıcı aralığı, debi).
+   4) Hesap: vana grubu debisi, Hazen-Williams ile boru çapı seçimi (hız ≤ 1,5 m/s, ek parça kayıp yüzdesi), en uzak başlıkta basınç (kritik yol), uyarılar (bağlanmamış başlık, yetersiz basınç, kapsanmayan alan).
+   5) Çıktılar: vana tablosu (debi, başlık sayısı, sulama süresi), metraj/keşif (çapa göre boru m, başlık/vana adet), paftada sembol + lejant.
+2. KOT / EĞİM (plan sun, onay al).
+3. PROJE SETİ PDF + ANTET ŞABLONU (plan sun).
+4. SUNUM GÖRÜNTÜSÜ / TUR (plan sun).
+5. SALT OKUNUR PAYLAŞMA BAĞLANTISI (plan sun).
+6. HAKEDİŞ (ileride, önce araştır: mahal listesi, yeşil defter, yapılan işler, fiyat farkı, nakliye, icmal, rapor).
+7. Gemini raporundan gelen YENİ ÖZELLİKLER (kullanıcı: "sonra bakarız"; sırayı kullanıcıya sor): işlem geçmişi/nesne ağacı (katı adımlarını listeden seçip ölçü düzeltme), çizimde kısıtlar (paralel, dik, teğet, eşmerkezli, eşit), referans düzlem (yüzden öteleme / 3 nokta) + iki katıyı hizalama (mate), STEP/STL/OBJ içe aktarma.
+8. İleride: FEM altyapısı (Gmsh/Netgen WASM tetra ağ + çözücü; malzeme/yük/mesnet yüz-kenar kimliğiyle).
+Açık soru (cevap gelmedi): kullanıcının "serbest döndür" isteği nesneyi serbest döndürmek mi? Seçim şeridine Döndürerek bak eklendi; gerekirse sor.
+Not: aşağıdaki eski "DÜZELTİLECEK" (üçgen ağlı yuvarlatma pürüzü, 64'lü daire) maddeleri OCCT motoruyla ÇÖZÜLDÜ; yeniden yapılmayacak.
 - Tek dosya: `pergel/index.html` (three.js r128; DWG için `pergel/dwg/`). Kaynak ile yayın aynı dosyadır; düzenleme doğrudan bu dosyada yapılır.
 - Her değişiklikten sonra: `python3 damga.py`, commit, push. Kullanıcıya kısa, Türkçe, teknik olmayan özet.
 - Büyük işlerde önce plan sun, onay al. Küçük adımlarla ilerle; her adımı tarayıcıda dene.
