@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261121-0901">
+<meta name="surum" content="20261121-0908">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261121-0901" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261121-0901" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261121-0901">
-<link rel="manifest" href="manifest.webmanifest?v=20261121-0901">
+<link rel="icon" href="ikon.svg?v=20261121-0908" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261121-0908" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261121-0908">
+<link rel="manifest" href="manifest.webmanifest?v=20261121-0908">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -266,6 +266,7 @@ kbd{font:500 11.5px var(--f-mono);background:var(--accent-soft);color:var(--ink)
 .btn.sm{height:26px;padding:0 11px;font:600 12px var(--f-mono);background:var(--sheet)}
 .btn.sm:hover{background:var(--accent-soft)}
 .row .chk{flex-wrap:wrap;row-gap:2px}
+.chk .btn.sm{height:auto;min-height:26px;white-space:normal;line-height:1.15;padding:3px 10px;text-align:left}
 .row label.chk{color:var(--ink);gap:4px;margin-right:6px}
 .row input[type=color]{width:26px;height:22px;padding:0;border:1px solid var(--rule);border-radius:4px;background:none}
 .muted{color:var(--ink-2)}
@@ -383,7 +384,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261121-0901"></script>
+<script async src="../sayac.js?v=20261121-0908"></script>
 </head>
 <body>
 <div id="app">
@@ -580,7 +581,7 @@ const I18N={tr:{
  unknown:'Anlaşılmadı: {0}  (yardım için ? yazın)',needH:'Yükseklik sıfırdan büyük olmalı',noSel:'Önce nesne seçin',noClosed:'Seçimde kapalı şekil yok (kapalı çoklu çizgi veya daire gerekir)',
  mres:'Mesafe {0}   Δ{6} {2}   Δ{7} {3}   ΔZ {4}   Açı {5}°',deleted:'{0} nesne silindi',nothing:'Seçim yok',selCount:'{0} nesne seçili',
  type:'Tür',layer:'Katman',color:'Renk',byLayer:'Katmandan',z:'Kot (Z)',len:'Uzunluk',area:'Alan',closed:'Kapalı',radius:'Yarıçap',height:'Yükseklik',width:'En (sağa)',depth:'Boy (yukarı)',angle:'Açı',txt:'Metin',scl:'Ölçek',textH:'Yazı yüksekliği',faces:'Yüzey',
- e_line:'Çizgi',e_poly:'Çoklu çizgi',e_circle:'Daire',e_arc:'Yay',e_text:'Yazı',e_box:'Kutu',e_cyl:'Silindir',e_cone:'Koni',e_sphere:'Küre',e_extrude:'Yükseltilmiş şekil',e_mesh:'Yüzey ağı',e_prefab:'Hazır nesne',
+ e_line:'Çizgi',e_poly:'Çoklu çizgi',e_circle:'Daire',e_arc:'Yay',e_text:'Yazı',e_box:'Kutu',e_cyl:'Silindir',e_cone:'Koni',e_sphere:'Küre',e_extrude:'Yükseltilmiş şekil',e_mesh:'Yüzey ağı',e_solid:'Katı',e_prefab:'Hazır nesne',
  newLayer:'Katman',layerUsed:'Bu katmanda nesne var. Önce nesneleri taşıyın veya silin.',layerLocked:'Katman kilitli',
  askNew:'Yeni çizim açılsın mı? Kaydedilmemiş değişiklikler silinir.',yes:'Evet',no:'Vazgeç',ok:'Tamam',copyBtn:'Kopyala',copied:'Kopyalandı',
  saved:'Kaydedildi: {0}',savedZip:'Kaydedildi: {0}. DXF dosyası bu ZIP\'in içinde; çıkarıp kullanın.',declined:'Kaydetme iptal edildi',preparing:'Hazırlanıyor…',
@@ -614,7 +615,7 @@ const I18N={tr:{
  unknown:'Not understood: {0}  (type ? for help)',needH:'Height must be greater than zero',noSel:'Select objects first',noClosed:'No closed shape in the selection (closed polyline or circle needed)',
  mres:'Distance {0}   Δ{6} {2}   Δ{7} {3}   ΔZ {4}   Angle {5}°',deleted:'{0} objects deleted',nothing:'Nothing selected',selCount:'{0} objects selected',
  type:'Type',layer:'Layer',color:'Colour',byLayer:'By layer',z:'Elevation (Z)',len:'Length',area:'Area',closed:'Closed',radius:'Radius',height:'Height',width:'Width (right)',depth:'Depth (up)',angle:'Angle',txt:'Text',scl:'Scale',textH:'Text height',faces:'Faces',
- e_line:'Line',e_poly:'Polyline',e_circle:'Circle',e_arc:'Arc',e_text:'Text',e_box:'Box',e_cyl:'Cylinder',e_cone:'Cone',e_sphere:'Sphere',e_extrude:'Extruded shape',e_mesh:'Mesh',e_prefab:'Ready-made object',
+ e_line:'Line',e_poly:'Polyline',e_circle:'Circle',e_arc:'Arc',e_text:'Text',e_box:'Box',e_cyl:'Cylinder',e_cone:'Cone',e_sphere:'Sphere',e_extrude:'Extruded shape',e_mesh:'Mesh',e_solid:'Solid',e_prefab:'Ready-made object',
  newLayer:'Layer',layerUsed:'This layer has objects. Move or delete them first.',layerLocked:'Layer is locked',
  askNew:'Start a new drawing? Unsaved changes will be lost.',yes:'Yes',no:'Cancel',ok:'OK',copyBtn:'Copy',copied:'Copied',
  saved:'Saved: {0}',savedZip:'Saved: {0}. The DXF file is inside this ZIP; extract it to use.',declined:'Save cancelled',preparing:'Preparing…',
@@ -1570,6 +1571,10 @@ function drawRgn(c){const tr=tool&&tool.name==='pushpull'&&tool.rg;const r=tr?to
   if(d){const top=PR(r.sh.map(w=>[w[0]+r.n[0]*d,w[1]+r.n[1]*d,w[2]+r.n[2]*d]));if(top){c.strokeStyle=d<0?'#d9480f':SUBC;const p2=new Path2D();top.forEach((w,i)=>i?p2.lineTo(w.x,w.y):p2.moveTo(w.x,w.y));p2.closePath();c.globalAlpha=.3;c.fillStyle=c.strokeStyle;c.fill(p2);c.globalAlpha=1;c.lineWidth=2;c.stroke(p2);
       const st=Math.max(1,Math.floor(top.length/8));c.beginPath();for(let i=0;i<top.length;i+=st){c.moveTo(base[i].x,base[i].y);c.lineTo(top[i].x,top[i].y);}c.lineWidth=1.5;c.stroke();}}
   c.restore();}
+/* the pull distance written beside the arrow head, like SpaceClaim's dimension */
+function drawPPTag(c){if(sub)return;const a=ppArrow();if(!a||a.pp==null||!arrowG.visible)return;const l=arrowG.userData.len||0,sg=a.pp<0?-1:1,t={x:0,y:0};if(!toScr(a.p[0]+a.n[0]*l*sg,a.p[1]+a.n[1]*l*sg,a.p[2]+a.n[2]*l*sg,t))return;
+  const str=(a.pp>0?'+':a.pp<0?'−':'')+fmt(Math.abs(a.pp))+' '+uL();c.save();c.font='600 12px '+getComputedStyle(document.body).fontFamily;const w=c.measureText(str).width+14,x=Math.min(vw-w-4,Math.max(4,t.x+12)),y=Math.min(vh-14,Math.max(14,t.y-14));
+  c.fillStyle=a.pp<0?'#d9480f':'#1f4fd8';c.beginPath();c.roundRect?c.roundRect(x,y-11,w,22,6):c.rect(x,y-11,w,22);c.fill();c.fillStyle='#fff';c.textBaseline='middle';c.fillText(str,x+7,y+.5);c.restore();}
 /* closed prism: outline sh (counter-clockwise seen from +n) swept along n from d0 to d1 */
 function prismTris(sh,n,d0,d1){const lo=sh.map(p=>[p[0]+n[0]*d0,p[1]+n[1]*d0,p[2]+n[2]*d0]),hi=sh.map(p=>[p[0]+n[0]*d1,p[1]+n[1]*d1,p[2]+n[2]*d1]),m=sh.length,o=[];
   for(let i=1;i+1<m;i++){o.push([hi[0],hi[i],hi[i+1]]);o.push([lo[0],lo[i+1],lo[i]]);}for(let i=0;i<m;i++){const j=(i+1)%m;o.push([lo[i],lo[j],hi[j]]);o.push([lo[i],hi[j],hi[i]]);}return o;}
@@ -2439,14 +2444,23 @@ const subObj=s=>{const e=s&&byId(s.id),M=e&&solModel(e),o=M&&(s.k==='f'?M.F[s.i]
 function subArrow(){const x=subObj(sub);if(!x)return null;
   if(sub.k==='f'){const q=x.o.cn();return {p:q.c,n:q.n,k:'f',polys:x.o.polys};}
   const q=x.o.mid();return {p:q.p,n:q.n,k:'e',polys:x.o.caps||[]};}
-function updArrow(){const a=subArrow();arrowG.visible=false;arrowC.visible=false;faceHL.visible=false;if(!a)return;
-  const drg=drag&&drag.type==='sub';
+/* İt/Çek arrow, as in SpaceClaim: a yellow arrow on the picked face (or on the shape drawn on it) that travels with the pull; red and turned round when pushing in */
+function ppArrow(){const T=tool&&tool.name==='pushpull'?tool:null;
+  const rgnC=r=>{const c=[0,0,0];for(const w of r.sh)for(let k=0;k<3;k++)c[k]+=w[k]/r.sh.length;return c;};
+  if(drag&&drag.type==='rgn'&&drag.r){const r=drag.r,d=drag.moved?drag.d||0:0,c=rgnC(r);return {p:[c[0]+r.n[0]*d,c[1]+r.n[1]*d,c[2]+r.n[2]*d],n:r.n,k:'f',polys:[],pp:d};}
+  if(!T)return null;
+  if(T.rg){const r=T.rg,d=T.rgD||0,c=rgnC(r);return {p:[c[0]+r.n[0]*d,c[1]+r.n[1]*d,c[2]+r.n[2]*d],n:r.n,k:'f',polys:[],pp:d};}
+  if(T.face){const m=T.mid(T.face),d=T.d||0,n=T.face.n;return {p:[m[0]+n[0]*d,m[1]+n[1]*d,m[2]+n[2]*d],n,k:'f',polys:d?[]:T.face.tris,pp:d};}
+  if(T.hov){const F=T.hov.F;return {p:T.mid(F),n:F.n,k:'f',polys:F.tris,hov:1};}
+  return null;}
+function updArrow(){let a=subArrow();arrowG.visible=false;arrowC.visible=false;faceHL.visible=false;if(!a)a=ppArrow();if(!a)return;
+  const drg=drag&&drag.type==='sub'||a.pp!=null;
   if(a.polys.length){const arr=[];for(const q of a.polys)for(let i=1;i+1<q.length;i++)for(const w of [q[0],q[i],q[i+1]])arr.push(w[0]-O[0],w[1]-O[1],w[2]-O[2]);
     faceHL.geometry.dispose();faceHL.geometry=new THREE.BufferGeometry();faceHL.geometry.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));faceHL.material.opacity=drg?.22:.36;faceHL.visible=true;}
-  const g=a.k==='f'?arrowG:arrowC,push=a.k==='f'&&drg&&drag.dd<0,v=new THREE.Vector3(a.p[0]-O[0],a.p[1]-O[1],a.p[2]-O[2]),w=(S.persp?cam.position.distanceTo(v)*2*HALF/vh:wpp())*(a.k==='f'?92:124);
+  const g=a.k==='f'?arrowG:arrowC,push=a.k==='f'&&(a.pp!=null?a.pp<0:drg&&drag.dd<0),v=new THREE.Vector3(a.p[0]-O[0],a.p[1]-O[1],a.p[2]-O[2]),w=(S.persp?cam.position.distanceTo(v)*2*HALF/vh:wpp())*(a.k==='f'?92:124);
   g.position.copy(v);g.scale.setScalar(w);g.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(a.n[0],a.n[1],a.n[2]).multiplyScalar(push?-1:1));
   if(a.k==='f'){arrowG.userData.m.color.set(push?0xff4d2e:0xffc400);arrowG.userData.m.emissive.set(push?0x8a1f0c:0x7a5a00);}
-  g.userData.len=w;g.visible=true;}
+  g.userData.len=w;g.visible=!a.hov;}
 function arrowHit(sx,sy){const a=subArrow();if(!a)return false;const g=a.k==='f'?arrowG:arrowC,l=g.userData.len;if(!l||!g.visible)return false;const A={x:0,y:0},B={x:0,y:0},t0=a.k==='f'?0:-.55,t1=a.k==='f'?1:.55;
   return toScr(a.p[0]+a.n[0]*l*t0,a.p[1]+a.n[1]*l*t0,a.p[2]+a.n[2]*l*t0,A)&&toScr(a.p[0]+a.n[0]*l*t1,a.p[1]+a.n[1]*l*t1,a.p[2]+a.n[2]*l*t1,B)&&segDist2(sx,sy,A.x,A.y,B.x,B.y)<144;}
 /* chamfer / round settings of one edge (stored in e.ch under the edge's key) */
@@ -2917,23 +2931,27 @@ function mk(name,arg){
   case 'bunion':case 'bint':T.needSel=true;T.selPrompt='pBoolSel';T.prompt=()=>'';T.point=()=>{};T.last=()=>null;T.enter=()=>setTool(null);
     T.begin=()=>{const ss=selEnts().filter(isSolid);if(ss.length<2){log(L('boNeed2'),'e');toast(L('boNeed2'));setTool(null);return;}
       boolRun(name==='bunion'?'u':'i',ss[0],ss.slice(1));setTool(null);};break;
-  case 'pushpull':T.prompt=()=>L(T.face||T.rg?'pPpD':'pPpPick');T.last=()=>null;T.enter=()=>setTool(null);T.d=0;T.rg=null;T.rgD=0;
+  case 'pushpull':T.prompt=()=>L(T.face||T.rg?'pPpD':'pPpPick');T.last=()=>null;T.enter=()=>setTool(null);T.d=0;T.rg=null;T.rgD=0;T.noCur=true;T.hov=null;
     {const q=sel.size===1&&byId([...sel][0]),r=q&&(q.t==='circle'||(q.t==='poly'&&q.closed))&&rgnOf(q);if(r)T.rg=r;}
-    const ppMid=F=>{const c=F.tris[0];return [(c[0][0]+c[1][0]+c[2][0])/3,(c[0][1]+c[1][1]+c[2][1])/3,(c[0][2]+c[1][2]+c[2][2])/3];};
+    const ppMid=F=>{if(F.mid)return F.mid;let A=0;const m=[0,0,0];for(const c of F.tris){const u=[c[1][0]-c[0][0],c[1][1]-c[0][1],c[1][2]-c[0][2]],v=[c[2][0]-c[0][0],c[2][1]-c[0][1],c[2][2]-c[0][2]],a=Math.hypot(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])/2;A+=a;for(let k=0;k<3;k++)m[k]+=a*(c[0][k]+c[1][k]+c[2][k])/3;}
+      if(!(A>0)){const c=F.tris[0];return [(c[0][0]+c[1][0]+c[2][0])/3,(c[0][1]+c[1][1]+c[2][1])/3,(c[0][2]+c[1][2]+c[2][2])/3];}return F.mid=m.map(x=>x/A);};T.mid=ppMid;
     /* distance follows the mouse: the point on the face's normal line nearest to the cursor ray */
     const ppDist=()=>{const F=T.face,m=ppMid(F),r=rayAt(cur.sx,cur.sy),A=new THREE.Vector3(m[0]-O[0],m[1]-O[1],m[2]-O[2]),u=new THREE.Vector3(F.n[0],F.n[1],F.n[2]),w=r.direction,w0=A.clone().sub(r.origin),b=u.dot(w),dd=u.dot(w0),ee=w.dot(w0),den=1-b*b;if(den<1e-6)return T.d;
-      let t=(b*ee-dd)/den;if(S.gridSnap&&S.gridStep>0)t=Math.round(t/S.gridStep)*S.gridStep;return t;};
+      let t=(b*ee-dd)/den;const st=S.gridSnap&&S.gridStep>0?S.gridStep:Math.pow(10,Math.floor(Math.log10(wpp()*5)));return Math.round(t/st)*st;};
     T.point=()=>{if(T.rg){const r=T.rg,d=rgnDist(r);T.rg=null;T.rgD=0;if(Math.abs(d)>1e-9)rgnApply(r,d);uiTool();requestOverlay();return;}
       if(!T.face){const rg=rgnAt(cur.sx,cur.sy);if(rg){T.rg=rg;T.rgD=0;uiTool();requestOverlay();return;}}
       if(T.face){const d=T.d,e=byId(T.eid);if(e&&Math.abs(d)>1e-9){const r=pushPull(e,T.face,d);if(r)toast(L(d>0?'ppOut':'ppIn',fmt(Math.abs(d))));}T.face=null;T.eid=null;T.d=0;uiTool();refreshPrev&&refreshPrev();return;}
       rayAt(cur.sx,cur.sy);for(const h of rc.intersectObjects(objGroup.children,true)){let o=h.object;if(!o.isMesh)continue;while(o&&o.userData.id==null)o=o.parent;const q=o&&byId(o.userData.id);if(!q||!usable(q))continue;
         if(q.t!=='mesh'){tipAct(L(isSolid(q)?'ppPrim':'ppNone'));return;}const F=meshFace(q,h.faceIndex);if(!F){return;}T.face=F;T.eid=q.id;T.d=0;uiTool();refreshPrev&&refreshPrev();return;}tipAct(L('ppNone'));};
     T.number=n=>{if(T.rg&&n){const r=T.rg;T.rg=null;T.rgD=0;rgnApply(r,n);uiTool();requestOverlay();return true;}if(!T.face||!n)return false;const e=byId(T.eid);if(e){const r=pushPull(e,T.face,n);if(r)toast(L(n>0?'ppOut':'ppIn',fmt(Math.abs(n))));}T.face=null;T.eid=null;T.d=0;uiTool();refreshPrev&&refreshPrev();return true;};
-    T.preview=()=>{if(T.rg){T.rgD=rgnDist(T.rg);const pr=$('#prompt');if(pr)pr.textContent=L('t_pushpull').toLocaleUpperCase(S.lang)+' › '+L(T.rgD>=0?'ppOutL':'ppInL')+' '+fmt(Math.abs(T.rgD))+' · '+L('ppClick')+':';requestOverlay();return [];}
-      if(!T.face){const rg=rgnAt(cur.sx,cur.sy);if((rg&&rg.e)!==(hrgn&&hrgn.e)){hrgn=rg;requestOverlay();}return [];}const F=T.face,d=T.d=ppDist(),m=ppMid(F),S2=(p,h)=>[p[0]+F.n[0]*h,p[1]+F.n[1]*h,p[2]+F.n[2]*h],out=F.bnd.map(x=>({t:'line',p1:x.a,p2:x.b}));
+    T.preview=()=>{if(T.rg){T.rgD=rgnDist(T.rg);requestRender();const pr=$('#prompt');if(pr)pr.textContent=L('t_pushpull').toLocaleUpperCase(S.lang)+' › '+L(T.rgD>=0?'ppOutL':'ppInL')+' '+fmt(Math.abs(T.rgD))+' · '+L('ppClick')+':';requestOverlay();return [];}
+      if(!T.face){const rg=rgnAt(cur.sx,cur.sy);if((rg&&rg.e)!==(hrgn&&hrgn.e)){hrgn=rg;requestOverlay();}
+        /* the face under the cursor is lit before it is clicked */
+        let hv=null;if(!rg){rayAt(cur.sx,cur.sy);for(const h of rc.intersectObjects(objGroup.children,true)){let o=h.object;if(!o.isMesh)continue;while(o&&o.userData.id==null)o=o.parent;const q=o&&byId(o.userData.id);if(!q||!usable(q))continue;if(q.t==='mesh'){const k=q.id+':'+(q.fi?'f'+q.fi[h.faceIndex]:h.faceIndex)+':'+q.v.length;hv=T.hov&&T.hov.k===k?T.hov:null;if(!hv){const F=meshFace(q,h.faceIndex);if(F)hv={k,id:q.id,F};}}break;}}
+        if((hv&&hv.F)!==(T.hov&&T.hov.F)){T.hov=hv;requestRender();}return [];}T.hov=null;const F=T.face,d=T.d=ppDist(),m=ppMid(F),S2=(p,h)=>[p[0]+F.n[0]*h,p[1]+F.n[1]*h,p[2]+F.n[2]*h],out=F.bnd.map(x=>({t:'line',p1:x.a,p2:x.b}));
       const pr=$('#prompt');if(pr)pr.textContent=L('t_pushpull').toLocaleUpperCase(S.lang)+' › '+L(d>=0?'ppOutL':'ppInL')+' '+fmt(Math.abs(d))+' · '+L('ppClick')+':';
-      if(Math.abs(d)<1e-9){const L2=F.dg*.06;out.push({t:'line',p1:m,p2:S2(m,L2)});return out;}
-      for(const x of F.bnd)out.push({t:'line',p1:S2(x.a,d),p2:S2(x.b,d)},{t:'line',p1:x.a,p2:S2(x.a,d)});out.push({t:'line',p1:m,p2:S2(m,d)});
+      if(Math.abs(d)<1e-9)return out;
+      for(const x of F.bnd)out.push({t:'line',p1:S2(x.a,d),p2:S2(x.b,d)},{t:'line',p1:x.a,p2:S2(x.a,d)});
       const v=[],f=[];const add=t=>{for(const p of t){f.push(v.length/3);v.push(p[0],p[1],p[2]);}};for(const t of F.tris)add(t.map(p=>S2(p,d)));for(const x of F.bnd){add([x.a,x.b,S2(x.b,d)]);add([x.a,S2(x.b,d),S2(x.a,d)]);}
       out.push({t:'mesh',v,f});return out;};break;
   case 'match':T.prompt=()=>L(T.src?'pMa2':'pMa1');T.last=()=>null;T.enter=()=>setTool(null);
@@ -3436,7 +3454,7 @@ function drawOverlay(){
   if(selArr&&selArr.length){const q=selArr,pth=new Path2D(),col=selColor(),w=S.selW||3;for(let k=0;k+5<q.length;k+=6){if(toScr(q[k]+O[0],q[k+1]+O[1],q[k+2]+O[2],a)&&toScr(q[k+3]+O[0],q[k+4]+O[1],q[k+5]+O[2],b)){pth.moveTo(a.x,a.y);pth.lineTo(b.x,b.y);}}
     c.lineCap='butt';c.lineJoin='round';c.globalAlpha=.5;c.strokeStyle=TH.bg;c.lineWidth=w+2.5;c.stroke(pth);c.globalAlpha=1;c.strokeStyle=col;c.lineWidth=w;if(S.selDash!==false)c.setLineDash([8,5]);c.stroke(pth);c.setLineDash([]);}
   if(selGrips&&selGrips.length&&S.grips!==false){const q=selGrips,col=selColor();c.lineWidth=1.2;for(let k=0;k+2<q.length;k+=3){if(!toScr(q[k],q[k+1],q[k+2],a))continue;c.fillStyle=col;c.fillRect(a.x-4,a.y-4,8,8);c.strokeStyle=TH.bg;c.strokeRect(a.x-4.5,a.y-4.5,9,9);}}
-  drawSec(c);drawWP(c);drawRgn(c);drawRDims(c);drawSub(c);drawFS(c);drawME(c);drawSelBar();if(!drag||drag.type!=='ih')drawInsGrips(c);
+  drawSec(c);drawWP(c);drawRgn(c);drawPPTag(c);drawRDims(c);drawSub(c);drawFS(c);drawME(c);drawSelBar();if(!drag||drag.type!=='ih')drawInsGrips(c);
   // measurement
   if(measure&&measure.pts.length>1){const mp=measure.pts,sp=[];for(const q of mp){const o={x:0,y:0};sp.push(toScr(q[0],q[1],q[2],o)?o:null);}
     c.strokeStyle=TH.signal;c.lineWidth=1.5;c.setLineDash([6,4]);c.beginPath();for(let i=1;i<sp.length;i++)if(sp[i-1]&&sp[i]){c.moveTo(sp[i-1].x,sp[i-1].y);c.lineTo(sp[i].x,sp[i].y);}c.stroke();c.setLineDash([]);
@@ -3447,7 +3465,7 @@ function drawOverlay(){
   if(drag&&drag.type==='box'&&drag.moved){const x=Math.min(drag.sx,drag.lx),y=Math.min(drag.sy,drag.ly),w=Math.abs(drag.lx-drag.sx),h=Math.abs(drag.ly-drag.sy),cross=drag.lx<drag.sx;
     c.strokeStyle=TH.accent;c.lineWidth=1;c.setLineDash(cross?[5,4]:[]);c.globalAlpha=.12;c.fillStyle=TH.accent;c.fillRect(x,y,w,h);c.globalAlpha=1;c.strokeRect(x+.5,y+.5,w,h);c.setLineDash([]);}
   // cursor, snap marker, live read-out
-  const drawing=tool&&!tool.selecting&&tool.name!=='orbit';
+  const drawing=tool&&!tool.selecting&&tool.name!=='orbit'&&!tool.noCur;
   if(drawing&&cur.has){
     const hb=tool.hBase();
     if(hb){if(toScr(hb[0],hb[1],hb[2]+cur.h,a))tag(a.x+14,a.y-16,'h '+fmt(cur.h)+' '+uL(),TH.signal);}
@@ -3617,7 +3635,7 @@ function uiProps(){
       pick(L('lweight'),LWO,String(ly.lw||0),v=>{pushUndo();if(+v>0)ly.lw=+v;else delete ly.lw;dirty();});}
     return;}
   const e=list.length===1?list[0]:null;
-  const ttl=el('div',{className:'ptitle'});ttl.textContent=e?(fitOk(e)?L('splName'):L('e_'+e.t))+(e.t==='prefab'?' · '+(I18N[S.lang].names[e.k]||e.k):''):L('selCount',list.length);box.appendChild(ttl);
+  const ttl=el('div',{className:'ptitle'});ttl.textContent=e?(fitOk(e)?L('splName'):L(e.t==='mesh'&&e.br?'e_solid':'e_'+e.t))+(e.t==='prefab'?' · '+(I18N[S.lang].names[e.k]||e.k):''):L('selCount',list.length);box.appendChild(ttl);
   const sl=el('select');for(const ly of doc.layers){const o=el('option',{value:ly.id});o.textContent=ly.name;sl.appendChild(o);}
   sl.value=list.every(x=>x.l===list[0].l)?list[0].l:'';sl.onchange=()=>{pushUndo();const id=+sl.value;list.forEach(x=>{x.l=id;touch(x);});uiProps();uiLayerSel(true);};row(L('layer'),sl);
   {const w0=el('div',{className:'chk'}),b0=el('button',{type:'button',className:'btn sm'});b0.textContent=L('qsSim');b0.onclick=selectSimilar;w0.appendChild(b0);row(L('qsRow'),w0);}
@@ -4068,7 +4086,7 @@ function entQty(e){
   q.len*=w;q.area*=w*w;q.vol*=w*w*w;return q;}
 function takeoffRows(onlySel){
   const list=doc.entities.filter(e=>{const ly=LM.get(e.l);return ly&&ly.on&&!e.cg&&(!onlySel||sel.has(e.id));}),by=new Map();
-  for(const e of list){const ly=LM.get(e.l),ty=e.t==='ins'?((doc.blocks&&doc.blocks[e.b]||{}).name||L('e_ins'))+(e.sp?' – '+e.sp:'')+(e.sz?' – '+szText(e.sz):''):e.t==='prefab'?((I18N[S.lang].names||{})[e.k]||e.k):e.t==='poly'&&e.closed?L('mtClosed'):L('e_'+e.t),k=ly.name+'\u0001'+ty;let r=by.get(k);if(!r)by.set(k,r={key:k,et:e.t,layer:ly.name,type:ty,n:0,len:0,area:0,vol:0});
+  for(const e of list){const ly=LM.get(e.l),ty=e.t==='ins'?((doc.blocks&&doc.blocks[e.b]||{}).name||L('e_ins'))+(e.sp?' – '+e.sp:'')+(e.sz?' – '+szText(e.sz):''):e.t==='prefab'?((I18N[S.lang].names||{})[e.k]||e.k):e.t==='poly'&&e.closed?L('mtClosed'):L(e.t==='mesh'&&e.br?'e_solid':'e_'+e.t),k=ly.name+'\u0001'+ty;let r=by.get(k);if(!r)by.set(k,r={key:k,et:e.t,layer:ly.name,type:ty,n:0,len:0,area:0,vol:0});
     const q=entQty(e);r.n++;r.len+=q.len;r.area+=q.area;r.vol+=q.vol;}
   const rows=[...by.values()].sort((a,b)=>a.layer.localeCompare(b.layer,S.lang)||a.type.localeCompare(b.type,S.lang)),out=[],tot={n:0,len:0,area:0,vol:0};let cur=null,sub=null,nl=0;
   const end=()=>{if(sub&&sub.k>1)out.push({layer:cur,type:L('mtSub'),n:sub.n,len:sub.len,area:sub.area,vol:sub.vol,sum:1});};
