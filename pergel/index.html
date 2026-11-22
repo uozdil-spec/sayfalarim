@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261122-1438">
+<meta name="surum" content="20261122-1446">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -11,10 +11,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
 <meta name="salon" content="../index.html">
-<link rel="icon" href="ikon.svg?v=20261122-1438" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261122-1438" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261122-1438">
-<link rel="manifest" href="manifest.webmanifest?v=20261122-1438">
+<link rel="icon" href="ikon.svg?v=20261122-1446" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261122-1446" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261122-1446">
+<link rel="manifest" href="manifest.webmanifest?v=20261122-1446">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -426,7 +426,7 @@ button.cell b{color:var(--ink-2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 </style>
-<script async src="../sayac.js?v=20261122-1438"></script>
+<script async src="../sayac.js?v=20261122-1446"></script>
 </head>
 <body>
 <div id="app">
@@ -770,10 +770,10 @@ function prefabBlock(k){doc.blocks=doc.blocks||{};for(const id in doc.blocks)if(
 function pfSplit(){if(!doc.blocks)return;for(const id in doc.blocks){const B=doc.blocks[id],q=B.ents;if(q&&q.length===1&&q[0].t==='prefab'&&PREFABS[q[0].k]){const c=q[0],pr=prefabParts(c.k);if((c.s&&c.s!==1)||c.rot||c.p.some(v=>v))for(const e of pr)insXf(e,{p:c.p,rot:c.rot||0,s:c.s||1});B.ents=pr;B.v=(B.v||1)+1;}}}
 function prefabsToBlocks(){for(const e of doc.entities)if(e.t==='prefab'&&PREFABS[e.k]){const b=prefabBlock(e.k);e.t='ins';e.b=b;delete e.k;}}
 /* plant label of an inserted block: species (or block name), crown width and height, written beside it */
-function insSize(e){const o=objMap.get(e.id),b=o&&o.userData.bb;if(!b||b.isEmpty())return null;const u=um();return {d:Math.max(b.max.x-b.min.x,b.max.y-b.min.y)*u,h:(b.max.z-b.min.z)*u,r:Math.max(b.max.x-b.min.x,b.max.y-b.min.y)/2,top:b.max.z+O[2]};}
+function insSize(e){const o=objMap.get(e.id),b=o&&o.userData.bb;if(!b||b.isEmpty())return null;const u=um();return {d:Math.max(b.max.x-b.min.x,b.max.y-b.min.y)*u,h:(b.max.z-b.min.z)*u,r:Math.max(b.max.x-b.min.x,b.max.y-b.min.y)/2,top:b.max.z+O[2],bot:b.min.z+O[2]};}
 const m1=v=>v.toFixed(1).replace('.',S.lang==='tr'?',':'.');
 function insLabel(e){if(!e.lb)return null;const B=doc.blocks&&doc.blocks[e.b],z=insSize(e),nm=e.sp||(B&&B.name)||'',h=S.textH||10;
-  const txt=nm+(z?'  Ø'+m1(z.d)+' H'+m1(z.h)+' m':''),r=z?z.r:h;return {t:'text',id:e.id,l:e.l,p:[e.p[0]+r*.72,e.p[1]+r*.72,z?z.top:(e.p[2]||0)],h,text:txt,al:'l',rot:0,col:e.col};}
+  const txt=nm+(z?'  Ø'+m1(z.d)+' H'+m1(z.h)+' m':''),r=z?z.r:h,lx=e.p[0]+r*.75,ly=e.p[1]+r*.75,b0=z?z.bot:(e.p[2]||0);let g=null;try{g=groundTop(lx,ly);}catch(_){}const gz=(g!=null&&g<=b0+.5/um())?g:b0;return {t:'text',id:e.id,l:e.l,p:[lx,ly,gz+.02/um()],h,text:txt,al:'l',rot:0,col:e.col};}
 const flatIns=list=>{const o=[];for(const e of list){if(e.t==='ins'){for(const c of insEnts(e))o.push(c);const lb=insLabel(e);if(lb)o.push(lb);}else o.push(e);}return o;};
 const insCount=bid=>doc.entities.filter(e=>e.t==='ins'&&e.b===bid).length;
 function blockUses(bid,inBid,seen){const B=doc.blocks&&doc.blocks[inBid];if(!B)return false;seen=seen||new Set();if(seen.has(inBid))return false;seen.add(inBid);return B.ents.some(q=>q.t==='ins'&&(q.b===bid||blockUses(bid,q.b,seen)));}
@@ -4988,8 +4988,8 @@ function tfRun(text){const C=tfCheck(text);if(!C.n)return {ok:false,msg:TL('empt
       case 'text':put(r,{t:'text',l:lay(null,null,r),p:at(r),h:k(kv.size||.3),text:r.S2,al:'l',rot:kv.ang||0});break;
       case 'level':put(r,{t:'spot',l:lay(null,null,r),p:at(r),k:'p',pv:r.V,au:0});break;
       case 'tree':{const q=r.PL,bid=prefabBlock(q[2]),l=lay(TL('lyTree'),'#2f7d32',r);let P=[];
-        if(r.at)P=[r.at].concat(r.coords).map(p=>[p[0],p[1]]);else if(r.path.length)P=along(r.path,kv.gap);else{const a=get(kv.area),o=a&&outline(a);if(!o)throw new Error(TL('eNot',kv.area));P=ring(o.map(p=>[p[0]*u,p[1]*u]),kv.gap);}
-        const hh=kv.hR||kv.sizeR||(kv.h!=null?String(kv.h):kv.size!=null?String(kv.size):''),sz=(kv.gc||hh||kv.kk)?{gc:kv.gc||'',h:hh,k:kv.kk||''}:null;for(const p of P){const e={t:'ins',l,b:bid,p:[k(p[0]),k(p[1]),0],rot:0,s:1,sp:q[0]};if(sz)e.sz=Object.assign({},sz);if(kv.lb)e.lb=kv.lb;addEnt(e);made.add(e.id);cnt++;}break;}
+        if(r.at)P=[r.at].concat(r.coords).map(p=>[p[0],p[1],p[2]]);else if(r.path.length)P=along(r.path,kv.gap);else{const a=get(kv.area),o=a&&outline(a);if(!o)throw new Error(TL('eNot',kv.area));P=ring(o.map(p=>[p[0]*u,p[1]*u]),kv.gap);}
+        const hh=kv.hR||kv.sizeR||(kv.h!=null?String(kv.h):kv.size!=null?String(kv.size):''),sz=(kv.gc||hh||kv.kk)?{gc:kv.gc||'',h:hh,k:kv.kk||''}:null;for(const p of P){let z=0;if(p[2]!=null)z=k(p[2]);else{let g=null;try{g=groundTop(k(p[0]),k(p[1]));}catch(_){}if(g!=null)z=g;}const e={t:'ins',l,b:bid,p:[k(p[0]),k(p[1]),z],rot:0,s:1,sp:q[0]};if(sz)e.sz=Object.assign({},sz);if(kv.lb)e.lb=kv.lb;addEnt(e);made.add(e.id);cnt++;}break;}
       case 'spray':{const a=get(kv.area),o=a&&spkOutline(a);if(!o)throw new Error(TL('eNot',kv.area));const hs=spkFill(o.pts,o.z||0,Object.assign(spkSet(),kv.r?{r:kv.r}:{}));for(const e of hs){if(!e.l)e.l=irrLayer();addEnt(e);made.add(e.id);cnt++;}break;}
       case 'box':{const o=at(r,r.B[0]),B=r.B.map(k);const e={t:'box',l:lay(r.kv.layer?null:null,null,r),p:[o[0]+B[0]/2,o[1]+B[1]/2,o[2]],sx:B[0],sy:B[1],sz:B[2],rot:kv.ang||0};
         if(kv.ang){const c=Math.cos(kv.ang*RAD),s=Math.sin(kv.ang*RAD),dx=B[0]/2,dy=B[1]/2;e.p=[o[0]+dx*c-dy*s,o[1]+dx*s+dy*c,o[2]];}put(r,e);break;}
