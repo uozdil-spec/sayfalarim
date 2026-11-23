@@ -18,6 +18,7 @@ Ana sayfa (`index.html`) tüm oyunların menüsüdür; liste `oyunlar.js` içind
 - Kullanıcı teknik olmayan, sade çözümleri tercih eder; komut satırı istemeyin.
 
 ## Pergel (pergel/) — devam notu
+BAĞIMSIZLIK (kullanıcı 23.11.2026): Pergel ve Oyun Salonu birbirinden tamamen bağımsız; Pergel oyunlar.js menüsünde YOK, Pergel'de 'Tüm oyunlar' düğmesi/meta salon YOK. Yeni oyun kuralları Pergel'e uygulanmaz; ikisi arasına bağlantı ekleme.
 ### AKTİF YAPILACAKLAR (güncel liste, 21.11.2026; yeni oturum BURADAN başlar)
 DURUM (22.11.2026): bu haftanın kolay işleri bitti (tesviye 1–4, 3B içe aktarma, proje seti, sunum, tariften çiz + şablonlar). Kullanıcı sınırı başka işlerde kullanacak; kalırsa cuma denenecek. Önerilen sıra: 1) tesviye 5.5 kenardan araziye otomatik şev (~%15–20), 2) MCP paketi 1. kısım (tarif dili hazır; ~%20–25), 3) kısıtlar, 4) referans düzlem/hizalama, 5) işlem geçmişi, 6) hakediş (önce araştırma), 7) FEM. Ertelenen: salt okunur paylaşma, sunum video kaydı.
 Kurallar: kısa, Türkçe, teknik olmayan rapor; büyük işte önce kısa plan + onay ("Devam/Evet" = onay); adım adım; her adımda tarayıcıda dene (bilgisayar + telefon 390px), benzer hataları sorulmadan bul ve düzelt; kılavuzu TR+EN güncelle; her özellik SpaceClaim/SolidWorks (hangisi kolay/iyiyse) gibi; adlar rakiplerle uyumlu; tüm geometri kesin (OCCT B-rep), hacim/ölçü formülle doğrulanır; her değişiklikten sonra damga.py + commit + push + Claude artifact (slug 09b60b75-f288-47c3-afa2-fbb897322523) güncelle.

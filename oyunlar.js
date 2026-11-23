@@ -23,5 +23,4 @@ window.OYUNLAR = [
     {ad:'Burç Yorumcusu',  yol:'burc-yorumcusu.html',   ikon:'burc-ikon.svg',              not:'Burç yorumları.',                                k:['Eğlence']},
     {ad:'Domino',          yol:'domino/',               ikon:'domino/ikon.svg',            not:'3D masa, yapay zekâ ya da arkadaşlarla online domino; sohbet, ipuçları, kılavuz.', k:['Masa','Online'], on:1},
     {ad:'Sağlık Pusulası', yol:'saglik-pusulasi/',      ikon:'saglik-pusulasi/ikon.svg',   not:'Kalori, su, hareket ve kilo takibi; kişiye özel hedefler, uyarılar ve sağlıklı yaşam bilgileri.', k:['Sağlık'], et:'Kişisel'},
-    {ad:'Pergel 3B Çizim', yol:'pergel/',               ikon:'pergel/ikon.svg',            not:'Tarayıcıda 3B çizim: çizgi, katı, ölçü, alan, nokta ve koordinat, tarama; DXF ve DWG açar, DXF kaydeder. Türkçe / İngilizce.', k:['Araç'], et:'Çizim'}
 ];
