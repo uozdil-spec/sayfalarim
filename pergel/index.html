@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261124-2133">
+<meta name="surum" content="20261124-2136">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-title" content="Pergel">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
-<link rel="icon" href="ikon.svg?v=20261124-2133" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261124-2133" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261124-2133">
-<link rel="manifest" href="manifest.webmanifest?v=20261124-2133">
+<link rel="icon" href="ikon.svg?v=20261124-2136" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261124-2136" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261124-2136">
+<link rel="manifest" href="manifest.webmanifest?v=20261124-2136">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -430,7 +430,7 @@ button.cell b{color:var(--ink-2)}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 .annL{display:grid;gap:10px;margin:10px 0}.annR{display:flex;gap:8px;align-items:center}.annB{display:flex;gap:6px;flex-wrap:wrap}
 </style>
-<script async src="../sayac.js?v=20261124-2133"></script>
+<script async src="../sayac.js?v=20261124-2136"></script>
 </head>
 <body>
 <div id="app">
@@ -4033,7 +4033,7 @@ function mk(name,arg){
     T.live=p=>T.pts.length>=2?areaStr(polyArea(T.pts.concat([p]))):'';break;
   case 'hatch':T.needSel=true;T.selPrompt='pExtSel';T.prompt=()=>'';T.point=()=>{};T.enter=()=>setTool(null);
     T.begin=()=>{const q=selEnts().filter(e=>(e.t==='poly'&&e.closed&&e.pts.length>=3)||e.t==='circle');if(!q.length){log(L('noClosed'),'e');setTool(null);return;}
-      commit(q.map(e=>({t:'hatch',l:e.l,pts:e.t==='circle'?Array.from({length:72},(_,i)=>[e.c[0]+e.r*Math.cos(i*5*RAD),e.c[1]+e.r*Math.sin(i*5*RAD)]):e.pts.map(p=>[p[0],p[1]]),z:e.t==='circle'?e.c[2]:(e.pts[0][2]||0),pat:S.hPat,gap:S.hGap,ang:S.hAng})));setTool(null);};break;
+      commit(q.map(e=>({t:'hatch',l:e.l,hs:e.t==='circle'?[e.id]:undefined,pts:e.t==='circle'?Array.from({length:72},(_,i)=>[e.c[0]+e.r*Math.cos(i*5*RAD),e.c[1]+e.r*Math.sin(i*5*RAD)]):e.pts.map(p=>[p[0],p[1]]),z:e.t==='circle'?e.c[2]:(e.pts[0][2]||0),pat:S.hPat,gap:S.hGap,ang:S.hAng})));setTool(null);};break;
   }
   if({patharr:1,xline:1,pushpull:1,match:1,brk:1,chamfer:1,stretch:1,parray:1,section:1,move:1,copy:1,rotate:1,scale:1,mirror:1,box:1,cyl:1,cone:1,sphere:1,point:1,orbit:1,trim:1,extend:1,fillet:1,offset:1,array:1,hatch:1,extrude:1,binsert:1,revolve:1,sweep:1,bunion:1,bsub:1,bint:1,frect:1,fcirc:1,dimrad:1,dimdia:1,insert:1,text:1}[name])T.free=true;
   else if(name==='dimcon'){}
@@ -4642,7 +4642,7 @@ function uiProps(){
   }
 }
 let toastT=0;
-function toast(msg,ms){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||3800);}
+function toast(msg,ms){if(typeof TFQ!=='undefined'&&TFQ)return;const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms||3800);}
 /* a short hint with buttons that fix the cause (turn a setting off, switch view) */
 let tipT=0,tipLast='',tipAt=0;
 function tipAct(msgs,acts){const msg=[].concat(msgs).filter(Boolean).join(' ');if(msg===tipLast&&performance.now()-tipAt<2500)return;tipLast=msg;tipAt=performance.now();const t=$('#tipAct');
@@ -5350,7 +5350,7 @@ function tfRun(text){const C=tfCheck(text);if(!C.n)return {ok:false,msg:TL('empt
   /* colour and material from the line: solids and fills take both; a closed 2D shape with a material gets a fill under it */
   const circPts=e=>{const n=72,o=[];for(let i=0;i<n;i++){const a=i/n*2*Math.PI;o.push([e.c[0]+e.r*Math.cos(a),e.c[1]+e.r*Math.sin(a)]);}return o;};
   const styl=(e,r)=>{if(!e)return;if(r.C)e.col=r.C;if(!r.M)return;if(isSolid(e)||e.t==='hatch'){e.mat=r.M;if(e.t==='hatch')e.pat='solid';return;}
-    if((e.t==='poly'&&e.closed)||e.t==='circle'){const P=e.t==='circle'?circPts(e):e.pts.map(p=>[p[0],p[1]]),z=e.t==='circle'?(e.c[2]||0):(e.pts[0][2]||0);const hc={t:'hatch',l:e.l,pts:P,z,pat:'solid',mat:r.M};if(r.C)hc.col=r.C;addEnt(hc);made.add(hc.id);}};
+    if((e.t==='poly'&&e.closed)||e.t==='circle'){const P=e.t==='circle'?circPts(e):e.pts.map(p=>[p[0],p[1]]),z=e.t==='circle'?(e.c[2]||0):(e.pts[0][2]||0);const hc={t:'hatch',l:e.l,hs:[e.id],pts:P,z,pat:'solid',mat:r.M};if(r.C)hc.col=r.C;addEnt(hc);made.add(hc.id);}};
   const grpPts=ids=>{const o=[];for(const id of ids){const e=byId(id);if(!e)continue;for(const q of curvePts(e).pts){const l=o[o.length-1];if(!l||Math.hypot(q[0]-l[0],q[1]-l[1])>1e-9)o.push(q);}}if(o.length>2&&Math.hypot(o[0][0]-o[o.length-1][0],o[0][1]-o[o.length-1][1])<1e-9)o.pop();return o;};
   let last=null;
   try{for(let ix=0;ix<C.xl.length;ix++){const r=C.xl[ix];if(!r)continue;r.li=C.map[ix];
@@ -5358,7 +5358,7 @@ function tfRun(text){const C=tfCheck(text);if(!C.n)return {ok:false,msg:TL('empt
       else{const g=GS.pop();if(g){const ids=[...made].filter(id=>!g.before.has(id)&&byId(id));if(g.p){const d=[k(g.at[0]||0),k(g.at[1]||0),k(g.at[2]||0)];for(const id of ids){const e=byId(id);if(g.ang)xfEnt(e,{k:'r',b:[0,0,0],a:g.ang});if(d.some(v=>v))xfEnt(e,{k:'m',d});touch(e);}}NG.set(pfold(g.nm),ids);}}continue;}
     last=null;try{const kv=r.kv;switch(r.cmd){
       case 'rect':case 'bed':case 'lawn':{const o=at(r,r.dims[0]),w=k(r.dims[0]),h=k(r.dims[1]),P=rectPts(o,w,h,kv.ang||0),l=r.cmd==='bed'?lay(TL('lyBed'),'#8a5a2b',r):r.cmd==='lawn'?lay(TL('lyLawn'),'#3f8f3a',r):lay(null,null,r);
-        const e=put(r,{t:'poly',l,pts:P,closed:true});if(r.cmd==='lawn'){const hc={t:'hatch',l,pts:P.map(p=>[p[0],p[1]]),z:o[2],pat:'solid',mat:r.M||'grass'};if(r.C)hc.col=r.C;addEnt(hc);made.add(hc.id);last=null;if(r.C)e.col=r.C;}break;}
+        const e=put(r,{t:'poly',l,pts:P,closed:true});if(r.cmd==='lawn'){const hc={t:'hatch',l,hs:[e.id],pts:P.map(p=>[p[0],p[1]]),z:o[2],pat:'solid',mat:r.M||'grass'};if(r.C)hc.col=r.C;addEnt(hc);made.add(hc.id);last=null;if(r.C)e.col=r.C;}break;}
       case 'road':{const o=at(r,r.L),P=rectPts(o,k(r.L),k(r.W),kv.ang||0);put(r,{t:'poly',l:lay(TL('lyRoad'),'#6d6d6d',r),pts:P,closed:true});break;}
       case 'circle':{const o=r.at?at(r):(()=>{const p=at(r,r.D);p[0]+=k(r.D/2);return p;})();put(r,{t:'circle',l:lay(null,null,r),c:o,r:k(r.D/2)});break;}
       case 'line':put(r,{t:'line',l:lay(null,null,r),p1:[k(r.P[0][0]),k(r.P[0][1]),k(r.P[0][2]||0)],p2:[k(r.P[1][0]),k(r.P[1][1]),k(r.P[1][2]||0)]});break;
@@ -5410,7 +5410,7 @@ function tfRun(text){const C=tfCheck(text);if(!C.n)return {ok:false,msg:TL('empt
       case 'rrect':case 'slot':{const o=at(r,r.dims[0]),w=k(r.dims[0]),h=k(r.dims[1]),R=k(r.R),x=o[0],y=o[1],z=o[2],l=lay(null,null,r),es=[],ln=(a,b)=>{if(Math.hypot(b[0]-a[0],b[1]-a[1])>1e-9*Math.max(w,h))es.push({t:'line',l,p1:[a[0],a[1],z],p2:[b[0],b[1],z]});},ar=(cx,cy,a1)=>es.push({t:'arc',l,c:[cx,cy,z],r:R,a1,a2:a1+90});
         ln([x+R,y],[x+w-R,y]);ar(x+w-R,y+R,270);ln([x+w,y+R],[x+w,y+h-R]);ar(x+w-R,y+h-R,0);ln([x+w-R,y+h],[x+R,y+h]);ar(x+R,y+h-R,90);ln([x,y+h-R],[x,y+R]);ar(x+R,y+R,180);
         const ids=[];for(const e of es){if(kv.ang)xfEnt(e,{k:'r',b:[x,y],a:kv.ang});if(r.C)e.col=r.C;addEnt(e);made.add(e.id);ids.push(e.id);}cnt++;if(kv.name)NG.set(pfold(kv.name),ids);
-        if(r.M){const P=grpPts(ids),hc={t:'hatch',l,pts:P.map(q=>[q[0],q[1]]),z,pat:'solid',mat:r.M};if(r.C)hc.col=r.C;addEnt(hc);made.add(hc.id);}last=null;r.C=null;r.M=null;break;}
+        if(r.M){const P=grpPts(ids),hc={t:'hatch',l,hs:ids.slice(),pts:P.map(q=>[q[0],q[1]]),z,pat:'solid',mat:r.M};if(r.C)hc.col=r.C;addEnt(hc);made.add(hc.id);}last=null;r.C=null;r.M=null;break;}
       case 'dim':{const l=lay(null,null,r),off=k(kv.off!=null?kv.off:.5);
         if(r.dk==='rad'||r.dk==='dia'){const c=get(r.words[0]);if(!c||(c.t!=='circle'&&c.t!=='arc'))throw new Error(TL('eNot',r.words[0]));const a=c.t==='arc'?c.a1+arcSpan(c)/2:45;put(r,{t:'dim',l,k:r.dk,lc:c.id,c:c.c.slice(),r:c.r,ang:kv.ang!=null?kv.ang:a,h:dimHNow()});break;}
         const P=r.P.map(q=>[k(q[0]),k(q[1]),k(q[2]||0)]);
@@ -5418,7 +5418,7 @@ function tfRun(text){const C=tfCheck(text);if(!C.n)return {ok:false,msg:TL('empt
         const a=P[0],b=P[1];let dd;if(r.dk==='h')dd=[(a[0]+b[0])/2,Math.max(a[1],b[1])+off,a[2]];else if(r.dk==='v')dd=[Math.max(a[0],b[0])+off,(a[1]+b[1])/2,a[2]];else{const L2=Math.hypot(b[0]-a[0],b[1]-a[1])||1;dd=[(a[0]+b[0])/2-(b[1]-a[1])/L2*off,(a[1]+b[1])/2+(b[0]-a[0])/L2*off,a[2]];}
         put(r,{t:'dim',l,k:'lin',ax:r.dk==='h'?'h':r.dk==='v'?'v':'a',a,b,d:dd,h:dimHNow()});break;}
       case 'hatch':{const g=NG.get(pfold(r.words[0])),e=g?null:get(r.words[0]);let P,z,l;if(g){P=grpPts(g);const e0=byId(g[0]);z=(e0.p1||e0.c||[0,0,0])[2]||0;l=e0.l;}else{if(!e)throw new Error(TL('eNot',r.words[0]));const cp=curvePts(e);if(!cp.closed||cp.pts.length<3)throw new Error(TL('eNot',r.words[0]));P=cp.pts;z=P[0][2]||0;l=e.l;}
-        const hc={t:'hatch',l:r.kv.layer?lay(null,null,r):l,pts:P.map(q=>[q[0],q[1]]),z,pat:r.M?'solid':r.PT||S.hPat||'lines',gap:kv.gap!=null?k(kv.gap):S.hGap,ang:kv.ang!=null?kv.ang:S.hAng||45};put(r,hc);break;}
+        const hc={t:'hatch',l:r.kv.layer?lay(null,null,r):l,hs:g?g.slice():[e.id],pts:P.map(q=>[q[0],q[1]]),z,pat:r.M?'solid':r.PT||S.hPat||'lines',gap:kv.gap!=null?k(kv.gap):S.hGap,ang:kv.ang!=null?kv.ang:S.hAng||45};put(r,hc);break;}
       case 'offset':{const e=get(r.words[0]);if(!e)throw new Error(TL('eNot',r.words[0]));const d=k(Math.abs(r.V)),cp=curvePts(e),cx=cp.pts.reduce((q,p)=>q+p[0],0)/cp.pts.length,cy=cp.pts.reduce((q,p)=>q+p[1],0)/cp.pts.length;let q;
         if(e.t==='line'){const nx=-(e.p2[1]-e.p1[1]),ny=e.p2[0]-e.p1[0],L2=Math.hypot(nx,ny)||1,sg=r.V>0?1:-1;q=[(e.p1[0]+e.p2[0])/2+nx/L2*sg*d*2,(e.p1[1]+e.p2[1])/2+ny/L2*sg*d*2];}else q=r.V>0?[cx+1e9,cy+1e9]:[cx,cy];
         const o=offsetEnt(e,q,d);if(!o)throw new Error(TL('eOff'));if(!r.kv.layer)o.l=e.l;else o.l=lay(null,null,r);addEnt(o);made.add(o.id);cnt++;NM.set(pfold(r.NN),o.id);last=o;break;}
@@ -5834,6 +5834,14 @@ function showSheet(ed){
   SHC=new Map();$('#shL').onchange=()=>{cellsUI();upd();};cellsUI();$('#shSet').onclick=()=>{upd();if(SH){lyRestore();}closeModal(true);showSet();};$('#shTB').onclick=()=>{upd();if(SH){SH.t=o.title;SH.no=o.no;SH.o=ssPick(o);lyRestore();}showTB(()=>showSheet(ed));};for(const id of ['shPL','shIL','shNA','shSB','shW','shH','shP','shO','shS','shC','shA','shF','shJ','shT','shB','shN','shD']){const q=$('#'+id);if(q)q.onchange=upd;}upd();
 }
 /* ---------- quantity take-off: length, area and volume by layer and type ---------- */
+/* a hatch made from a round outline stores the outline's ids (hs); its area is then the outline's exact area, as long as the
+   hatch still matches it (within 1 %: not moved or changed apart from it) */
+function hatchExact(e,pa){if(!Array.isArray(e.hs)||!e.hs.length)return null;const es=e.hs.map(byId);if(es.some(x=>!x))return null;let A=null;
+  try{if(es.length===1&&es[0].t==='circle')A=Math.PI*es[0].r*es[0].r;else if(es.length===1&&es[0].t==='ellipse')A=Math.PI*es[0].rx*es[0].ry;
+    else if(OK){const E=[];for(const x of es){const W=occEdges(x);if(!W)return null;E.push(...W.E);}A=OK.getSurfaceArea(OK.makeFace(OK.makeWire(E)));}}catch(_){return null;}
+  if(!(A>0)||Math.abs(A-pa)>pa*.01)return null;const b=[Infinity,Infinity,-Infinity,-Infinity];for(const x of es){const B=entBox(x);b[0]=Math.min(b[0],B[0]);b[1]=Math.min(b[1],B[1]);b[2]=Math.max(b[2],B[3]);b[3]=Math.max(b[3],B[4]);}
+  let h=[Infinity,Infinity,-Infinity,-Infinity];for(const q of e.pts){h[0]=Math.min(h[0],q[0]);h[1]=Math.min(h[1],q[1]);h[2]=Math.max(h[2],q[0]);h[3]=Math.max(h[3],q[1]);}const tol=Math.max(b[2]-b[0],b[3]-b[1])*.02;
+  return h.every((v,i)=>Math.abs(v-b[i])<=tol)?A:null;}
 function entQty(e){
   const q={len:0,area:0,vol:0},w=um();
   switch(e.t){
@@ -5844,8 +5852,8 @@ function entQty(e){
     case 'arc':q.len=e.r*arcSpan(e)*RAD;break;
     case 'area':q.area=polyArea(e.pts);q.len=polyPerim(e.pts);break;
     case 'bank':q.area=bankInfo(e).sa;break;
-    case 'hatch':q.area=polyArea(e.pts)-(e.holes||[]).reduce((z,h)=>z+polyArea(h),0);break;
-    case 'ins':{for(const c of insEnts(e)){const z=entQty(c);q.len+=z.len/w;q.area+=z.area/(w*w);q.vol+=z.vol/(w*w*w);}break;}
+    case 'hatch':{const pa=polyArea(e.pts),ex=hatchExact(e,pa);q.area=(ex!=null?ex:pa)-(e.holes||[]).reduce((z,h)=>z+polyArea(h),0);break;}
+    case 'ins':{if(e.sp||/^pf_(tree|conifer|cypress|palm|shrub|willow)$/.test(e.b||''))break;for(const c of insEnts(e)){const z=entQty(c);q.len+=z.len/w;q.area+=z.area/(w*w);q.vol+=z.vol/(w*w*w);}break;}
     case 'box':case 'cyl':case 'cone':case 'sphere':case 'extrude':case 'mesh':
       if(!e.ch&&e.t==='box')q.vol=e.sx*e.sy*e.sz;else if(!e.ch&&e.t==='cyl')q.vol=Math.PI*e.r*e.r*e.h;else if(!e.ch&&e.t==='cone')q.vol=Math.PI*e.r*e.r*e.h/3;else if(e.t==='sphere')q.vol=4/3*Math.PI*e.r*e.r*e.r;else if(!e.ch&&e.t==='extrude')q.vol=polyArea(e.pts)*Math.abs(e.h);
       else if(OK&&occShape(e)!=null)q.vol=okVol(e);
@@ -5856,10 +5864,12 @@ function takeoffRows(onlySel){
   const list=doc.entities.filter(e=>{const ly=LM.get(e.l);return ly&&ly.on&&!e.cg&&e.t!=='spot'&&e.t!=='slope'&&(!onlySel||sel.has(e.id));}),by=new Map();
   for(const e of list){if(e.t==='mesh'&&e.gr){const ly=LM.get(e.l);for(const [ty,q] of gradeTake(e)){const k=ly.name+'\u0001'+ty;let r=by.get(k);if(!r)by.set(k,r={key:k,et:'grade',layer:ly.name,type:ty,n:0,len:0,area:0,vol:0});r.n++;r.area+=q.area;r.vol+=q.vol;}continue;}
     const ly=LM.get(e.l),ty=e.t==='ins'?((doc.blocks&&doc.blocks[e.b]||{}).name||L('e_ins'))+(e.sp?' – '+e.sp:'')+(e.sz?' – '+szText(e.sz):''):e.t==='prefab'?((I18N[S.lang].names||{})[e.k]||e.k):isPipe(e)?pipeName(e):e.t==='valve'?L('e_valve')+' '+(e.dn||'1"'):e.t==='ctrl'?L('ctLbl',e.n||4):e.t==='bank'?L('mtBank'):e.t==='poly'&&e.closed?L('mtClosed'):e.t==='spk'?L('spk_'+e.k)+' · R '+fmt(+(e.r*um()).toFixed(2))+' m':L(e.t==='mesh'&&e.br?'e_solid':'e_'+e.t),k=ly.name+'\u0001'+ty;let r=by.get(k);if(!r)by.set(k,r={key:k,et:e.t,layer:ly.name,type:ty,n:0,len:0,area:0,vol:0});
-    const q=entQty(e);r.n++;r.len+=q.len;r.area+=q.area;r.vol+=q.vol;}
+    const q=entQty(e);r.n++;r.len+=q.len;r.area+=q.area;r.vol+=q.vol;
+    /* a fill drawn from an outline that is itself listed on the same layer is shown, but its area is not added again to the totals */
+    if(e.t==='hatch'&&Array.isArray(e.hs)&&e.hs.length&&e.hs.every(id=>{const o=byId(id);return o&&o.l===e.l&&list.includes(o)&&entQty(o).area>0;}))r.ad=(r.ad||0)+q.area;}
   const rows=[...by.values()].sort((a,b)=>a.layer.localeCompare(b.layer,S.lang)||a.type.localeCompare(b.type,S.lang)),out=[],tot={n:0,len:0,area:0,vol:0};let cur=null,sub=null,nl=0;
   const end=()=>{if(sub&&sub.k>1)out.push({layer:cur,type:L('mtSub'),n:sub.n,len:sub.len,area:sub.area,vol:sub.vol,sum:1});};
-  for(const r of rows){if(r.layer!==cur){end();cur=r.layer;sub={n:0,len:0,area:0,vol:0,k:0};nl++;}out.push(r);sub.k++;for(const k of ['n','len','area','vol']){sub[k]+=r[k];tot[k]+=r[k];}}
+  for(const r of rows){if(r.layer!==cur){end();cur=r.layer;sub={n:0,len:0,area:0,vol:0,k:0};nl++;}out.push(r);sub.k++;for(const k of ['n','len','area','vol']){const v=k==='area'?r[k]-(r.ad||0):r[k];sub[k]+=v;tot[k]+=v;}}
   end();if(rows.length)out.push({layer:L('mtTot'),type:'',n:tot.n,len:tot.len,area:tot.area,vol:tot.vol,sum:2});
   return {rows:out,count:list.length};}
 /* take-off with cost estimate: per row a work item no., the unit to price by, the unit price and the amount (saved with the drawing) */
