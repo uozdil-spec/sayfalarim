@@ -1,0 +1,29 @@
+{
+  "manifest_version": "0.2",
+  "name": "pergel",
+  "display_name": "Pergel",
+  "version": "1.0.0",
+  "description": "Let Claude draw in Pergel, the free 2D/3D drawing and landscape design program: write recipes, check them, draw with Pergel's exact geometry engine, look at the result and read volumes and quantities.",
+  "long_description": "Pergel (https://uozdil-spec.github.io/sayfalarim/pergel/) runs in your browser. With this extension Claude opens Pergel, reads its recipe language, checks a recipe with Pergel's own checker, draws it (landscape plans, furniture, machine parts, small buildings), takes a picture of the view to check the result, and reads volumes, areas and the quantity take-off. Nothing leaves your computer: Claude and the Pergel page talk through a small local connection (127.0.0.1).",
+  "author": { "name": "uozdil", "url": "https://github.com/uozdil-spec" },
+  "homepage": "https://uozdil-spec.github.io/sayfalarim/pergel/",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": { "command": "node", "args": ["${__dirname}/server/index.js"] }
+  },
+  "tools": [
+    { "name": "pergel_open", "description": "Open Pergel in the browser and connect" },
+    { "name": "pergel_help", "description": "Pergel recipe language reference" },
+    { "name": "pergel_check", "description": "Check a recipe without drawing" },
+    { "name": "pergel_draw", "description": "Draw a recipe in Pergel" },
+    { "name": "pergel_info", "description": "Layers, objects, solid volumes and quantity take-off" },
+    { "name": "pergel_view", "description": "Change the view and return a picture" },
+    { "name": "pergel_screenshot", "description": "Picture of the current Pergel view" },
+    { "name": "pergel_undo", "description": "Undo the last change" }
+  ],
+  "keywords": ["cad", "drawing", "3d", "landscape", "design"],
+  "license": "MIT",
+  "compatibility": { "platforms": ["darwin", "win32", "linux"], "runtimes": { "node": ">=16.0.0" } }
+}
