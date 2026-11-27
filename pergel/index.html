@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261127-0838">
+<meta name="surum" content="20261127-0842">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-title" content="Pergel">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
-<link rel="icon" href="ikon.svg?v=20261127-0838" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261127-0838" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261127-0838">
-<link rel="manifest" href="manifest.webmanifest?v=20261127-0838">
+<link rel="icon" href="ikon.svg?v=20261127-0842" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261127-0842" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261127-0842">
+<link rel="manifest" href="manifest.webmanifest?v=20261127-0842">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -433,7 +433,7 @@ button.cell b{color:var(--ink-2)}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 .annL{display:grid;gap:10px;margin:10px 0}.annR{display:flex;gap:8px;align-items:center}.annB{display:flex;gap:6px;flex-wrap:wrap}
 </style>
-<script async src="../sayac.js?v=20261127-0838"></script>
+<script async src="../sayac.js?v=20261127-0842"></script>
 </head>
 <body>
 <div id="app">
@@ -3688,6 +3688,9 @@ function meshEdgeAt(e,sx,sy,tol){const ch=meshChains(e),o={x:0,y:0},p={x:0,y:0};
   return best==null?null:{id:e.id,ci:best,d:Math.sqrt(bd),p:bp};}
 /* the visible solid edge nearest the pointer, whichever solid it belongs to (SolidWorks/SpaceClaim: an edge wins over the face behind it,
    e.g. the edge of a small block sitting on a big block's face); edges hidden behind other solids are skipped */
+let HE=null;
+function drawHE(c){if(!HE||tool||drag)return;const e=byId(HE.id);if(!e||!usable(e)){HE=null;return;}const C=meshChains(e)[HE.ci];if(!C)return;const a={x:0,y:0},P=C.closed?C.pts.concat([C.pts[0]]):C.pts;
+  c.save();c.strokeStyle='#ff9f1a';c.lineWidth=3;c.lineCap='round';c.beginPath();let on=false;for(const q of P){if(!toScr(q[0],q[1],q[2],a)){on=false;continue;}if(on)c.lineTo(a.x,a.y);else c.moveTo(a.x,a.y);on=true;}c.stroke();c.restore();}
 function edgeAtAny(sx,sy,tol){const F=faceAtSkip(sx,sy,null),cp=cam.position,dist=q=>Math.hypot(q[0]-O[0]-cp.x,q[1]-O[1]-cp.y,q[2]-O[2]-cp.z),df=F?dist(F.p):Infinity;let best=null;
   for(const e of doc.entities){if(e.t!=='mesh'||!e.br||!usable(e))continue;const h=meshEdgeAt(e,sx,sy,tol);if(!h)continue;if(isFinite(df)&&dist(h.p)>df*(1+2e-3)+1e-9)continue;
     const b=entBox(e),sz=Math.hypot(b[3]-b[0],b[4]-b[1],b[5]-b[2]);if(!best||h.d<best.d-1||(Math.abs(h.d-best.d)<=1&&sz<best.sz))best=Object.assign(h,{sz});}
@@ -4403,6 +4406,8 @@ function doHover(){
   if(!tool&&!cs&&rdimHits.some(h=>p.x>=h.x&&p.x<=h.x+h.w&&p.y>=h.y&&p.y<=h.y+h.h))cs='text';
   if(!tool&&!cs){const k=pickAt(p.x,p.y),q=k!=null&&byId(k);if(q&&(q.t==='circle'||(q.t==='poly'&&q.closed))&&rgnOf(q))cs='move';}
   {const rg=!tool&&!cs?rgnAt(p.x,p.y):null,pk=rg&&pickAt(p.x,p.y);const g=rg&&pk!==rg.e.id?rg:null;if((g&&g.e)!==(hrgn&&hrgn.e)){hrgn=g;requestOverlay();}if(g){cs='grab';if(hsub){hsub=null;requestOverlay();}}}
+  /* a visible edge of an exact solid under the pointer wins over the face behind it (also a primitive's face): show that edge */
+  {const A=!tool&&!cs?edgeAtAny(p.x,p.y,5):null;if((A&&A.id+':'+A.ci)!==(HE&&HE.id+':'+HE.ci)){HE=A;requestOverlay();}if(A){cs='pointer';if(hsub){hsub=null;requestOverlay();}if(gl.style.cursor!==cs)gl.style.cursor=cs;return;}}
   if(!tool&&!cs){const h=subHit(p.x,p.y);if((h&&!hsub)||(!h&&hsub)||(h&&hsub&&(h.id!==hsub.id||h.k!==hsub.k||h.i!==hsub.i))){hsub=h;requestOverlay();}if(h)cs='pointer';if(sub&&arrowHit(p.x,p.y))cs='grab';}else if(hsub){hsub=null;requestOverlay();}
   if(gl.style.cursor!==cs)gl.style.cursor=cs;
 }
@@ -4606,7 +4611,7 @@ function drawOverlay(){
   if(selArr&&selArr.length){const q=selArr,pth=new Path2D(),col=selColor(),w=S.selW||3;for(let k=0;k+5<q.length;k+=6){if(toScr(q[k]+O[0],q[k+1]+O[1],q[k+2]+O[2],a)&&toScr(q[k+3]+O[0],q[k+4]+O[1],q[k+5]+O[2],b)){pth.moveTo(a.x,a.y);pth.lineTo(b.x,b.y);}}
     c.lineCap='butt';c.lineJoin='round';c.globalAlpha=.5;c.strokeStyle=TH.bg;c.lineWidth=w+2.5;c.stroke(pth);c.globalAlpha=1;c.strokeStyle=col;c.lineWidth=w;if(S.selDash!==false)c.setLineDash([8,5]);c.stroke(pth);c.setLineDash([]);}
   if(selGrips&&selGrips.length&&S.grips!==false){const q=selGrips,col=selColor();c.lineWidth=1.2;for(let k=0;k+2<q.length;k+=3){if(!toScr(q[k],q[k+1],q[k+2],a))continue;c.fillStyle=col;c.fillRect(a.x-4,a.y-4,8,8);c.strokeStyle=TH.bg;c.strokeRect(a.x-4.5,a.y-4.5,9,9);}}
-  drawSec(c);drawWP(c);drawRgn(c);drawPPTag(c);drawGrMarks(c);drawCons(c);drawRDims(c);drawSub(c);drawFS(c);drawME(c);drawSelBar();if(!drag||drag.type!=='ih')drawInsGrips(c);
+  drawSec(c);drawWP(c);drawRgn(c);drawPPTag(c);drawGrMarks(c);drawCons(c);drawHE(c);drawRDims(c);drawSub(c);drawFS(c);drawME(c);drawSelBar();if(!drag||drag.type!=='ih')drawInsGrips(c);
   // measurement
   if(measure&&measure.pts.length>1){const mp=measure.pts,sp=[];for(const q of mp){const o={x:0,y:0};sp.push(toScr(q[0],q[1],q[2],o)?o:null);}
     c.strokeStyle=TH.signal;c.lineWidth=1.5;c.setLineDash([6,4]);c.beginPath();for(let i=1;i<sp.length;i++)if(sp[i-1]&&sp[i]){c.moveTo(sp[i-1].x,sp[i-1].y);c.lineTo(sp[i].x,sp[i].y);}c.stroke();c.setLineDash([]);

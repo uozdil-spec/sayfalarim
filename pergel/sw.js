@@ -1,4 +1,4 @@
-var V = 'pg-20261127-0838';
+var V = 'pg-20261127-0842';
 var FILES = ['./', 'index.html', 'manifest.webmanifest', 'ikon.svg', 'ikon-32.png', 'ikon-180.png', 'ikon-192.png', 'ikon-512.png', 'ikon-maskable-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
   'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/lines/LineSegmentsGeometry.js',
