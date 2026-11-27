@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta name="surum" content="20261126-2323">
+<meta name="surum" content="20261127-0838">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#16307a">
@@ -10,10 +10,10 @@
 <meta name="apple-mobile-web-app-title" content="Pergel">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="Pergel: tarayıcıda çalışan 3B çizim programı. Çizgi, katı, katman, ölçü; DXF ve DWG açar, DXF kaydeder. Kurulumsuz, reklamsız. by uozdil">
-<link rel="icon" href="ikon.svg?v=20261126-2323" type="image/svg+xml">
-<link rel="icon" href="ikon-32.png?v=20261126-2323" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="ikon-180.png?v=20261126-2323">
-<link rel="manifest" href="manifest.webmanifest?v=20261126-2323">
+<link rel="icon" href="ikon.svg?v=20261127-0838" type="image/svg+xml">
+<link rel="icon" href="ikon-32.png?v=20261127-0838" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="ikon-180.png?v=20261127-0838">
+<link rel="manifest" href="manifest.webmanifest?v=20261127-0838">
 <title>Pergel 3B Çizim · by uozdil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500;1,700&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
@@ -433,7 +433,7 @@ button.cell b{color:var(--ink-2)}
 #verBar{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:10px;background:var(--accent);color:#fff;font:600 13px/1.3 system-ui,sans-serif;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:calc(100vw - 20px)}#verBar.on{display:flex}#verBar span{white-space:nowrap}#verBar button{border:0;border-radius:7px;padding:6px 12px;font:inherit;cursor:pointer;background:#fff;color:var(--accent)}#verBar button.x{background:transparent;color:#fff;padding:6px 8px}
 .annL{display:grid;gap:10px;margin:10px 0}.annR{display:flex;gap:8px;align-items:center}.annB{display:flex;gap:6px;flex-wrap:wrap}
 </style>
-<script async src="../sayac.js?v=20261126-2323"></script>
+<script async src="../sayac.js?v=20261127-0838"></script>
 </head>
 <body>
 <div id="app">
@@ -3683,9 +3683,15 @@ function meshChains(e){if(e.br)return occChains(e);const ck=meC.get(e);if(ck&&ck
   meC.set(e,{v:e.v,f:e.f,ch});return ch;}
 /* drawn edges of a combined solid = the same clean edge chains the edge tools pick (no hairline dashes) */
 function meshEdgeLines(e){if(e.v.length>180000)return null;try{const ch=meshChains(e),o=[];for(const c of ch){const n=c.pts.length,m=c.closed?n:n-1;for(let i=0;i<m;i++){const a=c.pts[i],b=c.pts[(i+1)%n];o.push(a[0],a[1],a[2],b[0],b[1],b[2]);}}return o.length?o:null;}catch(err){return null;}}
-function meshEdgeAt(e,sx,sy,tol){const ch=meshChains(e),o={x:0,y:0},p={x:0,y:0};let best=null,bd=tol*tol;
-  ch.forEach((c,ci)=>{const n=c.pts.length,m=c.closed?n:n-1;for(let i=0;i<m;i++){const a=c.pts[i],b=c.pts[(i+1)%n];if(!toScr(a[0],a[1],a[2],o)||!toScr(b[0],b[1],b[2],p))continue;const d=segDist2(sx,sy,o.x,o.y,p.x,p.y);if(d<bd){bd=d;best=ci;}}});
-  return best==null?null:{id:e.id,ci:best};}
+function meshEdgeAt(e,sx,sy,tol){const ch=meshChains(e),o={x:0,y:0},p={x:0,y:0};let best=null,bd=tol*tol,bp=null;
+  ch.forEach((c,ci)=>{const n=c.pts.length,m=c.closed?n:n-1;for(let i=0;i<m;i++){const a=c.pts[i],b=c.pts[(i+1)%n];if(!toScr(a[0],a[1],a[2],o)||!toScr(b[0],b[1],b[2],p))continue;const d=segDist2(sx,sy,o.x,o.y,p.x,p.y);if(d<bd){bd=d;best=ci;const dx=p.x-o.x,dy=p.y-o.y,l=dx*dx+dy*dy;let t=l?((sx-o.x)*dx+(sy-o.y)*dy)/l:0;t=t<0?0:t>1?1:t;bp=[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}}});
+  return best==null?null:{id:e.id,ci:best,d:Math.sqrt(bd),p:bp};}
+/* the visible solid edge nearest the pointer, whichever solid it belongs to (SolidWorks/SpaceClaim: an edge wins over the face behind it,
+   e.g. the edge of a small block sitting on a big block's face); edges hidden behind other solids are skipped */
+function edgeAtAny(sx,sy,tol){const F=faceAtSkip(sx,sy,null),cp=cam.position,dist=q=>Math.hypot(q[0]-O[0]-cp.x,q[1]-O[1]-cp.y,q[2]-O[2]-cp.z),df=F?dist(F.p):Infinity;let best=null;
+  for(const e of doc.entities){if(e.t!=='mesh'||!e.br||!usable(e))continue;const h=meshEdgeAt(e,sx,sy,tol);if(!h)continue;if(isFinite(df)&&dist(h.p)>df*(1+2e-3)+1e-9)continue;
+    const b=entBox(e),sz=Math.hypot(b[3]-b[0],b[4]-b[1],b[5]-b[2]);if(!best||h.d<best.d-1||(Math.abs(h.d-best.d)<=1&&sz<best.sz))best=Object.assign(h,{sz});}
+  return best;}
 /* swept cutter along the edge; kind 'c' chamfer (a on face 1, b on face 2) or 'r' round (radius a) */
 function meshEdgeCutter(e,ci,kind,a,b){const C=meshChains(e)[ci];if(!C)return {err:'meNo'};const n=C.pts.length,S=C.segs,cl=C.closed,N=x=>{const l=Math.hypot(...x)||1;return x.map(v=>v/l);},dt=(x,y)=>x[0]*y[0]+x[1]*y[1]+x[2]*y[2],cr=(x,y)=>[x[1]*y[2]-x[2]*y[1],x[2]*y[0]-x[0]*y[2],x[0]*y[1]-x[1]*y[0]];
   /* keep face sides consistent along the chain */
@@ -4418,6 +4424,7 @@ gl.addEventListener('pointerdown',e=>{
     else if(!tool&&!le&&!sh&&sel.size===1&&insSel().length===1&&pickAt(p.x,p.y)===insSel()[0].id){const q=insSel()[0];drag={type:'ih',mode:'move',id:q.id,z:q.p[2]||0,body:true};}
     else if(!tool&&!le&&!sh&&(()=>{let q=sel.size===1&&byId([...sel][0]),fresh=false;
       /* SpaceClaim: an edge of a solid can be picked straight away, without selecting the solid first */
+      {const A=edgeAtAny(p.x,p.y,mouse?5:10);if(A&&(!q||q.id!==A.id)){const own=q&&q.t==='mesh'&&usable(q)?meshEdgeAt(q,p.x,p.y,mouse?9:18):null;if(!own||own.d>A.d+1){q=byId(A.id);fresh=true;}}}
       if(!q||q.t!=='mesh'){const k=pickAt(p.x,p.y),w=k!=null&&byId(k);if(w&&w.t==='mesh'&&w.br&&usable(w)&&meshEdgeAt(w,p.x,p.y,mouse?5:10)){q=w;fresh=true;}}
       if(!q||q.t!=='mesh'||!usable(q))return false;const h=meshEdgeAt(q,p.x,p.y,mouse?9:18);if(!h)return false;if(fresh){sel=new Set([q.id]);selChanged();}if(q.br&&!meshEdgeAt(q,p.x,p.y,mouse?4:7)){if(featAt(q,p.x,p.y)!=null)return false;const fi=occFaceAt(q,p.x,p.y);if(fi!=null&&blendOf(q,fi))return false;}drag={type:'me',h};return true;})()){}
     else if(!tool&&!le&&!sh&&(()=>{const q=sel.size===1&&byId([...sel][0]);if(!q||!q.br||!usable(q))return false;const i=featAt(q,p.x,p.y);if(i==null)return false;drag={type:'mf',id:q.id,i};return true;})()){}
